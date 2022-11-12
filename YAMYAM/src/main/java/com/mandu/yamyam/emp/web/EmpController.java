@@ -13,11 +13,6 @@ public class EmpController {
 	@Autowired
 	EmpMapper dao;
 
-	@RequestMapping("/")
-	public String index(Model model) {
-		return "layout/top";
-	}
-	
 	@RequestMapping("/list")
 	public String empList(Model model) {
 		model.addAttribute("empList", dao.getEmpList(null));
