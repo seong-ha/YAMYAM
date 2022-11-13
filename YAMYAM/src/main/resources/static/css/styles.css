@@ -11807,3 +11807,8 @@ body {
 .mylist li a:hover {
 	color: #963446;
 }
+
+.Magnifying-Glass-img{
+	height: 20px;
+	weight: 20px;
+}

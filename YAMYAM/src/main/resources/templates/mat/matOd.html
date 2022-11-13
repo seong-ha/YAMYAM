@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{/layout/layout}">
+
+<div class="container" layout:fragment="content">
+	<div id="mat-od-title">
+		<h2>자재 발주 관리</h2>
+	</div>
+	<hr>
+	<div id="btn-group">
+		<button>생산계획서용</button>
+		<button>일반</button>
+	</div>
+	<div id="input-group">
+				<label for="matCode">발주코드</label> <input id="matCode"><br>
+				<label for="matNm">자재명</label> <input id="matNm"> <img class="Magnifying-Glass-img" alt="image" src="../images/Magnifying_Glass.png"> <input type="text" readonly><br> 
+				<label for="actNm">업체명</label> <input id="actNm"> <img class="Magnifying-Glass-img" alt="image" src="../images/Magnifying_Glass.png"> <input type="text" readonly><br> 
+				<label for="matDate">발주신청일자</label> <input type="date" id="matDate"> - <input type="date" id="matDate">
+
+		<button>조회</button>
+		<button>초기화</button>
+	</div>
+
+	<div style="text-align: right;">
+		<button>추가</button>
+		<button>선택삭제</button>
+		<button>저장</button>
+	</div>
+
+	<div id="grid"></div>
+
+	<script>
+const grid = new tui.Grid({
+      el: document.getElementById('grid'),
+      data: [
+    {
+        maCode: 'OAF-20221104-011',
+        mtCode: 'RML-10101',
+        maNm: '얇은 만두피',
+        price: 1000,
+        count: 200,
+        sumPrice: 2000000,
+        acNm: 'YD 만두피',
+        fDate: '2022-11-04',
+        eDate: '2022-11-09'
+    },
+    {
+        maCode: 'OAF-20221104-022',
+        mtCode: 'RML-10102',
+        maNm: '두꺼운 만두피',
+        price: 1500,
+        count: 200,
+        sumPrice: 3000000,
+        acNm: 'YD 만두피',
+        fDate: '2022-11-04',
+        eDate: '2022-11-09'
+    }
+  ],
+      rowHeaders: ['checkbox'],
+      scrollX: false,
+      scrollY: false,
+      columns: [
+        {
+          header: '발주코드',
+          name: 'maCode'
+        },
+        {
+          header: '자재코드',
+          name: 'mtCode'
+        },
+        {
+          header: '자재명',
+          name: 'maNm'
+        },
+        {
+          header: '단가(원)',
+          name: 'price'
+        },
+        {
+          header: '발주량',
+          name: 'count'
+        },
+        {
+          header: '총액',
+          name: 'sumPrice'
+        },
+        {
+          header: '업체명',
+          name: 'acNm'
+        },
+        {
+          header: '발주신청일',
+          name: 'fDate'
+        },
+        {
+          header: '납기요청일',
+          name: 'eDate'
+        }
+      ]
+    });
+
+    grid.on('check', ev => {
+      console.log('check!', ev);
+    });
+
+    grid.on('uncheck', ev => {
+      console.log('uncheck!', ev);
+    });
+
+    grid.on('focusChange', ev => {
+      console.log('change focused cell!', ev);
+    });
+    </script>
+</div>
