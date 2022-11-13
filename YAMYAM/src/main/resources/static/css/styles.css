@@ -11807,3 +11807,11 @@ body {
 .mylist li a:hover {
 	color: #963446;
 }
+
+.nav-pills > .nav-item > .active {
+	background-color: #963446 !important;
+  color: #f0f0f0 !important;
+}
+.nav-pills > .nav-item > .nav-link {
+	color : #212529;
+}
