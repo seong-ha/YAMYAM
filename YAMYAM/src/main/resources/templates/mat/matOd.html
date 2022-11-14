@@ -28,17 +28,20 @@
 			<div class="tab-pane fade show active" id="normal" role="tabpanel"
 				aria-labelledby="normal-tab">
 				<div id="input-group">
-					<label for="matCode">발주코드</label> <input id="matCode"><br>
-					<label for="matNm">자재명</label> <input id="matNm"> <img
-						class="Magnifying-Glass-img" alt="image" data-bs-toggle="modal"
-						data-bs-target="#matModal" src="../images/Magnifying_Glass.png">
-					<input type="text" readonly><br> <label for="actNm">업체명</label>
-					<input id="actNm"> <img class="Magnifying-Glass-img"
-						alt="image" src="../images/Magnifying_Glass.png"> <input
-						type="text" readonly><br> <label for="matDate">발주신청일자</label>
-					<input type="date" id="matDate"> - <input type="date"
-						id="matDate">
+					<ul class="ul-style">
+						<li><label for="matCode">발주코드</label><input id="matCode"></li>
+						<li><label for="matNm">자재명</label><input id="matNm"><img
+							class="Magnifying-Glass-img" alt="image" data-bs-toggle="modal"
+							data-bs-target="#matModal" src="../images/Magnifying_Glass.png"><input
+							type="text" readonly></li>
+						<li><label for="actNm">업체명</label><input id="actNm"><img
+							class="Magnifying-Glass-img" alt="image" data-bs-toggle="modal"
+							data-bs-target="#actModal" src="../images/Magnifying_Glass.png"><input
+							type="text" readonly></li>
+						<li><label for="matDate">발주신청일자</label><input type="date"
+							id="matDate"><span> - </span><input type="date" id="matDate"></li>
 
+					</ul>
 					<button class="btn btn-dark btn-sm">조회</button>
 					<button class="btn btn-dark btn-sm">초기화</button>
 				</div>
@@ -56,8 +59,9 @@
 			<div class="tab-pane fade" id="plan" role="tabpanel"
 				aria-labelledby="plan-tab">
 				<div align="right">
-					<button class="btn btn-dark">신규 생산 계획서 조회</button>
-					<button class="btn btn-dark">저장</button>
+					<button class="btn btn-dark btn-sm" data-bs-toggle="modal"
+						data-bs-target="#planModal">신규 생산 계획서 조회</button>
+					<button class="btn btn-dark btn-sm">저장</button>
 				</div>
 				<div>
 					<table class="table">
@@ -80,10 +84,11 @@
 		</div>
 	</div>
 
-	<!-- Modal -->
+
+	<!-- 자재 목록 모달 -->
 	<div class="modal fade" id="matModal" tabindex="-1"
 		aria-labelledby="matModalLabel" aria-hidden="true">
-		<div class="modal-dialog">
+		<div class="modal-dialog modal-xl">
 			<div class="modal-content">
 				<div class="modal-header">
 					<h5 class="modal-title" id="matModalLabel">자재 목록</h5>
@@ -91,22 +96,59 @@
 						aria-label="Close"></button>
 				</div>
 				<div class="modal-body">
-					<label for="matNm">자재명</label><input id="matNm">
-					<button class="btn btn-dark btn-sm">조회</button>
-					<button class="btn btn-dark btn-sm">초기화</button>
-
-					<div id="grid5"></div>
-
+					<div>
+						<div id="modalGrid"></div>
+					</div>
 				</div>
 
-
-				<div class="modal-footer">
-					<button type="button" class="btn btn-secondary"
-						data-bs-dismiss="modal">취소</button>
-				</div>
 			</div>
 		</div>
 	</div>
+
+	<!-- 업체 목록 모달 -->
+	<div class="modal fade" id="actModal" tabindex="-1"
+		aria-labelledby="actModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-xl">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="actModalLabel">업체 목록</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal"
+						aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<div>
+						<div id="modalGrid2"></div>
+					</div>
+				</div>
+
+			</div>
+		</div>
+	</div>
+
+	<!-- 신규 생산 계획서 목록 모달 -->
+	<div class="modal fade" id="planModal" tabindex="-1"
+		aria-labelledby="planModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-xl">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="planModalLabel">신규 생산 계획서 모델</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal"
+						aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<label for="planDateSerch">계획일자</label>
+					<input id="planDateSerch" type="date"> - <input id="planDateSerch" type="date">
+					<button class="btn btn-dark btn-sm">조회</button>
+					<button class="btn btn-dark btn-sm">초기화</button>
+					<div>
+						<div id="modalGrid3"></div>
+					</div>
+				</div>
+
+			</div>
+		</div>
+	</div>
+
 
 	<script>
 const grid = new tui.Grid({
@@ -303,7 +345,8 @@ const grid = new tui.Grid({
 	    	sCount: 4000,
 	    	price: 1000,
 	    	count: 4000,
-	    	sumPrice: 'YD 만두피',
+	    	sumPrice: 4000000,
+	    	actNm: 'YD 만두피',
 	    	sDate: '2022-11-04',
 	    	eDate: '2022-11-10'
 	    }
@@ -357,49 +400,101 @@ const grid = new tui.Grid({
       });
     </script>
 
-	<script type="text/javascript">
-	const grid5 = new tui.Grid({
-	      el: document.getElementById('grid5'),
-	      data: [
-	    {
-	    	code: 'RML-10101',
-	    	name: '얇은 만두피',
-	    	size: 100,
-	    	count: 200
-	    },
-	    {
-	    	code: 'RML-10102',
-	    	name: '굵은 만두피',
-	    	size: 100,
-	    	count: 200
-	    }
-	  ],
-	      rowHeaders: ['rowNum'],
-	      scrollX: false,
-	      scrollY: false,
-	      columns: [
-	    	  {
-		          header: '자재코드',
-		          name: 'code'
-		        },
-		        {
-		          header: '자재명',
-		          name: 'name'
-		        },
-		        {
-		          header: '규격',
-		          name: 'size'
-		        }     
-		        },
-		        {
-		          header: '수량',
-		          name: 'count'
-		        }     
-	      ] 
-	    });
-	
-    grid5.on('focusChange', ev => {
-        console.log('change focused cell!', ev);
-      });
-    </script>
+	<script>
+	document.addEventListener('shown.bs.modal', function (){
+		modalGrid = '';
+		var modalGrid = new tui.Grid({
+			el: document.getElementById('modalGrid'),
+			data: [{
+				planCode: 'pro_123456',
+				planName: '얇은피 김치만두 200',
+				planDCode: 'pro_123456',
+				productName: '얇은피 김치만두'
+			}],
+			rowHeaders: ['rowNum'],
+			scrollX: false,
+			scrollY: false,
+			columns: [
+				{
+					header: '계획코드',
+					name: 'planCode',
+				},
+				{
+					header: '계획명',
+					name: 'planName',
+				},
+				{
+					header: '상세계획코드',
+					name: 'planDCode'
+				},
+				{
+					header: '제품명',
+					name: 'productName'
+				}
+			]
+		});
+	}, '.modal');
+	</script>
+
+	<script>
+	document.addEventListener('shown.bs.modal', function (){
+		modalGrid = '';
+		var modalGrid = new tui.Grid({
+			el: document.getElementById('modalGrid2'),
+			data: [{
+				actCode: 'VDR-1101',
+				actName: 'YD 만두피'
+			}],
+			rowHeaders: ['rowNum'],
+			scrollX: false,
+			scrollY: false,
+			columns: [
+				{
+					header: '업체 코드',
+					name: 'actCode',
+				},
+				{
+					header: '업체명',
+					name: 'actName',
+				}
+			]
+		});
+	}, '.modal');
+	</script>
+
+	<script>
+	document.addEventListener('shown.bs.modal', function (){
+		modalGrid = '';
+		var modalGrid = new tui.Grid({
+			el: document.getElementById('modalGrid3'),
+			data: [{
+				code: 'VDR-1101',
+				name: 'YD 만두피',
+				pDate: '2022-11-12',
+				eDate: '2023-11-18'
+			}],
+			rowHeaders: ['rowNum'],
+			scrollX: false,
+			scrollY: false,
+			columns: [
+				{
+					header: '생산 계획 코드',
+					name: 'code',
+				},
+				{
+					header: '계획명',
+					name: 'name',
+				},
+				{
+					header: '계획일자',
+					name: 'pDate',
+				},
+				{
+					header: '납기일자',
+					name: 'eDate',
+				}
+			]
+		});
+	}, '.modal');
+	</script>
 </div>
