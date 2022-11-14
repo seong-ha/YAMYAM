@@ -11829,9 +11829,11 @@ body {
 	list-style:none;
 	padding: 0px;
 }
+
 .ul-style li>label{
 	width: 100px;
 }
+
 .ul-style li{
 	padding: 5px;
 }
