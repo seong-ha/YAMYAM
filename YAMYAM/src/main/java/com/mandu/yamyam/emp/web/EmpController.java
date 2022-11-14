@@ -14,7 +14,7 @@ public class EmpController {
 	EmpMapper dao;
 
 	@RequestMapping("/emp")
-	public String emp() {
+	public String employee() {
 		
 		return "common/employeeAD";
 	}
