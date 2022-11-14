@@ -18,8 +18,23 @@ public class MatController {
 		return "mat/matLookup";
 	}
 	
+	@RequestMapping("/matInChk")
+	public String matInChk(Model model) {
+		return "mat/matInChk";
+	}
+	
 	@RequestMapping("/matIn")
 	public String matIn(Model model) {
 		return "mat/matIn";
+	}
+	
+	@RequestMapping("/matOut")
+	public String matOut(Model model) {
+		return "mat/matOut";
+	}
+	
+	@RequestMapping("/matInOut")
+	public String matInOut(Model model) {
+		return "mat/matInOut";
 	}
 }
