@@ -11808,10 +11808,16 @@ body {
 	color: #963446;
 }
 
+/* tab pill style 속성*/
 .nav-pills > .nav-item > .active {
 	background-color: #963446 !important;
   color: #f0f0f0 !important;
 }
 .nav-pills > .nav-item > .nav-link {
 	color : #212529;
+
+/* 돋보기 */
+.Magnifying-Glass-img{
+	height: 20px;
+	weight: 20px;
 }
