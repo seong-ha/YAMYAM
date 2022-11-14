@@ -11816,8 +11816,10 @@ body {
 .nav-pills > .nav-item > .nav-link {
 	color : #212529;
 }
+
 /* 돋보기 */
 .Magnifying-Glass-img{
 	height: 20px;
 	weight: 20px;
+	cursor:pointer;
 }
