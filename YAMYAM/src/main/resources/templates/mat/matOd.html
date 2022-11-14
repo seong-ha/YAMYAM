@@ -5,31 +5,67 @@
 	layout:decorate="~{/layout/layout}">
 
 <div class="container" layout:fragment="content">
-	<div id="mat-od-title">
-		<h2>자재 발주 관리</h2>
-	</div>
-	<hr>
-	<div id="btn-group">
-		<button>생산계획서용</button>
-		<button>일반</button>
-	</div>
-	<div id="input-group">
-				<label for="matCode">발주코드</label> <input id="matCode"><br>
-				<label for="matNm">자재명</label> <input id="matNm"> <img class="Magnifying-Glass-img" alt="image" src="../images/Magnifying_Glass.png"> <input type="text" readonly><br> 
-				<label for="actNm">업체명</label> <input id="actNm"> <img class="Magnifying-Glass-img" alt="image" src="../images/Magnifying_Glass.png"> <input type="text" readonly><br> 
-				<label for="matDate">발주신청일자</label> <input type="date" id="matDate"> - <input type="date" id="matDate">
+	<div>
+		<div id="mat-od-title">
+			<h2>자재 발주 관리</h2>
+		</div>
+		<hr>
+		<!-- 탭 목록(버튼) 설정 -->
+		<ul class="nav nav-tabs nav-pills" id="myTab" role="tablist">
+			<li class="nav-item" role="presentation">
+				<button class="nav-link" id="manage-tab" data-bs-toggle="tab"
+					data-bs-target="#plan" type="button" role="tab"
+					aria-controls="manage" aria-selected="true">생산계획서용</button>
+			</li>
+			<li class="nav-item" role="presentation">
+				<button class="nav-link active" id="insert-tab" data-bs-toggle="tab"
+					data-bs-target="#normal" type="button" role="tab"
+					aria-controls="normal" aria-selected="false">일반</button>
+			</li>
+		</ul>
+		<!-- 탭 본문 시작 -->
+		<div class="tab-content" id="myTabContent">
+			<div class="tab-pane fade show active" id="normal" role="tabpanel"
+				aria-labelledby="normal-tab">
+				<div id="input-group">
+					<label for="matCode">발주코드</label> <input id="matCode"><br>
+					<label for="matNm">자재명</label> <input id="matNm"> <img
+						class="Magnifying-Glass-img" alt="image"
+						src="../images/Magnifying_Glass.png"> <input type="text"
+						readonly><br> <label for="actNm">업체명</label> <input
+						id="actNm"> <img class="Magnifying-Glass-img" alt="image"
+						src="../images/Magnifying_Glass.png"> <input type="text"
+						readonly><br> <label for="matDate">발주신청일자</label> <input
+						type="date" id="matDate"> - <input type="date"
+						id="matDate">
 
-		<button>조회</button>
-		<button>초기화</button>
-	</div>
+					<button class="btn btn-dark">조회</button>
+					<button class="btn btn-dark">초기화</button>
+				</div>
 
-	<div style="text-align: right;">
-		<button>추가</button>
-		<button>선택삭제</button>
-		<button>저장</button>
-	</div>
+				<div style="text-align: right;">
+					<button class="btn btn-dark">추가</button>
+					<button class="btn btn-dark">선택삭제</button>
+					<button class="btn btn-dark">저장</button>
+				</div>
 
-	<div id="grid"></div>
+				<div id="grid"></div>
+			</div>
+
+			<!-- 생산계획서용 탭 -->
+			<div class="tab-pane fade" id="plan" role="tabpanel"
+				aria-labelledby="plan-tab">
+				<div align="right">
+					<button class="btn btn-dark">신규 생산 계획서 조회</button>
+					<button class="btn btn-dark">저장</button>
+				</div>
+				<div>
+					<h4>신규 생산 계획</h4>
+				</div>
+				<div id="grid2"></div>
+			</div>
+		</div>
+	</div>
 
 	<script>
 const grid = new tui.Grid({
@@ -112,5 +148,126 @@ const grid = new tui.Grid({
     grid.on('focusChange', ev => {
       console.log('change focused cell!', ev);
     });
+    </script>
+
+
+	<script type="text/javascript">
+    class RowNumberRenderer {
+        constructor(props) {
+          const el = document.createElement('span');
+          el.innerHTML = `No.${props.formattedValue}`;
+          this.el = el;
+        }
+
+        getElement() {
+          return this.el;
+        }
+
+        render(props) {
+          this.el.innerHTML = `No.${props.formattedValue}`;
+        }
+      }
+
+      class CheckboxRenderer {
+        constructor(props) {
+          const { grid, rowKey } = props;
+
+          const label = document.createElement('label');
+          label.className = 'checkbox tui-grid-row-header-checkbox';
+          label.setAttribute('for', String(rowKey));
+
+          const hiddenInput = document.createElement('input');
+          hiddenInput.className = 'hidden-input';
+          hiddenInput.id = String(rowKey);
+
+          const customInput = document.createElement('span');
+          customInput.className = 'custom-input';
+
+          label.appendChild(hiddenInput);
+          label.appendChild(customInput);
+
+          hiddenInput.type = 'checkbox';
+          label.addEventListener('click', (ev) => {
+            ev.preventDefault();
+
+            if (ev.shiftKey) {
+              grid[!hiddenInput.checked ? 'checkBetween' : 'uncheckBetween'](rowKey);
+              return;
+            }
+
+            grid[!hiddenInput.checked ? 'check' : 'uncheck'](rowKey);
+          });
+
+          this.el = label;
+
+          this.render(props);
+        }
+
+        getElement() {
+          return this.el;
+        }
+
+        render(props) {
+          const hiddenInput = this.el.querySelector('.hidden-input');
+          const checked = Boolean(props.value);
+
+          hiddenInput.checked = checked;
+        }
+      }
+
+      const grid2 = new tui.Grid({
+        el: document.getElementById('grid2'),
+        data: gridData,
+        rowHeaders: [
+          {
+            type: 'rowNum',
+            renderer: {
+              type: RowNumberRenderer
+            }
+          },
+          {
+            type: 'checkbox',
+            header: `
+            <label for="all-checkbox" class="checkbox">
+              <input type="checkbox" id="all-checkbox" class="hidden-input" name="_checked" />
+              <span class="custom-input"></span>
+            </label>
+          `,
+            renderer: {
+              type: CheckboxRenderer
+            }
+          }
+        ],
+        columns: [
+          {
+            header: 'Name',
+            name: 'name'
+          },
+          {
+            header: 'Artist',
+            name: 'artist'
+          },
+          {
+            header: 'Type',
+            name: 'type'
+          },
+          {
+            header: 'Release',
+            name: 'release'
+          },
+          {
+            header: 'Genre',
+            name: 'genre'
+          }
+        ]
+      });
+
+      grid.on('check', function(ev) {
+        console.log('check', ev);
+      });
+
+      grid.on('uncheck', function(ev) {
+        console.log('uncheck', ev);
+      });
     </script>
 </div>
