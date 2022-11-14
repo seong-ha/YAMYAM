@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{/layout/layout}">
+
+<div class="container" layout:fragment="content">
+	<div id="mat-od-title">
+		<h2>자재 입고 검수 관리</h2>
+	</div>
+	<hr>
+	<div id="input-group">
+		<label for="matNm">자재명</label> <input id="matNm"> <img
+			class="Magnifying-Glass-img" alt="image"
+			src="../images/Magnifying_Glass.png"> <input type="text"
+			readonly><br> <label for="empNm">담당자</label> <input
+			id="empNm"> <img class="Magnifying-Glass-img" alt="image"
+			src="../images/Magnifying_Glass.png"> <input type="text"
+			readonly><br> <label for="chkDate">검사일자</label> <input
+			type="date" id="chkDate"> - <input type="date" id="chkDate">
+
+		<button class="btn btn-dark btn-sm">조회</button>
+		<button class="btn btn-dark btn-sm">초기화</button>
+	</div>
+
+	<div style="text-align: right;">
+		<button class="btn btn-dark btn-sm">추가</button>
+		<button class="btn btn-dark btn-sm">선택삭제</button>
+		<button class="btn btn-dark btn-sm">저장</button>
+	</div>
+
+	<div id="grid"></div>
+
+	<script>
+const grid = new tui.Grid({
+      el: document.getElementById('grid'),
+      data: [
+    {
+        maCode: 'OAF-20221104-011',
+        mtCode: 'RML-10101',
+        maNm: '얇은 만두피',
+        count: 200,
+        pass: 197,
+        errorNum: 3,
+        emp: '이검수',
+        chkDate: '2022-11-12',
+        erCode: 'RMB-00102',
+        erInfo: '유통기한 임박'
+    },
+    {
+        maCode: 'OAF-20221105-011',
+        mtCode: 'RML-10102',
+        maNm: '두꺼운 만두피',
+        count: 200,
+        pass: 195,
+        errorNum: 5,
+        emp: '이검수',
+        chkDate: '2022-11-12',
+        erCode: 'RMB-00103',
+        erInfo: '포장지 훼손'
+    }
+  ],
+      rowHeaders: ['checkbox'],
+      scrollX: false,
+      scrollY: false,
+      columns: [
+        {
+          header: '발주코드',
+          name: 'maCode'
+        },
+        {
+          header: '자재코드',
+          name: 'mtCode'
+        },
+        {
+          header: '자재명',
+          name: 'maNm'
+        },
+        {
+          header: '발주총량',
+          name: 'count'
+        },
+        {
+          header: '합격량',
+          name: 'pass'
+        },
+        {
+          header: '불합격량',
+          name: 'errorNum'
+        },
+        {
+          header: '담당자',
+          name: 'emp'
+        },
+        {
+          header: '검사일자',
+          name: 'chkDate'
+        },
+        {
+            header: '불량코드',
+            name: 'erCode'
+          },
+          {
+              header: '불량내용',
+              name: 'erInfo'
+            }
+      ]
+    });
+
+    grid.on('check', ev => {
+      console.log('check!', ev);
+    });
+
+    grid.on('uncheck', ev => {
+      console.log('uncheck!', ev);
+    });
+
+    grid.on('focusChange', ev => {
+      console.log('change focused cell!', ev);
+    });
+    </script>
+</div>
