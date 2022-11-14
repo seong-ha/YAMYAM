@@ -1,22 +1,34 @@
 <!DOCTYPE html>
 <html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
-<head>
-<title>YAMYAM</title>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<link href="css/styles.css" rel="stylesheet" />
-<link href="css/bootstrap.min.css" rel="stylesheet">
-<link href="css/tui-grid.css" rel="stylesheet">
-<script src="js/bootstrap.bundle.min.js"></script>
-<script src="js/tui-grid.js"></script>
-
-<style type="text/css">
-	.tui-datepicker {
-	z-index: 1001;
-         }
+	<head>
+	<title>YAMYAM</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link href="css/styles.css" rel="stylesheet" />
+	<link href="css/bootstrap.min.css" rel="stylesheet">
+	<link href="css/tui-grid.css" rel="stylesheet">
+	<!-- toast-datepicker -->
+	<link rel="stylesheet"
+		href="https://uicdn.toast.com/tui.date-picker/latest/tui-date-picker.css">
+	<!-- toast-selectbox -->
+	<link rel="stylesheet"
+		href="https://uicdn.toast.com/select-box/latest/toastui-select-box.css" />
+	
+	<script src="js/bootstrap.bundle.min.js"></script>
+	<script src="js/tui-grid.js"></script>
+	<!-- toast-datepicker -->
+	<script
+		src="https://uicdn.toast.com/tui.date-picker/latest/tui-date-picker.js"></script>
+	<!-- toast-selectbox -->
+	<script
+		src="https://uicdn.toast.com/select-box/latest/toastui-select-box.js"></script>
+  <style type="text/css">
+	  .tui-datepicker {
+	     z-index: 1001;
+    }
 
 </style>
-</head>
+	</head>
 <body>
 	<nav layout:fragment="menu"
 		class="sb-topnav navbar navbar-expand navbar-dark bg-red">
@@ -102,9 +114,9 @@
 								data-bs-parent="#accordionFlushExample">
 								<div class="accordion-body side-menu-content">
 									<ul class="mylist">
-										<li><a href="plan.html">생산 계획 관리</a></li>
-										<li><a href="order.html">생산 지시 관리</a></li>
-										<li><a href="#">생산 지시 조회</a></li>
+										<li><a href="/proPlan">생산 계획 관리</a></li>
+										<li><a href="/proOrder">생산 지시 관리</a></li>
+										<li><a href="/planOrdCheck">생산 지시 조회</a></li>
 										<li><a href="#">생산 관리</a></li>
 										<li><a href="#">공정 실적 조회</a></li>
 										<li><a href="#">공정 관리</a></li>
@@ -129,10 +141,10 @@
 									<ul class="mylist">
 										<li><a href="/matOd">자재 발주 관리</a></li>
 										<li><a href="/matLookup">자재 발주 조회</a></li>
-										<li><a href="/matIn">자재 입고 검수 관리</a></li>
-										<li><a href="#">자재 입고 관리</a></li>
-										<li><a href="#">자재 출고 관리</a></li>
-										<li><a href="#">자재 입출고 조회</a></li>
+										<li><a href="/matInChk">자재 입고 검수 관리</a></li>
+										<li><a href="/matIn">자재 입고 관리</a></li>
+										<li><a href="/matOut">자재 출고 관리</a></li>
+										<li><a href="/matInOut">자재 입출고 조회</a></li>
 										<li><a href="#">자재 재고 조회</a></li>
 										<li><a href="#">자재 반품 관리</a></li>
 										<li><a href="#">자재 반품 조회</a></li>
@@ -167,14 +179,15 @@
 				</div>
 			</nav>
 		</div>
-		
+
 		<div layout:fragment="content"></div>
 
 		<div id="grid"></div>
-</div>
-	
+	</div>
+
 
 	<script type="text/javascript">
+		
 	</script>
 </body>
 </html>

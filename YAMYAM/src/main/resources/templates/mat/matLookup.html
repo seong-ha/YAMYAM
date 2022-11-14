@@ -9,15 +9,105 @@
 		<h2>자재 발주 조회</h2>
 	</div>
 	<hr>
-	<div id="btn-group">
-		<button>자재 전체 조회</button>
-		<button>조건 조회</button>
+	<!-- 탭 목록(버튼) 설정 -->
+	<ul class="nav nav-tabs nav-pills" id="myTab" role="tablist">
+		<li class="nav-item" role="presentation">
+			<button class="nav-link active" id="allMat-tab" data-bs-toggle="tab"
+				data-bs-target="#allMat" type="button" role="tab"
+				aria-controls="allMat" aria-selected="true">자재 전체 조회</button>
+		</li>
+		<li class="nav-item" role="presentation">
+			<button class="nav-link" id="serchMat-tab" data-bs-toggle="tab"
+				data-bs-target="#serchMat" type="button" role="tab"
+				aria-controls="serchMat" aria-selected="false">조건 조회</button>
+		</li>
+	</ul>
+
+	<!-- 탭 본문 시작 -->
+	<div class="tab-content" id="myTabContent">
+		<div class="tab-pane fade show active" id="allMat" role="tabpanel"
+			aria-labelledby="allMat-tab">
+			<div id="grid"></div>
+		</div>
+
+		<!-- 생산계획서용 탭 -->
+		<div class="tab-pane fade" id="serchMat" role="tabpanel"
+			aria-labelledby="serchMat-tab">
+			<div>
+				<ul class="ul-style">
+					<li><label for="serchDate">발주신청일자</label><input id="serchDate"
+						type="date"><span> - </span><input id="serchDate" type="date">
+						<button class="btn btn-dark btn-sm">조회</button>
+						<button class="btn btn-dark btn-sm">초기화</button></li>
+				</ul>
+			</div>
+			<div>
+				<table class="table">
+					<tr>
+						<td class="col-3"><h3>발주 신청일 검색 조회</h3>
+							<div id="grid2"></div></td>
+						<td class="col-7"></td>
+					</tr>
+				</table>
+				<ul class="ul-style">
+					<li><label for="matNm">자재명</label><input id="matNm"><img
+						class="Magnifying-Glass-img" alt="image" data-bs-toggle="modal"
+						data-bs-target="#matModal" src="../images/Magnifying_Glass.png"><input
+						type="text" readonly></li>
+					<li><label for="actNm">업체명</label><input id="actNm"><img
+						class="Magnifying-Glass-img" alt="image" data-bs-toggle="modal"
+						data-bs-target="#actModal" src="../images/Magnifying_Glass.png"><input
+						type="text" readonly></li>
+				</ul>
+				<h3>자재/업체명 검색 조회</h3>
+				<div id="grid3"></div>
+			</div>
+		</div>
 	</div>
 
-	<div id="grid"></div>
+	<!-- 자재 목록 모달 -->
+	<div class="modal fade" id="matModal" tabindex="-1"
+		aria-labelledby="matModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-xl">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="matModalLabel">자재 목록</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal"
+						aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<div>
+						<div id="modalGrid"></div>
+					</div>
+				</div>
+
+			</div>
+		</div>
+	</div>
+
+	<!-- 업체 목록 모달 -->
+	<div class="modal fade" id="actModal" tabindex="-1"
+		aria-labelledby="actModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-xl">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="actModalLabel">업체 목록</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal"
+						aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<div>
+						<div id="modalGrid2"></div>
+					</div>
+				</div>
+
+			</div>
+		</div>
+	</div>
+
 
 	<script>
-const grid = new tui.Grid({
+	const grid = new tui.Grid({
       el: document.getElementById('grid'),
       data: [
     {
@@ -80,4 +170,154 @@ const grid = new tui.Grid({
       console.log('change focused cell!', ev);
     });
     </script>
+
+	<script type="text/javascript">
+	const grid2 = new tui.Grid({
+	      el: document.getElementById('grid2'),
+	      data: [
+	    {
+	    	code: 'RML-10101',
+	    	date: '2022-11-06'
+	    }
+	  ],
+	      rowHeaders: ['rowNum'],
+	      scrollX: false,
+	      scrollY: false,
+	      columns: [
+	    	  {
+		          header: '발주코드',
+		          name: 'code'
+		        },
+		        {
+		          header: '발주신청일',
+		          name: 'date'
+		        }
+	      ]
+	    });
+
+	    grid2.on('focusChange', ev => {
+	      console.log('change focused cell!', ev);
+	    });
+    </script>
+
+	<script type="text/javascript">
+	const grid3 = new tui.Grid({
+	      el: document.getElementById('grid3'),
+	      data: [
+	    {
+	    	code: 'RML-10101',
+	    	mNm: '얇은 만두피',
+	    	price: 1000,
+	    	count: 200,
+	    	sumPrice: 2000000,
+	    	actNm: 'YD 만두피',
+	    	eDate: '2022-11-09'
+	    }
+	  ],
+	      rowHeaders: ['rowNum'],
+	      scrollX: false,
+	      scrollY: false,
+	      columns: [
+	    	  {
+		          header: '자재코드',
+		          name: 'code'
+		        },
+		        {
+		          header: '자재명',
+		          name: 'mNm'
+		        },
+		        {
+		        	header: '단가(원)',
+			        name: 'price'
+		        },
+		        {
+		        	header: '발주량',
+		        	name: 'count'
+		        },
+		        {
+		        	header: '총액',
+		        	name: 'sumPrice'
+		        },
+		        {
+		        	header: '업체명',
+		        	name: 'actNm'
+		        },
+		        {
+		        	header: '납기요청일',
+		        	name: 'eDate'
+		        }
+	      ]
+	    });
+
+	    grid3.on('focusChange', ev => {
+	      console.log('change focused cell!', ev);
+	    });
+    </script>
+
+	<script>
+	document.addEventListener('shown.bs.modal', function (){
+		modalGrid = '';
+		var modalGrid = new tui.Grid({
+			el: document.getElementById('modalGrid2'),
+			data: [{
+				actCode: 'VDR-1101',
+				actName: 'YD 만두피'
+			}],
+			rowHeaders: ['rowNum'],
+			scrollX: false,
+			scrollY: false,
+			columns: [
+				{
+					header: '업체 코드',
+					name: 'actCode',
+				},
+				{
+					header: '업체명',
+					name: 'actName',
+				}
+			]
+		});
+	}, '.modal');
+	</script>
+
+	<script>
+	document.addEventListener('shown.bs.modal', function (){
+		modalGrid = '';
+		var modalGrid = new tui.Grid({
+			el: document.getElementById('modalGrid'),
+			data: [{
+				code: 'RML-10101',
+				name: '얇은 만두피',
+				size: 100,
+				count: 200
+			},
+			{
+				code: 'RML-10102',
+				name: '굵은 만두피',
+				size: 100,
+				count: 200
+			}],
+			rowHeaders: ['rowNum'],
+			scrollX: false,
+			scrollY: false,
+			columns: [{
+		          header: '자재코드',
+		          name: 'code'
+		        },
+		        {
+		          header: '자재명',
+		          name: 'name'
+		        },
+		        {
+		          header: '규격',
+		          name: 'size'
+		        },
+		        {
+			      header: '수량',
+			      name: 'count'
+			    }
+	      ] 
+		});
+	}, '.modal');
+	</script>
 </div>
