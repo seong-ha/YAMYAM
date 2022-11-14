@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{/layout/layout}">
+<div class="container" layout:fragment="content">
+
+	
+	완제품관리
+
+	<div id="grid"></div>
+
+	<script>
+		const gridData = [ {
+      no: '1',
+      emp_no: '1100',
+      emp_name: '홍길동',
+      hire_date : '2002/07/05',
+      id : 'no',
+      dept_name : '영업부',
+      role : '0'
+		},
+    {
+      no: '2',
+      emp_no: '1101',
+      emp_name: '김길동',
+      hire_date : '2008/02/05',
+      id : 'no',
+      dept_name : '영업부',
+      role : '0'
+		},
+    {
+      no: '3',
+      emp_no: '1123',
+      emp_name: '홍길동',
+      hire_date : '2002/07/05',
+      id : 'no',
+      dept_name : '영업부',
+      role : '0'
+		},
+    {
+      no: '4',
+      emp_no: '1154',
+      emp_name: '황길동',
+      hire_date : '2003/11/15',
+      id : 'no',
+      dept_name : '영업부',
+      role : '0'
+		},
+    {
+      no: '5',
+      emp_no: '1199',
+      emp_name: '최길동',
+      hire_date : '2006/07/05',
+      id : 'no',
+      dept_name : '영업부',
+      role : '0'
+		},
+    {
+      no: '6',
+      emp_no: '1207',
+      emp_name: '홍길동',
+      hire_date : '2002/04/25',
+      id : 'no',
+      dept_name : '영업부',
+      role : '0'
+		},
+    {
+      no: '7',
+      emp_no: '1500',
+      emp_name: '홍길동',
+      hire_date : '2004/03/05',
+      id : 'no',
+      dept_name : '영업부',
+      role : '0'
+		},
+  ];
+
+		const grid = new tui.Grid({
+			el : document.getElementById('grid'),
+			data : gridData,
+			scrollX : false,
+			scrollY : false,
+			columns : [ {
+				header : 'No',
+				name : 'no'
+			}, {
+				header : '직원고유번호',
+				name : 'emp_no'
+			}, {
+				header : '직원이름',
+				name : 'emp_name'
+			}, {
+				header : '입사일',
+				name : 'hire_date'
+			}, {
+				header : '계정아이디',
+				name : 'id'
+			}, {
+				header : '부서명',
+				name : 'dept_name'
+			}, {
+				header : '직급정보',
+				name : 'role'
+			}, ]
+		});
+    </script>
+    
+</div>

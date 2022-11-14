@@ -1,10 +1,158 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{/layout/layout}">
+
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>YAMYAM</title>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
 </head>
+
 <body>
+	<!-- 본문 시작 -->
+	<div layout:fragment="content" class="container">
+			<h4>생산지시 조회</h4>
+			<div style="margin: 15px;">
+					<table style="width: 100%;">
+						<tr>
+							<td style="width: 90px;">진행구분 &nbsp;</td>
+							<td colspan="2">
+								<input type="radio" id="whole" name="process" value="whole" checked>
+								<label for="whole">전체</label>
+								<input type="radio" id="progress" name="process" value="confirm">
+								<label for="progress">진행</label>
+								<input type="radio" id="complete" name="process" value="noOrder">
+								<label for="complete">완료</label>
+							</td>
+
+						</tr>
+						
+						<tr>
+							<td>지시일자 &nbsp;</td>
+							<td>
+								<div class="tui-datepicker-input tui-datetime-input tui-has-focus">
+							        <input id="startpicker-input" type="text" aria-label="Date">
+							        <span class="tui-ico-date"></span>
+							        <div id="startpicker-container" style="margin-left: -1px;"></div>
+							    </div>
+							    <span>-</span>
+							    <div class="tui-datepicker-input tui-datetime-input tui-has-focus">
+							        <input id="endpicker-input" type="text" aria-label="Date">
+							        <span class="tui-ico-date"></span>
+							        <div id="endpicker-container" style="margin-left: -1px;"></div>
+							    </div>
+								<button type="button"
+									class="btn btn-dark btn-sm">검색</button>
+								<button type="button"
+									class="btn btn-dark btn-sm">초기화</button>
+							</td>
+							<td></td>
+						</tr>
+						<tr>
+							<td colspan="3">
+								<div id="grid"></div>
+							</td>
+						</tr>
+						
+					</table>
+
+				</div>
+
+	<script>
+	// toast - datepicker
+	var today = new Date();
+    var picker = tui.DatePicker.createRangePicker({
+        startpicker: {
+            date: today,
+            input: '#startpicker-input',
+            container: '#startpicker-container'
+        },
+        endpicker: {
+            date: today,
+            input: '#endpicker-input',
+            container: '#endpicker-container'
+        },
+        selectableRanges: [
+            [today, new Date(today.getFullYear() + 1, today.getMonth(), today.getDate())]
+        ]
+    });
+
+		// toast - grid
+		var grid = new tui.Grid({
+			el : document.getElementById('grid'),
+			// 임시 데이터
+			data : [{
+						boardNum : '1',
+						podCd : 'PID-20221101-001',
+						prdCd : 'MD-00200',
+						name : '얇은피 김치만두',
+						amt : '500',
+						plineCd : 'LINE-BAR-001',
+						prio : '1',
+						sts : '완료'},
+					{
+						boardNum : '2',
+						podCd : 'PID-20221101-002',
+						prdCd : 'MD-00300',
+						name : '얇은피 새우만두',
+						amt : '300', 
+						plineCd : 'LINE-BAR-002',
+						prio : '2',
+						sts : '진행'
+					}],
+			// data 가져오는 법
+			// data: {
+			// 	api: {
+			// 		readData: {
+			// 			url: '/api/readData',
+			// 			method: 'GET'
+			// 		}
+			// 	}
+			// },
+			scrollX : false,
+			scrollY : false,
+			// columnOptions: {
+			// 	minWidth: 180
+			// },
+			columns : [ {
+				header : 'No',
+				name : 'boardNum',
+				width : 'auto'
+			}, {
+				header : '생산지시코드',
+				name : 'podCd',
+			}, {
+				header : '제품코드',
+				name : 'prdCd'
+			}, {
+				header : '제품명',
+				name : 'name'
+			}, {
+				header : '생산수량',
+				name : 'amt'				
+			}, {
+				header : '라인코드',
+				name : 'plineCd',
+			}, {
+				header : '지시우선순위',
+				name : 'prio',
+			}, {
+				header : '진행구분',
+				name : 'sts',
+			}, {
+				header : '비고',
+				name : 'other',
+			}, ]
+		});
+
+	</script>
+
+	</div>
+
+	<!-- 본문 끝 -->
 
 </body>
+
 </html>

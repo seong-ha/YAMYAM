@@ -11820,15 +11820,20 @@ body {
 /* 돋보기 */
 .Magnifying-Glass-img{
 	height: 20px;
-	weight: 20px;
+	width:20px;
 	cursor:pointer;
 }
 
 /* ul 스타일 */
 .ul-style {
-   list-style:none;
-   padding: 0px;
+	list-style:none;
+	padding: 0px;
 }
+
 .ul-style li>label{
-   width: 100px;
+	width: 100px;
+}
+
+.ul-style li{
+	padding: 5px;
 }

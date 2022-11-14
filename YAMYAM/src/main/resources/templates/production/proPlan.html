@@ -37,15 +37,16 @@
 							<table style="width: 100%;">
 								<tr>
 									<td style="width: 90px;">진행구분 &nbsp;</td>
-									<td colspan="2"><input type="radio" id="whole"
-										name="process" value="whole" checked> <label
-										for="huey">전체</label> <input type="radio" id="confirm"
-										name="process" value="confirm"> <label for="dewey">자재팀확인</label>
-
-										<input type="radio" id="noOrder" name="process"
-										value="noOrder"> <label for="louie">미지시</label> <input
-										type="radio" id="order" name="process" value="order">
-										<label for="louie">지시완료</label></td>
+									<td colspan="2">
+										<input type="radio" id="whole" name="process" value="whole" checked>
+										<label for="whole">전체</label>
+										<input type="radio" id="confirm" name="process" value="confirm">
+										<label for="confirm">자재팀확인</label>
+										<input type="radio" id="noOrder" name="process" value="noOrder">
+										<label for="noOrder">미지시</label>
+										<input type="radio" id="order" name="process" value="order">
+										<label for="order">지시완료</label>
+									</td>
 								</tr>
 								<tr>
 									<td>제품명 &nbsp;</td>
@@ -117,7 +118,7 @@
 								</tr>
 								<tr>
 									<td colspan="2">
-										<div id="grid2" style="width: 100%;"></div>
+										<div id="insertGrid" style="width: 100%;"></div>
 									</td>
 								</tr>
 								<tr>
@@ -125,13 +126,13 @@
 										<!-- 모달버튼 -->
 										<button type="button"
 											class="btn btn-dark btn-sm"
-											data-bs-toggle="modal" data-bs-target="#exampleModal">생산요청서
+											data-bs-toggle="modal" data-bs-target="#requestModal">생산요청서
 											조회</button>
-										<button type="button"
+										<button type="button" 
 											class="btn btn-dark btn-sm">계획등록</button>
-										<button type="button"
+										<button type="button" id="insertBtn"
 											class="btn btn-dark btn-sm">행 추가</button>
-										<button type="button"
+										<button type="button" id="deleteBtn"
 											class="btn btn-dark btn-sm">행 삭제</button>
 									</td>
 								</tr>
@@ -146,15 +147,13 @@
 
 
 	<script type="text/javascript">
-	
 		
-	
 		// toast - select box
 		var selectBox = new tui.SelectBox('#select-box', {
 			placeholder : '제품선택',
 			data : [ {
 				label : '얇은피 고기만두',
-				value : '얇은피 고기만두 코드'
+				value : '얇은피 고기만두 코드'	// 코드 바꾸기
 			}, {
 				label : '얇은피 김치만두',
 				value : '얇은피 김치만두 코드'
@@ -193,6 +192,7 @@
 		});
 
 		// toast - grid
+		// 생산계획 관리 그리드
 		var grid = new tui.Grid({
 			el : document.getElementById('grid'),
 			// 임시 데이터
@@ -203,8 +203,8 @@
 				planDCode : 'prod_123456',
 				productName : '얇은피 김치만두',
 				planAmt : '300',
-				prio : '1',
-				days : '2',
+				/* prio : '1',
+				days : '2', */
 				status : '지시완료'
 			}],
 			// data 가져오는 법
@@ -240,21 +240,33 @@
 				name : 'productName',
 			}, {
 				header : '계획량',
-				name : 'planAmt',
+				name : 'planAmt'
 			}, {
 				header : '작업우선순위',
 				name : 'prio',
+				// 필수 입력 값
+				validation: {
+			        dataType: 'number',
+			        required: false
+			      },
+			   editor: 'text'  
 			}, {
 				header : '생산일수',
 				name : 'days',
+				validation: {
+			        dataType: 'number',
+			        required: false
+			      },
+			    editor: 'text'
 			}, {
 				header : '진행구분',
 				name : 'status',
 			}, ]
 		});
-
-		var grid2 = new tui.Grid({
-			el : document.getElementById('grid2'),
+		
+		// 생산계획 등록 그리드
+		var insertGrid = new tui.Grid({
+			el : document.getElementById('insertGrid'),
 			// 임시 데이터
 			data : [ {
 				boardNum : '1',
@@ -299,18 +311,26 @@
 			}, {
 				header : '생산일수',
 				name : 'days',
+				editor: 'text'
 			}, {
 				header : '작업우선순위',
 				name : 'prio',
+				editor: 'text'
 			}, {
 				header : '비고',
-				name : 'other',
+				name : 'other'
 			}, ]
 		});
+		$('#insertBtn').on('click',function(){
 
+			var rowData = [{boardNum: "", orderCode: "", productCode: "",  productName: "", planAmt : "" , days: "", prio:"",other:""}]
+			insertGrid.appendRow(rowData);
+					
+			// $('#insertGrid').appendRows();
+		});
 	</script>
 	<!-- 생산요청서 모달 -->
-	<div class="modal fade" id="exampleModal" tabindex="-1"
+	<div class="modal fade" id="requestModal" tabindex="-1"
 		aria-labelledby="exampleModalLabel" aria-hidden="true">
 		<div class="modal-dialog modal-xl">
 			<div class="modal-content">
@@ -321,7 +341,7 @@
 				</div>
 				<div class="modal-body">
 					<div>
-						<div id="grid3" style="width: 100%;"></div>
+						<div id="requestModalGrid" style="width: 100%;"></div>
 					</div>
 				</div>
 
@@ -330,10 +350,10 @@
 	</div>
 
 	<script>
-	
+	// 생산요청서 모달
 	$(document).on('shown.bs.modal','.modal', function () {
-		var grid3 = new tui.Grid({
-			el : document.getElementById('grid3'),
+		var requestModalGrid = new tui.Grid({
+			el : document.getElementById('requestModalGrid'),
 			// 임시 데이터
 			data : [ {
 				boardNum : '1',
