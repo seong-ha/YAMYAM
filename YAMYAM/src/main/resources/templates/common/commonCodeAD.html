@@ -5,15 +5,33 @@
 	layout:decorate="~{/layout/layout}">
 <div class="container" layout:fragment="content">
 
+<div class="row">
 	<br>
 	<h2>공통코드관리</h2>
 	<hr>
 
-	<br> <br> <br> 공통 코드 검색&nbsp;&nbsp;
-	<input type="text" size="15">
-	<button type="button" class="btn btn-dark btn-sm">검색</button>
+	
+	<div class="col-4">
+	공통 코드 검색&nbsp;&nbsp;
+		<input type="text" size="15">
+		<button type="button" class="btn btn-dark btn-sm">검색</button>
+		<div id="grid" style="width: 400px"></div>
+	</div>
+	
+	<div class="col-4">
+	<ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+  <li class="nav-item" role="presentation">
+    <button class="nav-link active" id="pills-home-tab" data-bs-toggle="pill" data-bs-target="#pills-home" type="button" role="tab" aria-controls="pills-home" aria-selected="true">코드 조회</button>
+  </li>
+  <li class="nav-item" role="presentation">
+    <button class="nav-link" id="pills-profile-tab" data-bs-toggle="pill" data-bs-target="#pills-profile" type="button" role="tab" aria-controls="pills-profile" aria-selected="false">그룹 코드</button>
+  </li>
+</ul>
+<div class="tab-content" id="pills-tabContent">
+  <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab"><div id="grid2" style="width: 400px"></div></div>
+  <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab"><div id="grid3" style="width: 400px"></div></div>
+</div>
 
-	<br> <br>
 
 <div class="row">
 	<div class="col-4">
@@ -72,6 +90,32 @@
 			groupcodename : '규격',
 		},
 
+		];
+		
+		const gridData3 = [ {
+			code : 'STATE-1',
+			codename : '가동',
+			codedetail : '가동 중을 뜻하는 코드',
+			codestatus : '사용여부'
+		},
+		{
+			code : 'STATE-2',
+			codename : '가동',
+			codedetail : '가동 중을 뜻하는 코드',
+			codestatus : '사용여부'
+		},
+		{
+			code : 'STATE-3',
+			codename : '가동',
+			codedetail : '가동 중을 뜻하는 코드',
+			codestatus : '사용여부'
+		},
+		{
+			code : 'STATE-4',
+			codename : '가동',
+			codedetail : '가동 중을 뜻하는 코드',
+			codestatus : '사용여부'
+		}
 		];
 		
 		const gridData2 = [ {
@@ -148,14 +192,36 @@
 			],
 
 		});
+		
+		const grid3 = new tui.Grid({
+			el : document.getElementById('grid3'),
+			bodyHeight : 300, // 스크롤
+
+			data : gridData3,
+			width : 900,
+			scrollX : true,
+			scrollY : true,
+
+			columns : [ {
+				header : '코드',
+				name : 'code'
+			}, {
+				header : '코드 이름',
+				name : 'codename'
+			}, {
+				header : '코드 상세',
+				name : 'codedetail'
+			},
+			{
+				header : '사용 여부',
+				name : 'codestatus'
+			}
+			],
+
+		});
 	</script>
 
 
-	<ul class="nav nav-pills">
-		<li class="nav-item"><a class="nav-link active"
-			aria-current="page" href="#">Active</a></li>
-		<li class="nav-item"><a class="nav-link" href="#">Link</a></li>
-
-	</ul>
+	
 
 </div>
