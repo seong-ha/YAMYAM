@@ -11821,4 +11821,5 @@ body {
 .Magnifying-Glass-img{
 	height: 20px;
 	weight: 20px;
+	cursor:pointer;
 }
