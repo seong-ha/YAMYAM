@@ -37,4 +37,24 @@ public class MatController {
 	public String matInOut(Model model) {
 		return "mat/matInOut";
 	}
+	
+	@RequestMapping("/matStockLookup")
+	public String matStockLookup(Model model) {
+		return "mat/matStockLookup";
+	}
+	
+	@RequestMapping("/matReturn")
+	public String matReturn(Model model) {
+		return "mat/matReturn";
+	}
+	
+	@RequestMapping("/matReturnLookup")
+	public String matReturnLookup(Model model) {
+		return "mat/matReturnLookup";
+	}
+	
+	@RequestMapping("/matSafe")
+	public String matSafe(Model model) {
+		return "mat/matSafe";
+	}
 }

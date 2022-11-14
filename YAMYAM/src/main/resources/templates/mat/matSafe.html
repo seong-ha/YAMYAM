@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{/layout/layout}">
+
+<div class="container" layout:fragment="content">
+	<div id="mat-od-title">
+		<h2>자재 안전 재고 관리</h2>
+	</div>
+	<hr>
+	<ul class="ul-style">
+		<li>안전 재고 수준
+			<div class="form-check form-check-inline">
+				<input class="form-check-input" type="radio"
+					name="inlineRadioOptions" id="inlineRadio1" value="option1">
+				<label class="form-check-label" for="inlineRadio1">전체</label>
+			</div>
+			<div class="form-check form-check-inline">
+				<input class="form-check-input" type="radio"
+					name="inlineRadioOptions" id="inlineRadio2" value="option2">
+				<label class="form-check-label" for="inlineRadio2">관심</label>
+			</div>
+			<div class="form-check form-check-inline">
+				<input class="form-check-input" type="radio"
+					name="inlineRadioOptions" id="inlineRadio3" value="option3">
+				<label class="form-check-label" for="inlineRadio3">경고</label>
+			</div>
+			<div class="form-check form-check-inline">
+				<input class="form-check-input" type="radio"
+					name="inlineRadioOptions" id="inlineRadio4" value="option4">
+				<label class="form-check-label" for="inlineRadio4">위험</label>
+			</div>
+		</li>
+		<li><label for="matNm">자재명</label><input id="matNm" readonly><img
+			class="Magnifying-Glass-img" alt="image" data-bs-toggle="modal"
+			data-bs-target="#matModal" src="../images/Magnifying_Glass.png">
+			<input type="text" readonly></li>
+		<li><label for="actNm">업체명</label><input id="actNm" readonly><img
+			class="Magnifying-Glass-img" alt="image" data-bs-toggle="modal"
+			data-bs-target="#actModal" src="../images/Magnifying_Glass.png">
+			<input type="text" readonly>
+			<button class="btn btn-dark btn-sm">조회</button>
+			<button class="btn btn-dark btn-sm">초기화</button></li>
+	</ul>
+
+	<!-- 안전 재고 수정  -->
+	<div align="right">
+		<button class="btn btn-dark btn-sm">선택 안전 재고 수정</button>
+		<button class="btn btn-dark btn-sm">초기화</button>
+	</div>
+	
+	<div id="grid"></div>
+
+	<script>
+const grid = new tui.Grid({
+      el: document.getElementById('grid'),
+      data: [
+    {
+    	mtCode: 'RML-10101',
+        actNm: '얇은 만두피',
+        count: 1000,
+        hCount: 300,
+        holdP: 30,
+        safe: 1000,
+        safeP: -30,
+        safeG: '위험'
+    },
+    {
+    	mtCode: 'RML-10102',
+        actNm: '굵은 만두피',
+        count: 1500,
+        hCount: 500,
+        holdP: 33,
+        safe: 1200,
+        safeP: -20,
+        safeG: '경고'
+    },
+  ],
+      rowHeaders: ['rowNum'],
+      scrollX: false,
+      scrollY: false,
+      columns: [
+        {
+          header: '자재코드',
+          name: 'mtCode'
+        },
+        {
+          header: '자재명',
+          name: 'actNm'
+        },
+        {
+          header: '총수량',
+          name: 'count'
+        },
+        {
+          header: '홀딩수량',
+          name: 'hCount'
+        },
+        {
+          header: '홀딩율(%)',
+          name: 'holdP'
+        },
+        {
+          header: '안전재고',
+          name: 'safe'
+        },
+        {
+          header: '안전재고율(%)',
+          name: 'safeP'
+        },
+        {
+          header: '안전재고수준',
+          name: 'safeG'
+        }
+      ]
+    });
+
+    grid.on('check', ev => {
+      console.log('check!', ev);
+    });
+
+    grid.on('uncheck', ev => {
+      console.log('uncheck!', ev);
+    });
+
+    grid.on('focusChange', ev => {
+      console.log('change focused cell!', ev);
+    });
+    </script>
+</div>

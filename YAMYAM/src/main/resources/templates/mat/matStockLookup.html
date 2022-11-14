@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{/layout/layout}">
+
+<div class="container" layout:fragment="content">
+	<div id="mat-od-title">
+		<h2>자재 재고 조회</h2>
+	</div>
+	<hr>
+	<ul class="ul-style">
+		<li><label for="matNm">자재명</label><input id="matNm" readonly><img
+			class="Magnifying-Glass-img" alt="image" data-bs-toggle="modal"
+			data-bs-target="#matModal" src="../images/Magnifying_Glass.png">
+			<input type="text" readonly></li>
+		<li><label for="actNm">업체명</label><input id="actNm" readonly><img
+			class="Magnifying-Glass-img" alt="image" data-bs-toggle="modal"
+			data-bs-target="#actModal" src="../images/Magnifying_Glass.png">
+			<input type="text" readonly></li>
+		<li><label for="eDate">유통기한</label><input type="date"
+			id="eDate"><span> - </span><input type="date" id="eDate">
+			<button class="btn btn-dark btn-sm">조회</button>
+			<button class="btn btn-dark btn-sm">초기화</button></li>
+	</ul>
+
+	<div id="grid"></div>
+
+	<script>
+const grid = new tui.Grid({
+      el: document.getElementById('grid'),
+      data: [
+    {
+        maLot: 'OAF-20221104-011',
+        mtCode: 'RML-10101',
+        maNm: '얇은 만두피',
+        actNm: 'YD 만두피',
+        count: 999,
+        hCount: 300,
+        eDate: '2023-11-30'
+    },
+    {
+        maLot: 'OAF-20221104-012',
+        mtCode: 'RML-10101',
+        maNm: '얇은 만두피',
+        actNm: 'SJ 만두피',
+        count: 1000,
+        hCount: 100,
+        eDate: '2023-11-30'
+    }
+  ],
+      rowHeaders: ['checkbox'],
+      scrollX: false,
+      scrollY: false,
+      columns: [
+        {
+          header: '자재LOT번호',
+          name: 'maLot'
+        },
+        {
+          header: '자재코드',
+          name: 'mtCode'
+        },
+        {
+          header: '자재명',
+          name: 'maNm'
+        },
+        {
+          header: '업체명',
+          name: 'actNm'
+        },
+        {
+          header: '수량',
+          name: 'count'
+        },
+        {
+          header: '홀딩수량',
+          name: 'hCount'
+        },
+        {
+          header: '유통기한',
+          name: 'eDate'
+        }
+      ]
+    });
+
+    grid.on('check', ev => {
+      console.log('check!', ev);
+    });
+
+    grid.on('uncheck', ev => {
+      console.log('uncheck!', ev);
+    });
+
+    grid.on('focusChange', ev => {
+      console.log('change focused cell!', ev);
+    });
+    </script>
+</div>
