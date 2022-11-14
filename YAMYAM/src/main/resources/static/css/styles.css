@@ -11823,3 +11823,12 @@ body {
 	weight: 20px;
 	cursor:pointer;
 }
+
+/* ul 스타일 */
+.ul-style {
+   list-style:none;
+   padding: 0px;
+}
+.ul-style li>label{
+   width: 100px;
+}

@@ -5,137 +5,77 @@
 	layout:decorate="~{/layout/layout}">
 
 <div class="container" layout:fragment="content">
-
-	<div class="row">
-		<h4 style="padding: 15px; margin: 15px;">생산계획 관리</h4>
-
-		<div style="padding: 20px; margin: 15px;">
-			<!-- 탭 목록(버튼) 설정 -->
-			<ul class="nav nav-tabs nav-pills" id="myTab" role="tablist">
-				<li class="nav-item" role="presentation">
-					<button class="nav-link active" id="select-tab"
-						data-bs-toggle="tab" data-bs-target="#manage" type="button"
-						role="tab" aria-controls="select" aria-selected="true">설비 조회</button>
-				</li>
-				<li class="nav-item" role="presentation">
-					<button class="nav-link" id="manage-tab" data-bs-toggle="tab"
-						data-bs-target="#insert" type="button" role="tab"
-						aria-controls="manage" aria-selected="false">설비 관리</button>
-				</li>
-			</ul>
-			<!-- 탭 본문 -->
-			<div class="tab-content" id="myTabContent">
-				<div class="tab-pane fade show active" id="select" role="tabpanel"
-					aria-labelledby="select-tab">
-					<div style="margin: 15px;">
-						<table style="width: 100%;">
-							<tr>
-								<td style="width: 90px;">진행구분 &nbsp;</td>
-								<td colspan="2"><input type="radio" id="whole"
-									name="process" value="whole" checked> <label for="huey">전체</label>
-
-									<input type="radio" id="confirm" name="process" value="confirm">
-									<label for="dewey">자재팀확인</label> <input type="radio"
-									id="noOrder" name="process" value="noOrder"> <label
-									for="louie">미지시</label> <input type="radio" id="order"
-									name="process" value="order"> <label for="louie">지시완료</label>
-								</td>
-							</tr>
-							<tr>
-								<td>제품명 &nbsp;</td>
-								<td colspan="2">
-									<div id="select-box" style="width: 120px"></div>
-								</td>
-							</tr>
-							<tr>
-								<td>계획일자 &nbsp;</td>
-								<td>
-									<!-- date-picker -->
-									<div
-										class="tui-datepicker-input tui-datetime-input tui-has-focus">
-										<input id="startpicker-input" type="text" aria-label="Date">
-										<span class="tui-ico-date"></span>
-										<div id="startpicker-container" style="margin-left: -1px;"></div>
-									</div> <span>-</span>
-									<div
-										class="tui-datepicker-input tui-datetime-input tui-has-focus">
-										<input id="endpicker-input" type="text" aria-label="Date">
-										<span class="tui-ico-date"></span>
-										<div id="endpicker-container" style="margin-left: -1px;"></div>
-									</div>
-									<button type="button"
-										style="background-color: black; color: white">검색</button>
-									<button type="button"
-										style="background-color: black; color: white">초기화</button>
-								</td>
-								<td></td>
-							</tr>
-							<tr>
-								<td colspan="3">
-									<div id="grid"></div>
-								</td>
-							</tr>
-							<tr>
-								<td></td>
-								<td></td>
-								<td style="text-align: right;">
-									<button type="button"
-										style="background-color: black; color: white">계획수정</button>
-									<button type="button"
-										style="background-color: black; color: white">계획취소</button>
-								</td>
-							</tr>
-						</table>
-
-					</div>
-
+	<h4>설비 관리</h4>
+	<div style="padding-top: 10px">
+		<!-- 탭 목록(버튼) 설정 -->
+		<ul class="nav nav-tabs nav-pills ul-style" id="myTab" role="tablist">
+			<li class="nav-item" role="presentation">
+				<button class="nav-link active" id="select-tab" data-bs-toggle="tab"
+					data-bs-target="#select" type="button" role="tab"
+					aria-controls="select" aria-selected="true">조회</button>
+			</li>
+			<li class="nav-item" role="presentation">
+				<button class="nav-link" id="manage-tab" data-bs-toggle="tab"
+					data-bs-target="#manage" type="button" role="tab"
+					aria-controls="manage" aria-selected="false">관리</button>
+			</li>
+		</ul>
+		<!-- 탭 본문 -->
+		<div class="tab-content" id="myTabContent">
+			<div class="tab-pane fade show active" id="select" role="tabpanel"
+				aria-labelledby="select-tab">
+				<div style="margin: 15px;">
+					<ul class="ul-style">
+						<li>
+							<label for="eName">설비명</label>
+							<input type="text" name="eName" id="eName">
+							<button type="button" class="btn btn-dark btn-sm">검색</button>
+							<button type="button" class="btn btn-dark btn-sm">초기화</button>
+						</li>
+					</ul>
 				</div>
-				<div class="tab-pane fade" id="manage" role="tabpanel"
-					aria-labelledby="manage-tab">
-					<div style="margin: 15px;">
-						<table style="width: 100%;">
-							<tr>
-								<td style="width: 140px;">생산 계획 명 &nbsp;</td>
-								<td><input type="text" name="planname" id="planname"></td>
-							</tr>
-							<tr>
-								<td>생산 계획 일자 &nbsp;</td>
-								<td>
-									<div
-										class="tui-datepicker-input tui-datetime-input tui-has-focus">
-										<input type="text" id="datepicker-input"
-											aria-label="Date-Time"> <span class="tui-ico-date"></span>
-									</div>
-									<div id="wrapper" style="margin-top: -1px;"></div>
-								</td>
-							</tr>
-							<tr>
-								<td colspan="2">
-									<div id="grid2" style="width: 100%;"></div>
-								</td>
-							</tr>
-							<tr>
-								<td style="text-align: left;" colspan="2">
-									<!-- 모달버튼 -->
-									<button type="button"
-										style="background-color: black; color: white"
-										data-bs-toggle="modal" data-bs-target="#exampleModal">생산요청서
-										조회</button>
-									<button type="button"
-										style="background-color: black; color: white">계획등록</button>
-									<button type="button"
-										style="background-color: black; color: white">행 추가</button>
-									<button type="button"
-										style="background-color: black; color: white">행 삭제</button>
-								</td>
-							</tr>
-						</table>
 
-					</div>
-
-				</div>
 			</div>
+			<div class="tab-pane fade" id="manage" role="tabpanel"
+				aria-labelledby="manage-tab">
+				<div style="margin: 15px;">
+					<table style="width: 100%;">
+						<tr>
+							<td style="width: 140px;">생산 계획 명 &nbsp;</td>
+							<td><input type="text" name="planname" id="planname"></td>
+						</tr>
+						<tr>
+							<td>생산 계획 일자 &nbsp;</td>
+							<td>
+								<div
+									class="tui-datepicker-input tui-datetime-input tui-has-focus">
+									<input type="text" id="datepicker-input" aria-label="Date-Time">
+									<span class="tui-ico-date"></span>
+								</div>
+								<div id="wrapper" style="margin-top: -1px;"></div>
+							</td>
+						</tr>
+						<tr>
+							<td colspan="2">
+								<div id="grid2" style="width: 100%;"></div>
+							</td>
+						</tr>
+						<tr>
+							<td style="text-align: left;" colspan="2">
+								<!-- 모달버튼 -->
+								<button type="button" class="btn btn-dark btn-sm"
+									data-bs-toggle="modal" data-bs-target="#exampleModal">생산요청서
+									조회</button>
+								<button type="button" class="btn btn-dark btn-sm">계획등록</button>
+								<button type="button" class="btn btn-dark btn-sm">행 추가</button>
+								<button type="button" class="btn btn-dark btn-sm">행 삭제</button>
+							</td>
+						</tr>
+					</table>
 
+				</div>
+
+			</div>
 		</div>
 
 	</div>

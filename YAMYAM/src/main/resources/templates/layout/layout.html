@@ -179,8 +179,55 @@
 		<div id="grid"></div>
 	</div>
 
-
+	<div>
+		<input type="hidden" id="currentLi" name="currentLi" value="${}">
+	</div>
+	
 	<script type="text/javascript">
+		document.addEventListener('DOMContentLoaded', function () {
+			if (sessionStorage.getItem('currentLi') != null) {
+				console.log(sessionStorage.getItem('currentLi'));
+				let lis = document.querySelectorAll('.mylist > li > a');
+				
+				lis.forEach(li => {
+					li.addEventListener('click', function (event) {
+						let liText = event.currentTarget.textContent;
+						
+						if (liText == sessionStorage.getItem('currentLi')) {
+							let acordItem = li.parentElement.parentElement.parentElement.parentElement.parentElement;
+							let acordItemChild = acordItem.children;
+							acordItemChild[0].firstElementChild.classList.remove('collapsed');
+							acordItemChild[0].firstElementChild.ariaExpanded = true;
+							acordItemChild[1].firstElement.classList.add('show');
+							
+							
+							/* let accordionCollapse = accordion.firstChild;
+							console.log(accordionCollapse);
+							event.currentTarget.style.color = '#963446'; */
+						}
+						
+					});
+				});
+			}
+			
+			let lis = document.querySelectorAll('.mylist > li > a');
+			lis.forEach(li => {
+				li.addEventListener('click', function (event) {
+					let liText = event.currentTarget.textContent;
+					sessionStorage.setItem("currentLi", liText);
+					let acordItem = li.parentElement.parentElement.parentElement.parentElement.parentElement;
+					console.log(acordItem);
+					sessionStorage.setItem("currentLiId", acordItem);
+				});
+			});
+		});
+		
+		
+	
+		
+		
+		
+			
 		
 	</script>
 </body>
