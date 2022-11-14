@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{/layout/layout}">
+
+<head>
+	<meta charset="UTF-8">
+	<title>YAMYAM</title>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+	
+</head>
+
+<body>
+	<div layout:fragment="content" class="container">
+		<div class="row">
+					<h4>생산지시 관리</h4>
+					&nbsp;&nbsp;
+					<button type="button" class="btn btn-dark btn-sm" style="width:140px"
+					
+						data-bs-toggle="modal" data-bs-target="#noOrderModal">미지시 계획 조회</button>
+		</div>
+		<div class="row">
+			<div class="col-6">
+				상세생산계획
+				<div id="planDGrid"></div>
+			</div>
+			<div class="col-6">
+				생산지시
+				<div id="planOrder"></div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-6">
+				필요자재
+				<div id="matNeed"></div>
+				<p style="font-size:0.5em">소모량 : 자재별 필요량*작업수량/10</p>
+			</div>
+			<div class="col-6">
+				필요자재LOT
+				<div id="matLot"></div>
+			</div>
+		</div>
+		
+	<script>
+	// toast - grid
+	// 상세계획 조회 grid
+	var planDGrid = new tui.Grid({
+		el: document.getElementById('planDGrid'),
+		// 임시 데이터
+		data: [{
+			boardNum: '1',
+			planCode: 'pro_123456',
+			productName: '얇은피 김치만두',
+			amt: '300',
+			productAmt: '200',
+			restAmt: '100'
+		}],
+		// data 가져오는 법
+		// data: {
+		// 	api: {
+		// 		readData: {
+		// 			url: '/api/readData',
+		// 			method: 'GET'
+		// 		}
+		// 	}
+		// },
+		scrollX: false,
+		scrollY: false,
+		// rowHeaders: ['checkbox'],
+		// columnOptions: {
+		// 	minWidth: 180
+		// },
+		columns: [{
+				header: 'No',
+				name: 'boardNum',
+				width: 'auto'
+			},
+			{
+				header: '생산계획코드',
+				name: 'planCode'
+			},
+			{
+				header: '제품명',
+				name: 'productName'
+			},
+			{
+				header: '수량',
+				name: 'amt'
+			},
+			{
+				header: '생산지시량',
+				name: 'productAmt'
+			},
+			{
+				header: '잔량',
+				name: 'restAmt'
+			}
+		]
+	});
+	
+	// 생산지시 grid 
+	var planOrder = new tui.Grid({
+		el: document.getElementById('planOrder'),
+		// 임시 데이터
+		data: [{
+			boardNum: '1',
+			lineCode: 'LIN-BAR-001',
+			dates: '20221202',
+			amt: '200',
+			prio: '1',
+			planAmt: '300'
+		}],
+		// data 가져오는 법
+		// data: {
+		// 	api: {
+		// 		readData: {
+		// 			url: '/api/readData',
+		// 			method: 'GET'
+		// 		}
+		// 	}
+		// },
+		scrollX: false,
+		scrollY: false,
+		// rowHeaders: ['checkbox'],
+		// columnOptions: {
+		// 	minWidth: 180
+		// },
+		columns: [{
+				header: 'No',
+				name: 'boardNum',
+				width: 'auto'
+			},
+			{
+				header: '라인코드',
+				name: 'lineCode',
+			},
+			{
+				header: '작업일자',
+				name: 'dates'
+			},
+			{
+				header: '작업수량(BOX)',
+				name: 'amt'
+			},
+			{
+				header: '일자별우선순위',
+				name: 'prio'
+			},
+			{
+				header: '비고',
+				name: 'other'
+			}
+		]
+	});
+	
+	// 필요자재 grid 
+	var matNeed = new tui.Grid({
+		el: document.getElementById('matNeed'),
+		// 임시 데이터
+		data: [
+			{
+			boardNum: '1',
+			prdCd: 'MD-00200',
+			mtrCd: 'RML-10101',
+			name: '얇은 만두피',
+			amt : '200'	},
+			{
+			boardNum: '2',
+			prdCd: 'MD-00200',
+			mtrCd: 'RML-10201',
+			name: '부추',
+			amt : '300'	},
+			{
+			boardNum: '3',
+			prdCd: 'MD-00200',
+			mtrCd: 'RML-10301',
+			name: '다진고기',
+			amt : '400'	},
+		{
+			boardNum: '4',
+			prdCd: 'MD-00200',
+			mtrCd: 'RML-10401',
+			name: '두부',
+			amt : '500'	}
+		],
+		// data 가져오는 법
+		// data: {
+		// 	api: {
+		// 		readData: {
+		// 			url: '/api/readData',
+		// 			method: 'GET'
+		// 		}
+		// 	}
+		// },
+		scrollX: false,
+		scrollY: false,
+		// rowHeaders: ['checkbox'],
+		// columnOptions: {
+		// 	minWidth: 180
+		// },
+		columns: [{
+				header: 'No',
+				name: 'boardNum',
+				width: 'auto'
+			},
+			{
+				header: '제품코드',
+				name: 'prdCd',
+			},
+			{
+				header: '자재코드',
+				name: 'mtrCd'
+			},
+			{
+				header: '자재명',
+				name: 'name'
+			},
+			{
+				header: '소모량',
+				name: 'amt'
+			}
+		]
+	});
+	
+	// 필요자재 LOT grid 
+	var matLot = new tui.Grid({
+		el: document.getElementById('matLot'),
+		// 임시 데이터
+		data: [{
+			boardNum: '1',
+			name: '얇은 만두피',
+			mLot : 'RML-10000-220122001',
+			amt : '200'	,
+			eDate : '1992/03/25',
+			poddCd: 'RML-10101'},
+			{
+			boardNum: '2',
+			prdCd: 'MD-00200',
+			mtrCd: 'RML-10201',
+			name: '부추',
+			amt : '300'	},
+			{
+			boardNum: '3',
+			prdCd: 'MD-00200',
+			mtrCd: 'RML-10301',
+			name: '다진고기',
+			amt : '400'	},
+		{
+			boardNum: '4',
+			prdCd: 'MD-00200',
+			mtrCd: 'RML-10401',
+			name: '두부',
+			amt : '500'	}],
+		// data 가져오는 법
+		// data: {
+		// 	api: {
+		// 		readData: {
+		// 			url: '/api/readData',
+		// 			method: 'GET'
+		// 		}
+		// 	}
+		// },
+		scrollX: false,
+		scrollY: false,
+		rowHeaders: ['checkbox'],
+		// columnOptions: {
+		// 	minWidth: 180
+		// },
+		columns: [{
+				header: 'No',
+				name: 'boardNum',
+				width: 'auto'
+			},
+			{
+				header: '자재명',
+				name: 'name',
+			},
+			{
+				header: '자재LOT번호',
+				name: 'mLot'
+			},
+			{
+				header: '사용수량',
+				name: 'amt'
+			},
+			{
+				header: '유통기한',
+				name: 'eDate ',
+				editor: {
+			            type: 'datePicker',
+			            options: {
+			            	format: 'yyyy-MM-dd'
+			            		 }
+						}
+			},
+			{
+				header: '지시디테일코드',
+				name: 'poddCd'
+			},
+			
+		]
+	});
+	
+	</script>
+	
+	
+	<!-- 미지시 계획 조회 모달 -->
+	<div class="modal fade" id="noOrderModal" tabindex="-1" aria-labelledby="noOrderModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-xl">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="noOrderModalLabel">미지시 생산계획 목록</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<div>
+						<div id="modalGrid" style="width: 100%;"></div>
+					</div>
+				</div>
+
+			</div>
+		</div>
+	</div>
+		
+	<!-- 모달에 뜨는 생산요청 toast grid -->
+	<script>
+	$(document).on('shown.bs.modal','.modal', function () {
+		modalGrid = '';
+		var modalGrid = new tui.Grid({
+			el: document.getElementById('modalGrid'),
+			// 임시 데이터
+			data: [{
+				boardNum: '1',
+				planCode: 'pro_123456',
+				planName: '얇은피 김치만두 200',
+				planDCode: 'pro_123456',
+				productName: '얇은피 김치만두'
+			}],
+			// data 가져오는 법
+			// data: {
+			// 	api: {
+			// 		readData: {
+			// 			url: '/api/readData',
+			// 			method: 'GET'
+			// 		}
+			// 	}
+			// },
+			scrollX: false,
+			scrollY: false,
+			columns: [{
+					header: 'No',
+					name: 'boardNum',
+				},
+				{
+					header: '계획코드',
+					name: 'planCode',
+				},
+				{
+					header: '계획명',
+					name: 'planName', //납기일자명 수정
+				},
+				{
+					header: '상세계획코드',
+					name: 'planDCode'
+				},
+				{
+					header: '제품명',
+					name: 'productName'
+				}
+			]
+		});
+	});
+ 
+	</script>
+
+
+
+	</div>
+<!-- 본문 끝 -->
+
+</body>
+
+</html>
