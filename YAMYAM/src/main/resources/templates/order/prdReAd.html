@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{/layout/layout}">
+<head>
+<meta charset="UTF-8">
+<title>주문 관리</title>
+
+<link href="css/styles.css" rel="stylesheet" />
+<link href="css/bootstrap.min.css" rel="stylesheet">
+<link href="css/tui-grid.css" rel="stylesheet">
+<script src="js/bootstrap.bundle.min.js"></script>
+<script src="js/tui-grid.js"></script>
+
+<link rel="stylesheet" href="https://uicdn.toast.com/tui.date-picker/latest/tui-date-picker.css" />
+<script src="https://uicdn.toast.com/tui.date-picker/latest/tui-date-picker.js"></script>
+
+<link rel="stylesheet"
+	href="https://uicdn.toast.com/grid/latest/tui-grid.css" />
+<script src="https://uicdn.toast.com/grid/latest/tui-grid.js"></script>
+<style>
+
+#od-title{
+	font-weight: bold;
+}
+#od-btn {
+	display: inline-block; margin: 0 5px; float: right;
+}
+
+</style>
+</head>
+<body>
+<div class="container" layout:fragment="content">
+	<div id="od-title">
+		<h3>완제품 반품 관리</h3>
+	</div>
+	
+	<div>
+    완제품LOT<input type="text" data-bs-toggle="modal" data-bs-target="#exampleModal">
+    <img class="Magnifying-Glass-img" alt="image" src="../images/Magnifying_Glass.png">
+    <input type="text" readonly><br>
+    </div>
+          <!-- Modal -->
+      <div class="modal fade" id="exampleModal" tabindex="-1"
+         aria-labelledby="exampleModalLabel" aria-hidden="true">
+         <div class="modal-dialog">
+            <div class="modal-content">
+               <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLabel">완제품 출고 내역</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal"
+                     aria-label="Close"></button>
+               </div>
+               <div class="modal-body">
+                  <button type="button" class="btn btn-dark btn-sm"
+                     data-bs-dismiss="modal">등록</button>
+                  <button type="button" class="btn btn-dark btn-sm">초기화</button>
+               <div id="grid2"></div>
+               </div>
+            </div>
+         </div>
+      </div>
+	
+	<div id="od-container">
+     <label>반품일자</label>
+
+    <div class="tui-datepicker-input tui-datetime-input tui-has-focus">
+        <input id="startpicker-input" type="text" aria-label="Date">
+        <span class="tui-ico-date"></span>
+        <div id="startpicker-container" style="margin-left: -1px;"></div>
+    </div>
+    <span>-</span>
+    <div class="tui-datepicker-input tui-datetime-input tui-has-focus">
+        <input id="endpicker-input" type="text" aria-label="Date">
+        <span class="tui-ico-date"></span>
+        <div id="endpicker-container" style="margin-left: -1px;"></div>
+    </div>
+
+	<button class="btn btn-dark btn-sm">조회</button>
+	<button  class="btn btn-dark btn-sm">초기화</button>
+	
+</div>
+
+	<div id="od-btn">
+	<button class="btn btn-dark btn-sm" onclick="Grid3">추가</button>
+	<button class="btn btn-dark btn-sm">선택삭제</button>
+	<button class="btn btn-dark btn-sm">저장</button>
+	<button class="btn btn-dark btn-sm">엑셀 파일 출력</button>
+	</div>
+	
+<div id="grid"></div>
+
+<script>
+var today = new Date();
+var picker = tui.DatePicker.createRangePicker({
+    startpicker: {
+        date: today,
+        input: '#startpicker-input',
+        container: '#startpicker-container'
+    },
+    endpicker: {
+        date: today,
+        input: '#endpicker-input',
+        container: '#endpicker-container'
+    },
+    selectableRanges: [
+        [today, new Date(today.getFullYear() + 1, today.getMonth(), today.getDate())]
+    ]
+});
+
+const grid = new tui.Grid({
+    el: document.getElementById('grid'),
+    data: [
+        {
+        	reDate : '2022-11-14'
+        }
+        ],
+    rowHeaders: ['checkbox'],
+    scrollX: false,
+    scrollY: false,
+    columns: [
+      {
+        header: '반품 일자',
+        name: 'reDate'
+      },
+      {
+        header: '반품 코드',
+        name: 'reCd'
+      },
+      {
+        header: '완제품 LOT',
+        name: 'lot'
+      },
+      {
+        header: '제품명',
+        name: 'prdNm'
+      },
+      {
+        header: '거래처명',
+        name: 'actNm'
+      },
+      {
+        header: '주문량',
+        name: 'odAmt'
+      },
+      {
+        header: '반품량',
+        name: 'reAmt'
+      },
+      {
+        header: '최종 출고량',
+        name: 'allAmt'
+      }
+    ]
+  });
+  
+const grid2 = new tui.Grid({
+    el: document.getElementById('grid2'),
+    data: [
+        {
+        	odCd : 'test'
+        }
+        ],
+    rowHeaders: ['checkbox'],
+    scrollX: false,
+    scrollY: false,
+    columns: [
+      {
+        header: '주문 코드',
+        name: 'odCd'
+      },
+      {
+        header: '완제품 LOT',
+        name: 'lot'
+      },
+      {
+        header: '제품코드',
+        name: 'prdCd'
+      },
+      {
+        header: '출고량',
+        name: 'outAmt'
+      },
+      {
+        header: '출고 일자',
+        name: 'outDate'
+      }
+    ]
+  });
+ 
+var Grid3 = Grid.appendRows(data){
+	data: [{
+        border: '#aaa',
+        text: '#333'
+    },
+    cell: {
+        disabled: {
+            text: '#999'
+        }
+    }
+};
+
+</script>
+</div>
+</body>
+</html>
