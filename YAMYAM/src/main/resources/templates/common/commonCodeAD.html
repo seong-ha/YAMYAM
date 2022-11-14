@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{/layout/layout}">
+<div class="container" layout:fragment="content">
+
+	<br>
+	<h2>공통코드관리</h2>
+	<hr>
+
+	<br> <br> <br> 공통 코드 검색&nbsp;&nbsp;
+	<input type="text" size="15">
+	<button type="button" class="btn btn-dark btn-sm">검색</button>
+
+	<br> <br>
+
+<div class="row">
+	<div class="col-4">
+		<div id="grid" style="width: 400px"></div>
+	</div>
+	<div class="col-4">
+		<div id="grid2" style="width: 400px"></div>
+	</div>
+</div>
+	
+
+	<script>
+		const gridData = [ {
+			no : '1',
+			groupcode : 'ABC001',
+			groupcodename : '규격',
+		}, {
+			no : '2',
+			groupcode : 'ABC002',
+			groupcodename : '단위',
+		}, {
+			no : '3',
+			groupcode : 'ABC003',
+			groupcodename : '설비상태',
+		}, {
+			no : '4',
+			groupcode : 'ABC004',
+			groupcodename : '단위',
+		}, {
+			no : '5',
+			groupcode : 'ABC005',
+			groupcodename : '단위',
+		}, {
+			no : '6',
+			groupcode : 'ABC006',
+			groupcodename : '규격',
+		}, {
+			no : '7',
+			groupcode : 'ABC006',
+			groupcodename : '규격',
+		}, {
+			no : '8',
+			groupcode : 'ABC006',
+			groupcodename : '규격',
+		}, {
+			no : '9',
+			groupcode : 'ABC006',
+			groupcodename : '규격',
+		}, {
+			no : '10',
+			groupcode : 'ABC006',
+			groupcodename : '규격',
+		}, {
+			no : '11',
+			groupcode : 'ABC006',
+			groupcodename : '규격',
+		},
+
+		];
+		
+		const gridData2 = [ {
+			code : 'STATE-1',
+			codename : '가동',
+			codedetail : '가동 중을 뜻하는 코드',
+			codestatus : '사용여부'
+		},
+		{
+			code : 'STATE-2',
+			codename : '가동',
+			codedetail : '가동 중을 뜻하는 코드',
+			codestatus : '사용여부'
+		},
+		{
+			code : 'STATE-3',
+			codename : '가동',
+			codedetail : '가동 중을 뜻하는 코드',
+			codestatus : '사용여부'
+		},
+		{
+			code : 'STATE-4',
+			codename : '가동',
+			codedetail : '가동 중을 뜻하는 코드',
+			codestatus : '사용여부'
+		}
+		];
+
+		const grid = new tui.Grid({
+			el : document.getElementById('grid'),
+			bodyHeight : 300, // 스크롤
+
+			data : gridData,
+			width : 400,
+			scrollX : true,
+			scrollY : true,
+
+			columns : [ {
+				header : 'No',
+				name : 'no'
+			}, {
+				header : '그룹 코드',
+				name : 'groupcode'
+			}, {
+				header : '그룹 코드 이름',
+				name : 'groupcodename'
+			} ],
+
+		});
+		
+		const grid2 = new tui.Grid({
+			el : document.getElementById('grid2'),
+			bodyHeight : 300, // 스크롤
+
+			data : gridData2,
+			width : 900,
+			scrollX : true,
+			scrollY : true,
+
+			columns : [ {
+				header : '코드',
+				name : 'code'
+			}, {
+				header : '코드 이름',
+				name : 'codename'
+			}, {
+				header : '코드 상세',
+				name : 'codedetail'
+			},
+			{
+				header : '사용 여부',
+				name : 'codestatus'
+			}
+			],
+
+		});
+	</script>
+
+
+	<ul class="nav nav-pills">
+		<li class="nav-item"><a class="nav-link active"
+			aria-current="page" href="#">Active</a></li>
+		<li class="nav-item"><a class="nav-link" href="#">Link</a></li>
+
+	</ul>
+
+</div>
