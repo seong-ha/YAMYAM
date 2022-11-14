@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{/layout/layout}">
+
+<div class="container" layout:fragment="content">
+	<div id="mat-od-title">
+		<h2>자재 반품 조회</h2>
+	</div>
+	<hr>
+	<ul class="ul-style">
+		<li><label for="matNm">자재명</label><input id="matNm" readonly><img
+			class="Magnifying-Glass-img" alt="image" data-bs-toggle="modal"
+			data-bs-target="#matModal" src="../images/Magnifying_Glass.png">
+			<input type="text" readonly></li>
+		<li><label for="actNm">업체명</label><input id="actNm" readonly><img
+			class="Magnifying-Glass-img" alt="image" data-bs-toggle="modal"
+			data-bs-target="#actModal" src="../images/Magnifying_Glass.png">
+			<input type="text" readonly></li>
+		<li><label for="rDate">반품요청일자</label><input type="date"
+			id="rDate"><span> - </span><input type="date" id="rDate">
+			<button class="btn btn-dark btn-sm">조회</button>
+			<button class="btn btn-dark btn-sm">초기화</button></li>
+	</ul>
+
+	<div id="grid"></div>
+	
+	<script>
+const grid = new tui.Grid({
+      el: document.getElementById('grid'),
+      data: [
+    {
+    	matCode: 'OAF-20221104-011',
+        mtCode: 'RML-10101',
+        maNm: '얇은 만두피',
+        actNm: 'YD 만두피',
+        rCount: 1,
+        rDate: '2023-11-12',
+        eDate: '2022-11-12',
+        eCode: 'RMB-00102',
+        eInfo: '유통기한 임박'
+    },
+    {
+    	matCode: 'OAF-20221105-012',
+        mtCode: 'RML-10102',
+        maNm: '굵은 만두피',
+        actNm: 'SJ 만두피',
+        rCount: 7,
+        rDate: '2023-11-12',
+        eDate: '2022-11-12',
+        eCode: 'RMB-00100',
+        eInfo: '포장지 훼손'
+    }
+  ],
+      rowHeaders: ['checkbox'],
+      scrollX: false,
+      scrollY: false,
+      columns: [
+        {
+          header: '발주코드',
+          name: 'matCode'
+        },
+        {
+          header: '자재코드',
+          name: 'mtCode'
+        },
+        {
+          header: '자재명',
+          name: 'maNm'
+        },
+        {
+          header: '업체명',
+          name: 'actNm'
+        },
+        {
+          header: '반품수량',
+          name: 'rCount'
+        },
+        {
+          header: '반품요청일',
+          name: 'rDate'
+        },
+        {
+          header: '검사일자',
+          name: 'eDate'
+        },
+        {
+            header: '불량코드',
+            name: 'eCode'
+        },
+        {
+            header: '불량내용',
+            name: 'eInfo'
+        }
+      ]
+    });
+
+    grid.on('check', ev => {
+      console.log('check!', ev);
+    });
+
+    grid.on('uncheck', ev => {
+      console.log('uncheck!', ev);
+    });
+
+    grid.on('focusChange', ev => {
+      console.log('change focused cell!', ev);
+    });
+    </script>
+    
+</div>
