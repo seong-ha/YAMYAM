@@ -18,12 +18,12 @@
 					<table style="width: 100%;">
 						<tr>
 							<td style="width: 90px;">진행구분 &nbsp;</td>
-							<td colspan="2">
+							<td colspan="2" id="radioTable">
 								<input type="radio" id="whole" name="process" value="whole" checked>
 								<label for="whole">전체</label>
-								<input type="radio" id="progress" name="process" value="confirm">
+								<input type="radio" id="progress" name="process" value="진행">
 								<label for="progress">진행</label>
-								<input type="radio" id="complete" name="process" value="noOrder">
+								<input type="radio"  id="complete" name="process" value="완료">
 								<label for="complete">완료</label>
 							</td>
 
@@ -61,92 +61,124 @@
 				</div>
 
 	<script>
-	// toast - datepicker
-	var today = new Date();
-    var picker = tui.DatePicker.createRangePicker({
-        startpicker: {
-            date: today,
-            input: '#startpicker-input',
-            container: '#startpicker-container'
-        },
-        endpicker: {
-            date: today,
-            input: '#endpicker-input',
-            container: '#endpicker-container'
-        },
-        selectableRanges: [
-            [today, new Date(today.getFullYear() + 1, today.getMonth(), today.getDate())]
-        ]
-    });
+	
+	$(document).ready(function() {
+		
+		// toast - datepicker
+		var today = new Date();
+	    var picker = tui.DatePicker.createRangePicker({
+	        startpicker: {
+	            date: today,
+	            input: '#startpicker-input',
+	            container: '#startpicker-container'
+	        },
+	        endpicker: {
+	            date: today,
+	            input: '#endpicker-input',
+	            container: '#endpicker-container'
+	        },
+	        selectableRanges: [
+	            [today, new Date(today.getFullYear() + 1, today.getMonth(), today.getDate())]
+	        ]
+	    });
+	
+			// toast - grid
+			var grid = new tui.Grid({
+				el : document.getElementById('grid'),
+				// 임시 데이터
+				data : [{
+							boardNum : '1',
+							podCd : 'PID-20221101-001',
+							prdCd : 'MD-00200',
+							name : '얇은피 김치만두',
+							amt : '500',
+							plineCd : 'LINE-BAR-001',
+							prio : '1',
+							sts : '완료'},
+						{
+							boardNum : '2',
+							podCd : 'PID-20221101-002',
+							prdCd : 'MD-00300',
+							name : '얇은피 새우만두',
+							amt : '300', 
+							plineCd : 'LINE-BAR-002',
+							prio : '2',
+							sts : '진행'
+						}],
+				// data 가져오는 법
+				// data: {
+				// 	api: {
+				// 		readData: {
+				// 			url: '/api/readData',
+				// 			method: 'GET'
+				// 		}
+				// 	}
+				// },
+				scrollX : false,
+				scrollY : false,
+				// columnOptions: {
+				// 	minWidth: 180
+				// },
+				columns : [ {
+					header : 'No',
+					name : 'boardNum',
+					width : 'auto'
+				}, {
+					header : '생산지시코드',
+					name : 'podCd',
+				}, {
+					header : '제품코드',
+					name : 'prdCd'
+				}, {
+					header : '제품명',
+					name : 'name'
+				}, {
+					header : '생산수량',
+					name : 'amt'				
+				}, {
+					header : '라인코드',
+					name : 'plineCd',
+				}, {
+					header : '지시우선순위',
+					name : 'prio',
+				}, {
+					header : '진행구분',
+					name : 'sts'
+					
+				}, {
+					header : '비고',
+					name : 'other',
+				}, ]
+			});
+			// radio 필터링
+			$('#radioTable > input').click(function() {
+		        var val = $("input[type=radio][name=process]:checked").val();
+		        if (val) {
+		            const state = {
+		            		  code: 'eq',
+		            		  value: val 
+		            		};
+		            /* grid.findRows({
+		                sts: val
+		            }); */
+		            grid.findRows((row) => {
+		            	if(val != row.sts){
+		            		var key = row.rowKey;
+		            	    grid.removeRow(key);
+		            	}else if(val.equals("whole")) {
+		            		grid.refreshLayout();
+		            		//grid.restore();
+		            	}
+		            	
+		            });
+		            
+		        }
+		        else {
+		        	console.log('아무것도 선택되지 않음');
+		        }
+		    })
 
-		// toast - grid
-		var grid = new tui.Grid({
-			el : document.getElementById('grid'),
-			// 임시 데이터
-			data : [{
-						boardNum : '1',
-						podCd : 'PID-20221101-001',
-						prdCd : 'MD-00200',
-						name : '얇은피 김치만두',
-						amt : '500',
-						plineCd : 'LINE-BAR-001',
-						prio : '1',
-						sts : '완료'},
-					{
-						boardNum : '2',
-						podCd : 'PID-20221101-002',
-						prdCd : 'MD-00300',
-						name : '얇은피 새우만두',
-						amt : '300', 
-						plineCd : 'LINE-BAR-002',
-						prio : '2',
-						sts : '진행'
-					}],
-			// data 가져오는 법
-			// data: {
-			// 	api: {
-			// 		readData: {
-			// 			url: '/api/readData',
-			// 			method: 'GET'
-			// 		}
-			// 	}
-			// },
-			scrollX : false,
-			scrollY : false,
-			// columnOptions: {
-			// 	minWidth: 180
-			// },
-			columns : [ {
-				header : 'No',
-				name : 'boardNum',
-				width : 'auto'
-			}, {
-				header : '생산지시코드',
-				name : 'podCd',
-			}, {
-				header : '제품코드',
-				name : 'prdCd'
-			}, {
-				header : '제품명',
-				name : 'name'
-			}, {
-				header : '생산수량',
-				name : 'amt'				
-			}, {
-				header : '라인코드',
-				name : 'plineCd',
-			}, {
-				header : '지시우선순위',
-				name : 'prio',
-			}, {
-				header : '진행구분',
-				name : 'sts',
-			}, {
-				header : '비고',
-				name : 'other',
-			}, ]
-		});
-
+		})
 	</script>
 
 	</div>
