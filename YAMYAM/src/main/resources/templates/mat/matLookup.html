@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{/layout/layout}">
+
+<div class="container" layout:fragment="content">
+	<div id="mat-Lookup-title">
+		<h2>자재 발주 조회</h2>
+	</div>
+	<hr>
+	<!-- 탭 목록(버튼) 설정 -->
+	<ul class="nav nav-tabs nav-pills" id="myTab" role="tablist">
+		<li class="nav-item" role="presentation">
+			<button class="nav-link active" id="manage-tab" data-bs-toggle="tab"
+				data-bs-target="#manage" type="button" role="tab"
+				aria-controls="manage" aria-selected="true">자재 전체 조회</button>
+		</li>
+		<li class="nav-item" role="presentation">
+			<button class="nav-link" id="insert-tab" data-bs-toggle="tab"
+				data-bs-target="#insert" type="button" role="tab"
+				aria-controls="insert" aria-selected="false">조건 조회</button>
+		</li>
+	</ul>
+
+	<div id="grid"></div>
+
+	<script>
+const grid = new tui.Grid({
+      el: document.getElementById('grid'),
+      data: [
+    {
+        mtCode: 'RML-10101',
+        maNm: '얇은 만두피',
+        price: 1000,
+        count: 200,
+        sumPrice: 2000000,
+        acNm: 'YD 만두피',
+        eDate: '2022-11-09'
+    },
+    {
+        maCode: 'OAF-20221104-022',
+        mtCode: 'RML-10102',
+        maNm: '두꺼운 만두피',
+        price: 1500,
+        count: 200,
+        sumPrice: 3000000,
+        acNm: 'YD 만두피',
+        fDate: '2022-11-04',
+        eDate: '2022-11-09'
+    }
+  ],
+      rowHeaders: ['rowNum'],
+      scrollX: false,
+      scrollY: false,
+      columns: [
+        {
+          header: '자재코드',
+          name: 'mtCode'
+        },
+        {
+          header: '자재명',
+          name: 'maNm'
+        },
+        {
+          header: '단가(원)',
+          name: 'price'
+        },
+        {
+          header: '발주량',
+          name: 'count'
+        },
+        {
+          header: '총액',
+          name: 'sumPrice'
+        },
+        {
+          header: '업체명',
+          name: 'acNm'
+        },
+        {
+          header: '납기요청일',
+          name: 'eDate'
+        }
+      ]
+    });
+    
+    grid.on('focusChange', ev => {
+      console.log('change focused cell!', ev);
+    });
+    </script>
+</div>

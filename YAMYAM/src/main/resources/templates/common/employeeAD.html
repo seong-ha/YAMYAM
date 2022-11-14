@@ -6,103 +6,386 @@
 <div class="container" layout:fragment="content">
 
 
+	<br>
+	<h2>직원관리</h2>
+	<hr>
+	<br> <br>
+
+	<div align="right">
+		직원 이름 <input type="text" name="emp_name" size="15">
+		<button type="button" class="btn btn-dark btn-sm">검색</button>
+		<button type="button" class="btn btn-dark btn-sm">초기화</button>
+	</div>
+
+	<br>
 
 	<div id="grid"></div>
 
 	<script>
-		const gridData = [ {
-      no: '1',
-      emp_no: '1100',
-      emp_name: '홍길동',
-      hire_date : '2002/07/05',
-      id : 'no',
-      dept_name : '영업부',
-      role : '0'
-		},
-    {
-      no: '2',
-      emp_no: '1101',
-      emp_name: '김길동',
-      hire_date : '2008/02/05',
-      id : 'no',
-      dept_name : '영업부',
-      role : '0'
-		},
-    {
-      no: '3',
-      emp_no: '1123',
-      emp_name: '홍길동',
-      hire_date : '2002/07/05',
-      id : 'no',
-      dept_name : '영업부',
-      role : '0'
-		},
-    {
-      no: '4',
-      emp_no: '1154',
-      emp_name: '황길동',
-      hire_date : '2003/11/15',
-      id : 'no',
-      dept_name : '영업부',
-      role : '0'
-		},
-    {
-      no: '5',
-      emp_no: '1199',
-      emp_name: '최길동',
-      hire_date : '2006/07/05',
-      id : 'no',
-      dept_name : '영업부',
-      role : '0'
-		},
-    {
-      no: '6',
-      emp_no: '1207',
-      emp_name: '홍길동',
-      hire_date : '2002/04/25',
-      id : 'no',
-      dept_name : '영업부',
-      role : '0'
-		},
-    {
-      no: '7',
-      emp_no: '1500',
-      emp_name: '홍길동',
-      hire_date : '2004/03/05',
-      id : 'no',
-      dept_name : '영업부',
-      role : '0'
-		},
-  ];
+	
+	 class RowNumberRenderer {
+	      constructor(props) {
+	        const el = document.createElement('span');
+	        el.innerHTML = `No.${props.formattedValue}`;
+	        this.el = el;
+	      }
 
+	      getElement() {
+	        return this.el;
+	      }
+
+	      render(props) {
+	        this.el.innerHTML = `No.${props.formattedValue}`;
+	      }
+	    }
+
+	    class CheckboxRenderer {
+	      constructor(props) {
+	        const { grid, rowKey } = props;
+
+	        const label = document.createElement('label');
+	        label.className = 'checkbox tui-grid-row-header-checkbox';
+	        label.setAttribute('for', String(rowKey));
+
+	        const hiddenInput = document.createElement('input');
+	        hiddenInput.className = 'hidden-input';
+	        hiddenInput.id = String(rowKey);
+
+	        const customInput = document.createElement('span');
+	        customInput.className = 'custom-input';
+
+	        label.appendChild(hiddenInput);
+	        label.appendChild(customInput);
+
+	        hiddenInput.type = 'checkbox';
+	        label.addEventListener('click', (ev) => {
+	          ev.preventDefault();
+
+	          if (ev.shiftKey) {
+	            grid[!hiddenInput.checked ? 'checkBetween' : 'uncheckBetween'](rowKey);
+	            return;
+	          }
+
+	          grid[!hiddenInput.checked ? 'check' : 'uncheck'](rowKey);
+	        });
+
+	        this.el = label;
+
+	        this.render(props);
+	      }
+
+	      getElement() {
+	        return this.el;
+	      }
+
+	      render(props) {
+	        const hiddenInput = this.el.querySelector('.hidden-input');
+	        const checked = Boolean(props.value);
+
+	        hiddenInput.checked = checked;
+	      }
+	    }
+
+	
+		const gridData = [ {
+			emp_no : '1100',
+			emp_name : '홍길동',
+			hire_date : '2002/07/05',
+			id : 'no',
+			dept_name : '영업부',
+			role : '0'
+		}, {
+			emp_no : '1101',
+			emp_name : '김길동',
+			hire_date : '2008/02/05',
+			id : 'no',
+			dept_name : '영업부',
+			role : '0'
+		}, {
+			emp_no : '1123',
+			emp_name : '홍길동',
+			hire_date : '2002/07/05',
+			id : 'no',
+			dept_name : '영업부',
+			role : '0'
+		}, {
+			emp_no : '1154',
+			emp_name : '황길동',
+			hire_date : '2003/11/15',
+			id : 'no',
+			dept_name : '영업부',
+			role : '0'
+		}, {
+			emp_no : '1199',
+			emp_name : '최길동',
+			hire_date : '2006/07/05',
+			id : 'no',
+			dept_name : '영업부',
+			role : '0'
+		}, {
+			emp_no : '1207',
+			emp_name : '홍길동',
+			hire_date : '2002/04/25',
+			id : 'no',
+			dept_name : '영업부',
+			role : '0'
+		}, {
+			emp_no : '1500',
+			emp_name : '홍길동',
+			hire_date : '2004/03/05',
+			id : 'no',
+			dept_name : '영업부',
+			role : '0'
+
+		}, {
+			emp_no : '1500',
+			emp_name : '홍길동',
+			hire_date : '2004/03/05',
+			id : 'no',
+			dept_name : '영업부',
+			role : '0'
+		}, {
+			emp_no : '1500',
+			emp_name : '홍길동',
+			hire_date : '2004/03/05',
+			id : 'no',
+			dept_name : '영업부',
+			role : '0'
+		}, {
+			emp_no : '1500',
+			emp_name : '홍길동',
+			hire_date : '2004/03/05',
+			id : 'no',
+			dept_name : '영업부',
+			role : '0'
+		}, {
+			emp_no : '1500',
+			emp_name : '홍길동',
+			hire_date : '2004/03/05',
+			id : 'no',
+			dept_name : '영업부',
+			role : '0'
+		}, {
+			emp_no : '1500',
+			emp_name : '홍길동',
+			hire_date : '2004/03/05',
+			id : 'no',
+			dept_name : '영업부',
+			role : '0'
+		}, {
+			emp_no : '1500',
+			emp_name : '홍길동',
+			hire_date : '2004/03/05',
+			id : 'no',
+			dept_name : '영업부',
+			role : '0'
+		}, ];
+		
+    
 		const grid = new tui.Grid({
+			
+			rowHeaders: ['rowNum', 'checkbox'], // 체크박스
+			
 			el : document.getElementById('grid'),
+
+			bodyHeight: 500, // 스크롤
+			
 			data : gridData,
+				
 			scrollX : false,
-			scrollY : false,
+			scrollY : true,
 			columns : [ {
-				header : 'No',
-				name : 'no'
-			}, {
 				header : '직원고유번호',
-				name : 'emp_no'
+				name : 'emp_no',
+				sortingType: 'desc',
+		        sortable: true,
+		        align: 'center'
 			}, {
 				header : '직원이름',
-				name : 'emp_name'
+				name : 'emp_name',
+				sortingType: 'desc',
+		        sortable: true,
+		        align: 'center'
 			}, {
 				header : '입사일',
-				name : 'hire_date'
+				name : 'hire_date',
+				sortingType: 'desc',
+		        sortable: true,
+		        align: 'center'
 			}, {
 				header : '계정아이디',
-				name : 'id'
+				name : 'id',
+				sortingType: 'desc',
+		        sortable: true,
+		        align: 'center'
 			}, {
 				header : '부서명',
-				name : 'dept_name'
+				name : 'dept_name',
+				sortingType: 'desc',
+		        sortable: true,
+		        align: 'center'
 			}, {
 				header : '직급정보',
-				name : 'role'
-			}, ]
+				name : 'role',
+				sortingType: 'desc',
+		        sortable: true,
+		        align: 'center'
+			}  ],
+			
 		});
-    </script>
-    
+		
+		// 체크박스
+		 grid.on('check', function(ev) {
+		      console.log('check', ev);
+		    });
+
+		    grid.on('uncheck', function(ev) {
+		      console.log('uncheck', ev);
+		    });
+		    
+	   
+	</script>
+
+	<div align="right">
+		<br> <br>
+
+		<button type="button" class="btn btn-dark btn-sm"
+			data-bs-toggle="modal" data-bs-target="#staticBackdrop1">회원
+			등록</button>
+
+		<!-- 모달창 1번 -->
+		<div class="modal fade" id="staticBackdrop1" data-bs-backdrop="static"
+			data-bs-keyboard="false" tabindex="-1"
+			aria-labelledby="staticBackdropLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="staticBackdropLabel">회원 등록</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal"
+							aria-label="Close"></button>
+					</div>
+
+					<!-- 모달창 input type -->
+					<div class="modal-body">
+
+						<form action="user" method="post">
+							<div align="center">
+								<ul class="ul-style">
+									<br>
+									<li><label>계정 아이디</label> <input type="text" name="id">
+									</li>
+									<br>
+									<li><label>비밀번호</label> <input type="text" name="password">
+									</li>
+									<br>
+									<li><label>비밀번호확인</label> <input type="text"
+										name="passwordcorrect"></li>
+									<br>
+									<li><label>직원 이름</label><input type="text" name="empname">
+									</li>
+									<br>
+									<li><label>직급 정보</label><input type="text" name="role">
+									</li>
+									<br>
+							</div>
+						</form>
+
+
+
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-primary">등록</button>
+						<button type="button" class="btn btn-secondary"
+							data-bs-dismiss="modal">초기화</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+
+		<button type="button" class="btn btn-dark btn-sm"
+			data-bs-toggle="modal" data-bs-target="#staticBackdrop2">회원
+			수정</button>
+
+		<!-- 모달창 2번 -->
+		<div class="modal fade" id="staticBackdrop2" data-bs-backdrop="static"
+			data-bs-keyboard="false" tabindex="-1"
+			aria-labelledby="staticBackdropLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="staticBackdropLabel">회원 수정</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal"
+							aria-label="Close"></button>
+					</div>
+
+					<!-- 모달창 input type -->
+					<div class="modal-body">
+						<div align="center">
+							<ul class="ul-style">
+								<br>
+								<li><label>계정 아이디</label> <input type="text" name="id">
+								</li>
+								<br>
+								<li><label>비밀번호</label> <input type="text" name="password">
+								</li>
+								<br>
+								<li><label>비밀번호확인</label> <input type="text"
+									name="passwordcorrect"></li>
+								<br>
+								<li><label>직원 이름</label> <input type="text" name="empname">
+								</li>
+								<br>
+								<li><label>입사일</label> <input type="text" name="hiredate">
+								</li>
+								<br>
+								<li><label>부서명</label> <input type="text" name="deptname">
+								</li>
+								<br>
+								<li><label>직급 정보</label> <input type="text" name="role">
+								</li>
+								<br>
+							</ul>
+						</div>
+					</div>
+
+
+					<div class="modal-footer">
+						<button type="button" class="btn btn-primary">수정</button>
+						<button type="button" class="btn btn-secondary"
+							data-bs-dismiss="modal">초기화</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<button type="button" class="btn btn-dark btn-sm"
+			data-bs-toggle="modal" data-bs-target="#staticBackdrop3">회원
+			삭제</button>
+
+		<!-- 모달창 3번 -->
+		<div class="modal fade" id="staticBackdrop3" data-bs-backdrop="static"
+			data-bs-keyboard="false" tabindex="-1"
+			aria-labelledby="staticBackdropLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="staticBackdropLabel">삭제 확인</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal"
+							aria-label="Close"></button>
+					</div>
+					<div class="modal-body" align="center">정말 해당 해원을 삭제 하시겠습니까?</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-primary">확인</button>
+						<button type="button" class="btn btn-secondary"
+							data-bs-dismiss="modal">취소</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+
+	</div>
+
+
 </div>

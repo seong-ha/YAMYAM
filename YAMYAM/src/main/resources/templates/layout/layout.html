@@ -9,12 +9,18 @@
 <link href="css/tui-grid.css" rel="stylesheet">
 <script src="js/bootstrap.bundle.min.js"></script>
 <script src="js/tui-grid.js"></script>
+<style type="text/css">
+	label {
+		width: 150px;
+		text-align: left;
+	}
+</style>
 </head>
 <body>
 	<nav layout:fragment="menu"
 		class="sb-topnav navbar navbar-expand navbar-dark bg-red">
 		<!-- Navbar Brand-->
-		<a class="navbar-brand ps-3 font-NSEB logo-size" href="index.html"><span
+		<a class="navbar-brand ps-3 font-NSEB logo-size" href="/"><span
 			class="col-green">YAM</span>YAM</a>
 		<!-- 로그인 유무에 따라 Login/LogOut로 다르게 보이도록 -->
 		<a class="login-menu font-NSEB" href="index.html">Login</a>
@@ -47,12 +53,12 @@
 								data-bs-parent="#accordionFlushExample">
 								<div class="accordion-body side-menu-content">
 									<ul class="mylist">
-										<li><a href="/emp">직원 관리</a></li>
-										<li><a href="#">공통 코드 관리</a></li>
-										<li><a href="#">자재 코드 관리</a></li>
-										<li><a href="#">거래처 코드 관리</a></li>
-										<li><a href="#">완제품 코드 관리</a></li>
-										<li><a href="#">BOM 관리</a></li>
+										<li><a href="/employeeAD">직원 관리</a></li>
+										<li><a href="/commonCodeAD">공통 코드 관리</a></li>
+										<li><a href="/matCodeAD">자재 코드 관리</a></li>
+										<li><a href="/actCodeAD">거래처 코드 관리</a></li>
+										<li><a href="/pdtCodeAD">완제품 코드 관리</a></li>
+										<li><a href="/BOMAD">BOM 관리</a></li>
 									</ul>
 								</div>
 							</div>
@@ -95,8 +101,8 @@
 								data-bs-parent="#accordionFlushExample">
 								<div class="accordion-body side-menu-content">
 									<ul class="mylist">
-										<li><a href="#">생산 계획 관리</a></li>
-										<li><a href="#">생산 지시 관리</a></li>
+										<li><a href="plan.html">생산 계획 관리</a></li>
+										<li><a href="order.html">생산 지시 관리</a></li>
 										<li><a href="#">생산 지시 조회</a></li>
 										<li><a href="#">생산 관리</a></li>
 										<li><a href="#">공정 실적 조회</a></li>
@@ -120,12 +126,12 @@
 								data-bs-parent="#accordionFlushExample">
 								<div class="accordion-body side-menu-content">
 									<ul class="mylist">
-										<li><a href="#">자재 발주 관리</a></li>
-										<li><a href="#">자재 발주 조회</a></li>
-										<li><a href="#">자재 입고 검수 관리</a></li>
-										<li><a href="#">자재 입고 관리</a></li>
-										<li><a href="#">자재 출고 관리</a></li>
-										<li><a href="#">자재 입출고 조회</a></li>
+										<li><a href="/matOd">자재 발주 관리</a></li>
+										<li><a href="/matLookup">자재 발주 조회</a></li>
+										<li><a href="/matInChk">자재 입고 검수 관리</a></li>
+										<li><a href="/matIn">자재 입고 관리</a></li>
+										<li><a href="/matOut">자재 출고 관리</a></li>
+										<li><a href="/matInOut">자재 입출고 조회</a></li>
 										<li><a href="#">자재 재고 조회</a></li>
 										<li><a href="#">자재 반품 관리</a></li>
 										<li><a href="#">자재 반품 조회</a></li>
@@ -160,11 +166,12 @@
 				</div>
 			</nav>
 		</div>
+		
 		<div layout:fragment="content"></div>
 
 		<div id="grid"></div>
-
-	</div>
+</div>
+	
 
 	<script type="text/javascript">
 	</script>
