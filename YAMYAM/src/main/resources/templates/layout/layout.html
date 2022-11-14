@@ -37,7 +37,7 @@
 	<nav layout:fragment="menu"
 		class="sb-topnav navbar navbar-expand navbar-dark bg-red">
 		<!-- Navbar Brand-->
-		<a class="navbar-brand ps-3 font-NSEB logo-size" href="/"><span
+		<a class="navbar-brand ps-3 font-NSEB logo-size" href="/" onclick="tabInfoDelete()"><span
 			class="col-green">YAM</span>YAM</a>
 		<!-- 로그인 유무에 따라 Login/LogOut로 다르게 보이도록 -->
 		<a class="login-menu font-NSEB" href="index.html">Login</a>
@@ -170,7 +170,7 @@
 								data-bs-parent="#accordionFlushExample">
 								<div class="accordion-body side-menu-content">
 									<ul class="mylist">
-										<li><a href="#">설비 관리</a></li>
+										<li><a href="/eqp">설비 관리</a></li>
 										<li><a href="#">설비 비가동 관리</a></li>
 										<li><a href="#">설비 점검 관리</a></li>
 										<li><a href="#">실시간 설비 상태 조회</a></li>
@@ -189,8 +189,58 @@
 		<div id="grid"></div>
 	</div>
 
-
+	<div>
+		<input type="hidden" id="currentLi" name="currentLi" value="${}">
+	</div>
+	
 	<script type="text/javascript">
+	
+		// 회사 로고 누르면 하위탭 안 나오게 sessionStorage 해당 부분 날려주기
+		function tabInfoDelete() {
+			sessionStorage.removeItem('tabText');
+			sessionStorage.removeItem('tabIdNum');
+		}
+	
+		document.addEventListener('DOMContentLoaded', function () {
+			/* 
+			  sessionStorage의 tabText와 tabIdNum에 저장된 게 있으면
+			  해당되는 id를 찾아서 accordion을 열어주고
+			  해당되는 글자를 찾아서 색을 바꿔준다.
+			*/
+			if (sessionStorage.getItem('tabText') != null && sessionStorage.getItem('tabIdNum') != null) {
+				console.log( sessionStorage.getItem('tabText') + ', ' + sessionStorage.getItem('tabIdNum') );
+				
+				document.querySelector('#flush-heading' + sessionStorage.getItem('tabIdNum') + ' > button').click();
+				let tabs = document.querySelectorAll('.mylist > li > a');
+				tabs.forEach(tab => {
+					if (tab.textContent == sessionStorage.getItem('tabText')) {
+						tab.style.color = '#963446';
+					}
+				})
+				
+			}
+			
+			// 하위 탭들의 a태그 글자, 해당 탭들을 감싸고 있는 div id를 채집 후 sessionStorage에 저장
+			let tabs = document.querySelectorAll('.mylist > li > a');
+			
+			tabs.forEach(tab => {
+				tab.addEventListener('click', function (event) {
+					
+					let tabText = event.currentTarget.textContent;
+					sessionStorage.setItem("tabText", tabText);
+					
+					let tabIdNum = tab.parentElement.parentElement.parentElement.parentElement.id.substring(14);
+					sessionStorage.setItem("tabIdNum", tabIdNum);
+				});
+			});
+		});
+		
+		
+	
+		
+		
+		
+			
 		
 	</script>
 </body>
