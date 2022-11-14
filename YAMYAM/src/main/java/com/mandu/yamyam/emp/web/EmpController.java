@@ -13,9 +13,10 @@ public class EmpController {
 	@Autowired
 	EmpMapper dao;
 
-	@RequestMapping("/list")
-	public String empList(Model model) {
-		model.addAttribute("empList", dao.getEmpList(null));
-		return "emp/list";
+	@RequestMapping("/emp")
+	public String emp() {
+		
+		return "common/employeeAD";
 	}
+	
 }
