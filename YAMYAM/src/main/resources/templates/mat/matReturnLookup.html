@@ -6,7 +6,7 @@
 
 <div class="container" layout:fragment="content">
 	<div id="mat-od-title">
-		<h2>자재 입고 검수 관리</h2>
+		<h2>자재 반품 조회</h2>
 	</div>
 	<hr>
 	<ul class="ul-style">
@@ -14,13 +14,13 @@
 			class="Magnifying-Glass-img" alt="image" data-bs-toggle="modal"
 			data-bs-target="#matModal" src="../images/Magnifying_Glass.png">
 			<input type="text" readonly></li>
-		<li><label for="empNm">담당자</label><input id="empNm" readonly><img
+		<li><label for="actNm">업체명</label><input id="actNm" readonly><img
 			class="Magnifying-Glass-img" alt="image" data-bs-toggle="modal"
-			data-bs-target="#empModal" src="../images/Magnifying_Glass.png">
+			data-bs-target="#actModal" src="../images/Magnifying_Glass.png">
 			<input type="text" readonly></li>
 			
 		<!-- Date Picker -->
-		<li><label for="startpicker-input">검사일자</label>
+		<li><label for="startpicker-input">반품요청일</label>
 			<div class="tui-datepicker-input tui-datetime-input tui-has-focus">
 				<input id="startpicker-input" type="text" aria-label="Date">
 				<span class="tui-ico-date"></span>
@@ -34,13 +34,6 @@
 			<button class="btn btn-dark btn-sm">조회</button>
 			<button class="btn btn-dark btn-sm">초기화</button></li>
 	</ul>
-
-	<div style="text-align: right;">
-		<button class="btn btn-dark btn-sm" data-bs-toggle="modal"
-			data-bs-target="#addModal">추가</button>
-		<button class="btn btn-dark btn-sm">선택삭제</button>
-		<button class="btn btn-dark btn-sm">저장</button>
-	</div>
 
 	<div id="grid"></div>
 
@@ -67,14 +60,13 @@
 			</div>
 		</div>
 	</div>
-
-	<!-- 담당자 목록 모달 -->
-	<div class="modal" id="empModal" tabindex="-1"
-		aria-labelledby="empModalLabel" aria-hidden="true">
+	<!-- 업체 목록 모달 -->
+	<div class="modal" id="actModal" tabindex="-1"
+		aria-labelledby="actModalLabel" aria-hidden="true">
 		<div class="modal-dialog modal-xl">
 			<div class="modal-content">
 				<div class="modal-header">
-					<h5 class="modal-title" id="empModalLabel">사원 목록</h5>
+					<h5 class="modal-title" id="actModalLabel">업체 목록</h5>
 					<button type="button" class="btn-close" data-bs-dismiss="modal"
 						aria-label="Close"></button>
 				</div>
@@ -92,57 +84,32 @@
 		</div>
 	</div>
 
-	<!-- 추가 버튼 모달 -->
-	<div class="modal" id="addModal" tabindex="-1"
-		aria-labelledby="addModalLabel" aria-hidden="true">
-		<div class="modal-dialog modal-xl">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h5 class="modal-title" id="addModalLabel">검사 예정 목록</h5>
-					<button type="button" class="btn-close" data-bs-dismiss="modal"
-						aria-label="Close"></button>
-				</div>
-				<div class="modal-body">
-					<div>
-						<div id="modalGrid3" style="width: 100%;"></div>
-					</div>
-					<div align="center">
-						<button class="btn btn-dark btn-sm">추가</button>
-						<button class="btn btn-dark btn-sm">취소</button>
-					</div>
-				</div>
-
-			</div>
-		</div>
-	</div>
 	<script>
 const grid = new tui.Grid({
       el: document.getElementById('grid'),
       bodyHeight: 500,
       data: [
     {
-        maCode: 'OAF-20221104-011',
+    	matCode: 'OAF-20221104-011',
         mtCode: 'RML-10101',
         maNm: '얇은 만두피',
-        count: 200,
-        pass: 197,
-        errorNum: 3,
-        emp: '이검수',
-        chkDate: '2022-11-12',
-        erCode: 'RMB-00102',
-        erInfo: '유통기한 임박'
+        actNm: 'YD 만두피',
+        rCount: 1,
+        rDate: '2023-11-12',
+        eDate: '2022-11-12',
+        eCode: 'RMB-00102',
+        eInfo: '유통기한 임박'
     },
     {
-        maCode: 'OAF-20221105-011',
+    	matCode: 'OAF-20221105-012',
         mtCode: 'RML-10102',
-        maNm: '두꺼운 만두피',
-        count: 200,
-        pass: 195,
-        errorNum: 5,
-        emp: '이검수',
-        chkDate: '2022-11-12',
-        erCode: 'RMB-00103',
-        erInfo: '포장지 훼손'
+        maNm: '굵은 만두피',
+        actNm: 'SJ 만두피',
+        rCount: 7,
+        rDate: '2023-11-12',
+        eDate: '2022-11-12',
+        eCode: 'RMB-00100',
+        eInfo: '포장지 훼손'
     }
   ],
       rowHeaders: ['checkbox', 'rowNum'],
@@ -151,7 +118,7 @@ const grid = new tui.Grid({
       columns: [
         {
           header: '발주코드',
-          name: 'maCode'
+          name: 'matCode'
         },
         {
           header: '자재코드',
@@ -162,33 +129,29 @@ const grid = new tui.Grid({
           name: 'maNm'
         },
         {
-          header: '발주총량',
-          name: 'count'
+          header: '업체명',
+          name: 'actNm'
         },
         {
-          header: '합격량',
-          name: 'pass'
+          header: '반품수량',
+          name: 'rCount'
         },
         {
-          header: '불합격량',
-          name: 'errorNum'
-        },
-        {
-          header: '담당자',
-          name: 'emp'
+          header: '반품요청일',
+          name: 'rDate'
         },
         {
           header: '검사일자',
-          name: 'chkDate'
+          name: 'eDate'
         },
         {
             header: '불량코드',
-            name: 'erCode'
-          },
-          {
-              header: '불량내용',
-              name: 'erInfo'
-            }
+            name: 'eCode'
+        },
+        {
+            header: '불량내용',
+            name: 'eInfo'
+        }
       ]
     });
 
@@ -206,6 +169,11 @@ const grid = new tui.Grid({
     </script>
 
 	<script>
+	document.addEventListener('shown.bs.modal', function (){
+		modalGrid.refreshLayout();
+		modalGrid2.refreshLayout();
+	}, '.modal');
+	
 	var modalGrid = new tui.Grid({
 		el: document.getElementById('modalGrid'),
 		bodyHeight: 150,
@@ -247,71 +215,23 @@ const grid = new tui.Grid({
 		el: document.getElementById('modalGrid2'),
 		bodyHeight: 150,
 		data: [{
-			empNm: '김검수',
-			empId: 'wantToGoHome'
-		},
-		{
-			empNm: '이검수',
-			empId: 'meToo'
-		}
-		],
+			actCode: 'VDR-1101',
+			actName: 'YD 만두피'
+		}],
 		rowHeaders: ['checkbox'],
 		scrollX: false,
 		scrollY: true,
 		columns: [
 			{
-				header: '이름',
-				name: 'empNm',
+				header: '업체 코드',
+				name: 'actCode',
 			},
 			{
-				header: '아이디',
-				name: 'empId',
+				header: '업체명',
+				name: 'actName',
 			}
 		]
 	});
-	
-	var modalGrid3 = new tui.Grid({
-		el: document.getElementById('modalGrid3'),
-		bodyHeight: 400,
-		data: [{
-			code: 'OAF-20221104-001',
-			maCode: 'RML-10101',
-			maNm: '얇은 만두피',
-			count: 999
-		},
-		{
-			code: 'OAF-20221105-002',
-			maCode: 'RML-10102',
-			maNm: '얇은 만두피',
-			count: 1000
-		}],
-		rowHeaders: ['checkbox'],
-		scrollX: false,
-		scrollY: true,
-		columns: [{
-	          header: '발주코드',
-	          name: 'code'
-	        },
-	        {
-	          header: '자재코드',
-	          name: 'maCode'
-	        },
-	        {
-	          header: '자재명',
-	          name: 'maNm'
-	        },
-	        {
-		      header: '발주총량',
-		      name: 'count'
-		    }
-      ] 
-	});
-	
-	document.addEventListener('shown.bs.modal', function (){
-		modalGrid.refreshLayout();
-		modalGrid2.refreshLayout();
-		modalGrid3.refreshLayout();
-	}, '.modal');
 	
 	   // Date Picker
 	   var today = new Date();

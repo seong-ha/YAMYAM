@@ -17,7 +17,7 @@
 		<div class="row">
 			<h4>생산지시 관리</h4>
 			&nbsp;&nbsp;
-			<button type="button" class="btn btn-dark btn-sm"
+			<button type="button" id="showNOModal" class="btn btn-dark btn-sm"
 				style="width: 140px" data-bs-toggle="modal"
 				data-bs-target="#noOrderModal">미지시 계획 조회</button>
 		</div>
@@ -35,11 +35,11 @@
 			<div class="col-6">
 				필요자재
 				<!-- 필요자재 모달버튼 -->
-				<button type="button" hidden class="btn btn-dark btn-sm"
+				<button type="button" id="mLModalBtn" hidden class="btn btn-dark btn-sm"
 					data-bs-toggle="modal" data-bs-target="#matLotModal">필요자재
 					모달 조회</button>
 				<div id="matNeed"></div>
-				<p style="font-size: 0.5em">소모량 : 자재별 필요량*작업수량/10</p>
+				<p style="font-size: 0.5em">소모량 : 자재별 필요량*작업수량</p>
 			</div>
 			<div class="col-6">
 				필요자재LOT
@@ -49,7 +49,7 @@
 		</div>
 
 		<!-- 필요자재LOT 모달 -->
-		<div class="modal fade" id="matLotModal" tabindex="-1"
+		<div class="modal" id="matLotModal" tabindex="-1"
 			aria-labelledby="matLotModalLabel" aria-hidden="true">
 			<div class="modal-dialog modal-xl">
 				<div class="modal-content">
@@ -69,7 +69,7 @@
 								<button type="button" class="btn btn-dark btn-sm">조회</button>
 							</div>
 
-							<div id="matLotGrid2" style="width: 100%;"></div>
+							<div id="matLotGrid2"></div>
 
 						</div>
 					</div>
@@ -256,17 +256,21 @@
 	
 	
 	// 필요자재 grid click 이벤트
-		matNeed.on('click', (ev) => {
+		matNeed.on('click', function(ev){
 			//console.log(ev.rowKey); 선택한 행의 row번호
-
 			// 클릭한 행의 자재명, 자재코드 
+
 			var mName = matNeed.getRow(ev.rowKey).name;
 			var mtrCd = matNeed.getRow(ev.rowKey).mtrCd;
-			console.log(mtrCd);
+			console.log(mName,mtrCd)
+			$("#matLotModal").modal("show");
 			
-			$('#matLotModal').modal('show');
-			
-		});
+			// 모달이 로드 되는데 시간이 걸리므로 인터벌 걸어주기
+			setInterval(function(){
+				matLotGrid2.refreshLayout()
+				},100);			
+		})
+
 
 	// 필요자재 LOT grid 
 	var matLot = new tui.Grid({
@@ -426,8 +430,7 @@
 	</script>
 
 		<!-- 미지시 계획 조회 모달 -->
-		<div class="modal fade" id="noOrderModal" tabindex="-1"
-			aria-labelledby="noOrderModalLabel" aria-hidden="true">
+		<div class="modal" id="noOrderModal" tabindex="-1">
 			<div class="modal-dialog modal-xl">
 				<div class="modal-content">
 					<div class="modal-header">
@@ -437,7 +440,7 @@
 					</div>
 					<div class="modal-body">
 						<div>
-							<div id="modalGrid" style="width: 100%;"></div>
+							<div id="modalGrid"></div>
 						</div>
 					</div>
 
@@ -447,8 +450,6 @@
 
 		<!-- 모달에 뜨는 생산요청 toast grid -->
 		<script>
-	$(document).on('shown.bs.modal','.modal', function () {
-		modalGrid = '';
 		var modalGrid = new tui.Grid({
 			el: document.getElementById('modalGrid'),
 			// 임시 데이터
@@ -492,8 +493,14 @@
 				}
 			]
 		});
+	
+	
+	// 미지시계획 모달 클릭 버튼 이벤트
+	$('#showNOModal').on('click',function(){
+
+		$("#noOrderModal").modal("show");
+		modalGrid.refreshLayout();
 	});
- 
 	</script>
 
 
