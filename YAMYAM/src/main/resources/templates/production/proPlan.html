@@ -31,31 +31,19 @@
 				</ul>
 				<!-- 탭 본문 -->
 				<div class="tab-content" id="myTabContent">
+					<!-- 관리 탭 -->
 					<div class="tab-pane fade show active" id="manage" role="tabpanel"
 						aria-labelledby="manage-tab">
 						<div style="margin: 15px;">
 							<table style="width: 100%;">
-								<tr>
-									<td style="width: 90px;">진행구분 &nbsp;</td>
-									<td colspan="2">
-										<input type="radio" id="whole" name="process" value="whole" checked>
-										<label for="whole">전체</label>
-										<input type="radio" id="confirm" name="process" value="confirm">
-										<label for="confirm">자재팀확인</label>
-										<input type="radio" id="noOrder" name="process" value="noOrder">
-										<label for="noOrder">미지시</label>
-										<input type="radio" id="order" name="process" value="order">
-										<label for="order">지시완료</label>
-									</td>
-								</tr>
-								<tr>
+								<!-- <tr>
 									<td>제품명 &nbsp;</td>
 									<td colspan="2">
-										<div id="select-box" style="width: 120px"></div>
+										<div id="select-box" style="width: 130px"></div>						
 									</td>
-								</tr>
+								</tr> -->
 								<tr>
-									<td>계획일자 &nbsp;</td>
+									<td style="width: 80px">계획일자 &nbsp;</td>
 									<td>
 										<!-- date-picker -->
 										<div
@@ -70,16 +58,16 @@
 											<span class="tui-ico-date"></span>
 											<div id="endpicker-container" style="margin-left: -1px;"></div>
 										</div>
-										<button type="button"
+										<button type="button" id="searchBtn"
 											class="btn btn-dark btn-sm">검색</button>
-										<button type="button"
+										<button type="button" id="cancelBtn"
 											class="btn btn-dark btn-sm">초기화</button>
 									</td>
 									<td></td>
 								</tr>
 								<tr>
 									<td colspan="3">
-										<div id="grid"></div>
+										<div id="manageGrid"></div>
 									</td>
 								</tr>
 								<tr>
@@ -97,6 +85,8 @@
 						</div>
 
 					</div>
+					
+					<!-- 등록 탭 -->
 					<div class="tab-pane fade" id="insert" role="tabpanel"
 						aria-labelledby="insert-tab">
 						<div style="margin: 15px;">
@@ -124,7 +114,7 @@
 								<tr>
 									<td style="text-align: left;" colspan="2">
 										<!-- 모달버튼 -->
-										<button type="button"
+										<button type="button" id="showBtn"
 											class="btn btn-dark btn-sm"
 											data-bs-toggle="modal" data-bs-target="#requestModal">생산요청서
 											조회</button>
@@ -148,7 +138,7 @@
 
 	<script type="text/javascript">
 		
-		// toast - select box
+		/* // toast - select box
 		var selectBox = new tui.SelectBox('#select-box', {
 			placeholder : '제품선택',
 			data : [ {
@@ -162,11 +152,11 @@
 				value : '얇은피 새우만두 코드'
 			} ],
 			autofocus : true
-		});
+		}); */
 
 		// toast - datepicker
-		var today = new Date();
-		var picker = tui.DatePicker.createRangePicker({
+		const today = new Date();
+		const picker = tui.DatePicker.createRangePicker({
 			startpicker : {
 				date : today,
 				input : '#startpicker-input',
@@ -180,21 +170,37 @@
 			selectableRanges : [ [
 					today,
 					new Date(today.getFullYear() + 1, today.getMonth(), today
-							.getDate()) ] ]
+							.getDate()) ] ],
+			language: 'ko'
 		});
 
-		var datepicker = new tui.DatePicker('#wrapper', {
+		/* const datepicker = new tui.DatePicker('#wrapper', {
 			date : new Date(),
 			input : {
 				element : '#datepicker-input',
 				format : 'yyyy-MM-dd'
 			}
+		}); */
+		
+		// datePicker 날짜 조회
+		$('#searchBtn').on('click',function(){
+			var getStartDay = picker.getStartDate();
+			var getEndDay = picker.getEndDate();
+			console.log(getStartDay);
+			console.log(getEndDay);
+			// 갖고온 start, end 값을 넘겨서 select 해오기
+		})
+		
+		// datePicker 초기화
+		$('#cancelBtn').on('click',function(){
+			picker.setStartDate(today);
+			picker.setEndDate(today);
 		});
-
+		
 		// toast - grid
 		// 생산계획 관리 그리드
-		var grid = new tui.Grid({
-			el : document.getElementById('grid'),
+		var manageGrid = new tui.Grid({
+			el : document.getElementById('manageGrid'),
 			// 임시 데이터
 			data : [{
 				boardNum : '1',
@@ -203,8 +209,8 @@
 				planDCode : 'prod_123456',
 				productName : '얇은피 김치만두',
 				planAmt : '300',
-				/* prio : '1',
-				days : '2', */
+				prio : '1',
+				days : '2',
 				status : '지시완료'
 			}],
 			// data 가져오는 법
@@ -238,29 +244,27 @@
 			}, {
 				header : '제품명',
 				name : 'productName',
+				filter: {
+			        type: 'select'			  
+			      }
 			}, {
 				header : '계획량',
 				name : 'planAmt'
 			}, {
 				header : '작업우선순위',
 				name : 'prio',
-				// 필수 입력 값
-				validation: {
-			        dataType: 'number',
-			        required: false
-			      },
-			   editor: 'text'  
+				editor: 'text'
+				
 			}, {
 				header : '생산일수',
 				name : 'days',
-				validation: {
-			        dataType: 'number',
-			        required: false
-			      },
 			    editor: 'text'
 			}, {
 				header : '진행구분',
 				name : 'status',
+				filter: {
+			        type: 'select'			  
+			      }
 			}, ]
 		});
 		
@@ -274,8 +278,8 @@
 				productCode : 'MD-00200',
 				productName : '얇은피 김치만두',
 				planAmt : '300',
-				days : '2',
-				prio : '1',
+				/* days : '2',
+				prio : '1', */
 				other : '0'
 			} ],
 			// data 가져오는 법
@@ -311,49 +315,71 @@
 			}, {
 				header : '생산일수',
 				name : 'days',
-				editor: 'text'
+				editor: 'text',
+				// 필수 입력 값
+				validation: {
+			        dataType: 'text',
+			        required: true
+			      },
+			   editor: 'text'  
 			}, {
 				header : '작업우선순위',
 				name : 'prio',
-				editor: 'text'
+				editor: 'text',
+				// 필수 입력 값
+				validation: {
+			        dataType: 'text',
+			        required: true
+			      },
 			}, {
 				header : '비고',
 				name : 'other'
 			}, ]
 		});
+		// tab 클릭 이벤트
+		$('#insert-tab').on('click', function(){
+			insertGrid.refreshLayout();
+		});
+		$('#manage-tab').on('click', function(){
+			manageGrid.refreshLayout();
+		});
+		
 		// grid 행 추가
 		$('#insertBtn').on('click',function(){
 
 			var rowData = [{boardNum: "", orderCode: "", productCode: "",  productName: "", planAmt : "" , days: "", prio:"",other:""}]
 			insertGrid.appendRow(rowData);
-					
-			// $('#insertGrid').appendRows();
+
+		});
+		// grid 선택 행 삭제
+		$('#deleteBtn').on('click',function(){
+			// var change = confirm("행을 삭제하시겠습니까?");
+			var showConfirm = true;
+			insertGrid.removeCheckedRows(showConfirm);
+			
 		});
 	</script>
+	
 	<!-- 생산요청서 모달 -->
-	<div class="modal fade" id="requestModal" tabindex="-1"
-		aria-labelledby="exampleModalLabel" aria-hidden="true">
-		<div class="modal-dialog modal-xl">
+	<div class="modal" id="requestModal" tabindex="-1">
+		<div class="modal-dialog modal-xl" >
 			<div class="modal-content">
 				<div class="modal-header">
-					<h5 class="modal-title" id="exampleModalLabel">생산요청서 목록</h5>
-					<button type="button" class="btn-close" data-bs-dismiss="modal"
-						aria-label="Close"></button>
+					<h5 class="modal-title">생산요청서 목록</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal"	aria-label="Close" id="close_modal"></button>
 				</div>
 				<div class="modal-body">
 					<div>
-						<div id="requestModalGrid" style="width: 100%;"></div>
+						<div id="requestModalGrid"></div>
 					</div>
 				</div>
-
 			</div>
 		</div>
 	</div>
 
 	<script>
-	// 생산요청서 모달
-	$(document).on('shown.bs.modal','.modal', function () {
-		var requestModalGrid = new tui.Grid({
+	// 생산요청서 모달에 뜨는 그리드
+	var requestModalGrid = new tui.Grid({
 			el : document.getElementById('requestModalGrid'),
 			// 임시 데이터
 			data : [ {
@@ -397,8 +423,20 @@
 			}, {
 				header : '요청수량',
 				name : 'planAmt',
-			} ]
+			}]
 		});
+	// 모달 클릭 버튼 이벤트
+	$('#showBtn').on('click',function(){
+		/*
+		 var rMAlternative = new bootstrap.Modal('#requestModal',{
+			  keyboard: true
+		});
+		
+		const modalToggle = $('#requestModal');
+		rMAlternative.show(modalToggle);
+		*/
+		 $("#requestModal").modal("show");
+		requestModalGrid.refreshLayout();
 	});
 	</script>
 	</div>

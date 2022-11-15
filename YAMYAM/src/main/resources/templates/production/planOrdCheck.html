@@ -17,20 +17,7 @@
 			<div style="margin: 15px;">
 					<table style="width: 100%;">
 						<tr>
-							<td style="width: 90px;">진행구분 &nbsp;</td>
-							<td colspan="2" id="radioTable">
-								<input type="radio" id="whole" name="process" value="whole" checked>
-								<label for="whole">전체</label>
-								<input type="radio" id="progress" name="process" value="진행">
-								<label for="progress">진행</label>
-								<input type="radio"  id="complete" name="process" value="완료">
-								<label for="complete">완료</label>
-							</td>
-
-						</tr>
-						
-						<tr>
-							<td>지시일자 &nbsp;</td>
+							<td style="width: 70px;">지시일자 &nbsp;</td>
 							<td>
 								<div class="tui-datepicker-input tui-datetime-input tui-has-focus">
 							        <input id="startpicker-input" type="text" aria-label="Date">
@@ -43,9 +30,9 @@
 							        <span class="tui-ico-date"></span>
 							        <div id="endpicker-container" style="margin-left: -1px;"></div>
 							    </div>
-								<button type="button"
+								<button type="button" id="searchBtn"
 									class="btn btn-dark btn-sm">검색</button>
-								<button type="button"
+								<button type="button" id="cancelBtn"
 									class="btn btn-dark btn-sm">초기화</button>
 							</td>
 							<td></td>
@@ -143,35 +130,36 @@
 					name : 'prio',
 				}, {
 					header : '진행구분',
-					name : 'sts'
+					name : 'sts',
+					filter: {
+				        type: 'select'
+				      }
 					
 				}, {
 					header : '비고',
 					name : 'other',
 				}, ]
 			});
-			// radio 필터링
+			
+			
+			// 진행구분 radio 필터링
 			$('#radioTable > input').click(function() {
 		        var val = $("input[type=radio][name=process]:checked").val();
 		        if (val) {
-		            const state = {
+		           /*  const state = {
 		            		  code: 'eq',
 		            		  value: val 
-		            		};
-		            /* grid.findRows({
-		                sts: val
-		            }); */
-		            grid.findRows((row) => {
-		            	if(val != row.sts){
-		            		var key = row.rowKey;
-		            	    grid.removeRow(key);
-		            	}else if(val.equals("whole")) {
-		            		grid.refreshLayout();
-		            		//grid.restore();
+		            		}; */
+					
+		            grid.findRows(row => {
+	            	
+		            	var status = row.sts;
+		            	if(val == '진행' || val == '완료' ){
+		            		grid.filter('sts',[{code:'eq', value:val}]);   
+		            	} else if(val == '전체') {
+		            		grid.filter('sts',[{code:'contain', value:'진행'},{code:'contain', value:'완료'}]); 
 		            	}
-		            	
-		            });
-		            
+		            }); 
 		        }
 		        else {
 		        	console.log('아무것도 선택되지 않음');
