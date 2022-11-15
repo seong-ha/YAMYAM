@@ -5,26 +5,13 @@
 	layout:decorate="~{/layout/layout}">
 <head>
 <meta charset="UTF-8">
-<title>주문 관리</title>
+<title>완제품 반품 관리</title>
 
-<link href="css/styles.css" rel="stylesheet" />
-<link href="css/bootstrap.min.css" rel="stylesheet">
-<link href="css/tui-grid.css" rel="stylesheet">
-<script src="js/bootstrap.bundle.min.js"></script>
-<script src="js/tui-grid.js"></script>
-
-<link rel="stylesheet" href="https://uicdn.toast.com/tui.date-picker/latest/tui-date-picker.css" />
-<script src="https://uicdn.toast.com/tui.date-picker/latest/tui-date-picker.js"></script>
-
-<link rel="stylesheet"
-	href="https://uicdn.toast.com/grid/latest/tui-grid.css" />
-<script src="https://uicdn.toast.com/grid/latest/tui-grid.js"></script>
 <style>
-
 #od-title{
 	font-weight: bold;
 }
-#od-btn {
+#prd-btn {
 	display: inline-block; margin: 0 5px; float: right;
 }
 
@@ -36,33 +23,15 @@
 		<h3>완제품 반품 관리</h3>
 	</div>
 	
-	<div>
-    완제품LOT<input type="text" data-bs-toggle="modal" data-bs-target="#exampleModal">
+	<div id="prdReAd-content">
+		<div id="input-group">
+			<ul class="ul-style">
+    <li><label for="lot">완제품LOT</label><input type="text"
+     data-bs-toggle="modal" data-bs-target="#exampleModal" id="lot">
     <img class="Magnifying-Glass-img" alt="image" src="../images/Magnifying_Glass.png">
-    <input type="text" readonly><br>
-    </div>
-          <!-- Modal -->
-      <div class="modal fade" id="exampleModal" tabindex="-1"
-         aria-labelledby="exampleModalLabel" aria-hidden="true">
-         <div class="modal-dialog">
-            <div class="modal-content">
-               <div class="modal-header">
-                  <h5 class="modal-title" id="exampleModalLabel">완제품 출고 내역</h5>
-                  <button type="button" class="btn-close" data-bs-dismiss="modal"
-                     aria-label="Close"></button>
-               </div>
-               <div class="modal-body">
-                  <button type="button" class="btn btn-dark btn-sm"
-                     data-bs-dismiss="modal">등록</button>
-                  <button type="button" class="btn btn-dark btn-sm">초기화</button>
-               <div id="grid2"></div>
-               </div>
-            </div>
-         </div>
-      </div>
+    <input type="text" readonly><br></li>
 	
-	<div id="od-container">
-     <label>반품일자</label>
+     <li><label>반품일자</label>
 
     <div class="tui-datepicker-input tui-datetime-input tui-has-focus">
         <input id="startpicker-input" type="text" aria-label="Date">
@@ -77,12 +46,34 @@
     </div>
 
 	<button class="btn btn-dark btn-sm">조회</button>
-	<button  class="btn btn-dark btn-sm">초기화</button>
-	
+	<button  class="btn btn-dark btn-sm">초기화</button></li>
+	</ul>
 </div>
 
-	<div id="od-btn">
-	<button class="btn btn-dark btn-sm" onclick="Grid3">추가</button>
+	<!-- Modal -->
+	      <div class="modal fade" id="exampleModal" tabindex="-1"
+	         aria-labelledby="exampleModalLabel" aria-hidden="true">
+	         <div class="modal-dialog">
+	            <div class="modal-content">
+	               <div class="modal-header">
+	                  <h5 class="modal-title" id="exampleModalLabel">완제품LOT NO</h5>
+	                  <button type="button" class="btn-close" data-bs-dismiss="modal"
+	                     aria-label="Close"></button>
+	               </div>
+	               <div class="modal-body">
+	               		<label>완제품LOT</label> <input id="lotNo" type="text">
+	                  <button type="button" class="btn btn-dark btn-sm"
+	                     data-bs-dismiss="modal">조회</button>
+	                  <button type="button" class="btn btn-dark btn-sm">초기화</button>
+	               <div id="modalGrid"></div>
+	               </div>
+	            </div>
+	         </div>
+	      </div>
+	      </div>
+
+	<div id="prd-btn">
+	<button class="btn btn-dark btn-sm" id="insertBtn">추가</button>
 	<button class="btn btn-dark btn-sm">선택삭제</button>
 	<button class="btn btn-dark btn-sm">저장</button>
 	<button class="btn btn-dark btn-sm">엑셀 파일 출력</button>
@@ -153,52 +144,45 @@ const grid = new tui.Grid({
       }
     ]
   });
+	$('#insertBtn').on('click',function(){
+		
+		var rowData = [{reDate: "", reCd: "", lot: "", prdNm: "", actNm: "", odAmt: "", reAmt : "" , allAmt: ""}]
+		grid.appendRow(rowData);
+				
+	});
   
-const grid2 = new tui.Grid({
-    el: document.getElementById('grid2'),
+const modalGrid = new tui.Grid({
+    el: document.getElementById('modalGrid'),
     data: [
         {
-        	odCd : 'test'
+        	lot : 'LOT-PRO-221104-620',
+        	prdNm : '얇은피 고기만두',
+        	eDate : '2023-10-04'
         }
         ],
-    rowHeaders: ['checkbox'],
+    rowHeaders: ['rowNum'],
     scrollX: false,
     scrollY: false,
     columns: [
-      {
-        header: '주문 코드',
-        name: 'odCd'
-      },
       {
         header: '완제품 LOT',
         name: 'lot'
       },
       {
-        header: '제품코드',
-        name: 'prdCd'
+        header: '제품명',
+        name: 'prdNm'
       },
       {
-        header: '출고량',
-        name: 'outAmt'
-      },
-      {
-        header: '출고 일자',
-        name: 'outDate'
+        header: '유통 기한',
+        name: 'eDate'
       }
     ]
   });
- 
-var Grid3 = Grid.appendRows(data){
-	data: [{
-        border: '#aaa',
-        text: '#333'
-    },
-    cell: {
-        disabled: {
-            text: '#999'
-        }
-    }
-};
+	$('#lot').on('click',function(){
+		setInterval(function () {
+			modalGrid.refreshLayout();
+		}, 100);
+	});
 
 </script>
 </div>

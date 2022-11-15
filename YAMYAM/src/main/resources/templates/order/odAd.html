@@ -6,19 +6,10 @@
 <head>
 <meta charset="UTF-8">
 <title>주문 관리</title>
-
-<link href="css/styles.css" rel="stylesheet" />
-<link href="css/bootstrap.min.css" rel="stylesheet">
-<link href="css/tui-grid.css" rel="stylesheet">
-<script src="js/bootstrap.bundle.min.js"></script>
-<script src="js/tui-grid.js"></script>
-
-<link rel="stylesheet" href="https://uicdn.toast.com/tui.date-picker/latest/tui-date-picker.css" />
-<script src="https://uicdn.toast.com/tui.date-picker/latest/tui-date-picker.js"></script>
-
-<link rel="stylesheet"
-	href="https://uicdn.toast.com/grid/latest/tui-grid.css" />
-<script src="https://uicdn.toast.com/grid/latest/tui-grid.js"></script>
+<!-- 제이쿼리 -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+<!-- 엑셀 기능 -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.1/xlsx.full.min.js"></script>
 <style>
 
 #od-title{
@@ -97,32 +88,15 @@
 </div>
 
 	<div id="od-btn">
-	<button class="btn btn-dark btn-sm">추가</button>
+	<button class="btn btn-dark btn-sm" id="insertBtn">추가</button>
 	<button class="btn btn-dark btn-sm">선택삭제</button>
 	<button class="btn btn-dark btn-sm">저장</button>
-	<button class="btn btn-dark btn-sm">엑셀 파일 출력</button>
+	<button class="btn btn-dark btn-sm" id="exportBtn">엑셀 파일 출력</button>
 	</div>
 	
 <div id="grid"></div>
 
 <script>
-var today = new Date();
-var picker = tui.DatePicker.createRangePicker({
-    startpicker: {
-        date: today,
-        input: '#startpicker-input',
-        container: '#startpicker-container'
-    },
-    endpicker: {
-        date: today,
-        input: '#endpicker-input',
-        container: '#endpicker-container'
-    },
-    selectableRanges: [
-        [today, new Date(today.getFullYear() + 1, today.getMonth(), today.getDate())]
-    ]
-});
-
 const grid = new tui.Grid({
     el: document.getElementById('grid'),
     data: [
@@ -180,6 +154,32 @@ const grid = new tui.Grid({
       },
     ]
   });
+
+	$('#insertBtn').on('click',function(){
+	
+		var rowData = [{odDate: "", odCd: "", prdCd: "", prdNm: "", odAmt: "", actCd : "" , actNm: "", deDate: "", sts:""}]
+		grid.appendRow(rowData);
+				
+});
+	// 날짜 계산
+	var today = new Date();
+	var picker = tui.DatePicker.createRangePicker({
+	    startpicker: {
+	        date: today,
+	        input: '#startpicker-input',
+	        container: '#startpicker-container'
+	    },
+	    endpicker: {
+	        date: today,
+	        input: '#endpicker-input',
+	        container: '#endpicker-container'
+	    },
+	    selectableRanges: [
+	        [today, new Date(today.getFullYear() + 1, today.getMonth(), today.getDate())]
+	    ]
+	});
+
+
   
 	var myModal = document.getElementById('myModal')
 	var myInput = document.getElementById('myInput')
@@ -188,6 +188,17 @@ const grid = new tui.Grid({
 	  myInput.focus()
 	})
 
+	// 엑셀 내보내기
+	const options = {
+	  includeHeader : true,
+	  includeHiddenColumns : true,
+	  onlySelected : true,
+	  fileName: 'myExport'
+	};
+	$('#exportBtn').on('click',function(){
+	//grid.export('xlsx');
+	grid.export('xlsx', options);
+	});
 </script>
 </div>
 </body>

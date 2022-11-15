@@ -5,22 +5,9 @@
 	layout:decorate="~{/layout/layout}">
 <head>
 <meta charset="UTF-8">
-<title>주문 관리</title>
+<title>완제품 출고 조회</title>
 
-<link href="css/styles.css" rel="stylesheet" />
-<link href="css/bootstrap.min.css" rel="stylesheet">
-<link href="css/tui-grid.css" rel="stylesheet">
-<script src="js/bootstrap.bundle.min.js"></script>
-<script src="js/tui-grid.js"></script>
-
-<link rel="stylesheet" href="https://uicdn.toast.com/tui.date-picker/latest/tui-date-picker.css" />
-<script src="https://uicdn.toast.com/tui.date-picker/latest/tui-date-picker.js"></script>
-
-<link rel="stylesheet"
-	href="https://uicdn.toast.com/grid/latest/tui-grid.css" />
-<script src="https://uicdn.toast.com/grid/latest/tui-grid.js"></script>
 <style>
-
 #od-title{
 	font-weight: bold;
 }
@@ -79,7 +66,7 @@
                   <button type="button" class="btn btn-dark btn-sm"
                      data-bs-dismiss="modal">등록</button>
                   <button type="button" class="btn btn-dark btn-sm">초기화</button>
-               <div id="grid2"></div>
+               <div id="modalGrid1"></div>
                </div>
             </div>
          </div>
@@ -112,22 +99,7 @@
 <div id="grid"></div>
 
 <script>
-var today = new Date();
-var picker = tui.DatePicker.createRangePicker({
-    startpicker: {
-        date: today,
-        input: '#startpicker-input',
-        container: '#startpicker-container'
-    },
-    endpicker: {
-        date: today,
-        input: '#endpicker-input',
-        container: '#endpicker-container'
-    },
-    selectableRanges: [
-        [today, new Date(today.getFullYear() + 1, today.getMonth(), today.getDate())]
-    ]
-});
+
 
 const grid = new tui.Grid({
     el: document.getElementById('grid'),
@@ -144,7 +116,7 @@ const grid = new tui.Grid({
         	sts : '완료'
         }
         ],
-    rowHeaders: ['checkbox'],
+    rowHeaders: ['rowNum'],
     scrollX: false,
     scrollY: false,
     columns: [
@@ -183,14 +155,16 @@ const grid = new tui.Grid({
     ]
   });
   
-const grid2 = new tui.Grid({
-    el: document.getElementById('grid2'),
+const modalGrid1 = new tui.Grid({
+    el: document.getElementById('modalGrid1'),
     data: [
         {
-        	prdCd : 'test'
+        	prdCd : 'MD-00100',
+        	prdNm : '얇은피 고기만두',
+        	won : '1000'
         }
         ],
-    rowHeaders: ['checkbox'],
+    rowHeaders: ['rowNum'],
     scrollX: false,
     scrollY: false,
     columns: [
@@ -208,6 +182,34 @@ const grid2 = new tui.Grid({
       }
     ]
   });
+  
+const modalGrid2 = new tui.Grid({
+    el: document.getElementById('modalGrid2'),
+    data: [
+        {
+        	lot : 'LOT-PRO-221104-620',
+        	prdNm : '얇은피 고기만두',
+        	eDate : '2023-10-04'
+        }
+        ],
+    rowHeaders: ['rowNum'],
+    scrollX: false,
+    scrollY: false,
+    columns: [
+      {
+        header: '완제품LOT',
+        name: 'lot'
+      },
+      {
+        header: '제품명',
+        name: 'prdNm'
+      },
+      {
+        header: '유통기한',
+        name: 'eDate'
+      }
+    ]
+  })
 
 </script>
 </div>
