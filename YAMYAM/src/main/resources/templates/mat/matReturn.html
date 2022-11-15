@@ -18,8 +18,19 @@
 			class="Magnifying-Glass-img" alt="image" data-bs-toggle="modal"
 			data-bs-target="#actModal" src="../images/Magnifying_Glass.png">
 			<input type="text" readonly></li>
-		<li><label for="rDate">반품요청일자</label><input type="date"
-			id="rDate"><span> - </span><input type="date" id="rDate">
+			
+		<!-- Date Picker -->
+		<li><label for="startpicker-input">반품요청일</label>
+			<div class="tui-datepicker-input tui-datetime-input tui-has-focus">
+				<input id="startpicker-input" type="text" aria-label="Date">
+				<span class="tui-ico-date"></span>
+				<div id="startpicker-container" style="margin-left: -1px;"></div>
+			</div> <span>-</span>
+			<div class="tui-datepicker-input tui-datetime-input tui-has-focus">
+				<input id="endpicker-input" type="text" aria-label="Date"> <span
+					class="tui-ico-date"></span>
+				<div id="endpicker-container" style="margin-left: -1px;"></div>
+			</div>
 			<button class="btn btn-dark btn-sm">조회</button>
 			<button class="btn btn-dark btn-sm">초기화</button></li>
 	</ul>
@@ -34,7 +45,7 @@
 	<div id="grid"></div>
 
 	<!-- 추가 버튼 모달 -->
-	<div class="modal fade" id="addModal" tabindex="-1"
+	<div class="modal" id="addModal" tabindex="-1"
 		aria-labelledby="addModalLabel" aria-hidden="true">
 		<div class="modal-dialog modal-xl">
 			<div class="modal-content">
@@ -56,9 +67,58 @@
 			</div>
 		</div>
 	</div>
+
+	<!-- 자재 목록 모달 -->
+	<div class="modal" id="matModal" tabindex="-1"
+		aria-labelledby="matModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-xl">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="matModalLabel">자재 목록</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal"
+						aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<div>
+						<div id="modalGrid2"></div>
+					</div>
+					<div align="center">
+						<button class="btn btn-dark btn-sm">추가</button>
+						<button class="btn btn-dark btn-sm">취소</button>
+					</div>
+				</div>
+
+			</div>
+		</div>
+	</div>
+	<!-- 업체 목록 모달 -->
+	<div class="modal" id="actModal" tabindex="-1"
+		aria-labelledby="actModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-xl">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="actModalLabel">업체 목록</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal"
+						aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<div>
+						<div id="modalGrid3"></div>
+					</div>
+					<div align="center">
+						<button class="btn btn-dark btn-sm">추가</button>
+						<button class="btn btn-dark btn-sm">취소</button>
+					</div>
+				</div>
+
+			</div>
+		</div>
+	</div>
+
 	<script>
 const grid = new tui.Grid({
       el: document.getElementById('grid'),
+      bodyHeight: 500,
       data: [
     {
     	matCode: 'OAF-20221104-011',
@@ -83,9 +143,9 @@ const grid = new tui.Grid({
         eInfo: '포장지 훼손'
     }
   ],
-      rowHeaders: ['checkbox'],
+      rowHeaders: ['checkbox', 'rowNum'],
       scrollX: false,
-      scrollY: false,
+      scrollY: true,
       columns: [
         {
           header: '발주코드',
@@ -138,57 +198,138 @@ const grid = new tui.Grid({
       console.log('change focused cell!', ev);
     });
     </script>
-    
-    	<script>
+
+	<script>
 	document.addEventListener('shown.bs.modal', function (){
-		modalGrid = '';
-		var modalGrid = new tui.Grid({
-			el: document.getElementById('modalGrid'),
-			data: [{
-				matCode: 'OAF-20221104-001',
-				maCode: 'RML-10101',
-				maNm: '얇은 만두피',
-				actNm: 'YD 만두피',
-				count: 1,
-				date: '2022-11-12'
+		modalGrid.refreshLayout();
+		modalGrid2.refreshLayout();
+		modalGrid3.refreshLayout();
+	}, '.modal');
+	
+	var modalGrid = new tui.Grid({
+		el: document.getElementById('modalGrid'),
+		bodyHeight: 400,
+		data: [{
+			matCode: 'OAF-20221104-001',
+			maCode: 'RML-10101',
+			maNm: '얇은 만두피',
+			actNm: 'YD 만두피',
+			count: 1,
+			date: '2022-11-12'
+		},
+		{
+			matCode: 'OAF-20221105-002',
+			maCode: 'RML-10102',
+			maNm: '굵은 만두피',
+			actNm: 'SJ 만두피',
+			count: 9,
+			date: '2022-11-12'
+		}],
+		rowHeaders: ['checkbox'],
+		scrollX: false,
+		scrollY: true,
+		columns: [{
+	          header: '발주코드',
+	          name: 'matCode'
+	        },
+	        {
+	          header: '자재코드',
+	          name: 'maCode'
+	        },
+	        {
+	          header: '자재명',
+	          name: 'maNm'
+	        },
+	        {
+		      header: '업체명',
+		      name: 'actNm'
+		    },
+	        {
+			  header: '불합격량',
+			  name: 'count'
+			},
+		    {
+			  header: '검사일자',
+			  name: 'date'
+			}
+      ] 
+	});
+	
+	var modalGrid2 = new tui.Grid({
+		el: document.getElementById('modalGrid2'),
+		bodyHeight: 150,
+		data: [{
+			code: 'RML-10101',
+			name: '얇은 만두피',
+			size: 100,
+			count: 200
+		},
+		{
+			code: 'RML-10102',
+			name: '굵은 만두피',
+			size: 100,
+			count: 200
+		}],
+		rowHeaders: ['checkbox'],
+		scrollX: false,
+		scrollY: true,
+		columns: [{
+	          header: '자재코드',
+	          name: 'code'
+	        },
+	        {
+	          header: '자재명',
+	          name: 'name'
+	        },
+	        {
+	          header: '규격',
+	          name: 'size'
+	        },
+	        {
+		      header: '수량',
+		      name: 'count'
+		    }
+      ] 
+	});
+	
+	var modalGrid3 = new tui.Grid({
+		el: document.getElementById('modalGrid3'),
+		bodyHeight: 150,
+		data: [{
+			actCode: 'VDR-1101',
+			actName: 'YD 만두피'
+		}],
+		rowHeaders: ['checkbox'],
+		scrollX: false,
+		scrollY: true,
+		columns: [
+			{
+				header: '업체 코드',
+				name: 'actCode',
 			},
 			{
-				matCode: 'OAF-20221105-002',
-				maCode: 'RML-10102',
-				maNm: '굵은 만두피',
-				actNm: 'SJ 만두피',
-				count: 9,
-				date: '2022-11-12'
-			}],
-			rowHeaders: ['checkbox'],
-			scrollX: false,
-			scrollY: false,
-			columns: [{
-		          header: '발주코드',
-		          name: 'matCode'
-		        },
-		        {
-		          header: '자재코드',
-		          name: 'maCode'
-		        },
-		        {
-		          header: '자재명',
-		          name: 'maNm'
-		        },
-		        {
-			      header: '업체명',
-			      name: 'actNm'
-			    },
-		        {
-				  header: '불합격량',
-				  name: 'count'
-				},
-			    {
-				  header: '검사일자',
-				  name: 'date'
-				}
-	      ] 
-		});
-	}, '.modal');
+				header: '업체명',
+				name: 'actName',
+			}
+		]
+	});
+	
+	   // Date Picker
+	   var today = new Date();
+	    var picker = tui.DatePicker.createRangePicker({
+	        startpicker: {
+	            date: today,
+	            input: '#startpicker-input',
+	            container: '#startpicker-container'
+	        },
+	        endpicker: {
+	            date: today,
+	            input: '#endpicker-input',
+	            container: '#endpicker-container'
+	        },
+	        selectableRanges: [
+	            [today, new Date(today.getFullYear() + 1, today.getMonth(), today.getDate())]
+	        ]
+	    });
 	</script>
 </div>
