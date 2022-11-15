@@ -3,107 +3,184 @@
 	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
 	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	layout:decorate="~{/layout/layout}">
+<head>
+<style type="text/css">
+#select-box .tui-select-box {
+
+width:80%;	display: inline;
+}
+</style>
+</head>
 <div class="container" layout:fragment="content">
 
-	
-	자재관리
 
-	<div id="grid"></div>
+	<br>
+	<h2>자재 코드 관리</h2>
+	<hr>
+
+	<br> <br> <br>
+
+	<div class="container">
+		<div class="row row-cols-2">
+			<div class="col"></div>
+
+			<div class="col"></div>
+
+			<div class="col-7">
+				<div id="grid"></div>
+			</div>
+
+			<div class="col-5">
+				<div id="gird2"></div>
+
+
+				<b>자재 정보 표시</b>
+				<hr>
+
+				<span class="mb-3 row"> <label for="staticEmail"
+					class="col-sm-3 col-form-label" style="width: 100px">자재 코드</label>
+					<span class="col-sm-4"> <input type="text"
+						name="distributeCodeName" class="form-control"
+						id="distributeCodeName">
+
+				</span> <label for="staticEmail" class="col-sm-3 col-form-label"
+					style="width: 80px">자재명</label> <span class="col-sm-4"> <input
+						type="text" name="distributeCodeName" class="form-control"
+						id="distributeCodeName">
+				</span>
+
+				</span>
+				<hr>
+				
+				<div class="mb-3 row">
+					<label class="col-sm-2">규격</label><span class="col-sm-4" style="width: 190px;" id="select-box"></span>
+					<label class="col-sm-2">작업단위</label><span class="col-sm-4" style="width: 185px;" id="select-box2"></span>
+				</div>
+				<hr>
+				
+				
+				
+				
+
+
+
+			</div>
+
+		</div>
+
+
+	</div>
+
+
 
 	<script>
 		const gridData = [ {
-      no: '1',
-      emp_no: '1100',
-      emp_name: '홍길동',
-      hire_date : '2002/07/05',
-      id : 'no',
-      dept_name : '영업부',
-      role : '0'
-		},
-    {
-      no: '2',
-      emp_no: '1101',
-      emp_name: '김길동',
-      hire_date : '2008/02/05',
-      id : 'no',
-      dept_name : '영업부',
-      role : '0'
-		},
-    {
-      no: '3',
-      emp_no: '1123',
-      emp_name: '홍길동',
-      hire_date : '2002/07/05',
-      id : 'no',
-      dept_name : '영업부',
-      role : '0'
-		},
-    {
-      no: '4',
-      emp_no: '1154',
-      emp_name: '황길동',
-      hire_date : '2003/11/15',
-      id : 'no',
-      dept_name : '영업부',
-      role : '0'
-		},
-    {
-      no: '5',
-      emp_no: '1199',
-      emp_name: '최길동',
-      hire_date : '2006/07/05',
-      id : 'no',
-      dept_name : '영업부',
-      role : '0'
-		},
-    {
-      no: '6',
-      emp_no: '1207',
-      emp_name: '홍길동',
-      hire_date : '2002/04/25',
-      id : 'no',
-      dept_name : '영업부',
-      role : '0'
-		},
-    {
-      no: '7',
-      emp_no: '1500',
-      emp_name: '홍길동',
-      hire_date : '2004/03/05',
-      id : 'no',
-      dept_name : '영업부',
-      role : '0'
-		},
-  ];
+			no : '1',
+			matcode : 'HS-001',
+			matname : '고기',
+			standard : '50kg',
+			workunit : 'BOX',
+			safeamount : '1000',
+			matdivision : '원자재'
+		}, {
+			no : '2',
+			matcode : 'HS-001',
+			matname : '고기',
+			standard : '50kg',
+			workunit : 'BOX',
+			safeamount : '1000',
+			matdivision : '원자재'
+		}, {
+			no : '3',
+			matcode : 'HS-001',
+			matname : '고기',
+			standard : '50kg',
+			workunit : 'BOX',
+			safeamount : '1000',
+			matdivision : '원자재'
+		}
+
+		];
 
 		const grid = new tui.Grid({
 			el : document.getElementById('grid'),
-			data : gridData,
-			scrollX : false,
+			data : gridData.slice(0, 6),
+			bodyHeight : 600,
+			scrollX : true,
 			scrollY : false,
 			columns : [ {
 				header : 'No',
 				name : 'no'
 			}, {
-				header : '직원고유번호',
-				name : 'emp_no'
+				header : '자재 코드',
+				name : 'matcode'
 			}, {
-				header : '직원이름',
-				name : 'emp_name'
+				header : '자재 명',
+				name : 'matname'
 			}, {
-				header : '입사일',
-				name : 'hire_date'
+				header : '규격',
+				name : 'standard'
 			}, {
-				header : '계정아이디',
-				name : 'id'
+				header : '작업단위',
+				name : 'workunit'
 			}, {
-				header : '부서명',
-				name : 'dept_name'
+				header : '안전재고',
+				name : 'safeamount'
 			}, {
-				header : '직급정보',
-				name : 'role'
-			}, ]
+				header : '제품구분',
+				name : 'matdivision'
+			} ],
+			showDummyRows : true
 		});
-    </script>
-    
+
+		// toast - select box
+		var selectBox = new tui.SelectBox('#select-box', {
+			placeholder : '중량',
+			data : [ {
+				label : '10kg',
+				value : '10kg' // 코드 바꾸기
+			}, {
+				label : '20kg',
+				value : '20kg'
+			}, {
+				label : '30kg',
+				value : '30kg'
+			}, {
+				label : '40kg',
+				value : '40kg'
+			}, {
+				label : '50kg',
+				value : '50kg'
+			}, {
+				label : '60kg',
+				value : '60kg'
+			}, {
+				label : '70kg',
+				value : '70kg'
+			}, {
+				label : '80kg',
+				value : '80kg'
+			}, {
+				label : '90kg',
+				value : '90kg'
+			}, {
+				label : '100kg',
+				value : '100kg'
+			} ],
+			autofocus : true
+		});
+		
+		var selectBox2 = new tui.SelectBox('#select-box2', {
+			placeholder : '단위',
+			data : [ {
+				label : 'BOX',
+				value : 'BOX' // 코드 바꾸기
+			}, {
+				label : 'EA',
+				value : 'EA'
+			} ],
+			autofocus : true
+		});
+	</script>
+
 </div>
