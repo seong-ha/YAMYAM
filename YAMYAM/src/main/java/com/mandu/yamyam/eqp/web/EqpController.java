@@ -8,6 +8,6 @@ public class EqpController {
 	
 	@RequestMapping("/eqp")
 	public String eqp() {
-		return "eqp/eqp";
+		return "eqp/eqpAd";
 	}
 }

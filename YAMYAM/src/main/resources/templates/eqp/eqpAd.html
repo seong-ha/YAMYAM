@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{/layout/layout}">
+
+<div class="container" layout:fragment="content">
+	<h4>설비 관리</h4>
+	<div>
+		<!-- 탭 목록 start -->
+		<ul class="nav nav-tabs nav-pills" id="myTab" role="tablist">
+			<li class="nav-item" role="presentation">
+				<button class="nav-link active" id="select-tab" data-bs-toggle="tab"
+					data-bs-target="#select" type="button" role="tab"
+					aria-controls="select" aria-selected="true">조회</button>
+			</li>
+			<li class="nav-item" role="presentation">
+				<button class="nav-link" id="manage-tab" data-bs-toggle="tab"
+					data-bs-target="#manage" type="button" role="tab"
+					aria-controls="manage" aria-selected="false">관리</button>
+			</li>
+		</ul>
+		<!-- 탭 목록 end -->
+		
+		<!-- 탭 본문 -->
+		<div class="tab-content" id="myTabContent" style="border: 1px solid black;">
+			
+			<!-- 조회탭 본문 start -->
+			<div class="tab-pane fade show active" id="select" role="tabpanel"
+				aria-labelledby="select-tab">
+				<div style="margin-top:10px">
+					<form action="#">
+						<ul class="ul-style">
+							<li>
+								<label for="eName">설비명</label>
+								<input type="text" name="eName" id="firstEName">
+								<button type="button" class="btn btn-dark btn-sm" onclick="searchBtn()">검색</button>
+								<input type="reset" class="btn btn-dark btn-sm">
+							</li>
+						</ul>
+					</form>
+					<div class="row">
+						<div class="d-md-flex justify-content-md-end">
+							<button type="button" class="btn btn-dark btn-sm me-md-2" onclick="deleteBtn()">삭제</button>
+						</div>
+					</div>
+					<!-- 조회 grid -->
+					<div id="selectEqp"></div>
+				</div>
+			</div>
+			<!-- 조회탭 본문 end -->
+			
+			<!-- 관리탭 본문 start -->
+			<div class="tab-pane fade" id="manage" role="tabpanel"
+				aria-labelledby="manage-tab">
+				<form action="#">
+					<div style="margin: 15px;">
+						<div class="d-md-flex justify-content-md-end">
+							<button type="button" class="btn btn-dark btn-sm me-md-2" onclick="selectBtn()">설비 목록</button>
+							<input type="reset" class="btn btn-dark btn-sm me-md-2">
+							<button type="button" class="btn btn-dark btn-sm me-md-2" onclick="insertUpdateBtn()">저장</button>
+						</div>
+						
+						<hr style="height:3px;">
+						
+						<!-- 테이블과 사진 배치 start -->
+						<div class="row">
+							<div class="col-9">
+								<table id="eqpTable">
+									<tr>
+										<th>설비코드</th>
+										<td>
+											<input type="text" id="eqpCd" name="eqpCd">
+										</td>
+										<th>금액</th>
+										<td>
+											<input type="text" id="sal" name="sal">
+										</td>
+										<th>사용여부</th>
+										<td>
+											<input type="radio" id="sts" name="sts" value="" /> 가동 &nbsp;
+											<input type="radio" id="sts" name="sts" value="" /> 비가동 &nbsp; 
+											<input type="radio" id="sts" name="sts" value="" /> 대기 &nbsp;
+										</td>
+									</tr>
+									<tr>
+										<th>설비명</th>
+										<td>
+											<input type="text" id="secondEName" name="eName">
+										</td>
+										<th>제작일자</th>
+										<td>
+											<input type="text" id="mDate" name="mDate">
+										</td>
+										<th>UPH</th>
+										<td>
+											<input type="text" id="uph" name="uph">
+										</td>
+									</tr>
+									<tr>
+										<th>모델명</th>
+										<td>
+											<input type="text" id="mName" name="mName">
+										</td>
+										<th>구매일자</th>
+										<td>
+											<input type="text" id="bDate" name="bDate">
+										</td>
+									</tr>
+									<tr>
+										<th>설비업체명</th>
+										<td>
+											<input type="text" id="actCd" name="actCd">
+										</td>
+										<th>점검주기</th>
+										<td>
+											<input type="text" id="cCycle" name="cCycle">
+										</td>
+									</tr>
+								</table>
+							</div>
+							<div class="col-3">
+								<img id="img" name="img" alt="설비사진" src="images/main.png" width="300px" height="300px">
+							</div>
+						</div>
+						<!-- 테이블과 사진 배치 end -->
+					</div>
+				</form>
+			</div>
+			<!-- 관리탭 본문 end -->
+		</div>
+		<!-- 탭 본문 end -->
+	</div>
+
+	<script type="text/javascript">
+	/* 조회 탭 부분 --------------------------------------------------------------------------------------------------- */
+	
+		const selectEqp = new tui.Grid({
+		      el: document.getElementById('selectEqp'),
+		      bodyHeight: 500, // 스크롤
+		      data: [
+		    {
+		    	eqpCd: 'eqp-20221104-001',
+		    	eName: '만두소 배합기',
+		    	mName: 'mandu-01',
+		    	actCD: 'ACT-010',
+		    	name: '최고배합기',
+		    	sal: 2000000,
+		    	mDate: '2022-11-01',
+		    	bDate: '2022-11-14',
+		    	cCycle: 60,
+		    	dates: '2022-11-14',
+		    	sts: '대기'
+		    },
+		    {
+		    	eqpCd: 'eqp-20221104-002',
+		    	eName: '만두소 배합기2',
+		    	mName: 'mandu-02',
+		    	actCD: 'ACT-010',
+		    	name: '최고배합기',
+		    	sal: 2000000,
+		    	mDate: '2022-11-01',
+		    	bDate: '2022-11-14',
+		    	cCycle: 60,
+		    	dates: '2022-11-14',
+		    	sts: '대기'
+		    }
+		  ],
+		      rowHeaders: ['checkbox'],
+		      scrollX: false,
+		      scrollY: true,
+		      columns: [
+		        {
+		          header: '설비코드',
+		          name: 'eqpCd',
+			      sortable: true,
+			      align: 'center'
+		        },
+		        {
+		          header: '설비명',
+		          name: 'eName',
+			      sortable: true,
+			      align: 'center'
+		        },
+		        {
+		          header: '모델명',
+		          name: 'mName',
+			      sortable: true,
+			      align: 'center'
+		        },
+		        {
+		          header: '거래처코드',
+		          name: 'actCD',
+			      sortable: true,
+			      align: 'center'
+		          
+		        },
+		        {
+		          header: '설비업체명',
+		          name: 'name',
+			      sortable: true,
+			      align: 'center'
+		        },
+		        {
+		          header: '금액',
+		          name: 'sal',
+			      sortable: true,
+			      align: 'center'
+		        },
+		        {
+		          header: '제작일자',
+		          name: 'mDate',
+			      sortable: true,
+			      align: 'center'
+		        },
+		        {
+		          header: '구매일자',
+		          name: 'bDate',
+			      sortable: true,
+			      align: 'center'
+		        },
+		        {
+		          header: '점검주기',
+		          name: 'cCycle',
+			      sortable: true,
+			      align: 'center'
+		        },
+		        {
+		          header: '마지막점검일',
+		          name: 'dates',
+			      sortable: true,
+			      align: 'center'
+		        },
+		        {
+		          header: '설비상태',
+		          name: 'sts',
+		          type: 'select',
+			      sortable: true,
+			      align: 'center'
+		        }
+		      ]
+		    });
+		// 검색 버튼
+		function searchBtn() {
+			let firstEName = document.getElementById('firstEName');
+			
+			// 검색창 글자 안 적으면 전체 조회 ajax
+			if (firstEName.value == null || firstEName.value == '') {
+				
+				// ajax
+				
+				return;
+			}
+			
+			// ajax로 검색어가 포함된 데이터 ajax로 가져오기
+		}
+		
+		// 삭제 버튼
+		function deleteBtn() {
+			var showConfirm = true;
+			selectEqp.removeCheckedRows(showConfirm);
+		}
+		
+		
+	/* 관리 탭 부분 --------------------------------------------------------------------------------------------------- */
+	
+		function selectBtn() {
+			/* 
+				팝업창띄우고
+				설비 목록들 가져와서 띄워주고
+				선택하면 input태그들에 데이터 들어가게
+			*/
+		}
+		
+		function insertUpdateBtn() {
+			/* 
+				저장 누르면 정보 들고 db 가서
+				서비스 단에서 해당 정보로 설비코드로 설비 검색해와서 없으면 insert시키고
+				이미 있어서 정보를 return해주면 가져온 정보로 update
+	
+				insert든 update든 완료되면 알림 띄워주고
+				화면단에 적힌거 reset버튼 타겟팅 후 click으로 지워준다.
+			*/
+		}
+	</script>
+</div>
