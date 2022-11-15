@@ -43,7 +43,8 @@ width:80%;	display: inline;
 						name="distributeCodeName" class="form-control"
 						id="distributeCodeName">
 
-				</span> <label for="staticEmail" class="col-sm-3 col-form-label"
+					</span> 
+				<label for="staticEmail" class="col-sm-3 col-form-label"
 					style="width: 80px">자재명</label> <span class="col-sm-4"> <input
 						type="text" name="distributeCodeName" class="form-control"
 						id="distributeCodeName">
@@ -54,12 +55,30 @@ width:80%;	display: inline;
 				
 				<div class="mb-3 row">
 					<label class="col-sm-2">규격</label><span class="col-sm-4" style="width: 190px;" id="select-box"></span>
-					<label class="col-sm-2">작업단위</label><span class="col-sm-4" style="width: 185px;" id="select-box2"></span>
+					<label class="col-sm-2">&nbsp;&nbsp;작업단위</label><span class="col-sm-4" style="width: 190px;" id="select-box2"></span>
 				</div>
 				<hr>
 				
+				<div id="od-container">
+				<span class="mb-3 row"> <label for="staticEmail"
+					class="col-sm-3 col-form-label" style="width: 100px">자재 코드</label>
+					<span class="col-sm-4"> 
+					<input type="text" name="distributeCodeName" class="form-control" id="distributeCodeName">
+					<img class="Magnifying-Glass-img" alt="image" src="../images/Magnifying_Glass.png">
+					</span>
+				</span>
+				</div>
+				<hr>
+				
+				<div class="mb-3 row">
+					<label class="col-sm-2">제품구분</label><span class="col-sm-4" style="width: 190px;" id="select-box3"></span>
+					<label class="col-sm-2">안전재고</label><span class="col-sm-4" style="width: 190px;"><input type="text"></span>
+				</div>
 				
 				
+				
+				
+								
 				
 
 
@@ -178,6 +197,18 @@ width:80%;	display: inline;
 			}, {
 				label : 'EA',
 				value : 'EA'
+			} ],
+			autofocus : true
+		});
+		
+		var selectBox3 = new tui.SelectBox('#select-box3', {
+			placeholder : '단위',
+			data : [ {
+				label : '원자재',
+				value : '원자재' // 코드 바꾸기
+			}, {
+				label : '반제품',
+				value : '반제품'
 			} ],
 			autofocus : true
 		});
