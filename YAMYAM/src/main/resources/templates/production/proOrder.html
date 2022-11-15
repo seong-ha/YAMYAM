@@ -454,7 +454,6 @@
 			el: document.getElementById('modalGrid'),
 			// 임시 데이터
 			data: [{
-				boardNum: '1',
 				planCode: 'pro_123456',
 				planName: '얇은피 김치만두 200',
 				planDCode: 'pro_123456',
@@ -471,10 +470,8 @@
 			// },
 			scrollX: false,
 			scrollY: false,
-			columns: [{
-					header: 'No',
-					name: 'boardNum',
-				},
+			rowHeaders: ['rowNum'],
+			columns: [
 				{
 					header: '계획코드',
 					name: 'planCode',
