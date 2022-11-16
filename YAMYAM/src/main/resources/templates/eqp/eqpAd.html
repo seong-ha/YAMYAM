@@ -52,9 +52,10 @@
 				<form action="#">
 					<div style="margin: 15px;">
 						<div class="d-md-flex justify-content-md-end">
-							<button type="button" class="btn btn-dark btn-sm me-md-2" onclick="selectBtn">설비 목록</button>
+							<button type="button" class="btn btn-dark btn-sm me-md-2" data-bs-toggle="modal"
+												data-bs-target="#eqpListModal">설비 목록</button>
 							<input type="reset" class="btn btn-dark btn-sm me-md-2">
-							<button type="button" class="btn btn-dark btn-sm me-md-2" onclick="insertUpdateBtn()">저장</button>
+							<button type="button" class="btn btn-dark btn-sm me-md-2" id="insertUpdateBtn">저장</button>
 						</div>
 						
 						<hr style="height:3px;">
@@ -115,10 +116,10 @@
 										</td>
 										<th>설비구분</th>
 										<td colspan="2">
-											<input type="text" id="actCd" name="actCd" style="margin-right: 0;" readonly>
+											<input type="text" id="eqpTypeCode" name="eqpTypeCode" style="margin-right: 0;" readonly>
 											<img class="Magnifying-Glass-img" alt="image" data-bs-toggle="modal"
 												data-bs-target="#eqpTypeModal" src="../images/Magnifying_Glass.png">
-											<input type="text" id="actCd" name="actCd" readonly>
+											<input type="text" id="eqpTypeName" name="eqpTypeName" readonly>
 										</td>
 									</tr>
 								</table>
@@ -136,6 +137,24 @@
 		<!-- 탭 본문 end -->
 	</div>
 	
+	<!-- 설비목록 modal -->
+	<div class="modal" id="eqpListModal" tabindex="-1"
+		aria-labelledby="#eqpListLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="eqpListLabel">설비 목록</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal"
+						aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<div id="eqpListModalGrid"></div>
+				</div>
+
+			</div>
+		</div>
+	</div>
+	
 	<!-- 설비구분 modal -->
 	<div class="modal" id="eqpTypeModal" tabindex="-1"
 		aria-labelledby="#eqpTypeLabel" aria-hidden="true">
@@ -147,58 +166,25 @@
 						aria-label="Close"></button>
 				</div>
 				<div class="modal-body">
-					<div>
-						<div id="eqpTypeModalGrid"></div>
-					</div>
-					<div align="center">
-						<button class="btn btn-dark btn-sm" style="margin-right:10px">확인</button>
-						<button class="btn btn-dark btn-sm">취소</button>
-					</div>
+					<div id="eqpTypeModalGrid"></div>
 				</div>
-
 			</div>
 		</div>
 	</div>
-	
-	
-	<!-- 설비목록 modal -->
-	<div class="modal" id="eqpListModal" tabindex="-1"
-		aria-labelledby="eqpListLabel" aria-hidden="true">
-		<div class="modal-dialog modal-sm">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h5 class="modal-title" id="eqpListLabel">자재 목록</h5>
-					<button type="button" class="btn-close" data-bs-dismiss="modal"
-						aria-label="Close"></button>
-				</div>
-				<div class="modal-body">
-					<div>
-						<div id="eqpTypeModalGrid"></div>
-					</div>
-					<div align="center">
-						<button class="btn btn-dark btn-sm">확인</button>
-						<button class="btn btn-dark btn-sm">취소</button>
-					</div>
-				</div>
-
-			</div>
-		</div>
-	</div>
-
 	<script type="text/javascript">
-	
-	
-	/* 조회 탭 부분 --------------------------------------------------------------------------------------------------- */
-	
 		let selectEqpGrid = selectTabInit(); 		// 조회탭 그리드 초기화
-		
+		let eqpListModalGrid = eqpListModalInit();	// 관리탭 설비목록 모달 그리드 초기화
 		let eqpTypeModalGrid = eqpTypeModalInit();	// 관리탭 설비구분 모달 그리드 초기화
 		
 		searchBtn();								// 조회탭 검색버튼
 		deleteBtn();								// 조회탭 선택 삭제 버튼
 		
 		eqpTypeSelect();							// 관리탭 설비구분 선택 모달창 refresh
-		selectBtn();								// 관리탭 설비목록 물러오기 모달
+		eqpListSelect();							// 관리탭 설비목록 모달 조회 
+		insertUpdateBtn();							// 관리탭 form태그 내용으로 insert OR update 하는 버튼
+		eqpTypeInsertInput();						// 관리탭 설비구분 돋보기 모달에서 하나 클릭시, 설비구분 input태그에 값 넣어주고 모달창 닫기
+		eqpListInsertInput();						// 관리탭 설비목록 모달에서 하나 클릭시, 설비전체 input태그에 값 넣어주고 모달창 닫기
+		
 		
 		/* ---------------
 		조회탭 그리드
@@ -315,6 +301,49 @@
 			return selectEqpGrid;
 		}
 		
+		
+		
+		/* ---------------
+		관리탭 설비목록 모달 grid 초기화
+		--------------- */
+		function eqpListModalInit() {
+			let eqpListModalGrid = new tui.Grid({
+				el: document.getElementById('eqpListModalGrid'),
+				bodyHeight: 150,
+				data: [{
+					code: 'eqpCode-001',
+					name: '만두 배합',
+					proName: '혼합'
+				},
+				{
+					code: 'eqpCode-002',
+					name: '만두 성형',
+					proName: '성형'
+				}],
+				rowHeaders: ['rowNum'],
+				scrollX: false,
+				scrollY: true,
+				columns: [{
+			          header: '설비코드',
+			          name: 'code',
+			          align: 'center'
+			        },
+			        {
+			          header: '설비명',
+			          name: 'name'
+			        },
+			        {
+			          header: '공정명',
+			          name: 'proName'
+				    }
+		      ] 
+			});
+			
+			return eqpListModalGrid;
+		}
+		
+		
+		
 		/* ---------------
 		관리탭 설비구분 모달 grid 초기화
 		--------------- */
@@ -372,16 +401,57 @@
 		}
 		
 		
+		
 		/* ---------------
 		조회탭 체크 삭제 버튼
 		--------------- */
 		function deleteBtn() {
 			document.getElementById('deleteBtn').addEventListener('click', function () {
 				let showConfirm = true;
-				eqpTypeModalGrid.removeCheckedRows(showConfirm);
+				selectEqpGrid.removeCheckedRows(showConfirm);
 			});
 			
 		}
+		
+		
+		
+		
+		/* ---------------
+		관리탭 설비목록 모달 조회
+		--------------- */
+		function eqpListSelect() {
+			
+			document.addEventListener('shown.bs.modal', function (){
+				eqpListModalGrid.refreshLayout();
+			});
+			/* 
+				팝업창띄우고
+				설비 목록들 가져와서 띄워주고
+				선택하면 input태그들에 데이터 들어가게
+			*/
+		}
+		
+		
+		
+		/* ---------------
+		관리탭 설비목록 모달에서 하나 클릭시, 설비전체 input태그에 값 넣어주고 모달창 닫기
+		--------------- */
+		function eqpListInsertInput() {
+			eqpListModalGrid.on('click',function(ev){
+				
+				let data = eqpListModalGrid.getRow(ev.rowKey);
+				let eqpListCode = data.code; // 선택된 설비 구분 코드
+				
+				
+				// 해당 코드 가지고 ajax로 설비 정보 다 불러와서 input태그들에 다 넣어주기.
+				
+				// document.getElementById('eqpTypeCode').value = eqpTypeCode;
+				// document.getElementById('eqpTypeName').value = eqpTypeName;
+				
+				document.querySelector('#eqpListModal button.btn-close').click();
+			});	
+		}
+		
 		
 		
 		/* ---------------
@@ -396,19 +466,33 @@
 		
 		
 		
-		
-	
-		// 검색버튼
-		function selectBtn() {
-			/* 
-				팝업창띄우고
-				설비 목록들 가져와서 띄워주고
-				선택하면 input태그들에 데이터 들어가게
-			*/
+		/* ---------------
+		관리탭 설비구분 돋보기 모달에서 하나 클릭시, 설비구분 input태그에 값 넣어주고 모달창 닫기
+		--------------- */
+		function eqpTypeInsertInput() {
+			eqpTypeModalGrid.on('click',function(ev){
+				
+				let data = eqpTypeModalGrid.getRow(ev.rowKey);
+				let eqpTypeCode = data.code; // 선택된 설비 구분 코드
+				let eqpTypeName = data.name; // 선택된 설비 구분명
+				
+				document.getElementById('eqpTypeCode').value = eqpTypeCode;
+				document.getElementById('eqpTypeName').value = eqpTypeName;
+				
+				document.querySelector('#eqpTypeModal button.btn-close').click();
+			});
 		}
 		
-		// 저장버튼
+		
+		
+		/* ---------------
+		관리탭 form태그 내용으로 insert OR update 하는 버튼
+		--------------- */
 		function insertUpdateBtn() {
+			
+			document.getElementById('insertUpdateBtn').addEventListener('click', function () {
+				
+			});
 			/* 
 				저장 누르면 정보 들고 db 가서
 				서비스 단에서 해당 정보로 설비코드로 설비 검색해와서 없으면 insert시키고
@@ -418,5 +502,9 @@
 				화면단에 적힌거 reset버튼 타겟팅 후 click으로 지워준다.
 			*/
 		}
+		
+		
+		
+
 	</script>
 </div>
