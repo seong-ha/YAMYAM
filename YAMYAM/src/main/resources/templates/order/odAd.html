@@ -1,99 +1,134 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
-	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-	layout:decorate="~{/layout/layout}">
+   xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+   xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+   layout:decorate="~{/layout/layout}">
 <head>
 <meta charset="UTF-8">
 <title>주문 관리</title>
 <!-- 제이쿼리 -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
-<!-- 엑셀 기능 -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.1/xlsx.full.min.js"></script>
-<style>
 
-#od-title{
-	font-weight: bold;
+<style>
+#od-title h3 {
+font-family: Bold;
 }
 #od-btn {
-	display: inline-block; margin: 0 5px; float: right;
+   display: inline-block; margin: 0 5px; float: right;
+}
+#input-group #back{
+background-color: #D9D9D9;
 }
 </style>
 </head>
 <body>
 <div class="container" layout:fragment="content">
-	<div id="od-title">
-		<h3>주문서 관리</h3>
-	</div>
-	
-	<table id="form-check">
-	<tr>
-		<td>진행 상황</td>
-		<td>
-		  <input class="form-check-input" type="radio" name="flexRadioDefault" id="odAll" value="option1" checked>
-		  <label class="form-check-label" for="odAll">전체</label>
-		</td>
-	
-		<td>
-		  <input class="form-check-input" type="radio" name="flexRadioDefault" id="odIng" value="option2">
-		  <label class="form-check-label" for="odIng">진행</label>
-		</td>
-	
-		<td>
-		  <input class="form-check-input" type="radio" name="flexRadioDefault" id="odEnd" value="option13">
-		  <label class="form-check-label" for="odEnd">완료</label>
-		</td>
-	</tr>
-	</table>
+   <div id="od-title">
+      <h3>주문서 관리</h3>
+   </div>
+   
+   <div id="prdOutAd-content">
+      <div id="input-group">
+         <ul class="ul-style">
+      <li><table id="form-check">
+   <tr>
+      <td>진행 상황</td>
+      <td>
+        <input class="form-check-input" type="radio" name="flexRadioDefault" id="odAll" value="option1" checked>
+        <label class="form-check-label" for="odAll">전체</label>
+      </td>
+   
+      <td>
+        <input class="form-check-input" type="radio" name="flexRadioDefault" id="odIng" value="option2">
+        <label class="form-check-label" for="odIng">진행</label>
+      </td>
+   
+      <td>
+        <input class="form-check-input" type="radio" name="flexRadioDefault" id="odEnd" value="option3">
+        <label class="form-check-label" for="odEnd">완료</label>
+      </td>
+   </tr>
+   </table>
+      </li>
 
-	<div class="modal" tabindex="-1">
-		  <div class="modal-dialog">
-		    <div class="modal-content">
-		      <div class="modal-header">
-		        <h5 class="modal-title">거래처 목록</h5>
-		        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-		      </div>
-		      <div class="modal-body">
-		        <p>Modal body text goes here.</p>
-		      </div>
-		      <div class="modal-footer">
-		        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-		        <button type="button" class="btn btn-primary">Save changes</button>
-		      </div>
-		    </div>
-		  </div>
-	</div>
-	
-	<div id="od-container">
-	<label for="actCd">거래처</label> <input id="actCd"><img class="Magnifying-Glass-img" alt="image" src="../images/Magnifying_Glass.png"><input type="text" readonly><br>
-	<label for="prdNm">제품명</label> <input id="prdNm"><img class="Magnifying-Glass-img" alt="image" src="../images/Magnifying_Glass.png"><input type="text" readonly><br>
+      <li><label for="actCd">거래처</label><input type="text" 
+          data-bs-toggle="modal" data-bs-target="#exampleModal1" id="actCd">
+          <img class="Magnifying-Glass-img" alt="image" src="../images/Magnifying_Glass.png">
+          <input type="text" id="back" readonly><br></li>
 
-     <label>주문일자</label>
+         <li><label for="prdNm">제품명</label><input type="text" 
+            data-bs-toggle="modal" data-bs-target="#exampleModal2" id="prdNm">
+            <img class="Magnifying-Glass-img" alt="image" src="../images/Magnifying_Glass.png">
+            <input type="text" id="back" readonly><br></li>
 
-    <div class="tui-datepicker-input tui-datetime-input tui-has-focus">
-        <input id="startpicker-input" type="text" aria-label="Date">
-        <span class="tui-ico-date"></span>
-        <div id="startpicker-container" style="margin-left: -1px;"></div>
-    </div>
-    <span>-</span>
-    <div class="tui-datepicker-input tui-datetime-input tui-has-focus">
-        <input id="endpicker-input" type="text" aria-label="Date">
-        <span class="tui-ico-date"></span>
-        <div id="endpicker-container" style="margin-left: -1px;"></div>
-    </div>
-
-	<button class="btn btn-dark btn-sm">조회</button>
-	<button  class="btn btn-dark btn-sm">초기화</button>
-	
+            <li><label>주문일자</label>
+               <div class="tui-datepicker-input tui-datetime-input tui-has-focus">
+                  <input id="startpicker-input" type="text" aria-label="Date">
+                  <span class="tui-ico-date"></span>
+                  <div id="startpicker-container" style="margin-left: -1px;"></div>
+               </div>
+               <span>-</span>
+               <div class="tui-datepicker-input tui-datetime-input tui-has-focus">
+                  <input id="endpicker-input" type="text" aria-label="Date">
+                  <span class="tui-ico-date"></span>
+                  <div id="endpicker-container" style="margin-left: -1px;"></div>
+               </div>
+            
+               <button class="btn btn-dark btn-sm">조회</button>
+               <button  class="btn btn-dark btn-sm">초기화</button></li>
+               </ul>
+               
+		<!-- 거래처 Modal -->
+	  <div class="modal" id="exampleModal1" tabindex="-1"
+	  		aria-labelledby="exampleModalLabel" aria-hidden="true">
+	        <div class="modal-dialog">
+	          <div class="modal-content">
+	            <div class="modal-header">
+	              <h5 class="modal-title" id="exampleModalLabel">거래처 목록</h5>
+	              <button type="button" class="btn-close" data-bs-dismiss="modal"
+	               aria-label="Close"></button>
+	            </div>
+	             <div class="modal-body">
+	              <label>거래처명</label> <input id="actNm" type="text">
+                  <button type="button" class="btn btn-dark btn-sm"
+                     data-bs-dismiss="modal">조회</button>
+                  <button type="button" class="btn btn-dark btn-sm">초기화</button>
+               <div id="modalGrid1"></div>
+               </div>
+	          </div>
+	        </div>
+	   </div>   
+	   
+	   <!-- 제품명 Modal -->
+      <div class="modal" id="exampleModal2" tabindex="-1"
+         aria-labelledby="exampleModalLabel" aria-hidden="true">
+         <div class="modal-dialog">
+            <div class="modal-content">
+               <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLabel">제품 목록</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal"
+                     aria-label="Close"></button>
+               </div>
+               <div class="modal-body">
+                  <label>제품명</label> <input id="prdNm" type="text">
+                  <button type="button" class="btn btn-dark btn-sm"
+                     data-bs-dismiss="modal">조회</button>
+                  <button type="button" class="btn btn-dark btn-sm">초기화</button>
+               <div id="modalGrid2"></div>
+               </div>
+            </div>
+         </div>
+      </div>
+</div>
 </div>
 
-	<div id="od-btn">
-	<button class="btn btn-dark btn-sm" id="insertBtn">추가</button>
-	<button class="btn btn-dark btn-sm">선택삭제</button>
-	<button class="btn btn-dark btn-sm">저장</button>
-	<button class="btn btn-dark btn-sm" id="exportBtn">엑셀 파일 출력</button>
-	</div>
-	
+   <div id="od-btn">
+   <button class="btn btn-dark btn-sm" id="insertBtn">추가</button>
+   <button class="btn btn-dark btn-sm" id="deleteBtn">선택삭제</button>
+   <button class="btn btn-dark btn-sm">저장</button>
+   <button class="btn btn-dark btn-sm" id="exportBtn">엑셀 파일 출력</button>
+   </div>
+   
 <div id="grid"></div>
 
 <script>
@@ -101,15 +136,15 @@ const grid = new tui.Grid({
     el: document.getElementById('grid'),
     data: [
         {
-        	odDate : '2022-11-01',
-        	odCd : 'ORD-20221101-001',
-        	prdCd : 'MD-00100',
-        	prdNm : '얇은피 고기만두',
-        	odAmt : 200,
-        	actCd : 'VDR-1004',
-        	actNm : 'YD 마트',
-        	deDate : '2022-11-04',
-        	sts : '완료'
+           odDate : '2022-11-01',
+           odCd : 'ORD-20221101-001',
+           prdCd : 'MD-00100',
+           prdNm : '얇은피 고기만두',
+           odAmt : 200,
+           actCd : 'VDR-1004',
+           actNm : 'YD 마트',
+           deDate : '2022-11-04',
+           sts : '완료'
         }
         ],
     rowHeaders: ['checkbox'],
@@ -155,50 +190,124 @@ const grid = new tui.Grid({
     ]
   });
 
-	$('#insertBtn').on('click',function(){
-	
-		var rowData = [{odDate: "", odCd: "", prdCd: "", prdNm: "", odAmt: "", actCd : "" , actNm: "", deDate: "", sts:""}]
-		grid.appendRow(rowData);
-				
+   $('#insertBtn').on('click',function(){
+   
+      var rowData = [{odDate: "", odCd: "", prdCd: "", prdNm: "", odAmt: "", actCd : "" , actNm: "", deDate: "", sts:""}]
+      grid.appendRow(rowData);
+            
 });
-	// 날짜 계산
-	var today = new Date();
-	var picker = tui.DatePicker.createRangePicker({
-	    startpicker: {
-	        date: today,
-	        input: '#startpicker-input',
-	        container: '#startpicker-container'
-	    },
-	    endpicker: {
-	        date: today,
-	        input: '#endpicker-input',
-	        container: '#endpicker-container'
-	    },
-	    selectableRanges: [
-	        [today, new Date(today.getFullYear() + 1, today.getMonth(), today.getDate())]
-	    ]
+   
+   $('#deleteBtn').on('click',function(){
+		var showConfirm = true;
+		grid.removeCheckedRows(showConfirm);
+		
 	});
 
+   // 거래처 모달
+const modalGrid1 = new tui.Grid({
+    el: document.getElementById('modalGrid1'),
+    data: [
+        {
+           actCd : 'VDR-1001',
+           actNm : 'AA 마트',
+           actNum : '791-10-000',
+           tel : '053-514-4512'
+        }
+        ],
+    rowHeaders: ['rowNum'],
+    scrollX: false,
+    scrollY: false,
+    columns: [
+      {
+        header: '거래처 코드',
+        name: 'actCd'
+      },
+      {
+        header: '거래처명',
+        name: 'actNm'
+      },
+      {
+        header: '사업자 등록번호',
+        name: 'actNum'
+      },
+      {
+        header: '전화번호',
+        name: 'tel'
+      }
+    ]
+  })
+   $('#actCd').on('click',function(){
+      setInterval(function () {
+         modalGrid1.refreshLayout();
+      }, 100);
+   });
+   
+   // 제품명 모달
+const modalGrid2 = new tui.Grid({
+    el: document.getElementById('modalGrid2'),
+    data: [
+        {
+           prdCd : 'MD-00100',
+           prdNm : '얇은피 고기만두',
+           won : '1000'
+        }
+        ],
+    rowHeaders: ['rowNum'],
+    scrollX: false,
+    scrollY: false,
+    columns: [
+      {
+        header: '제품 코드',
+        name: 'prdCd'
+      },
+      {
+        header: '제품명',
+        name: 'prdNm'
+      },
+      {
+        header: '단가 (원)',
+        name: 'won'
+      }
+    ]
+  })
+   $('#prdNm').on('click',function(){
+      setInterval(function () {
+         modalGrid2.refreshLayout();
+      }, 100);
+   });
+   
+   // 날짜 계산
+   var today = new Date();
+   var picker = tui.DatePicker.createRangePicker({
+       startpicker: {
+           date: today,
+           input: '#startpicker-input',
+           container: '#startpicker-container'
+       },
+       endpicker: {
+           date: today,
+           input: '#endpicker-input',
+           container: '#endpicker-container'
+       },
+       selectableRanges: [
+           [today, new Date(today.getFullYear() + 1, today.getMonth(), today.getDate())]
+       ]
+   });
+   
+   
+   
 
+   // 엑셀 내보내기
   
-	var myModal = document.getElementById('myModal')
-	var myInput = document.getElementById('myInput')
-	
-	myModal.addEventListener('shown.bs.modal', function () {
-	  myInput.focus()
-	})
-
-	// 엑셀 내보내기
-	const options = {
-	  includeHeader : true,
-	  includeHiddenColumns : true,
-	  onlySelected : true,
-	  fileName: 'myExport'
-	};
-	$('#exportBtn').on('click',function(){
-	//grid.export('xlsx');
-	grid.export('xlsx', options);
-	});
+   $('#exportBtn').on('click',function(){
+	   let options = {
+			     includeHeader : true,
+			     includeHiddenColumns : true,
+			     onlySelected : true,
+			     fileName: 'Order List'
+			   };
+   grid.export('xlsx', options);
+   });
 </script>
 </div>
 </body>
