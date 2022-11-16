@@ -1,15 +1,23 @@
 package com.mandu.yamyam.mat.web;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.mandu.yamyam.mat.service.MatOdService;
 
 
 @Controller
 public class MatController {
 
-	@RequestMapping("/matOd")
+	@Autowired
+	MatOdService service;
+	
+	@GetMapping("/matOd")
 	public String matOd(Model model) {
+		model.addAttribute("odList", service.matOrderList());
 		return "mat/matOd";
 	}
 	

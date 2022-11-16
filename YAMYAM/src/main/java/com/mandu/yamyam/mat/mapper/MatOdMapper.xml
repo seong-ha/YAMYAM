@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mandu.yamyam.mat.mapper.MatOdMapper">
+
+	<!-- 전체조회(일반 탭) -->
+	<select id="matOrderList"
+		resultType="map">
+		SELECT O.M_OD_CD, D.M_CD, C.NAME, D.M_ODD_MN, D.M_ODD_AMT, O.M_SUM, A.NAME,O.M_OD_DD, D.M_ODD_DATE
+		FROM M_OD O 
+		JOIN M_ODD D ON O.M_OD_CD = D.M_OD_CD
+		JOIN C_MTR C ON D.M_CD = C.MTR_CD
+		JOIN C_ACTCD A ON D.ACT_CD = A.ACT_CD
+	</select>
+	
+</mapper>
