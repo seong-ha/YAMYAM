@@ -74,7 +74,6 @@
 				el : document.getElementById('grid'),
 				// 임시 데이터
 				data : [{
-							boardNum : '1',
 							podCd : 'PID-20221101-001',
 							prdCd : 'MD-00200',
 							name : '얇은피 김치만두',
@@ -83,7 +82,6 @@
 							prio : '1',
 							sts : '완료'},
 						{
-							boardNum : '2',
 							podCd : 'PID-20221101-002',
 							prdCd : 'MD-00300',
 							name : '얇은피 새우만두',
@@ -103,14 +101,9 @@
 				// },
 				scrollX : false,
 				scrollY : false,
-				// columnOptions: {
-				// 	minWidth: 180
-				// },
-				columns : [ {
-					header : 'No',
-					name : 'boardNum',
-					width : 'auto'
-				}, {
+				rowHeaders: ['rowNum'],				
+				columns : [ 
+				{
 					header : '생산지시코드',
 					name : 'podCd',
 				}, {
@@ -141,6 +134,20 @@
 				}, ]
 			});
 			
+			// datePicker 날짜 조회
+			$('#searchBtn').on('click',function(){
+				var getStartDay = picker.getStartDate();
+				var getEndDay = picker.getEndDate();
+				console.log(getStartDay);
+				console.log(getEndDay);
+				// 갖고온 start, end 값을 넘겨서 select 해오기
+			})
+			
+			// datePicker 초기화
+			$('#cancelBtn').on('click',function(){
+				picker.setStartDate(today);
+				picker.setEndDate(today);
+			});
 			
 			// 진행구분 radio 필터링
 			/* $('#radioTable > input').click(function() {
