@@ -163,7 +163,7 @@
 		    	bDate: '2022-11-14',
 		    	cCycle: 60,
 		    	dates: '2022-11-14',
-		    	sts: '대기'
+		    	sts: '가동'
 		    }
 		  ],
 		      rowHeaders: ['checkbox'],
@@ -234,12 +234,14 @@
 		        {
 		          header: '설비상태',
 		          name: 'sts',
-		          type: 'select',
-			      sortable: true,
-			      align: 'center'
+			      align: 'center',
+			      filter: {
+			    	  type: 'select'
+			      }
 		        }
 		      ]
 		    });
+	
 		// 검색 버튼
 		function searchBtn() {
 			let firstEName = document.getElementById('firstEName');
@@ -264,6 +266,7 @@
 		
 	/* 관리 탭 부분 --------------------------------------------------------------------------------------------------- */
 	
+		// 검색버튼
 		function selectBtn() {
 			/* 
 				팝업창띄우고
@@ -272,6 +275,7 @@
 			*/
 		}
 		
+		// 저장버튼
 		function insertUpdateBtn() {
 			/* 
 				저장 누르면 정보 들고 db 가서
