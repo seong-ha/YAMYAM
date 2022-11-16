@@ -15,7 +15,7 @@
 <body>
 	<div layout:fragment="content" class="container">
 		<div class="row">
-			<h4>생산지시 관리</h4>
+			<h3>생산지시 관리</h3>
 			&nbsp;&nbsp;
 			<button type="button" id="showNOModal" class="btn btn-dark btn-sm"
 				style="width: 140px" data-bs-toggle="modal"
@@ -81,9 +81,11 @@
 			</div>
 		</div>
 		<script>
+		
+
 	// toast - grid
 	// 상세계획 조회 grid
-	var planDGrid = new tui.Grid({
+	let planDGrid = new tui.Grid({
 		el: document.getElementById('planDGrid'),
 		// 임시 데이터
 		data: [{
@@ -134,7 +136,7 @@
 	});
 	
 	// 생산지시 grid 
-	var planOrder = new tui.Grid({
+	let planOrder = new tui.Grid({
 		el: document.getElementById('planOrder'),
 		// 임시 데이터
 		data: [{
@@ -181,7 +183,7 @@
 	});
 	
 	// 필요자재 grid 
-	var matNeed = new tui.Grid({
+	let matNeed = new tui.Grid({
 		el: document.getElementById('matNeed'),
 		// 임시 데이터
 		data: [
@@ -251,8 +253,8 @@
 			//console.log(ev.rowKey); 선택한 행의 row번호
 			// 클릭한 행의 자재명, 자재코드 
 
-			var mName = matNeed.getRow(ev.rowKey).name;
-			var mtrCd = matNeed.getRow(ev.rowKey).mtrCd;
+			let mName = matNeed.getRow(ev.rowKey).name;
+			let mtrCd = matNeed.getRow(ev.rowKey).mtrCd;
 			console.log(mName,mtrCd)
 			$("#matLotModal").modal("show");
 			
@@ -264,7 +266,7 @@
 
 
 	// 필요자재 LOT grid 
-	var matLot = new tui.Grid({
+	let matLot = new tui.Grid({
 		el: document.getElementById('matLot'),
 		// 임시 데이터
 		data: [{
@@ -336,7 +338,7 @@
 	});
 	
 	// 모달에 뜨는 필요자재 LOT grid 
-	var matLotGrid2 = new tui.Grid({
+	let matLotGrid2 = new tui.Grid({
 		el: document.getElementById('matLotGrid2'),
 		// 임시 데이터
 		data: [{
@@ -433,7 +435,7 @@
 
 		<!-- 모달에 뜨는 생산요청 toast grid -->
 		<script>
-		var modalGrid = new tui.Grid({
+		let modalGrid = new tui.Grid({
 			el: document.getElementById('modalGrid'),
 			// 임시 데이터
 			data: [{
@@ -475,9 +477,9 @@
 		});
 		// 필요자재 LOT grid 선택 행 삭제
 		$('#deleteBtn').on('click',function(){
-			// var change = confirm("행을 삭제하시겠습니까?");
+			// let change = confirm("행을 삭제하시겠습니까?");
 			// grid에서 삭제
-			var showConfirm = true;
+			let showConfirm = true;
 			matLot.removeCheckedRows(showConfirm);
 			
 			// DB delete
@@ -494,16 +496,16 @@
 	// 미지시계획조회 모달창의 그리드 선택시 자료를 상세생산계획 Grid에 넣어주기
 	modalGrid.on('click',function(event){
 		// 
-		var rowData = {planCode: "",planName:"",planDCode: "",productName: ""}
+		let rowData = {planCode: "",planName:"",planDCode: "",productName: ""}
 		planDGrid.appendRow(rowData);
 		const val = planDGrid.rowKey;
 		console.log(val);
-		var data = modalGrid.getRow(event.rowKey);
+		let data = modalGrid.getRow(event.rowKey);
 		
 		let plCode = data.planCode; // 선택된 제품 코드
 		let prName = data.productName; // 선택된 제품 이름
 		// planCode: 'pro_123456',productName: '얇은피 김치만두',amt: '300',	productAmt: '200',restAmt: '100'
-		var checkCellState = false;
+		let checkCellState = false;
 		
 		planDGrid.setValue(val, 'planCode' , plCode, checkCellState);
 		planDGrid.setValue(val, 'productName' , prName, checkCellState);
