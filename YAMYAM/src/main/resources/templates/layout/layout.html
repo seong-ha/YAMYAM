@@ -7,13 +7,19 @@
 	<link href="css/styles.css" rel="stylesheet" />
 	<link href="css/bootstrap.min.css" rel="stylesheet">
 	<link href="css/tui-grid.css" rel="stylesheet">
+	
 	<!-- toast-datepicker -->
 	<link rel="stylesheet"
 		href="https://uicdn.toast.com/tui.date-picker/latest/tui-date-picker.css">
 	<!-- toast-selectbox -->
 	<link rel="stylesheet"
 		href="https://uicdn.toast.com/select-box/latest/toastui-select-box.css" />
-	
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.css" integrity="sha512-3pIirOrwegjM6erE5gPSwkUzO+3cTjpnV9lexlNZqvupR64iZBnOOTiiLPb9M36zpMScbmUNIcHUqKD47M719g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+		
+		<!-- 제이쿼리 -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+		<!-- 엑셀 저장 -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.1/xlsx.full.min.js"></script>
 	<script src="js/bootstrap.bundle.min.js"></script>
 	<script src="js/tui-grid.js"></script>
 	<!-- toast-datepicker -->
@@ -22,6 +28,8 @@
 	<!-- toast-selectbox -->
 	<script
 		src="https://uicdn.toast.com/select-box/latest/toastui-select-box.js"></script>
+	<script src="js/common.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js" integrity="sha512-VEd+nq25CkR676O+pLBnDW09R7VQX9Mdiij052gVCp5yVH3jGtH70Ho/UUv4mJDsEdTvqRCFZg0NKGiojGnUCw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 		<style type="text/css">
 			.tui-datepicker {
     		z-index: 1001;
@@ -200,15 +208,15 @@
 		}
 	
 		document.addEventListener('DOMContentLoaded', function () {
+			
 			/* 
 			  sessionStorage의 tabText와 tabIdNum에 저장된 게 있으면
 			  해당되는 id를 찾아서 accordion을 열어주고
 			  해당되는 글자를 찾아서 색을 바꿔준다.
 			*/
 			if (sessionStorage.getItem('tabText') != null && sessionStorage.getItem('tabIdNum') != null) {
-				console.log( sessionStorage.getItem('tabText') + ', ' + sessionStorage.getItem('tabIdNum') );
-				
 				document.querySelector('#flush-heading' + sessionStorage.getItem('tabIdNum') + ' > button').click();
+				
 				let tabs = document.querySelectorAll('.mylist > li > a');
 				tabs.forEach(tab => {
 					if (tab.textContent == sessionStorage.getItem('tabText')) {
@@ -232,14 +240,6 @@
 				});
 			});
 		});
-		
-		
-	
-		
-		
-		
-			
-		
 	</script>
 </body>
 </html>

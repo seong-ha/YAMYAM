@@ -20,9 +20,11 @@
     src: url("/fonts/NanumSquareRoundL.ttf") format("truetype");
 }
 
- @font-face {
-    font-family: "GW";
-    src: url("/fonts/gangwon.ttf") format("truetype");
+@font-face {
+    font-family: 'GangwonEduPowerExtraBoldA';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2201-2@1.0/GangwonEduPowerExtraBoldA.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
 }
 
 :root {
@@ -653,6 +655,7 @@ progress {
   padding-left: var(--bs-gutter-x, 0.75rem);
   margin-right: auto;
   margin-left: auto;
+  margin-top: 50px;
 }
 
 @media (min-width: 576px) {
@@ -11776,6 +11779,13 @@ body {
 	font-family: "NSEB";
 }
 
+h3 {
+	font-family : "GangwonEduPowerExtraBoldA";
+}
+
+.back {
+	background-color: #D9D9D9;
+}
 .logo-size {
 	font-size: 1.8rem;
 }
@@ -11843,6 +11853,23 @@ body {
 	padding: 5px;
 }
 
-.font-gg {
-	font-family: "GW";
+/* 설비관리 화면 테이블 style 속성 */
+#eqpTable {
+	margin-left: 40px;
+	margin-top: 30px;
+	height: 230px;
 }
+
+#eqpTable th {
+	width: 90px;
+}
+
+#eqpTable input[type="text"] {
+	margin-right: 40px;
+}
+
+#eqpTable tr {
+	border-bottom: 1px #C9BABA solid;
+	border-top: 1px #C9BABA solid;
+}
+

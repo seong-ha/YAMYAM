@@ -6,13 +6,16 @@
 <head>
 <meta charset="UTF-8">
 <title>완제품 출고 조회</title>
+<!-- 제이쿼리 -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+<!-- 엑셀 기능 -->
 
 <style>
-#od-title{
-	font-weight: bold;
-}
 #od-btn {
 	display: inline-block; margin: 0 5px; float: right;
+}
+#input-group #back{
+background-color: #D9D9D9;
 }
 </style>
 </head>
@@ -22,7 +25,10 @@
 		<h3>완제품 출고 조회</h3>
 	</div>
 	
-	<table id="form-check">
+	 <div id="prdOutList-content">
+      <div id="input-group">
+         <ul class="ul-style">
+      <li><table id="form-check">
 	<tr>
 		<td>진행 상황</td>
 		<td>
@@ -36,24 +42,42 @@
 		</td>
 	
 		<td>
-		  <input class="form-check-input" type="radio" name="flexRadioDefault" id="odEnd" value="option13">
+		  <input class="form-check-input" type="radio" name="flexRadioDefault" id="odEnd" value="option3">
 		  <label class="form-check-label" for="odEnd">출고 완료</label>
 		</td>
 	</tr>
 	</table>
-
-	<div>
-    제품명<input type="text" data-bs-toggle="modal" data-bs-target="#exampleModal">
-    <img class="Magnifying-Glass-img" alt="image" src="../images/Magnifying_Glass.png">
-    <input type="text" readonly><br>
-    </div>
-	<div>
-    완제품LOT<input type="text" data-bs-toggle="modal" data-bs-target="#exampleModal">
-    <img class="Magnifying-Glass-img" alt="image" src="../images/Magnifying_Glass.png">
-    <input type="text" readonly><br>
-    </div>
-          <!-- Modal -->
-      <div class="modal fade" id="exampleModal" tabindex="-1"
+	 </li>
+	 <li><label for="prdNm">제품명</label><input type="text" 
+            data-bs-toggle="modal" data-bs-target="#exampleModal1" id="prdNm">
+            <img class="Magnifying-Glass-img" alt="image" src="../images/Magnifying_Glass.png">
+            <input type="text" id="back" readonly><br></li>
+            
+        <li><label for="lot">완제품LOT</label><input type="text" 
+            data-bs-toggle="modal" data-bs-target="#exampleModal2" id="lot">
+            <img class="Magnifying-Glass-img" alt="image" src="../images/Magnifying_Glass.png">
+            <input type="text" id="back" readonly><br></li>     
+            
+        <li><label>제조일자</label>
+	
+	    <div class="tui-datepicker-input tui-datetime-input tui-has-focus">
+	        <input id="startpicker-input" type="text" aria-label="Date">
+	        <span class="tui-ico-date"></span>
+	        <div id="startpicker-container" style="margin-left: -1px;"></div>
+	    </div>
+	    <span>-</span>
+	    <div class="tui-datepicker-input tui-datetime-input tui-has-focus">
+	        <input id="endpicker-input" type="text" aria-label="Date">
+	        <span class="tui-ico-date"></span>
+	        <div id="endpicker-container" style="margin-left: -1px;"></div>
+	    </div>
+	
+		<button class="btn btn-dark btn-sm">조회</button>
+		<button  class="btn btn-dark btn-sm">초기화</button></li>
+		</ul>    
+            
+           <!-- 제품명 Modal -->
+      <div class="modal" id="exampleModal1" tabindex="-1"
          aria-labelledby="exampleModalLabel" aria-hidden="true">
          <div class="modal-dialog">
             <div class="modal-content">
@@ -63,37 +87,41 @@
                      aria-label="Close"></button>
                </div>
                <div class="modal-body">
+                  <label>제품명</label> <input id="prdNm" type="text">
                   <button type="button" class="btn btn-dark btn-sm"
-                     data-bs-dismiss="modal">등록</button>
+                     data-bs-dismiss="modal">조회</button>
                   <button type="button" class="btn btn-dark btn-sm">초기화</button>
                <div id="modalGrid1"></div>
                </div>
             </div>
          </div>
       </div>
-	
-	<div id="od-container">
-     <label>제조일자</label>
-
-    <div class="tui-datepicker-input tui-datetime-input tui-has-focus">
-        <input id="startpicker-input" type="text" aria-label="Date">
-        <span class="tui-ico-date"></span>
-        <div id="startpicker-container" style="margin-left: -1px;"></div>
-    </div>
-    <span>-</span>
-    <div class="tui-datepicker-input tui-datetime-input tui-has-focus">
-        <input id="endpicker-input" type="text" aria-label="Date">
-        <span class="tui-ico-date"></span>
-        <div id="endpicker-container" style="margin-left: -1px;"></div>
-    </div>
-
-	<button class="btn btn-dark btn-sm">조회</button>
-	<button  class="btn btn-dark btn-sm">초기화</button>
-	
+      
+      <!-- 완제품 Modal -->
+      <div class="modal" id="exampleModal2" tabindex="-1"
+         aria-labelledby="exampleModalLabel" aria-hidden="true">
+         <div class="modal-dialog">
+            <div class="modal-content">
+               <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLabel">완제품LOT NO</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal"
+                     aria-label="Close"></button>
+               </div>
+               <div class="modal-body">
+               	<label>완제품LOT</label> <input id="lot" type="text">
+                  <button type="button" class="btn btn-dark btn-sm"
+                     data-bs-dismiss="modal">조회</button>
+                  <button type="button" class="btn btn-dark btn-sm">초기화</button>
+               <div id="modalGrid2"></div>
+               </div>
+            </div>
+         </div>
+      </div>
+	</div>
 </div>
 
 	<div id="od-btn">
-	<button class="btn btn-dark btn-sm">엑셀 파일 출력</button>
+	<button class="btn btn-dark btn-sm" id="exportBtn">엑셀 파일 출력</button>
 	</div>
 	
 <div id="grid"></div>
@@ -180,6 +208,11 @@ const modalGrid1 = new tui.Grid({
       }
     ]
   });
+$('#prdNm').on('click',function(){
+    setInterval(function () {
+       modalGrid1.refreshLayout();
+    }, 100);
+ });
   
 const modalGrid2 = new tui.Grid({
     el: document.getElementById('modalGrid2'),
@@ -207,7 +240,28 @@ const modalGrid2 = new tui.Grid({
         name: 'eDate'
       }
     ]
-  })
+  });
+$('#lot').on('click',function(){
+    setInterval(function () {
+       modalGrid2.refreshLayout();
+    }, 100);
+ });
+ 
+ 
+//날짜 계산
+rangeDatepickerInit('#startpicker-input', '#startpicker-container','#endpicker-input','#endpicker-container')
+
+
+	//엑셀 내보내기
+	$('#exportBtn').on('click',function(){
+	   let options = {
+			     includeHeader : true,
+			     includeHiddenColumns : true,
+			     onlySelected : true,
+			     fileName: 'lot List'
+			   };
+   grid.export('xlsx', options);
+   });
 
 </script>
 </div>
