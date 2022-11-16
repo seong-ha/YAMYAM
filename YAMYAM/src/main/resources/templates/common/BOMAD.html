@@ -14,7 +14,7 @@
 	<br> <br>
 	
 	<ul class="ul-style">
-			<li><label for="matNm">자재명</label><input id="matNm" readonly>
+			<li><label for="matNm">제품 코드</label><input id="matNm" readonly>
 				<img id="matNm" class="Magnifying-Glass-img" alt="image"
 					data-bs-toggle="modal" data-bs-target="#exampleModal"
 					src="../images/Magnifying_Glass.png" >
@@ -39,6 +39,11 @@
 							<h4 align="center"><b>제품 목록</b></h4>
 			               	<br>
 			               	
+			               	제품명&nbsp;<input type="text">
+			               	<button type="button" class="btn btn-dark btn-sm"
+			                 data-bs-dismiss="modal">조회</button>
+			                <button type="button" class="btn btn-dark btn-sm">초기화</button>
+			               	
 			               	<div id="grid2"></div>
 			            	   	
 			               	
@@ -49,34 +54,84 @@
 	
 	<div align="right">
 			<button type="button" class="btn btn-dark btn-sm">조회</button>
-			<button type="button" class="btn btn-dark btn-sm">등록</button>
-			<button type="button" class="btn btn-dark btn-sm">추가</button>
 			<button type="button" class="btn btn-dark btn-sm">초기화</button>
+			<button type="button" class="btn btn-dark btn-sm">추가</button>
+			
+			
+			<button type="button" class="btn btn-dark btn-sm"
+			data-bs-toggle="modal" data-bs-target="#exampleModal2">저장</button>
+			
+			
+			
+					<div class="modal fade" id="exampleModal2" tabindex="-1"
+					aria-labelledby="exampleModalLabel" aria-hidden="true">
+						<div class="modal-dialog">
+							<div class="modal-content">
+								<div class="modal-header">
+						    	<h4 class="modal-title" id="exampleModalLabel">저장 확인</h4>
+						    	<button type="button" class="btn-close" data-bs-dismiss="modal"
+						            aria-label="Close"></button>
+					    		</div>
+						     		<div class="modal-body">
+						     		
+										<div align="center">해당 정보를 BOM 코드로 저장 하시겠습니까?</div><br>
+										
+										<button type="button" class="btn btn-dark btn-sm"
+										data-bs-toggle="modal" data-bs-target="#exampleModal3">확인</button>
+										<button type="button" class="btn btn-dark btn-sm" data-bs-dismiss="modal">취소</button>
+												
+						     	    </div>
+						     </div>
+						 </div>
+			         </div>
+		         
+	         								<!-- Modal -->
+											<div class="modal fade" id="exampleModal3" tabindex="-1"
+												aria-labelledby="exampleModalLabel" aria-hidden="true">
+												<div class="modal-dialog">
+													<div class="modal-content">
+														<div class="modal-header">
+												    	<h4 class="modal-title" id="exampleModalLabel">저장 완료</h4>
+												    	<button type="button" class="btn-close" data-bs-dismiss="modal"
+												            aria-label="Close"></button>
+											    		</div>
+												     		<div class="modal-body">
+																
+												               	<div align="center">저장 되었습니다.</div><br>
+												               	<button type="button" class="btn btn-dark btn-sm" data-bs-dismiss="modal">확인</button>
+												               	
+												               	
+												     	    </div>
+												     </div>
+												 </div>
+										    </div>
+			
+			
 	</div>
 	
 	<div id="grid"></div>
 
 	<script>
 	  const gridData = [ {
-      no: '1',
-      useworkname: '1100',
-      bomcode: '홍길동',
-      pdtcode : '2002/07/05',
-      matcode : 'no',
-      matname : '영업부',
-      consume : '0',
-      use : '사용여부'
-	  },
-	  {
-	   no: '2',
-	   useworkname: '1100',
-	   bomcode: '홍길동',
-	   pdtcode : '2002/07/05',
-	   matcode : 'no',
-	   matname : '영업부',
-	   consume : '0',
-	   use : '사용여부'
-	   }
+	      no: '1',
+	      useworkname: '1100',
+	      bomcode: '홍길동',
+	      pdtcode : '2002/07/05',
+	      matcode : 'no',
+	      matname : '영업부',
+	      consume : '0',
+	      use : '사용여부'
+		  },
+		  {
+		   no: '2',
+		   useworkname: '1100',
+		   bomcode: '홍길동',
+		   pdtcode : '2002/07/05',
+		   matcode : 'no',
+		   matname : '영업부',
+		   consume : '0',
+		   use : '사용여부'
+		   }
        ];
 	  
 	  const gridData2 = [{
@@ -84,13 +139,26 @@
 	      pdtcode: 'GGMD-01',
 	      pdtname: '고기만두',
 	      standard : 'SPEC02',
+		  },
+		  {
+		  no: '2',
+		  pdtcode: 'GGMD-02',
+		  pdtname: '고기만두',
+		  standard : 'SPEC02',
+		  },
+		  {
+		  no: '3',
+		  pdtcode: 'GGMD-03',
+		  pdtname: '고기만두',
+		  standard : 'SPEC02',
 		  }
 	  ];
 
+	  
 		const grid = new tui.Grid({
 			el : document.getElementById('grid'),
 			data : gridData,
-			scrollX : false,
+			scrollX : true,
 			scrollY : false,
 			bodyHeight : 500,
 			columns : [ {
@@ -122,10 +190,11 @@
 			showDummyRows : true
 		});
 		
+		
 		const grid2 = new tui.Grid({
 			el : document.getElementById('grid2'),
 			data : gridData2,
-			scrollX : ture,
+			scrollX : true,
 			scrollY : false,
 			bodyHeight : 500,
 			columns : [ {
@@ -142,7 +211,6 @@
 				name : 'standard'
 			}
 			],
-			showDummyRows : true
 		});
 		
 		//모달창 리프레시(모달창에 그리드 화면 띄울때 써야함!)
