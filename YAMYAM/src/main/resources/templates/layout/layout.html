@@ -202,15 +202,15 @@
 		}
 	
 		document.addEventListener('DOMContentLoaded', function () {
+			
 			/* 
 			  sessionStorage의 tabText와 tabIdNum에 저장된 게 있으면
 			  해당되는 id를 찾아서 accordion을 열어주고
 			  해당되는 글자를 찾아서 색을 바꿔준다.
 			*/
 			if (sessionStorage.getItem('tabText') != null && sessionStorage.getItem('tabIdNum') != null) {
-				console.log( sessionStorage.getItem('tabText') + ', ' + sessionStorage.getItem('tabIdNum') );
-				
 				document.querySelector('#flush-heading' + sessionStorage.getItem('tabIdNum') + ' > button').click();
+				
 				let tabs = document.querySelectorAll('.mylist > li > a');
 				tabs.forEach(tab => {
 					if (tab.textContent == sessionStorage.getItem('tabText')) {
@@ -234,14 +234,6 @@
 				});
 			});
 		});
-		
-		
-	
-		
-		
-		
-			
-		
 	</script>
 </body>
 </html>
