@@ -136,71 +136,90 @@
 			</div>
 
 
-	<script type="text/javascript">
-		
-		/* // toast - select box
-		var selectBox = new tui.SelectBox('#select-box', {
-			placeholder : '제품선택',
-			data : [ {
-				label : '얇은피 고기만두',
-				value : '얇은피 고기만두 코드'	// 코드 바꾸기
-			}, {
-				label : '얇은피 김치만두',
-				value : '얇은피 김치만두 코드'
-			}, {
-				label : '얇은피 새우만두',
-				value : '얇은피 새우만두 코드'
-			} ],
-			autofocus : true
-		}); */
+	
+	
+	<!-- 생산요청서 모달 -->
+	<div class="modal" id="requestModal" tabindex="-1">
+		<div class="modal-dialog modal-xl" >
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title">생산요청서 목록</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal"	aria-label="Close" id="close_modal"></button>
+				</div>
+				<div class="modal-body">
+					<div>
+						<div id="requestModalGrid"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<!-- 제품리스트 모달 -->
+	<div class="modal" id="materialModal" tabindex="-1">
+		<div class="modal-dialog modal-xl" >
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title">제품 목록</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal"	aria-label="Close" id="close_modal"></button>
+				</div>
+				<div class="modal-body">
+					<div>
+						<div id="materialGrid"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 
+<script>
+	
+	
+	searchInit(); // date picker 초기화 
+	
+	let manageGrid = tab1gridinit();  // 관리 탭 그리드 초기화
+	let insertGrid = tab2GridInit();  // 등록 탭 그리드 초기화
+	let requestModalGrid = mastGridInit();  
+	let materialGrid = detailGridInit();  
+	
+	updateBtnhandler();  //  수정버튼 이벤트
+	deleteBtnHandler();  //  데이터 삭제버튼 이벤트
+	tabBtnHandler();	 //  탭 핸들러 이벤트
+	removeBtnHandler();  //  그리드 행 삭제 핸들러 이벤트
+	gridClickHandler();  //  그리드 클릭 이벤트 핸들러
+	insertBtnHandler();  //  등록버튼 이벤트 핸들러
+	plusBtnHandler(); 	 //  그리드 행 추가 이벤트 핸들러
+	showBtnHandler();	 //  모달 버튼 클릭 이벤트 핸들러
+	cancelBtnHandler();  //  date picker input 값 초기화 버튼
+	
+	/*------------
+	// datepicker
+	----------------*/	
+	function searchInit(){
 		// toast - datepicker
-		const today = new Date();
-		const picker = tui.DatePicker.createRangePicker({
-			startpicker : {
-				date : today,
-				input : '#startpicker-input',
-				container : '#startpicker-container'
-			},
-			endpicker : {
-				date : today,
-				input : '#endpicker-input',
-				container : '#endpicker-container'
-			},
-			selectableRanges : [ [
-					today,
-					new Date(today.getFullYear() + 1, today.getMonth(), today
-							.getDate()) ] ],
-			language: 'ko'
-		});
+		pickerInit('#wrapper', '#datepicker-input');
+		rangeDatepickerInit('#startpicker-input', '#startpicker-container','#endpicker-input','#endpicker-container')
+	}
+	
+	
+	/*------------
+	// 삭제 버튼 클릭(그리드행 삭제)
+	----------------*/	
+	function removeBtnHandler(){
+		// grid 선택 행 삭제
+		$('#removeBtn').on('click',function(){
+			// var change = confirm("행을 삭제하시겠습니까?");
+			var showConfirm = true;
+			insertGrid.removeCheckedRows(showConfirm);
+			
+		});	
+	}
 
-		// 생산계획 등록의 datePicker
-		const datepicker = new tui.DatePicker('#wrapper', {
-			date : new Date(),
-			input : {
-				element : '#datepicker-input',
-				format : 'yyyy-MM-dd'
-			},
-			language: 'ko'
-		}); 
+	/*------------
+	// 생산계획 관리 탭
+	----------------*/	
+	function tab1gridinit(){		
 		
-		// datePicker 날짜 조회
-		$('#searchBtn').on('click',function(){
-			var getStartDay = picker.getStartDate();
-			var getEndDay = picker.getEndDate();
-			console.log(getStartDay);
-			console.log(getEndDay);
-			// 갖고온 start, end 값을 넘겨서 select 해오기
-		})
-		
-		// datePicker 초기화
-		$('#cancelBtn').on('click',function(){
-			picker.setStartDate(today);
-			picker.setEndDate(today);
-		});
-		
-		// 생산계획 관리 탭
-		// toast - grid
 		// 생산계획 관리 그리드
 		var dataList = [{
 				boardNum : '1',
@@ -233,6 +252,7 @@
 				days : '2',
 				status : '지시완료'}
 			];
+		
 		var manageGrid = new tui.Grid({
 			el : document.getElementById('manageGrid'),
 			// 임시 데이터
@@ -249,9 +269,6 @@
 			scrollX : false,
 			scrollY : false,
 			rowHeaders: ['checkbox','rowNum'],
-			// columnOptions: {
-			// 	minWidth: 180
-			// },
 			columns : [ 
 			{
 				header : '생산계획코드',
@@ -324,11 +341,18 @@
 			    *      { rowKey, columnName, value, prevValue }, ...
 			    *    ]
 			    *  }*/
-			   
-			  
+
 			}); 
 		
-		// 수정 버튼 클릭(우선순위, 생산일수 변경)
+		return manageGrid;	
+	}
+
+
+	
+	/*------------
+	// 수정 버튼 클릭(우선순위, 생산일수 변경)
+	----------------*/		
+	function updateBtnhandler(){
 		$('#updateBtn').on('click',function(){
 			var ckRow = manageGrid.getCheckedRows();
 			for(var i=0; i<ckRow.length;i++){
@@ -338,25 +362,53 @@
 				// 생산일수
 				var days = ckRow[i].days;
 				
-				console.log(i + '번째 prio = ' + prio);
-				console.log(i + '번째 days = ' + days);
+				//console.log(i + '번째 prio = ' + prio);
+				//console.log(i + '번째 days = ' + days);
 				//console.log(days);
 			} 
 			
 			// DB update
-		});		
+		});	
+	}
+
 	
-		// 생산계획 관리 grid 선택 행 삭제
+	
+	
+	/*------------
+	// 삭제 버튼 클릭
+	----------------*/
+	function deleteBtnHandler(){
 		$('#deleteBtn').on('click',function(){
 			// var change = confirm("행을 삭제하시겠습니까?");
 			// grid에서 삭제
 			var showConfirm = true;
-			manageGrid.removeCheckedRows(showConfirm);
-			
+			manageGrid.removeCheckedRows(showConfirm);	
 			// DB delete
 			
 		});
+	}
+	
+	
+	/*------------
+	// 탭 버튼 클릭
+	----------------*/
+	function tabBtnHandler(){
+		$('#manage-tab').on('click', function(){
+			manageGrid.refreshLayout();
+		});	
 		
+		// tab 클릭 이벤트
+		$('#insert-tab').on('click', function(){
+			insertGrid.refreshLayout();
+		});
+	}
+	
+	
+	
+	/*------------
+	// 생산요청서 모달에 뜨는 그리드
+	----------------*/		
+	function tab2GridInit() {		
 		// 생산계획 등록 그리드
 		var insertGrid = new tui.Grid({
 			el : document.getElementById('insertGrid'),
@@ -419,68 +471,30 @@
 				name : 'other'
 			}, ]
 		});
-		// tab 클릭 이벤트
-		$('#insert-tab').on('click', function(){
-			insertGrid.refreshLayout();
-		});
-		$('#manage-tab').on('click', function(){
-			manageGrid.refreshLayout();
+
+		
+		// 빈창 클릭시 데이터
+		insertGrid.on('click', (ev) => {
+			var name = insertGrid.getValue(ev.rowKey, 'productName')
+
+			if(name == null){
+				 $("#materialModal").modal("show");
+				 materialGrid.refreshLayout();
+			}
 		});
 		
-		// 계획 등록 탭
-		// grid 행 추가
-		$('#plusBtn').on('click',function(){
+		
+		
+		return insertGrid;
+		
+	}		
 
-			var rowData = [{orderCode: "", productCode: "",  productName: "", planAmt : "" , days: "", prio:"",other:""}]
-			insertGrid.appendRow(rowData);
-
-		});
-		// grid 선택 행 삭제
-		$('#removeBtn').on('click',function(){
-			// var change = confirm("행을 삭제하시겠습니까?");
-			var showConfirm = true;
-			insertGrid.removeCheckedRows(showConfirm);
-			
-		});
-	</script>
 	
-	<!-- 생산요청서 모달 -->
-	<div class="modal" id="requestModal" tabindex="-1">
-		<div class="modal-dialog modal-xl" >
-			<div class="modal-content">
-				<div class="modal-header">
-					<h5 class="modal-title">생산요청서 목록</h5>
-					<button type="button" class="btn-close" data-bs-dismiss="modal"	aria-label="Close" id="close_modal"></button>
-				</div>
-				<div class="modal-body">
-					<div>
-						<div id="requestModalGrid"></div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-	
-	<!-- 제품리스트 모달 -->
-	<div class="modal" id="materialModal" tabindex="-1">
-		<div class="modal-dialog modal-xl" >
-			<div class="modal-content">
-				<div class="modal-header">
-					<h5 class="modal-title">제품 목록</h5>
-					<button type="button" class="btn-close" data-bs-dismiss="modal"	aria-label="Close" id="close_modal"></button>
-				</div>
-				<div class="modal-body">
-					<div>
-						<div id="materialGrid"></div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-
-	<script>
+	/*------------
 	// 생산요청서 모달에 뜨는 그리드
-	var requestModalGrid = new tui.Grid({
+	----------------*/
+	function mastGridInit() {
+		var requestModalGrid = new tui.Grid({
 			el : document.getElementById('requestModalGrid'),
 			// 임시 데이터
 			data : [ {
@@ -521,9 +535,14 @@
 				name : 'planAmt',
 			}]
 		});
+		return requestModalGrid;
+	}
 	
+	/*------------
 	// insertGrid 빈곳 클릭시 모달에 뜨는 그리드(제품코드, 제품이름)
-	var materialGrid = new tui.Grid({
+	----------------*/
+	function detailGridInit(){
+		var materialGrid = new tui.Grid({
 			el : document.getElementById('materialGrid'),
 			// 임시 데이터
 			data : [ 
@@ -558,50 +577,112 @@
 				header : '제품명',
 				name : 'productName'
 			}]
-		});
-	// 모달 클릭 버튼 이벤트
-	$('#showBtn').on('click',function(){
+		});	
+		
+		return materialGrid;
+	}
+	
+	/*------------
+	// insertGrid 빈곳 클릭 핸들러
+	----------------*/
+	function gridClickHandler(){
+		// 제품 모달창의 그리드 선택시 자료를 insertGrid에 넣어주기
+		materialGrid.on('click',function(event){
+			var data2 = materialGrid.getRow(event.rowKey);
+			
+			const val = insertGrid.getFocusedCell().rowKey;
 
-		 $("#requestModal").modal("show");
-		requestModalGrid.refreshLayout();
-	});
-	
-	// 빈창 클릭시 데이터
-	insertGrid.on('focusChange', (ev) => {
-		var name = insertGrid.getValue(ev.rowKey, 'productName')
-		//console.log(name);
-		if(name == null){
-			 $("#materialModal").modal("show");
-			 materialGrid.refreshLayout();
-		}
-		
-		  const { columnName, rowKey } = ev;
-		  // ...정보를 가져와서 팝업을 띄워주는 코드
+			let prCode = data2.productCode; // 선택된 제품 코드
+			let prName = data2.productName; // 선택된 제품 이름
+
+			var checkCellState = false;
+			
+			insertGrid.setValue(val, 'productCode' , prCode, checkCellState);
+			insertGrid.setValue(val, 'productName' , prName, checkCellState);
+			$("#materialModal").modal("hide");
+
 		});
+	}
 	
-	// 제품 목록 그리드 클릭시 데이터 선택
-	materialGrid.on('click',function(ev){
-		//console.log(ev.rowKey);
-		var data2 = materialGrid.getRow(ev.rowKey);
-		var prCode = data2.productCode; // 선택된 제품 코드
-		var prName = data2.productName; // 선택된 제품 이름
-		console.log(prCode, prName);
-		
-		insertGrid.prependRow(ev.rowKey, {productName : prName});
-	});
 	
-	// 계획 등록 버튼 이벤트
-	$('#insertBtn').on('click',function(){
-		// 생산 계획명
-		var planName = $('#planName').val();
-		// 생산 계획 일자
-		var planDate = datepicker.getDate();
-		// grid 데이터
-		var data = insertGrid.getCheckedRows();
+	/*------------
+	// 검색버튼 이벤트 핸들러
+	----------------*/
+	function searchBtnHandler(){
+
+		$('#searchBtn').on('click',function(){
+			var getStartDay = $("startpicker-input").val();
+			var getEndDay = $("#endpicker-input").val();
+			//console.log(getStartDay);
+			//console.log(getEndDay);
+			// 갖고온 start, end 값을 넘겨서 select 해오기
+			// ajax 받아오고
+			// success : function(data){manageGrid.resetData(data);}
+			
+		})
+	}
+
+	
+	
+	/*------------
+	// 초기화버튼 이벤트 핸들러
+	----------------*/
+	function cancelBtnHandler(){
+		$('#cancelBtn').on('click',function(){
+
+			$("#startpicker-input").val(today);
+			$("#endpicker-input").val(today);
+		});	
+	}
+	
+	
+	
+	/*------------
+	// 모달 클릭 버튼 이벤트 핸들러
+	----------------*/
+	function showBtnHandler(){
+		// 모달 클릭 버튼 이벤트
+		$('#showBtn').on('click',function(){
+	
+			 $("#requestModal").modal("show");
+			requestModalGrid.refreshLayout();
+		});
+	}
+	
+	
+	
+	/*------------
+	// 그리드 행 추가 버튼 이벤트 핸들러
+	----------------*/
+	function plusBtnHandler(){
 		
-		console.log(data);
-		// 값이 null이면 insert하지 않기
-	});
+		$('#plusBtn').on('click',function(){
+	
+			var rowData = [{orderCode: "", productCode: "",  productName: "", planAmt : "" , days: "", prio:"",other:""}]
+			insertGrid.appendRow(rowData);
+		});
+
+	}
+	
+	
+	
+	/*------------
+	// 계획 등록 버튼 이벤트 핸들러
+	----------------*/
+	function insertBtnHandler(){
+	
+		$('#insertBtn').on('click',function(){
+			// 생산 계획명
+			var planName = $('#planName').val();
+			// 생산 계획 일자
+			var planDate = $('#datepicker-input').val();
+			// grid 데이터
+			var data = insertGrid.getCheckedRows();
+			
+			console.log(data);
+			// 값이 null이면 insert하지 않기
+		});
+	}
 	
 	</script>
 	</div>
