@@ -11853,6 +11853,11 @@ body {
 	margin-right: 40px;
 }
 
+#eqpTable input[readonly] {
+	background-color: gainsboro;
+	width: 100px;
+}
+
 #eqpTable tr {
 	border-bottom: 1px #C9BABA solid;
 	border-top: 1px #C9BABA solid;

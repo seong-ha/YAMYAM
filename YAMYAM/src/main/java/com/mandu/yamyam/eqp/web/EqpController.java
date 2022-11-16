@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 public class EqpController {
 	
-	@RequestMapping("/eqp")
+	@RequestMapping("/eqpAd")
 	public String eqp() {
 		return "eqp/eqpAd";
 	}

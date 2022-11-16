@@ -5,7 +5,7 @@
 	layout:decorate="~{/layout/layout}">
 
 <div class="container" layout:fragment="content">
-	<h4>설비 관리</h4>
+	<h3>설비 관리</h3>
 	<div>
 		<!-- 탭 목록 start -->
 		<ul class="nav nav-tabs nav-pills" id="myTab" role="tablist">
@@ -34,16 +34,12 @@
 							<li>
 								<label for="eName">설비명</label>
 								<input type="text" name="eName" id="firstEName">
-								<button type="button" class="btn btn-dark btn-sm" onclick="searchBtn()">검색</button>
+								<button type="button" class="btn btn-dark btn-sm" id="searchBtn">검색</button>
 								<input type="reset" class="btn btn-dark btn-sm">
+								<button type="button" class="btn btn-dark btn-sm me-md-2" style="float:right" id="deleteBtn">삭제</button>
 							</li>
 						</ul>
 					</form>
-					<div class="row">
-						<div class="d-md-flex justify-content-md-end">
-							<button type="button" class="btn btn-dark btn-sm me-md-2" onclick="deleteBtn()">삭제</button>
-						</div>
-					</div>
 					<!-- 조회 grid -->
 					<div id="selectEqp"></div>
 				</div>
@@ -56,7 +52,7 @@
 				<form action="#">
 					<div style="margin: 15px;">
 						<div class="d-md-flex justify-content-md-end">
-							<button type="button" class="btn btn-dark btn-sm me-md-2" onclick="selectBtn()">설비 목록</button>
+							<button type="button" class="btn btn-dark btn-sm me-md-2" onclick="selectBtn">설비 목록</button>
 							<input type="reset" class="btn btn-dark btn-sm me-md-2">
 							<button type="button" class="btn btn-dark btn-sm me-md-2" onclick="insertUpdateBtn()">저장</button>
 						</div>
@@ -72,7 +68,7 @@
 										<td>
 											<input type="text" id="eqpCd" name="eqpCd">
 										</td>
-										<th>금액</th>
+										<th>설비업체명</th>
 										<td>
 											<input type="text" id="sal" name="sal">
 										</td>
@@ -106,15 +102,23 @@
 										<td>
 											<input type="text" id="bDate" name="bDate">
 										</td>
+										<th>온도</th>
+										<td>
+											<input type="text" id="actCd" name="actCd" style="margin-right: 0; width: 90px;"> - 
+											<input type="text" id="actCd" name="actCd" style="width: 90px; margin-right: 0;"> ℃
+										</td>
 									</tr>
 									<tr>
-										<th>설비업체명</th>
-										<td>
-											<input type="text" id="actCd" name="actCd">
-										</td>
 										<th>점검주기</th>
 										<td>
 											<input type="text" id="cCycle" name="cCycle">
+										</td>
+										<th>설비구분</th>
+										<td colspan="2">
+											<input type="text" id="actCd" name="actCd" style="margin-right: 0;" readonly>
+											<img class="Magnifying-Glass-img" alt="image" data-bs-toggle="modal"
+												data-bs-target="#eqpTypeModal" src="../images/Magnifying_Glass.png">
+											<input type="text" id="actCd" name="actCd" readonly>
 										</td>
 									</tr>
 								</table>
@@ -131,140 +135,268 @@
 		</div>
 		<!-- 탭 본문 end -->
 	</div>
+	
+	<!-- 설비구분 modal -->
+	<div class="modal" id="eqpTypeModal" tabindex="-1"
+		aria-labelledby="#eqpTypeLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="eqpTypeLabel">설비 구분</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal"
+						aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<div>
+						<div id="eqpTypeModalGrid"></div>
+					</div>
+					<div align="center">
+						<button class="btn btn-dark btn-sm" style="margin-right:10px">확인</button>
+						<button class="btn btn-dark btn-sm">취소</button>
+					</div>
+				</div>
+
+			</div>
+		</div>
+	</div>
+	
+	
+	<!-- 설비목록 modal -->
+	<div class="modal" id="eqpListModal" tabindex="-1"
+		aria-labelledby="eqpListLabel" aria-hidden="true">
+		<div class="modal-dialog modal-sm">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="eqpListLabel">자재 목록</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal"
+						aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<div>
+						<div id="eqpTypeModalGrid"></div>
+					</div>
+					<div align="center">
+						<button class="btn btn-dark btn-sm">확인</button>
+						<button class="btn btn-dark btn-sm">취소</button>
+					</div>
+				</div>
+
+			</div>
+		</div>
+	</div>
 
 	<script type="text/javascript">
+	
+	
 	/* 조회 탭 부분 --------------------------------------------------------------------------------------------------- */
 	
-		const selectEqp = new tui.Grid({
-		      el: document.getElementById('selectEqp'),
-		      bodyHeight: 500, // 스크롤
-		      data: [
-		    {
-		    	eqpCd: 'eqp-20221104-001',
-		    	eName: '만두소 배합기',
-		    	mName: 'mandu-01',
-		    	actCD: 'ACT-010',
-		    	name: '최고배합기',
-		    	sal: 2000000,
-		    	mDate: '2022-11-01',
-		    	bDate: '2022-11-14',
-		    	cCycle: 60,
-		    	dates: '2022-11-14',
-		    	sts: '대기'
-		    },
-		    {
-		    	eqpCd: 'eqp-20221104-002',
-		    	eName: '만두소 배합기2',
-		    	mName: 'mandu-02',
-		    	actCD: 'ACT-010',
-		    	name: '최고배합기',
-		    	sal: 2000000,
-		    	mDate: '2022-11-01',
-		    	bDate: '2022-11-14',
-		    	cCycle: 60,
-		    	dates: '2022-11-14',
-		    	sts: '가동'
-		    }
-		  ],
-		      rowHeaders: ['checkbox'],
-		      scrollX: false,
-		      scrollY: true,
-		      columns: [
-		        {
-		          header: '설비코드',
-		          name: 'eqpCd',
-			      sortable: true,
-			      align: 'center'
-		        },
-		        {
-		          header: '설비명',
-		          name: 'eName',
-			      sortable: true,
-			      align: 'left'
-		        },
-		        {
-		          header: '모델명',
-		          name: 'mName',
-			      sortable: true,
-			      align: 'center'
-		        },
-		        {
-		          header: '거래처코드',
-		          name: 'actCD',
-			      sortable: true,
-			      align: 'center'
-		          
-		        },
-		        {
-		          header: '설비업체명',
-		          name: 'name',
-			      sortable: true,
-			      align: 'left'
-		        },
-		        {
-		          header: '금액',
-		          name: 'sal',
-			      sortable: true,
-			      align: 'right'
-		        },
-		        {
-		          header: '제작일자',
-		          name: 'mDate',
-			      sortable: true,
-			      align: 'center'
-		        },
-		        {
-		          header: '구매일자',
-		          name: 'bDate',
-			      sortable: true,
-			      align: 'center'
-		        },
-		        {
-		          header: '점검주기',
-		          name: 'cCycle',
-			      sortable: true,
-			      align: 'right'
-		        },
-		        {
-		          header: '마지막점검일',
-		          name: 'dates',
-			      sortable: true,
-			      align: 'center'
-		        },
-		        {
-		          header: '설비상태',
-		          name: 'sts',
-			      align: 'center',
-			      filter: {
-			    	  type: 'select'
-			      }
-		        }
-		      ]
-		    });
-	
-		// 검색 버튼
+		let selectEqpGrid = selectTabInit(); 		// 조회탭 그리드 초기화
+		
+		let eqpTypeModalGrid = eqpTypeModalInit();	// 관리탭 설비구분 모달 그리드 초기화
+		
+		searchBtn();								// 조회탭 검색버튼
+		deleteBtn();								// 조회탭 선택 삭제 버튼
+		
+		eqpTypeSelect();							// 관리탭 설비구분 선택 모달창 refresh
+		selectBtn();								// 관리탭 설비목록 물러오기 모달
+		
+		/* ---------------
+		조회탭 그리드
+		--------------- */
+		function selectTabInit() {
+		
+			let selectEqpGrid = new tui.Grid({
+			      el: document.getElementById('selectEqp'),
+			      bodyHeight: 500, // 스크롤
+			      data: [
+			    	{
+				    	eqpCd: 'eqp-20221104-001',
+				    	eName: '만두소 배합기',
+				    	mName: 'mandu-01',
+				    	actCD: 'ACT-010',
+				    	name: '최고배합기',
+				    	sal: 2000000,
+				    	mDate: '2022-11-01',
+				    	bDate: '2022-11-14',
+				    	cCycle: 60,
+				    	dates: '2022-11-14',
+				    	sts: '대기'
+				    },
+				    {
+				    	eqpCd: 'eqp-20221104-002',
+				    	eName: '만두소 배합기2',
+				    	mName: 'mandu-02',
+				    	actCD: 'ACT-010',
+				    	name: '최고배합기',
+				    	sal: 2000000,
+				    	mDate: '2022-11-01',
+				    	bDate: '2022-11-14',
+				    	cCycle: 60,
+				    	dates: '2022-11-14',
+				    	sts: '가동'
+				    }
+				  ],
+			      rowHeaders: ['checkbox'],
+			      scrollX: false,
+			      scrollY: true,
+			      columns: [
+			        {
+			          header: '설비코드',
+			          name: 'eqpCd',
+				      sortable: true,
+				      align: 'center'
+			        },
+			        {
+			          header: '설비명',
+			          name: 'eName',
+				      sortable: true,
+				      align: 'left'
+			        },
+			        {
+			          header: '모델명',
+			          name: 'mName',
+				      sortable: true,
+				      align: 'center'
+			        },
+			        {
+			          header: '거래처코드',
+			          name: 'actCD',
+				      sortable: true,
+				      align: 'center'
+			          
+			        },
+			        {
+			          header: '설비업체명',
+			          name: 'name',
+				      sortable: true,
+				      align: 'left'
+			        },
+			        {
+			          header: '금액',
+			          name: 'sal',
+				      sortable: true,
+				      align: 'right'
+			        },
+			        {
+			          header: '제작일자',
+			          name: 'mDate',
+				      sortable: true,
+				      align: 'center'
+			        },
+			        {
+			          header: '구매일자',
+			          name: 'bDate',
+				      sortable: true,
+				      align: 'center'
+			        },
+			        {
+			          header: '점검주기',
+			          name: 'cCycle',
+				      sortable: true,
+				      align: 'right'
+			        },
+			        {
+			          header: '마지막점검일',
+			          name: 'dates',
+				      sortable: true,
+				      align: 'center'
+			        },
+			        {
+			          header: '설비상태',
+			          name: 'sts',
+				      align: 'center',
+				      filter: {
+				    	  type: 'select'
+				      }
+			        }
+			      ]
+			});
+			
+			return selectEqpGrid;
+		}
+		
+		/* ---------------
+		관리탭 설비구분 모달 grid 초기화
+		--------------- */
+		function eqpTypeModalInit() {
+			let eqpTypeModalGrid = new tui.Grid({
+				el: document.getElementById('eqpTypeModalGrid'),
+				bodyHeight: 150,
+				data: [{
+					code: 'eqptype-01',
+					name: '만두 배합'
+				},
+				{
+					code: 'eqptype-02',
+					name: '만두 성형',
+				}],
+				rowHeaders: ['rowNum'],
+				scrollX: false,
+				scrollY: true,
+				columns: [{
+			          header: '설비구분코드',
+			          name: 'code',
+			          align: 'center'
+			        },
+			        {
+			          header: '설비구분명',
+			          name: 'name'
+			        },
+		      ] 
+			});
+			
+			return eqpTypeModalGrid;
+		}
+		
+		
+		
+		/* ---------------
+		조회탭 검색 버튼
+		--------------- */
 		function searchBtn() {
-			let firstEName = document.getElementById('firstEName');
 			
-			// 검색창 글자 안 적으면 전체 조회 ajax
-			if (firstEName.value == null || firstEName.value == '') {
+			document.getElementById('searchBtn').addEventListener('click', function () {
+				let firstEName = document.getElementById('firstEName');
 				
-				// ajax
+				// 검색창 글자 안 적으면 전체 조회 ajax
+				if (firstEName.value == null || firstEName.value == '') {
+					// ajax
+					
+					
+					return;
+				}
 				
-				return;
-			}
-			
-			// ajax로 검색어가 포함된 데이터 ajax로 가져오기
+				// ajax로 검색어가 포함된 데이터 ajax로 가져오기
+				
+			})
 		}
 		
-		// 삭제 버튼
+		
+		/* ---------------
+		조회탭 체크 삭제 버튼
+		--------------- */
 		function deleteBtn() {
-			var showConfirm = true;
-			selectEqp.removeCheckedRows(showConfirm);
+			document.getElementById('deleteBtn').addEventListener('click', function () {
+				let showConfirm = true;
+				eqpTypeModalGrid.removeCheckedRows(showConfirm);
+			});
+			
 		}
 		
 		
-	/* 관리 탭 부분 --------------------------------------------------------------------------------------------------- */
+		/* ---------------
+		관리탭 설비구분 모달 시 refresh
+		--------------- */
+		
+		function eqpTypeSelect() {
+			document.addEventListener('shown.bs.modal', function (){
+				eqpTypeModalGrid.refreshLayout();
+			});
+		}
+		
+		
+		
+		
 	
 		// 검색버튼
 		function selectBtn() {
