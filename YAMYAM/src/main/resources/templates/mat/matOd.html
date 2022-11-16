@@ -182,311 +182,309 @@
 		</div>
 	</div>
 
-	<!-- 
-	<span th:text="${odList[0]}"></span> 
-	<span th:text="${odList[1]}"></span>
-	 -->
+<!-- 	<span th:text="${odList[0]}"></span> 
+	<span th:text="${odList[1]}"></span> -->
 
 	<script th:inline="javascript">
-	let odLookUp = tab1GridInit();		// 탭1 조회 그리드
-	let newPlan = tab2GridInit();		// 탭2 새로운생산계획 그리드
-	let needMat = tab3GridInit();		// 탭2 필요자재 그리드
-	let odMat = tab4GridInit();			// 탭2 자재발주 그리드
-	
-	let needMatModal = needMatModal1();	// 자재목록 그리드
-	let planModal = planModalGrid(); 	// 생산계획서 모달
-	let actList = modalGrid2();		// 생산계획서 모달
-	
-	tabBtnHandler();	// 그리드 리프레쉬
-	modalRef();			// 모달 리프레쉬
-	
-	datePicker(); 		// datePicker
-	datePicker2();		// datePicker
+		let odLookUp = tab1GridInit();		// 탭1 조회 그리드
+		let newPlan = tab2GridInit();		// 탭2 새로운생산계획 그리드
+		let needMat = tab3GridInit();		// 탭2 필요자재 그리드
+		let odMat = tab4GridInit();			// 탭2 자재발주 그리드
+		
+		let needMatModal = matList();		// 자재목록 모달
+		let actList = actListModal();		// 업체목록 모달
+		let planModal = addPlan(); 			// 생산계획서 모달
+		
+		gridRef();	// 그리드 리프레쉬
+		modalRef();			// 모달 리프레쉬
+		
+		datePicker(); 		// datePicker
+		datePicker2();		// datePicker
 	
 	/*------------------------------
 	// 일반 탭 그리드
 	--------------------------------*/
 	function tab1GridInit(){
-	let dataList = [
-	    {
-	        maCode: 'OAF-20221104-011',
-	        mtCode: 'RML-10101',
-	        maNm: '얇은 만두피',
-	        price: 1000,
-	        count: 200,
-	        sumPrice: 2000000,
-	        acNm: 'YD 만두피',
-	        fDate: '2022-11-04',
-	        eDate: '2022-11-09'
-	    },
-	    {
-	        maCode: 'OAF-20221104-022',
-	        mtCode: 'RML-10102',
-	        maNm: '두꺼운 만두피',
-	        price: 1500,
-	        count: 200,
-	        sumPrice: 3000000,
-	        acNm: 'YD 만두피',
-	        fDate: '2022-11-04',
-	        eDate: '2022-11-09'
-	    }
-	  ]
+		let dataList = [
+		    {
+		    	M_OD_CD: 'OAF-20221104-011',
+		    	M_CD: 'RML-10101',
+		    	NAME: '얇은 만두피',
+		    	M_ODD_MN: 1000,
+		    	M_ODD_AMT: 200,
+		    	M_SUM: 2000000,
+		        acNm: 'YD 만두피',
+		        M_OD_DD: '2022-11-04',
+		        M_ODD_DATE: '2022-11-09'
+		    },
+		    {
+		    	M_OD_CD: 'OAF-20221104-022',
+		    	M_CD: 'RML-10102',
+		    	NAME: '두꺼운 만두피',
+		    	M_ODD_MN: 1500,
+		    	M_ODD_AMT: 200,
+		    	M_SUM: 3000000,
+		        acNm: 'YD 만두피',
+		        M_OD_DD: '2022-11-04',
+		        M_ODD_DATE: '2022-11-09'
+		    }
+		  ]
+		
+		let odLookUp = new tui.Grid({
+	      el: document.getElementById('grid'),
+	      bodyHeight: 500,
+	      data: dataList,
+	      rowHeaders: ['checkbox', 'rowNum'],
+	      scrollX: false,
+	      scrollY: true,
+	      columns: [
+	        {
+	          header: '발주코드',
+	          name: 'M_OD_CD'
+	        },
+	        {
+	          header: '자재코드',
+	          name: 'M_CD'
+	        },
+	        {
+	          header: '자재명',
+	          name: 'NAME'
+	        },
+	        {
+	          header: '단가(원)',
+	          name: 'M_ODD_MN'
+	        },
+	        {
+	          header: '발주량',
+	          name: 'M_ODD_AMT'
+	        },
+	        {
+	          header: '총액',
+	          name: 'M_SUM'
+	        },
+	        {
+	          header: '업체명',
+	          name: 'acNm'
+	        },
+	        {
+	          header: '발주신청일',
+	          name: 'M_OD_DD'
+	        },
+	        {
+	          header: '납기요청일',
+	          name: 'M_ODD_DATE'
+	        }
+	      ]
+	    });
+		
+		odLookUp.on('check', ev => {
+	      console.log('check!', ev);
+	    });
 	
-	let odLookUp = new tui.Grid({
-      el: document.getElementById('grid'),
-      bodyHeight: 500,
-      data: dataList,
-      rowHeaders: ['checkbox', 'rowNum'],
-      scrollX: false,
-      scrollY: true,
-      columns: [
-        {
-          header: '발주코드',
-          name: 'maCode'
-        },
-        {
-          header: '자재코드',
-          name: 'mtCode'
-        },
-        {
-          header: '자재명',
-          name: 'maNm'
-        },
-        {
-          header: '단가(원)',
-          name: 'price'
-        },
-        {
-          header: '발주량',
-          name: 'count'
-        },
-        {
-          header: '총액',
-          name: 'sumPrice'
-        },
-        {
-          header: '업체명',
-          name: 'acNm'
-        },
-        {
-          header: '발주신청일',
-          name: 'fDate'
-        },
-        {
-          header: '납기요청일',
-          name: 'eDate'
-        }
-      ]
-    });
+	    odLookUp.on('uncheck', ev => {
+	      console.log('uncheck!', ev);
+	    });
 	
-	odLookUp.on('check', ev => {
-      console.log('check!', ev);
-    });
-
-    odLookUp.on('uncheck', ev => {
-      console.log('uncheck!', ev);
-    });
-
-    odLookUp.on('focusChange', ev => {
-      console.log('change focused cell!', ev);
-    });
-    
-    return odLookUp;
+	    odLookUp.on('focusChange', ev => {
+	      console.log('change focused cell!', ev);
+	    });
+	    
+	    return odLookUp;
 	}
 	
 	/*------------------------------
 	// 생산계획 탭 그리드 1
 	--------------------------------*/
 	function tab2GridInit(){
-	let dataList = [
-	    {
-	    	mNo: 'PPD-20221101-001',
-	    	mCode: 'MD-00100',
-	    	name: '얇은피 고기만두',
-	    	count: 200,
-	        eDate: '2022-11-18'
-	    },
-	    {
-	    	mNo: 'PPD-20221101-002',
-	    	mCode: 'MD-00300',
-	    	name: '얇은피 새우만두',
-	    	count: 100,
-	        eDate: '2022-11-18'
-	    }
-	  ]
+		let dataList = [
+		    {
+		    	mNo: 'PPD-20221101-001',
+		    	mCode: 'MD-00100',
+		    	name: '얇은피 고기만두',
+		    	count: 200,
+		        eDate: '2022-11-18'
+		    },
+		    {
+		    	mNo: 'PPD-20221101-002',
+		    	mCode: 'MD-00300',
+		    	name: '얇은피 새우만두',
+		    	count: 100,
+		        eDate: '2022-11-18'
+		    }
+		  ]
+			
+		let newPlan = new tui.Grid({
+		      el: document.getElementById('grid2'),
+		      bodyHeight: 200,
+		      data: dataList,
+		      rowHeaders: ['checkbox'],
+		      scrollX: false,
+		      scrollY: true,
+		      columns: [
+		        {
+		          header: '상세계획번호',
+		          name: 'mNo'
+		        },
+		        {
+		          header: '제품코드',
+		          name: 'mCode'
+		        },
+		        {
+		          header: '제품명',
+		          name: 'name'
+		        },
+		        {
+		          header: '계획량',
+		          name: 'count'
+		        },
+		        {
+		          header: '주문납기일',
+		          name: 'eDate'
+		        }
+		      ]
+		    });
 		
-	let newPlan = new tui.Grid({
-	      el: document.getElementById('grid2'),
-	      bodyHeight: 200,
-	      data: dataList,
-	      rowHeaders: ['checkbox'],
-	      scrollX: false,
-	      scrollY: true,
-	      columns: [
-	        {
-	          header: '상세계획번호',
-	          name: 'mNo'
-	        },
-	        {
-	          header: '제품코드',
-	          name: 'mCode'
-	        },
-	        {
-	          header: '제품명',
-	          name: 'name'
-	        },
-	        {
-	          header: '계획량',
-	          name: 'count'
-	        },
-	        {
-	          header: '주문납기일',
-	          name: 'eDate'
-	        }
-	      ]
-	    });
+			newPlan.on('check', ev => {
+		      console.log('check!', ev);
+		    });
 	
-		newPlan.on('check', ev => {
-	      console.log('check!', ev);
-	    });
-
-		newPlan.on('uncheck', ev => {
-	      console.log('uncheck!', ev);
-	    });
-
-		newPlan.on('focusChange', ev => {
-	      console.log('change focused cell!', ev);
-	    });
-	 
-	   	return newPlan;
+			newPlan.on('uncheck', ev => {
+		      console.log('uncheck!', ev);
+		    });
+	
+			newPlan.on('focusChange', ev => {
+		      console.log('change focused cell!', ev);
+		    });
+		 
+		   	return newPlan;
 	}
 
 	/*------------------------------
 	// 생산계획 탭 그리드 2
 	--------------------------------*/
 	function tab3GridInit() {
-	let dataList = [
-	    {
-	    	code: 'RML-10101',
-	    	name: '얇은 만두피',
-	    	count: 3000
-	    }
-	  ]
-	let needMat = new tui.Grid({
-	      el: document.getElementById('grid3'),
-	      bodyHeight: 200,
-	      data: dataList,
-	      rowHeaders: ['checkbox'],
-	      scrollX: false,
-	      scrollY: true,
-	      columns: [
-	    	  {
-		          header: '자재코드',
-		          name: 'code'
-		        },
-		        {
-		          header: '자재명',
-		          name: 'name'
-		        },
-		        {
-		          header: '소모량',
-		          name: 'count'
-		        }
-	      ]
-	    });
-
-		needMat.on('check', ev => {
-	      console.log('check!', ev);
-	    });
-
-		needMat.on('uncheck', ev => {
-	      console.log('uncheck!', ev);
-	    });
-
-		needMat.on('focusChange', ev => {
-	      console.log('change focused cell!', ev);
-	    });
-		
-		return needMat;
+		let dataList = [
+		    {
+		    	code: 'RML-10101',
+		    	name: '얇은 만두피',
+		    	count: 3000
+		    }
+		  ]
+		let needMat = new tui.Grid({
+		      el: document.getElementById('grid3'),
+		      bodyHeight: 200,
+		      data: dataList,
+		      rowHeaders: ['checkbox'],
+		      scrollX: false,
+		      scrollY: true,
+		      columns: [
+		    	  {
+			          header: '자재코드',
+			          name: 'code'
+			        },
+			        {
+			          header: '자재명',
+			          name: 'name'
+			        },
+			        {
+			          header: '소모량',
+			          name: 'count'
+			        }
+		      ]
+		    });
+	
+			needMat.on('check', ev => {
+		      console.log('check!', ev);
+		    });
+	
+			needMat.on('uncheck', ev => {
+		      console.log('uncheck!', ev);
+		    });
+	
+			needMat.on('focusChange', ev => {
+		      console.log('change focused cell!', ev);
+		    });
+			
+			return needMat;
 	}
 	
 	/*------------------------------
 	// 생산계획 탭 그리드 3
 	--------------------------------*/
 	function tab4GridInit() {
-	let dataList = [
-	    {
-	    	code: 'RML-10101',
-	    	name: '얇은 만두피',
-	    	sCount: 4000,
-	    	price: 1000,
-	    	count: 4000,
-	    	sumPrice: 4000000,
-	    	actNm: 'YD 만두피',
-	    	sDate: '2022-11-04',
-	    	eDate: '2022-11-10'
-	    }
-	  ];
+		let dataList = [
+		    {
+		    	code: 'RML-10101',
+		    	name: '얇은 만두피',
+		    	sCount: 4000,
+		    	price: 1000,
+		    	count: 4000,
+		    	sumPrice: 4000000,
+		    	actNm: 'YD 만두피',
+		    	sDate: '2022-11-04',
+		    	eDate: '2022-11-10'
+		    }
+		  ];
+		
+		let odMat = new tui.Grid({
+		      el: document.getElementById('grid4'),
+		      bodyHeight: 200,
+		      data: dataList,
+		      rowHeaders: ['rowNum'],
+		      scrollX: false,
+		      scrollY: true,
+		      columns: [
+		    	  {
+			          header: '자재코드',
+			          name: 'code'
+			        },
+			        {
+			          header: '자재명',
+			          name: 'name'
+			        },
+			        {
+			          header: '안전발주량',
+			          name: 'sCount'
+			        },
+			        {
+				      header: '단가(원)',
+				      name: 'price'
+				    },
+				    {
+					  header: '발주량',
+					  name: 'count'
+					},
+					{
+					  header: '총액',
+					  name: 'sumPrice'
+					},
+					{
+					  header: '업체명',
+					  name: 'actNm'
+					},
+					{
+					  header: '발주신청일',
+					  name: 'sDate'
+					},
+					{
+					  header: '납기요청일',
+					  name: 'eDate'
+					}
+						        
+		      ]
+		    });
 	
-	let odMat = new tui.Grid({
-	      el: document.getElementById('grid4'),
-	      bodyHeight: 200,
-	      data: dataList,
-	      rowHeaders: ['rowNum'],
-	      scrollX: false,
-	      scrollY: true,
-	      columns: [
-	    	  {
-		          header: '자재코드',
-		          name: 'code'
-		        },
-		        {
-		          header: '자재명',
-		          name: 'name'
-		        },
-		        {
-		          header: '안전발주량',
-		          name: 'sCount'
-		        },
-		        {
-			      header: '단가(원)',
-			      name: 'price'
-			    },
-			    {
-				  header: '발주량',
-				  name: 'count'
-				},
-				{
-				  header: '총액',
-				  name: 'sumPrice'
-				},
-				{
-				  header: '업체명',
-				  name: 'actNm'
-				},
-				{
-				  header: '발주신청일',
-				  name: 'sDate'
-				},
-				{
-				  header: '납기요청일',
-				  name: 'eDate'
-				}
-					        
-	      ]
-	    });
-	
-	odMat.on('focusChange', ev => {
-        console.log('change focused cell!', ev);
-      });
-    
-    	return odMat;
-	}
+		odMat.on('focusChange', ev => {
+	        console.log('change focused cell!', ev);
+	      });
+	    
+	    	return odMat;
+		}
 	
 	/*------------------------------
 	// 그리드 리프레쉬
 	--------------------------------*/
-	function tabBtnHandler() {
+	function gridRef() {
 		const manageTab = document.getElementById('normal-tab');
 			manageTab.addEventListener('click',function(){
 				odLookUp.refreshLayout();
@@ -503,54 +501,54 @@
 	/*------------------------------
 	// 자재목록 모달 그리드
 	--------------------------------*/
-	function needMatModal1() {
+	function matList() {
 	
-	let dataList = [{
-		matCode: 'RML-10101',
-		matNm: '얇은 만두피',
-		size: 100,
-		count: 200
-	},
-	{
-		matCode: 'RML-10102',
-		matNm: '굵은 만두피',
-		size: 100,
-		count: 200
-	}]
-	
-	let needMatModa1 = new tui.Grid({
-		el: document.getElementById('modalGrid'),
-		bodyHeight: 200,
-		data: dataList,
-		rowHeaders: ['checkbox'],
-		scrollX: false,
-		scrollY: true,
-		columns: [
-			{
-				header: '자재코드',
-				name: 'matCode',
-			},
-			{
-				header: '자재명',
-				name: 'matNm',
-			},
-			{
-				header: '규격',
-				name: 'size'
-			},
-			{
-				header: '수량',
-				name: 'count'
-			}
-		]
-	});
+		let dataList = [{
+			matCode: 'RML-10101',
+			matNm: '얇은 만두피',
+			size: 100,
+			count: 200
+		},
+		{
+			matCode: 'RML-10102',
+			matNm: '굵은 만두피',
+			size: 100,
+			count: 200
+		}]
+		
+		let needMatModa1 = new tui.Grid({
+			el: document.getElementById('modalGrid'),
+			bodyHeight: 200,
+			data: dataList,
+			rowHeaders: ['checkbox'],
+			scrollX: false,
+			scrollY: true,
+			columns: [
+				{
+					header: '자재코드',
+					name: 'matCode',
+				},
+				{
+					header: '자재명',
+					name: 'matNm',
+				},
+				{
+					header: '규격',
+					name: 'size'
+				},
+				{
+					header: '수량',
+					name: 'count'
+				}
+			]
+		});
 		return needMatModa1;
 	}
 	
 	/*------------------------------
 	// 업체목록 모달 그리드
 	--------------------------------*/
-	function modalGrid2() {
+	function actListModal() {
 	let actList = new tui.Grid({
 		el: document.getElementById('modalGrid2'),
 		bodyHeight: 200,
@@ -578,7 +576,7 @@
 	/*------------------------------
 	// 생산계획 모달 그리드
 	--------------------------------*/
-	function planModalGrid() {
+	function addPlan() {
 	let planModal = new tui.Grid({
 		el: document.getElementById('modalGrid3'),
 		bodyHeight: 400,

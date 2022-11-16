@@ -6,7 +6,7 @@
 
 <div class="container" layout:fragment="content">
 	<div id="mat-od-title">
-		<h2>자재 입고 검수 관리</h2>
+		<h3>자재 입고 검수 관리</h3>
 	</div>
 	<hr>
 	<ul class="ul-style">
@@ -124,6 +124,7 @@
 	
 	modalRef();							// 모달 리프레쉬
 	
+	datePicker();
 	/*------------------------------
 	// 자재전체조회 그리드
 	--------------------------------*/
@@ -357,21 +358,23 @@
 		/*------------------------------
 		// DatePicker
 		--------------------------------*/
-		   var today = new Date();
-		    var picker = tui.DatePicker.createRangePicker({
-		        startpicker: {
-		            date: today,
-		            input: '#startpicker-input',
-		            container: '#startpicker-container'
-		        },
-		        endpicker: {
-		            date: today,
-		            input: '#endpicker-input',
-		            container: '#endpicker-container'
-		        },
-		        selectableRanges: [
-		            [today, new Date(today.getFullYear() + 1, today.getMonth(), today.getDate())]
-		        ]
-		    });
+		function datePicker() {
+			   var today = new Date();
+			    var picker = tui.DatePicker.createRangePicker({
+			        startpicker: {
+			            date: today,
+			            input: '#startpicker-input',
+			            container: '#startpicker-container'
+			        },
+			        endpicker: {
+			            date: today,
+			            input: '#endpicker-input',
+			            container: '#endpicker-container'
+			        },
+			        selectableRanges: [
+			            [today, new Date(today.getFullYear() + 1, today.getMonth(), today.getDate())]
+			        ]
+			    });
+			}
 	</script>
 </div>
