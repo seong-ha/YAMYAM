@@ -115,94 +115,104 @@
 		</div>
 	</div>
 	<script>
-const grid = new tui.Grid({
-      el: document.getElementById('grid'),
-      bodyHeight: 500,
-      data: [
-    {
-    	maLot: 'RML-10000-20221112001',
-    	mtCode: 'RML-10101',
-        maNm: '얇은 만두피',
-        actNm: 'YD 만두피',
-        outCount: 999,
-        outDate: '2022-11-12',
-        eDate: '2023-11-30',
-        outD: '출고'
-    },
-    {
-    	maLot: 'RML-10000-20221112002',
-    	mtCode: 'RML-10101',
-        maNm: '두꺼운 만두피',
-        actNm: 'YD 만두피',
-        outCount: 1200,
-        outDate: '2022-11-12',
-        eDate: '2023-11-30',
-        outD: '출고'
-    }
-  ],
-      rowHeaders: ['checkbox', 'rowNum'],
-      scrollX: false,
-      scrollY: true,
-      columns: [
-        {
-          header: '자재LOT번호',
-          name: 'maLot'
-        },
-        {
-          header: '자재코드',
-          name: 'mtCode'
-        },
-        {
-          header: '자재명',
-          name: 'maNm'
-        },
-        {
-          header: '업체명',
-          name: 'actNm'
-        },
-        {
-          header: '출고량',
-          name: 'outCount'
-        },
-        {
-          header: '출고일',
-          name: 'outDate'
-        },
-        {
-          header: '유통기한',
-          name: 'eDate'
-        },
-        {
-            header: '출고구분',
-            name: 'outD'
-          }
-      ]
-    });
-
-    grid.on('check', ev => {
-      console.log('check!', ev);
-    });
-
-    grid.on('uncheck', ev => {
-      console.log('uncheck!', ev);
-    });
-
-    grid.on('focusChange', ev => {
-      console.log('change focused cell!', ev);
-    });
-    </script>
-
-	<script>
-	document.addEventListener('shown.bs.modal', function (){
-		modalGrid.refreshLayout();
-		modalGrid2.refreshLayout();
-		modalGrid3.refreshLayout();
-	}, '.modal');
+	let grid = outMatList();		// 출고전체목록 그리드
 	
-	var modalGrid = new tui.Grid({
-		el: document.getElementById('modalGrid'),
-		bodyHeight: 150,
-		data: [{
+	let modalGrid = matList();		// 자재목록 모달 그리드
+	let modalGrid2 = actList();		// 자재목록 모달 그리드
+	let modalGrid3 = matStList();	// 자재목록 모달 그리드
+	
+	modalRef();						// 모달 리프레시
+	
+	datePicker();					// DatePicker
+	
+	/*------------------------------
+	// 출고전체목록 그리드
+	--------------------------------*/
+	function outMatList(){
+		let dataList = [
+		    {
+		    	maLot: 'RML-10000-20221112001',
+		    	mtCode: 'RML-10101',
+		        maNm: '얇은 만두피',
+		        actNm: 'YD 만두피',
+		        outCount: 999,
+		        outDate: '2022-11-12',
+		        eDate: '2023-11-30',
+		        outD: '출고'
+		    },
+		    {
+		    	maLot: 'RML-10000-20221112002',
+		    	mtCode: 'RML-10101',
+		        maNm: '두꺼운 만두피',
+		        actNm: 'YD 만두피',
+		        outCount: 1200,
+		        outDate: '2022-11-12',
+		        eDate: '2023-11-30',
+		        outD: '출고'
+		    }
+		  ]
+		let grid = new tui.Grid({
+		      el: document.getElementById('grid'),
+		      bodyHeight: 500,
+		      data: dataList,
+		      rowHeaders: ['checkbox', 'rowNum'],
+		      scrollX: false,
+		      scrollY: true,
+		      columns: [
+		        {
+		          header: '자재LOT번호',
+		          name: 'maLot'
+		        },
+		        {
+		          header: '자재코드',
+		          name: 'mtCode'
+		        },
+		        {
+		          header: '자재명',
+		          name: 'maNm'
+		        },
+		        {
+		          header: '업체명',
+		          name: 'actNm'
+		        },
+		        {
+		          header: '출고량',
+		          name: 'outCount'
+		        },
+		        {
+		          header: '출고일',
+		          name: 'outDate'
+		        },
+		        {
+		          header: '유통기한',
+		          name: 'eDate'
+		        },
+		        {
+		            header: '출고구분',
+		            name: 'outD'
+		          }
+		      ]
+		    });
+		
+		    grid.on('check', ev => {
+		      console.log('check!', ev);
+		    });
+		
+		    grid.on('uncheck', ev => {
+		      console.log('uncheck!', ev);
+		    });
+		
+		    grid.on('focusChange', ev => {
+		      console.log('change focused cell!', ev);
+		    });
+		    return grid;
+		}
+
+	/*------------------------------
+	// 자재목록 모달
+	--------------------------------*/
+	function matList() {
+		let dataList = [{
 			code: 'RML-10101',
 			name: '얇은 만두피',
 			size: 100,
@@ -213,55 +223,69 @@ const grid = new tui.Grid({
 			name: '굵은 만두피',
 			size: 100,
 			count: 200
-		}],
-		rowHeaders: ['checkbox'],
-		scrollX: false,
-		scrollY: true,
-		columns: [{
-	          header: '자재코드',
-	          name: 'code'
-	        },
-	        {
-	          header: '자재명',
-	          name: 'name'
-	        },
-	        {
-	          header: '규격',
-	          name: 'size'
-	        },
-	        {
-		      header: '수량',
-		      name: 'count'
-		    }
-      ] 
-	});
+		}]
+		let modalGrid = new tui.Grid({
+			el: document.getElementById('modalGrid'),
+			bodyHeight: 150,
+			data: dataList,
+			rowHeaders: ['checkbox'],
+			scrollX: false,
+			scrollY: true,
+			columns: [{
+		          header: '자재코드',
+		          name: 'code'
+		        },
+		        {
+		          header: '자재명',
+		          name: 'name'
+		        },
+		        {
+		          header: '규격',
+		          name: 'size'
+		        },
+		        {
+			      header: '수량',
+			      name: 'count'
+			    }
+	      ] 
+		});
+		return modalGrid;
+	}
 	
-	var modalGrid2 = new tui.Grid({
-		el: document.getElementById('modalGrid2'),
-		bodyHeight: 150,
-		data: [{
+	/*------------------------------
+	// 업체목록 모달
+	--------------------------------*/
+	function actList(){
+		let dataList = [{
 			actCode: 'VDR-1101',
 			actName: 'YD 만두피'
-		}],
-		rowHeaders: ['checkbox'],
-		scrollX: false,
-		scrollY: true,
-		columns: [
-			{
-				header: '업체 코드',
-				name: 'actCode',
-			},
-			{
-				header: '업체명',
-				name: 'actName',
-			}
-		]
-	});
+		}]
+		var modalGrid2 = new tui.Grid({
+			el: document.getElementById('modalGrid2'),
+			bodyHeight: 150,
+			data: dataList,
+			rowHeaders: ['checkbox'],
+			scrollX: false,
+			scrollY: true,
+			columns: [
+				{
+					header: '업체 코드',
+					name: 'actCode',
+				},
+				{
+					header: '업체명',
+					name: 'actName',
+				}
+			]
+		});
+		return modalGrid2;
+	}
 	
-	var modalGrid3 = new tui.Grid({
-		el: document.getElementById('modalGrid3'),
-		bodyHeight: 400,
-		data: [{
+	/*------------------------------
+	// 현재고목록 모달
+	--------------------------------*/
+	function matStList(){
+		let dataList = [{
 			maLot: 'RML-10000-20221112001',
 			maCode: 'RML-10101',
 			maNm: '얇은 만두피',
@@ -276,38 +300,64 @@ const grid = new tui.Grid({
 			actNm: 'SJ 만두피',
 			count: 999,
 			date: '2023-11-30'
-		}],
-		rowHeaders: ['checkbox'],
-		scrollX: false,
-		scrollY: true,
-		columns: [{
-	          header: '자재LOT번호',
-	          name: 'maLot'
-	        },
-	        {
-	          header: '자재코드',
-	          name: 'maCode'
-	        },
-	        {
-	          header: '자재명',
-	          name: 'maNm'
-	        },
-	        {
-		      header: '업체명',
-		      name: 'actNm'
-		    },
-	        {
-			  header: '수량',
-			  name: 'count'
-			},
-		    {
-			  header: '유통기한',
-			  name: 'date'
-			}
-      ] 
-	});
+		}]
+		let modalGrid3 = new tui.Grid({
+			el: document.getElementById('modalGrid3'),
+			bodyHeight: 400,
+			data: dataList,
+			rowHeaders: ['checkbox'],
+			scrollX: false,
+			scrollY: true,
+			columns: [{
+		          header: '자재LOT번호',
+		          name: 'maLot'
+		        },
+		        {
+		          header: '자재코드',
+		          name: 'maCode'
+		        },
+		        {
+		          header: '자재명',
+		          name: 'maNm'
+		        },
+		        {
+			      header: '업체명',
+			      name: 'actNm'
+			    },
+		        {
+				  header: '수량',
+				  name: 'count'
+				},
+			    {
+				  header: '유통기한',
+				  name: 'date'
+				}
+	      ] 
+		});
+		return modalGrid3
+	}
 	
-	   // Date Picker
+	/*------------------------------
+	// 모달 리프레시
+	--------------------------------*/
+	function modalRef() {
+		document.addEventListener('shown.bs.modal', function (){
+			modalGrid.refreshLayout();
+		}, '.modal');
+		
+		document.addEventListener('shown.bs.modal', function (){
+			modalGrid2.refreshLayout();
+		}, '.modal');
+		
+		document.addEventListener('shown.bs.modal', function (){
+			modalGrid3.refreshLayout();
+		}, '.modal');
+	}
+	
+	/*------------------------------
+	// DatePicker
+	--------------------------------*/
+	function datePicker() {
 	   var today = new Date();
 	    var picker = tui.DatePicker.createRangePicker({
 	        startpicker: {
@@ -324,5 +374,6 @@ const grid = new tui.Grid({
 	            [today, new Date(today.getFullYear() + 1, today.getMonth(), today.getDate())]
 	        ]
 	    });
+	}
 	</script>
 </div>
