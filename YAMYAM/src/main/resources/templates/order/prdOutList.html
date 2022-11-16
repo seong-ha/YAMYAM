@@ -249,22 +249,8 @@ $('#lot').on('click',function(){
  
  
 //날짜 계산
-var today = new Date();
-var picker = tui.DatePicker.createRangePicker({
-    startpicker: {
-        date: today,
-        input: '#startpicker-input',
-        container: '#startpicker-container'
-    },
-    endpicker: {
-        date: today,
-        input: '#endpicker-input',
-        container: '#endpicker-container'
-    },
-    selectableRanges: [
-        [today, new Date(today.getFullYear() + 1, today.getMonth(), today.getDate())]
-    ]
-});
+rangeDatepickerInit('#startpicker-input', '#startpicker-container','#endpicker-input','#endpicker-container')
+
 
 	//엑셀 내보내기
 	$('#exportBtn').on('click',function(){
