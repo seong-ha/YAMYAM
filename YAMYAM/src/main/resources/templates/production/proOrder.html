@@ -45,6 +45,9 @@
 				필요자재LOT
 
 				<div id="matLot"></div>
+				<button type="button" id="deleteBtn"
+				class="btn btn-dark btn-sm" >행 삭제</button>
+				
 			</div>
 		</div>
 
@@ -84,7 +87,7 @@
 		el: document.getElementById('planDGrid'),
 		// 임시 데이터
 		data: [{
-			boardNum: '1',
+			
 			planCode: 'pro_123456',
 			productName: '얇은피 김치만두',
 			amt: '300',
@@ -102,15 +105,11 @@
 		// },
 		scrollX: false,
 		scrollY: false,
-		// rowHeaders: ['checkbox'],
+		rowHeaders: ['rowNum'],
 		// columnOptions: {
 		// 	minWidth: 180
 		// },
-		columns: [{
-				header: 'No',
-				name: 'boardNum',
-				width: 'auto'
-			},
+		columns: [
 			{
 				header: '생산계획코드',
 				name: 'planCode'
@@ -139,7 +138,6 @@
 		el: document.getElementById('planOrder'),
 		// 임시 데이터
 		data: [{
-			boardNum: '1',
 			lineCode: 'LIN-BAR-001',
 			dates: '20221202',
 			amt: '200',
@@ -157,11 +155,8 @@
 		// },
 		scrollX: false,
 		scrollY: false,
-		columns: [{
-				header: 'No',
-				name: 'boardNum',
-				width: 'auto'
-			},
+		rowHeaders: ['rowNum'],
+		columns: [
 			{
 				header: '라인코드',
 				name: 'lineCode',
@@ -191,25 +186,25 @@
 		// 임시 데이터
 		data: [
 			{
-			boardNum: '1',
+		
 			prdCd: 'MD-00200',
 			mtrCd: 'RML-10101',
 			name: '얇은 만두피',
 			amt : '200'	},
 			{
-			boardNum: '2',
+			
 			prdCd: 'MD-00200',
 			mtrCd: 'RML-10201',
 			name: '부추',
 			amt : '300'	},
 			{
-			boardNum: '3',
+			
 			prdCd: 'MD-00200',
 			mtrCd: 'RML-10301',
 			name: '다진고기',
 			amt : '400'	},
 		{
-			boardNum: '4',
+			
 			prdCd: 'MD-00200',
 			mtrCd: 'RML-10401',
 			name: '두부',
@@ -226,15 +221,11 @@
 		// },
 		scrollX: false,
 		scrollY: false,
-		// rowHeaders: ['checkbox'],
+		rowHeaders: ['rowNum'],
 		// columnOptions: {
 		// 	minWidth: 180
 		// },
-		columns: [{
-				header: 'No',
-				name: 'boardNum',
-				width: 'auto'
-			},
+		columns: [
 			{
 				header: '제품코드',
 				name: 'prdCd',
@@ -277,27 +268,27 @@
 		el: document.getElementById('matLot'),
 		// 임시 데이터
 		data: [{
-			boardNum: '1',
+			
 			name: '얇은 만두피',
 			mLot : 'RML-10000-220122001',
 			amt : '200'	,
 			eDate : '2022/11/15',
 			poddCd: 'RML-10101'},
-			{	boardNum: '2',
+			{	
 				name: '부추',
 				mLot : 'RML-10000-220122002',
 				amt : '300'	,
 				eDate : '2022/11/17',
 				poddCd: 'RML-10101'},
 			{
-				boardNum: '3',
+				
 				name: '다진고기',
 				mLot : 'RML-10000-220122003',
 				amt : '400'	,
 				eDate : '2022/11/16',
 				poddCd: 'RML-10101'},
 			{
-				boardNum: '4',
+				
 				name: '두부',
 				mLot : 'RML-10000-220122004',
 				amt : '500'	,
@@ -315,15 +306,11 @@
 		// },
 		scrollX: false,
 		scrollY: false,
-		rowHeaders: ['checkbox'],
+		rowHeaders: ['checkbox', 'rowNum'],
 		// columnOptions: {
 		// 	minWidth: 180
 		// },
-		columns: [{
-				header: 'No',
-				name: 'boardNum',
-				width: 'auto'
-			},
+		columns: [
 			{
 				header: '자재명',
 				name: 'name',
@@ -353,26 +340,26 @@
 		el: document.getElementById('matLotGrid2'),
 		// 임시 데이터
 		data: [{
-				boardNum: '1',
+				
 				mLot : 'RML-10000-220122001',
 				sAmt : '12582324200',
 				amt : '200'	,
 				eDate : '2022/11/15',
 				},
 				{
-				boardNum: '2',
+			
 				mLot : 'RML-10000-220122002',
 				sAmt : '12582324200',
 				eDate : '2022/11/16',
 				},
 				{
-				boardNum: '3',
+				
 				mLot : 'RML-10000-220122003',
 				sAmt : '12582324200',
 				eDate : '2022/11/20',
 				},
 				{
-				boardNum: '4',
+				
 				mLot : 'RML-10000-220122004',
 				sAmt : '12582324200',
 				eDate : '2022/11/17',
@@ -388,15 +375,11 @@
 		// },
 		scrollX: false,
 		scrollY: false,
-		rowHeaders: ['checkbox'],
+		rowHeaders: ['checkbox','rowNum'],
 		// columnOptions: {
 		// 	minWidth: 180
 		// },
-		columns: [{
-				header: 'No',
-				name: 'boardNum',
-				width: 'auto'
-			},
+		columns: [
 			{
 				header: '자재LOT번호',
 				name: 'mLot'
@@ -490,13 +473,42 @@
 				}
 			]
 		});
-	
+		// 필요자재 LOT grid 선택 행 삭제
+		$('#deleteBtn').on('click',function(){
+			// var change = confirm("행을 삭제하시겠습니까?");
+			// grid에서 삭제
+			var showConfirm = true;
+			matLot.removeCheckedRows(showConfirm);
+			
+			// DB delete
+			
+		});
 	
 	// 미지시계획 모달 클릭 버튼 이벤트
 	$('#showNOModal').on('click',function(){
 
-		$("#noOrderModal").modal("show");
+		$('#noOrderModal').modal("show");
 		modalGrid.refreshLayout();
+	});
+	
+	// 미지시계획조회 모달창의 그리드 선택시 자료를 상세생산계획 Grid에 넣어주기
+	modalGrid.on('click',function(event){
+		// 
+		var rowData = {planCode: "",planName:"",planDCode: "",productName: ""}
+		planDGrid.appendRow(rowData);
+		const val = planDGrid.rowKey;
+		console.log(val);
+		var data = modalGrid.getRow(event.rowKey);
+		
+		let plCode = data.planCode; // 선택된 제품 코드
+		let prName = data.productName; // 선택된 제품 이름
+		// planCode: 'pro_123456',productName: '얇은피 김치만두',amt: '300',	productAmt: '200',restAmt: '100'
+		var checkCellState = false;
+		
+		planDGrid.setValue(val, 'planCode' , plCode, checkCellState);
+		planDGrid.setValue(val, 'productName' , prName, checkCellState);
+		$('#noOrderModal').modal("hide");
+
 	});
 	</script>
 
