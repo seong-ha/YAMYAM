@@ -7,67 +7,56 @@
 
 
 	<br>
-	<h2>거래처코드관리</h2>
+	<h2>거래처 코드관리</h2>
 	<hr>
 	<br>
-	<span class="mb-3 row"> 
-					<label for="staticEmail"
-					class="col-sm-4 col-form-label" style="width: 145px">업체명</label>
-					<span class="col-sm-2"> <input type="text"
-						name="distributeCodeName" class="form-control"
-						id="distributeCodeName">
-
-					</span> 
-				<label for="staticEmail" class="col-sm-3 col-form-label"
-					style="width: 105px">거래처코드</label> <span class="col-sm-2"> <input
-						type="text" name="distributeCodeName" class="form-control"
-						id="distributeCodeName">
-				</span>
-
-	</span>
 	
-	<span class="mb-3 row"> 
-					<label for="staticEmail"
-					class="col-sm-4 col-form-label" style="width: 145px">사업자 등록번호</label>
-					<span class="col-sm-2"> <input type="text"
-						name="distributeCodeName" class="form-control"
-						id="distributeCodeName">
-
-					</span> 
-				<label for="staticEmail" class="col-sm-3 col-form-label"
-					style="width: 105px">전화번호</label> <span class="col-sm-2"> <input
-						type="text" name="distributeCodeName" class="form-control"
-						id="distributeCodeName">
-				</span>
-
-	</span>
+	<table>
+		<tr>
+			<td>
+				<ul class="ul-style">
+				<li><label for="matCode" style="width:130px">업체명</label><input id="matCode">
+				&nbsp;&nbsp;&nbsp;
+				<label for="matCode">거래처 코드</label><input id="matCode">
+				</li>
+				</ul>
+			</td>
+		</tr>
 	
-	<span class="mb-3 row"> 
-					<label for="staticEmail"
-					class="col-sm-4 col-form-label" style="width: 145px">거래처 구분</label>
-					<span class="col-sm-2"> <input type="text"
-						name="distributeCodeName" class="form-control"
-						id="distributeCodeName">
-
-					</span>
-					<label class="col-sm-1">거래상태</label>
-					
-					<span class="col-sm-4" style="width: 190px;" id="select-box">
-					
-					</span>
-					
-					<div align = right>		
-					<button type="button" class="btn btn-dark btn-sm">거래처 검색</button>
-					<button type="button" class="btn btn-dark btn-sm">거래처 등록</button>
-					<button type="button" class="btn btn-dark btn-sm">초기화</button>
-					
-					</div>	
-					</br>	
-	
-	</span>
-					
+		<tr>
+			<td>
+				<ul class="ul-style">
+				<li><label for="matCode" style="width:130px">사업자 등록번호</label><input id="matCode">
+				&nbsp;&nbsp;&nbsp;
+				<label for="matCode" style="width:100px">전화번호</label><input id="matCode">
+				</li>
+			</ul>
+			</td>
+		</tr>
+		
+		<tr>
+			<td>
+				<ul class="ul-style">
+				<li class="d-flex">
+				  <label for="matCode" style="width:130px">거래처 구분</label>
+				  <input id="matCode">	&nbsp;&nbsp;&nbsp;
+				  <label style="width:110px">&nbsp;&nbsp;거래상태</label>
+				  <div style="width: 190px;" id="select-box"></div>
+				  <div align="right">&nbsp;&nbsp;
+					  <button type="button" class="btn btn-dark btn-sm">구매 거래처 등록</button>&nbsp;
+					  <button type="button" class="btn btn-dark btn-sm">거래처 수정</button>
+				  </div>
+				</li>
+			</ul>
+			</td>
+		</tr>
 			
+	</table>
+	
+	
 	<div id="grid"></div>
+	
+	<br>
 	
 	<script>
 		const gridData = [ {

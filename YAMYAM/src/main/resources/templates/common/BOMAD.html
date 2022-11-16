@@ -5,105 +5,150 @@
 	layout:decorate="~{/layout/layout}">
 <div class="container" layout:fragment="content">
 
-
-	BOM관리
-
+	<br>
+	
+	<h2>BOM관리</h2>
+	
+	<hr>
+	
+	<br> <br>
+	
+	<ul class="ul-style">
+			<li><label for="matNm">자재명</label><input id="matNm" readonly>
+				<img id="matNm" class="Magnifying-Glass-img" alt="image"
+					data-bs-toggle="modal" data-bs-target="#exampleModal"
+					src="../images/Magnifying_Glass.png" >
+				<input type="text" readonly>
+				&nbsp;&nbsp;사용여부&nbsp;<input type="checkbox">
+			</li>
+			
+			
+	</ul>
+	
+	<!-- Modal -->
+		<div class="modal fade" id="exampleModal" tabindex="-1"
+			aria-labelledby="exampleModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+			    	<h4 class="modal-title" id="exampleModalLabel">제품 코드 목록</h4>
+			    	<button type="button" class="btn-close" data-bs-dismiss="modal"
+			            aria-label="Close"></button>
+		    		</div>
+			     		<div class="modal-body">
+							<h4 align="center"><b>제품 목록</b></h4>
+			               	<br>
+			               	
+			               	<div id="grid2"></div>
+			            	   	
+			               	
+			     	    </div>
+			     </div>
+			 </div>
+	    </div>
+	
+	<div align="right">
+			<button type="button" class="btn btn-dark btn-sm">조회</button>
+			<button type="button" class="btn btn-dark btn-sm">등록</button>
+			<button type="button" class="btn btn-dark btn-sm">추가</button>
+			<button type="button" class="btn btn-dark btn-sm">초기화</button>
+	</div>
+	
 	<div id="grid"></div>
 
 	<script>
-		const gridData = [ {
+	  const gridData = [ {
       no: '1',
-      emp_no: '1100',
-      emp_name: '홍길동',
-      hire_date : '2002/07/05',
-      id : 'no',
-      dept_name : '영업부',
-      role : '0'
-		},
-    {
-      no: '2',
-      emp_no: '1101',
-      emp_name: '김길동',
-      hire_date : '2008/02/05',
-      id : 'no',
-      dept_name : '영업부',
-      role : '0'
-		},
-    {
-      no: '3',
-      emp_no: '1123',
-      emp_name: '홍길동',
-      hire_date : '2002/07/05',
-      id : 'no',
-      dept_name : '영업부',
-      role : '0'
-		},
-    {
-      no: '4',
-      emp_no: '1154',
-      emp_name: '황길동',
-      hire_date : '2003/11/15',
-      id : 'no',
-      dept_name : '영업부',
-      role : '0'
-		},
-    {
-      no: '5',
-      emp_no: '1199',
-      emp_name: '최길동',
-      hire_date : '2006/07/05',
-      id : 'no',
-      dept_name : '영업부',
-      role : '0'
-		},
-    {
-      no: '6',
-      emp_no: '1207',
-      emp_name: '홍길동',
-      hire_date : '2002/04/25',
-      id : 'no',
-      dept_name : '영업부',
-      role : '0'
-		},
-    {
-      no: '7',
-      emp_no: '1500',
-      emp_name: '홍길동',
-      hire_date : '2004/03/05',
-      id : 'no',
-      dept_name : '영업부',
-      role : '0'
-		},
-  ];
+      useworkname: '1100',
+      bomcode: '홍길동',
+      pdtcode : '2002/07/05',
+      matcode : 'no',
+      matname : '영업부',
+      consume : '0',
+      use : '사용여부'
+	  },
+	  {
+	   no: '2',
+	   useworkname: '1100',
+	   bomcode: '홍길동',
+	   pdtcode : '2002/07/05',
+	   matcode : 'no',
+	   matname : '영업부',
+	   consume : '0',
+	   use : '사용여부'
+	   }
+       ];
+	  
+	  const gridData2 = [{
+	      no: '1',
+	      pdtcode: 'GGMD-01',
+	      pdtname: '고기만두',
+	      standard : 'SPEC02',
+		  }
+	  ];
 
 		const grid = new tui.Grid({
 			el : document.getElementById('grid'),
 			data : gridData,
 			scrollX : false,
 			scrollY : false,
+			bodyHeight : 500,
 			columns : [ {
 				header : 'No',
 				name : 'no'
 			}, {
-				header : '직원고유번호',
-				name : 'emp_no'
+				header : '사용 공정명',
+				name : 'useworkname'
 			}, {
-				header : '직원이름',
-				name : 'emp_name'
+				header : 'BOM코드',
+				name : 'bomcode'
 			}, {
-				header : '입사일',
-				name : 'hire_date'
+				header : '제품 코드',
+				name : 'pdtcode'
 			}, {
-				header : '계정아이디',
-				name : 'id'
+				header : '자재 코드',
+				name : 'matcode'
 			}, {
-				header : '부서명',
-				name : 'dept_name'
+				header : '자재명',
+				name : 'matname'
 			}, {
-				header : '직급정보',
-				name : 'role'
-			}, ]
+				header : '소모량',
+				name : 'consume'
+			}, {
+				header : '사용 여부',
+				name : 'use'
+			}
+			],
+			showDummyRows : true
 		});
+		
+		const grid2 = new tui.Grid({
+			el : document.getElementById('grid2'),
+			data : gridData2,
+			scrollX : ture,
+			scrollY : false,
+			bodyHeight : 500,
+			columns : [ {
+				header : 'No',
+				name : 'no'
+			}, {
+				header : '제품 코드',
+				name : 'pdtcode'
+			}, {
+				header : '제품명',
+				name : 'pdtname'
+			}, {
+				header : '규격',
+				name : 'standard'
+			}
+			],
+			showDummyRows : true
+		});
+		
+		//모달창 리프레시(모달창에 그리드 화면 띄울때 써야함!)
+	      exampleModal.addEventListener('shown.bs.modal', () => {
+	            grid2.refreshLayout(); //모달창 새로고침
+	       })
     </script>
     
 </div>
