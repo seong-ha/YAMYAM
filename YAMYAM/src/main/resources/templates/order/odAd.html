@@ -6,19 +6,12 @@
 <head>
 <meta charset="UTF-8">
 <title>주문 관리</title>
-<!-- 제이쿼리 -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
 
 <style>
-#od-title h3 {
-font-family: Bold;
-}
 #od-btn {
    display: inline-block; margin: 0 5px; float: right;
 }
-#input-group #back{
-background-color: #D9D9D9;
-}
+
 </style>
 </head>
 <body>
@@ -54,7 +47,7 @@ background-color: #D9D9D9;
       <li><label for="actCd">거래처</label><input type="text" 
           data-bs-toggle="modal" data-bs-target="#exampleModal1" id="actCd">
           <img class="Magnifying-Glass-img" alt="image" src="../images/Magnifying_Glass.png">
-          <input type="text" id="back" readonly><br></li>
+          <input type="text" class="back" readonly><br></li>
 
          <li><label for="prdNm">제품명</label><input type="text" 
             data-bs-toggle="modal" data-bs-target="#exampleModal2" id="prdNm">
@@ -128,7 +121,7 @@ background-color: #D9D9D9;
    <button class="btn btn-dark btn-sm">저장</button>
    <button class="btn btn-dark btn-sm" id="exportBtn">엑셀 파일 출력</button>
    </div>
-   
+   <br>
 <div id="grid"></div>
 
 <script>
@@ -277,23 +270,8 @@ const modalGrid2 = new tui.Grid({
    });
    
    // 날짜 계산
-   var today = new Date();
-   var picker = tui.DatePicker.createRangePicker({
-       startpicker: {
-           date: today,
-           input: '#startpicker-input',
-           container: '#startpicker-container'
-       },
-       endpicker: {
-           date: today,
-           input: '#endpicker-input',
-           container: '#endpicker-container'
-       },
-       selectableRanges: [
-           [today, new Date(today.getFullYear() + 1, today.getMonth(), today.getDate())]
-       ]
-   });
-   
+   rangeDatepickerInit('#startpicker-input', '#startpicker-container','#endpicker-input','#endpicker-container')
+
    
    
 
