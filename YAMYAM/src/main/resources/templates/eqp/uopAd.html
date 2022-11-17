@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{/layout/layout}">
+
+<head>
+<meta charset="UTF-8">
+<title>YAMYAM</title>
+</head>
+
+<body>
+	<!-- 본문 시작 -->
+	<div layout:fragment="content" class="container">
+		<h3>설비 비가동 관리</h3>
+		<hr>
+		
+		<h3>설비</h3>
+		<div class="row">
+			<div class="col-5">
+				<div id="selectEqp"></div>
+			</div>
+			<div class="col-7">
+			sdf
+			</div>
+		</div>
+		
+		<script>
+		let selectEqpGrid = new tui.Grid({
+		      el: document.getElementById('selectEqp'),
+		      bodyHeight: 500, // 스크롤
+		      data: [
+		    	{
+		    		EQP_CD: 'eqp-20221104-001',
+		    		EQP_NM: '만두소 배합기1',
+		    		EQP_TYPE: '대기',
+		    		EQP_STS: '대기'
+			    },
+			    {
+			    	EQP_CD: 'eqp-20221104-002',
+		    		EQP_NM: '만두소 배합기2',
+		    		EQP_TYPE: '대기',
+		    		EQP_STS: '대기'
+			    }
+			  ],
+		      rowHeaders: ['checkbox'],
+		      scrollX: false,
+		      scrollY: true,
+		      columns: [
+		        {
+		          header: '설비코드',
+		          name: 'EQP_CD',
+			      sortable: true,
+			      align: 'center'
+		        },
+		        {
+		          header: '설비명',
+		          name: 'EQP_NM',
+			      sortable: true,
+			      align: 'left'
+		        },
+		        {
+		          header: '설비구분',
+		          name: 'EQP_TYPE',
+			      align: 'center',
+			      filter: {
+			    	  type: 'select'
+			      }
+		        },
+		        {
+		          header: '설비상태',
+		          name: 'EQP_STS',
+			      align: 'center',
+			      filter: {
+			    	  type: 'select'
+			      }
+		        }
+		      ]
+		});
+		
+		</script>
+	</div>
+
+
+	
+</body>
+
+</html>

@@ -7,7 +7,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class EqpController {
 	
 	@RequestMapping("/eqpAd")
-	public String eqp() {
+	public String eqpAd() {
 		return "eqp/eqpAd";
+	}
+	
+	@RequestMapping("/uopAd")
+	public String uopAd() {
+		return "eqp/uopAd";
 	}
 }
