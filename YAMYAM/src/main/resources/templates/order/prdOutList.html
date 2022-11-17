@@ -6,16 +6,10 @@
 <head>
 <meta charset="UTF-8">
 <title>완제품 출고 조회</title>
-<!-- 제이쿼리 -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
-<!-- 엑셀 기능 -->
 
 <style>
 #od-btn {
 	display: inline-block; margin: 0 5px; float: right;
-}
-#input-group #back{
-background-color: #D9D9D9;
 }
 </style>
 </head>
@@ -51,12 +45,12 @@ background-color: #D9D9D9;
 	 <li><label for="prdNm">제품명</label><input type="text" 
             data-bs-toggle="modal" data-bs-target="#exampleModal1" id="prdNm">
             <img class="Magnifying-Glass-img" alt="image" src="../images/Magnifying_Glass.png">
-            <input type="text" id="back" readonly><br></li>
+            <input type="text" class="back" readonly><br></li>
             
         <li><label for="lot">완제품LOT</label><input type="text" 
             data-bs-toggle="modal" data-bs-target="#exampleModal2" id="lot">
             <img class="Magnifying-Glass-img" alt="image" src="../images/Magnifying_Glass.png">
-            <input type="text" id="back" readonly><br></li>     
+            <input type="text" class="back" readonly><br></li>     
             
         <li><label>제조일자</label>
 	
@@ -248,7 +242,7 @@ $('#lot').on('click',function(){
  });
  
  
-//날짜 계산
+//데이트 피커
 rangeDatepickerInit('#startpicker-input', '#startpicker-container','#endpicker-input','#endpicker-container')
 
 

@@ -9,9 +9,6 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
 
 <style>
-#od-title{
-	font-weight: bold;
-}
 #od-btn {
 	display: inline-block; margin: 0 5px; float: right;
 }
@@ -29,7 +26,7 @@
 		    <li><label for="actCd">거래처</label><input type="text" 
 		    data-bs-toggle="modal" data-bs-target="#exampleModal" id="actCd">
 		    <img class="Magnifying-Glass-img" alt="image" src="../images/Magnifying_Glass.png">
-		    <input type="text" readonly><br></li>
+		    <input type="text" class="back" readonly><br></li>
     
      		<li><label>주문일자</label>
 			    <div class="tui-datepicker-input tui-datetime-input tui-has-focus">
@@ -90,23 +87,11 @@
 		</div>
 
 <script>
-var today = new Date();
-var picker = tui.DatePicker.createRangePicker({
-    startpicker: {
-        date: today,
-        input: '#startpicker-input',
-        container: '#startpicker-container'
-    },
-    endpicker: {
-        date: today,
-        input: '#endpicker-input',
-        container: '#endpicker-container'
-    },
-    selectableRanges: [
-        [today, new Date(today.getFullYear() + 1, today.getMonth(), today.getDate())]
-    ]
-});
 
+	//데이트피커
+rangeDatepickerInit('#startpicker-input', '#startpicker-container','#endpicker-input','#endpicker-container')
+
+	
 const grid = new tui.Grid({
     el: document.getElementById('grid'),
     data: [
@@ -198,10 +183,18 @@ const grid2 = new tui.Grid({
     ]
   });
   
-$('#insertBtn').on('click',function(){
-	var rowData = [{odCd: "", prdCd: "", lot: "", outAmt: "", outDate: "", podDate : "" , eDate: ""}]
-	grid2.appendRow(rowData);		
-});
+	// 추가
+	$('#insertBtn').on('click',function(){
+	   var rowData = [{odDate: "", odCd: "", prdCd: "", prdNm: "", odAmt: "", actCd : "" , actNm: "", deDate: "", sts:""}]
+	   grid2.appendRow(rowData); 
+		});
+	
+		
+	// 선택 삭제
+	$('#deleteBtn').on('click',function(){
+			var showConfirm = true;
+			grid2.removeCheckedRows(showConfirm);
+		});
 
 const modalGrid = new tui.Grid({
     el: document.getElementById('modalGrid'),
