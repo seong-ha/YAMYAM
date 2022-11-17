@@ -14,11 +14,11 @@
 	<br> <br>
 	
 	<ul class="ul-style">
-			<li><label for="matNm">제품 코드</label><input id="matNm" readonly>
+			<li><label for="matNm">제품 코드</label><input id="matNm" name="PRD_CD" readonly>
 				<img id="matNm" class="Magnifying-Glass-img" alt="image"
 					data-bs-toggle="modal" data-bs-target="#exampleModal"
 					src="../images/Magnifying_Glass.png" >
-				<input type="text" readonly>
+				<input type="text" name="PRD_NM" readonly>
 				&nbsp;&nbsp;사용여부&nbsp;<input type="checkbox">
 			</li>
 			
@@ -43,6 +43,8 @@
 			               	<button type="button" class="btn btn-dark btn-sm"
 			                 data-bs-dismiss="modal">조회</button>
 			                <button type="button" class="btn btn-dark btn-sm">초기화</button>
+			                
+			                <br> <br>
 			               	
 			               	<div id="grid2"></div>
 			            	   	
@@ -113,44 +115,88 @@
 
 	<script>
 	  const gridData = [ {
-	      no: '1',
-	      useworkname: '1100',
-	      bomcode: '홍길동',
-	      pdtcode : '2002/07/05',
-	      matcode : 'no',
-	      matname : '영업부',
-	      consume : '0',
-	      use : '사용여부'
+		  BOM_NO: '1',
+	      PPRO_NAME: '1100',
+	      BOM_CD: '홍길동',
+	      PRD_CD : '2002/07/05',
+	      MTR_CD : 'no',
+	      MTR_NM : '영업부',
+	      BOM_AMT : '0',
+	      BOM_USE : '사용여부'
 		  },
 		  {
-		   no: '2',
-		   useworkname: '1100',
-		   bomcode: '홍길동',
-		   pdtcode : '2002/07/05',
-		   matcode : 'no',
-		   matname : '영업부',
-		   consume : '0',
-		   use : '사용여부'
+		   BOM_NO: '2',
+		   PPRO_NAME: '1100',
+		   BOM_CD: '홍길동',
+		   PRD_CD : '2002/07/05',
+		   MTR_CD : 'no',
+		   MTR_NM : '영업부',
+		   BOM_AMT : '0',
+		   BOM_USE : '사용여부'
 		   }
        ];
 	  
 	  const gridData2 = [{
-	      no: '1',
-	      pdtcode: 'GGMD-01',
-	      pdtname: '고기만두',
-	      standard : 'SPEC02',
+		  BOM_NO: '1',
+	      PRD_CD: 'GGMD-01',
+	      PRD_NM: '고기만두',
+	      PRD_STD : 'SPEC02',
 		  },
 		  {
-		  no: '2',
-		  pdtcode: 'GGMD-02',
-		  pdtname: '고기만두',
-		  standard : 'SPEC02',
+		  BOM_NO: '2',
+		  PRD_CD: 'GGMD-02',
+		  PRD_NM: '고기만두',
+		  PRD_STD : 'SPEC02',
 		  },
 		  {
-		  no: '3',
-		  pdtcode: 'GGMD-03',
-		  pdtname: '고기만두',
-		  standard : 'SPEC02',
+		  BOM_NO: '3',
+		  PRD_CD: 'GGMD-03',
+		  PRD_NM: '고기만두',
+		  PRD_STD : 'SPEC02',
+		  }
+	  ];
+	  
+	  const gridData3 = [{
+		  BOM_NO: '1',
+		  PPRO_CD: 'LHS-0001',
+		  PPRO_NAME: '혼합 공정',
+		  },
+		  {
+		  BOM_NO: '2',
+		  PPRO_CD: 'LHS-0002',
+		  PPRO_NAME: '성형 공정',
+		  },
+		  {
+		  BOM_NO: '3',
+		  PPRO_CD: 'LHS-0003',
+		  PPRO_NAME: '냉동 공정',
+		  },
+		  {
+		  BOM_NO: '4',
+		  PPRO_CD: 'LHS-0004',
+		  PPRO_NAME: '포장 공정',
+		  }
+	  ];
+	  
+	  const gridData4 = [{
+		  BOM_NO: '1',
+		  MTR_CD: 'WJJ-06',
+		  MTR_NM: '밀가루',
+		  },
+		  {
+		  BOM_NO: '2',
+		  MTR_CD: 'WJJ-05',
+		  MTR_NM: '혼합 야채',
+		  },
+		  {
+		  BOM_NO: '3',
+		  MTR_CD: 'WJJ-03',
+		  MTR_NM: '당면',
+		  },
+		  {
+		  BOM_NO: '4',
+		  MTR_CD: 'WJJ-01',
+		  MTR_NM: '고기',
 		  }
 	  ];
 
@@ -163,28 +209,28 @@
 			bodyHeight : 500,
 			columns : [ {
 				header : 'No',
-				name : 'no'
+				name : 'BOM_NO'
 			}, {
 				header : '사용 공정명',
-				name : 'useworkname'
+				name : 'PPRO_NAME'
 			}, {
 				header : 'BOM코드',
-				name : 'bomcode'
+				name : 'BOM_CD'
 			}, {
 				header : '제품 코드',
-				name : 'pdtcode'
+				name : 'PRD_CD'
 			}, {
 				header : '자재 코드',
-				name : 'matcode'
+				name : 'MTR_CD'
 			}, {
 				header : '자재명',
-				name : 'matname'
+				name : 'MTR_NM'
 			}, {
 				header : '소모량',
-				name : 'consume'
+				name : 'BOM_AMT'
 			}, {
 				header : '사용 여부',
-				name : 'use'
+				name : 'BOM_USE'
 			}
 			],
 			showDummyRows : true
@@ -199,24 +245,31 @@
 			bodyHeight : 500,
 			columns : [ {
 				header : 'No',
-				name : 'no'
+				name : 'BOM_NO'
 			}, {
 				header : '제품 코드',
-				name : 'pdtcode'
+				name : 'PRD_CD'
 			}, {
 				header : '제품명',
-				name : 'pdtname'
+				name : 'PRD_NM'
 			}, {
 				header : '규격',
-				name : 'standard'
+				name : 'PRD_STD'
 			}
 			],
 		});
 		
+		
 		//모달창 리프레시(모달창에 그리드 화면 띄울때 써야함!)
-	      exampleModal.addEventListener('shown.bs.modal', () => {
+	     exampleModal.addEventListener('shown.bs.modal', () => {
 	            grid2.refreshLayout(); //모달창 새로고침
 	       })
+	       
+	       
+	    //각종 이벤트 함수 모음
+	    
+	    
+	    
     </script>
     
 </div>

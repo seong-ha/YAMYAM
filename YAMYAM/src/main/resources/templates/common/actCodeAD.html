@@ -10,48 +10,50 @@
 	<h2>거래처 코드관리</h2>
 	<hr>
 	<br>
-	
-	<table>
-		<tr>
-			<td>
-				<ul class="ul-style">
-				<li><label for="matCode" style="width:130px">업체명</label><input id="matCode">
-				&nbsp;&nbsp;&nbsp;
-				<label for="matCode">거래처 코드</label><input id="matCode">
-				</li>
-				</ul>
-			</td>
-		</tr>
-	
-		<tr>
-			<td>
-				<ul class="ul-style">
-				<li><label for="matCode" style="width:130px">사업자 등록번호</label><input id="matCode">
-				&nbsp;&nbsp;&nbsp;
-				<label for="matCode" style="width:100px">전화번호</label><input id="matCode">
-				</li>
-			</ul>
-			</td>
-		</tr>
+	<form action="#">
+		<table>
+			<tr>
+				<td>
+					<ul class="ul-style">
+					<li><label for="matCode" style="width:130px">거래처 업체명</label><input id="matCode" name="ACT_NM">
+					&nbsp;&nbsp;&nbsp;
+					<label for="matCode">거래처 코드</label><input id="matCode" name="ACT_CD">
+					</li>
+					</ul>
+				</td>
+			</tr>
 		
-		<tr>
-			<td>
-				<ul class="ul-style">
-				<li class="d-flex">
-				  <label for="matCode" style="width:130px">거래처 구분</label>
-				  <input id="matCode">	&nbsp;&nbsp;&nbsp;
-				  <label style="width:110px">&nbsp;&nbsp;거래상태</label>
-				  <div style="width: 190px;" id="select-box"></div>
-				  <div align="right">&nbsp;&nbsp;
-					  <button type="button" class="btn btn-dark btn-sm">구매 거래처 등록</button>&nbsp;
-					  <button type="button" class="btn btn-dark btn-sm">거래처 수정</button>
-				  </div>
-				</li>
-			</ul>
-			</td>
-		</tr>
+			<tr>
+				<td>
+					<ul class="ul-style">
+					<li><label for="matCode" style="width:130px">사업자 등록번호</label><input id="matCode" name="ACT_NUM">
+					&nbsp;&nbsp;&nbsp;
+					<label for="matCode" style="width:100px">전화번호</label><input id="matCode" name="ACT_TEL">
+					</li>
+				</ul>
+				</td>
+			</tr>
 			
-	</table>
+			<tr>
+				<td>
+					<ul class="ul-style">
+					<li class="d-flex">
+					  <label for="matCode" style="width:130px">거래처 구분</label>
+					  <input id="matCode" name="ACT_DIV">	&nbsp;&nbsp;&nbsp;
+					  <label style="width:110px">&nbsp;&nbsp;거래상태</label>
+					  <div style="width: 190px;" id="select-box"></div>
+					  <div align="right">&nbsp;&nbsp;
+						  <button type="button" class="btn btn-dark btn-sm">구매 거래처 등록</button>&nbsp;
+						  <button type="button" class="btn btn-dark btn-sm">거래처 수정</button>&nbsp;
+						  <input type="reset" class="btn btn-dark btn-sm" id="reset" name="reset">
+					  </div>
+					</li>
+				</ul>
+				</td>
+			</tr>
+				
+		</table>
+	</form>
 	
 	
 	<div id="grid"></div>
@@ -60,33 +62,30 @@
 	
 	<script>
 		const gridData = [ {
-      no: '1',
-      actname: 'HS-001',
-      actcode: 'VDR-10001',
-      bsnumber : '300014-141',
-      tel : '02-123-1234',
-      actdistribute : '자재',
-      actstatus : '0'
+		  ACT_NM: 'HS-001',
+		  ACT_CD: 'VDR-10001',
+		  ACT_NUM : '300014-141',
+		  ACT_TEL : '02-123-1234',
+		  ACT_DIV : '자재',
+		  ACT_STS : '0'
 	  
 	  },
 	  {
-	      no: '2',
-	      actname: 'HS-001',
-	      actcode: 'VDR-10001',
-	      bsnumber : '300014-141',
-	      tel : '02-123-1234',
-	      actdistribute : '자재',
-	      actstatus : '0'
+		  ACT_NM: 'HS-001',
+		  ACT_CD: 'VDR-10001',
+		  ACT_NUM : '300014-141',
+		  ACT_TEL : '02-123-1234',
+		  ACT_DIV : '자재',
+		  ACT_STS : '0'
 		  
 	  },
 	  {
-	      no: '3',
-	      actname: 'HS-001',
-	      actcode: 'VDR-10001',
-	      bsnumber : '300014-141',
-	      tel : '02-123-1234',
-	      actdistribute : '자재',
-	      actstatus : '0'
+		  ACT_NM: 'HS-001',
+		  ACT_CD: 'VDR-10001',
+		  ACT_NUM : '300014-141',
+		  ACT_TEL : '02-123-1234',
+		  ACT_DIV : '자재',
+		  ACT_STS : '0'
 		  
 	  }
     
@@ -119,51 +118,45 @@
 		    bodyHeight: 450,
 			scrollX : true,
 			scrollY : false,
+			rowHeaders: ['rowNum'],
 			columns : [ {
-				header : 'No',
-				name : 'no',
-				sortingType: 'desc',
-		        sortable: true,
-		        align: 'center',
-		        
-			}, {
-				header : '업체명',
-				name : 'actname',
+				header : '거래처 업체명',
+				name : 'ACT_NM',
 				sortingType: 'desc',
 		        sortable: true,
 		        align: 'center',
 		        editor: 'text'
 			}, {
 				header : '거래처 코드',
-				name : 'actcode',
+				name : 'ACT_CD',
 				sortingType: 'desc',
 		        sortable: true,
 		        align: 'center',
 		        editor: 'text'
 			}, {
 				header : '사업자 등록번호',
-				name : 'bsnumber',
+				name : 'ACT_NUM',
 				sortingType: 'desc',
 		        sortable: true,
 		        align: 'center',
 		        editor: 'text'
 			}, {
 				header : '전화번호',
-				name : 'tel',
+				name : 'ACT_TEL',
 				sortingType: 'desc',
 		        sortable: true,
 		        align: 'center',
 		        editor: 'text'
 			}, {
 				header : '거래처구분',
-				name : 'actdistribute',
+				name : 'ACT_DIV',
 				sortingType: 'desc',
 		        sortable: true,
 		        align: 'center',
 		        editor: 'text'
 			}, {
 				header : '거래 상태',
-				name : 'actstatus',
+				name : 'ACT_STS',
 				sortingType: 'desc',
 		        sortable: true,
 		        align: 'center',
@@ -193,6 +186,19 @@
 			} ],
 			autofocus : true
 		});
+	
+	
+	//grid select box change
+	selectBox.on('change', ev => {
+		mtrStd.value=ev.curr.value;
+		  console.log(ev);
+		});
+	
+	
+	//셀렉트 박스 초기화
+	 document.getElementsByName('reset')[0].addEventListener('click', function(){
+		    selectBox.deselect();
+	 }) 
     </script>
     
 </div>
