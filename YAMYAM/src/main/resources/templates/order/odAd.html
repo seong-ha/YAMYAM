@@ -45,14 +45,14 @@
       </li>
 
       <li><label for="actCd">거래처</label><input type="text" 
-          data-bs-toggle="modal" data-bs-target="#actModal" id="actCd">
+          data-bs-toggle="modal" data-bs-target="#actModal2" id="actCd">
           <img class="Magnifying-Glass-img" alt="image" src="../images/Magnifying_Glass.png">
-          <input type="text" class="back" readonly><br></li>
+          <input type="text" class="back" readonly id="actNm"><br></li>
 
          <li><label for="prdNm">제품명</label><input type="text" 
-            data-bs-toggle="modal" data-bs-target="#prdModal" id="prdNm">
+            data-bs-toggle="modal" data-bs-target="#prdModal2" id="prdCd">
             <img class="Magnifying-Glass-img" alt="image" src="../images/Magnifying_Glass.png">
-            <input type="text" class="back" readonly><br></li>
+            <input type="text" class="back" readonly id="prdNm"><br></li>
 
             <li><label>주문일자</label>
                <div class="tui-datepicker-input tui-datetime-input tui-has-focus">
@@ -88,6 +88,26 @@
 	        </div>
 	   </div>   
 	   
+	   
+	   
+	   <!-- 거래처 Modal2 -->
+	  <div class="modal" id="actModal2" tabindex="-1"
+	  		aria-labelledby="exampleModalLabel" aria-hidden="true">
+	        <div class="modal-dialog">
+	          <div class="modal-content">
+	            <div class="modal-header">
+	              <h5 class="modal-title" id="exampleModalLabel">거래처 목록</h5>
+	              <button type="button" class="btn-close" data-bs-dismiss="modal"
+	               aria-label="Close"></button>
+	            </div>
+	             <div class="modal-body">
+               <div id="actModalGrid2"></div>
+               </div>
+	          </div>
+	        </div>
+	   </div>
+	   
+	   
 	   <!-- 제품명 Modal -->
       <div class="modal" id="prdModal" tabindex="-1"
          aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -100,6 +120,24 @@
                </div>
                <div class="modal-body">
                <div id="prdModalGrid"></div>
+               </div>
+            </div>
+         </div>
+      </div>
+      
+      
+      <!-- 제품명 Modal2 -->
+      <div class="modal" id="prdModal2" tabindex="-1"
+         aria-labelledby="exampleModalLabel" aria-hidden="true">
+         <div class="modal-dialog">
+            <div class="modal-content">
+               <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLabel">제품 목록</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal"
+                     aria-label="Close"></button>
+               </div>
+               <div class="modal-body">
+               <div id="prdModalGrid2"></div>
                </div>
             </div>
          </div>
@@ -126,7 +164,10 @@
 	searchBtnHandler();
 	
 	let actModalGrid = actGridInit();
-
+	let actModalGrid2 = actGridInit2();
+	
+	let prdModalGrid = prdGridInit();
+	let prdModalGrid2 = prdGridInit2();
 
 	/*------------
 	// 데이트피커
@@ -140,7 +181,7 @@
 	function searchBtnHandler(){
 		$('#searchBtn').on('click',function(){
 			let getactName = $("actCd").val();
-			let getprdName = $("prdNm").val();
+			let getprdName = $("prdCd").val();
 			let getStartDay = $("startpicker-input").val();
 			let getEndDay = $("#endpicker-input").val();
 		});
@@ -148,12 +189,16 @@
    
 	
    /*------------
-	// 데이트피커 초기화 버튼
+	// 주문 조회 초기화 버튼
 	----------------*/
 	function cancelBtnHandler(){
 		$('#cancelBtn').on('click',function(){
 			$("#startpicker-input").val(today);
 			$("#endpicker-input").val(today);
+			$("#actCd").val("");
+			$("#actNm").val("");
+			$("#prdCd").val("");
+			$("#prdNm").val("");
 		});	
 	}
    
@@ -174,6 +219,17 @@
 	           actNm : 'YD 마트',
 	           deDate : '2022-11-04',
 	           sts : '완료'
+	        },
+	        {
+	           odDate : '2022-11-07',
+	           odCd : 'ORD-20221107-003',
+	           prdCd : 'MD-00200',
+	           prdNm : '얇은피 김치만두',
+	           odAmt : 400,
+	           actCd : 'VDR-1005',
+	           actNm : 'H 백화점',
+	           deDate : '2022-11-10',
+	           sts : '진행'
 	        }
 	        ],
 	    rowHeaders: ['checkbox','rowNum'],
@@ -257,32 +313,8 @@
       grid.appendRow(rowData); 
 	});
 	
-	
-   /*------------
-	// 모달 정보 넘겨주는 핸들러
-	----------------*/
-	/*
-	function gridClickHandler(){
-	   
-	   if(actModalGrid.on('click',function(event))){
-		   var data2 = actModalGrid.getRow(event.rowKey);
-			
-			const val = insertGrid.getFocusedCell().rowKey;
-
-			let prCode = data2.productCode; // 선택된 제품 코드
-			let prName = data2.productName; // 선택된 제품 이름
-
-			var checkCellState = false;
-			
-			insertGrid.setValue(val, 'productCode' , prCode, checkCellState);
-			insertGrid.setValue(val, 'productName' , prName, checkCellState);
-			$("#materialModal").modal("hide");
-	   }else if(prdModalGrid.on('click',function(event))){
-		   
-	   }
-   }
-   */
    
+	
    	/*------------
 	// 주문서 선택삭제 버튼
 	----------------*/
@@ -294,7 +326,7 @@
 
 	
 	/*------------
-	// 거래처 Modal
+	// 거래처 Modal (행 추가 시, 사용)
 	----------------*/
    function actGridInit() {
 		let actModalGrid = new tui.Grid({
@@ -337,19 +369,82 @@
 	  });
 		return actModalGrid;
    }
+	
+	
+	
+   /*------------
+	// 거래처 Modal (조회 시, 사용)
+	----------------*/
+   function actGridInit2() {
+		let actModalGrid = new tui.Grid({
+	    el: document.getElementById('actModalGrid2'),
+	    data: [
+	        {
+	           actCd : 'VDR-1001',
+	           actNm : 'AA 마트',
+	           actNum : '791-10-000',
+	           tel : '053-514-4512'
+	        },
+	        {
+	           actCd : 'VDR-1002',
+	           actNm : 'AB 마트',
+	           actNum : '791-10-595',
+	           tel : '054-861-8545'
+	        }
+	        ],
+	    rowHeaders: ['rowNum'],
+	    scrollX: false,
+	    scrollY: false,
+	    columns: [
+	      {
+	        header: '거래처 코드',
+	        name: 'actCd'
+	      },
+	      {
+	        header: '거래처명',
+	        name: 'actNm',
+	        filter: {type: 'select'}
+	      },
+	      {
+	        header: '사업자 등록번호',
+	        name: 'actNum'
+	      },
+	      {
+	        header: '전화번호',
+	        name: 'tel'
+	      }]
+	  });
+		return actModalGrid;
+  }
 	    
 
    
    /*------------
-	// 모달 클릭
+	// 거래처 모달 클릭
 	----------------*/
    $('#actCd').on('click',function(){
-    	  actModalGrid.refreshLayout();
+    	  actModalGrid2.refreshLayout();
    });
 
    
    /*------------
-	// 거래처 모달에서 값 가져오기
+	// 거래처 모달 데이터 가져오기
+	----------------*/
+   actModalGrid2.on('click', ev => {
+	   let rowData = actModalGrid2.getRow(ev.rowKey); // 거래처클릭한 그리드
+	   
+	   let cdVal = rowData['actCd'];
+	   let nmVal = rowData['actNm'];
+	   
+	   $('#actCd').val(cdVal);
+	   $('#actNm').val(nmVal);
+	   
+	   $('#actModal2').modal("hide");
+   })
+   
+   
+   /*------------
+	// 거래처 모달에서 가져온 데이터 행에 넣어주기
 	----------------*/
    actModalGrid.on('click', ev => {
 	   let val = actModalGrid.getRow(ev.rowKey); // 거래처클릭한 그리드
@@ -367,8 +462,9 @@
    
    
    /*------------
-	// 제품명 Modal
+	// 제품명 Modal (행 추가 시, 사용)
 	----------------*/
+	function prdGridInit() {
 	const prdModalGrid = new tui.Grid({
 	    el: document.getElementById('prdModalGrid'),
 	    data: [
@@ -401,9 +497,78 @@
 	        name: 'won'
 	      }
 	    ]
-	  })
+	  });
+		return prdModalGrid;
+   }
+   
+   /*------------
+	// 제품명 Modal (조회 시, 사용)
+	----------------*/
+	function prdGridInit2() {
+	const prdModalGrid = new tui.Grid({
+	    el: document.getElementById('prdModalGrid2'),
+	    data: [
+	        {
+	           prdCd : 'MD-00100',
+	           prdNm : '얇은피 고기만두',
+	           won : '1000'
+	        },
+	        {
+	           prdCd : 'MD-00200',
+	           prdNm : '얇은피 김치만두',
+	           won : '2000'
+	        }
+	        ],
+	    rowHeaders: ['rowNum'],
+	    scrollX: false,
+	    scrollY: false,
+	    columns: [
+	      {
+	        header: '제품 코드',
+	        name: 'prdCd'
+	      },
+	      {
+	        header: '제품명',
+	        name: 'prdNm',
+	        filter: {type: 'select'}
+	      },
+	      {
+	        header: '단가 (원)',
+	        name: 'won'
+	      }
+	    ]
+	  });
+		return prdModalGrid;
+   }
+   
+   
+   
+	/*------------
+	// 제품명 모달 클릭
+	----------------*/
+	   $('#prdCd').on('click',function(){
+	    	prdModalGrid2.refreshLayout();
+	   });
    
 	
+	
+	   /*------------
+		// 제품명 모달 데이터 가져오기
+		----------------*/
+	   prdModalGrid2.on('click', ev => {
+		   let rowData = prdModalGrid2.getRow(ev.rowKey); // 거래처클릭한 그리드
+		   
+		   let cdVal = rowData['prdCd'];
+		   let nmVal = rowData['prdNm'];
+		   
+		   $('#prdCd').val(cdVal);
+		   $('#prdNm').val(nmVal);
+		   
+		   $('#prdModal2').modal("hide");
+	   })
+	
+	   
+	   
 	   /*------------
 		// 제품 모달에서 값 가져오기
 		----------------*/
@@ -421,16 +586,6 @@
 	   })
 	    
    
-   
-	/*------------
-	// 모달 클릭
-	----------------*/
-	   $('#prdNm').on('click',function(){
-	    	prdModalGrid.refreshLayout();
-	   });
-   
-   
-	
    
 	/*------------
 	// 엑셀 내보내기
