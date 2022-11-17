@@ -7,9 +7,8 @@
 <head>
 <meta charset="UTF-8">
 <title>YAMYAM</title>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.4/jquery-confirm.min.css"/>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.4/jquery-confirm.min.js"></script>
+
+
 <style>
 	#toast-container > div {
 		opacity : 1;
@@ -146,7 +145,7 @@
 		<div class="modal-dialog modal-xl" >
 			<div class="modal-content">
 				<div class="modal-header">
-					<h5 class="modal-title">생산요청서 목록</h5>
+					<h4 class="modal-title">생산요청서 목록</h4>
 					<button type="button" class="btn-close" data-bs-dismiss="modal"	aria-label="Close" id="close_modal"></button>
 				</div>
 				<div class="modal-body">
@@ -163,7 +162,7 @@
 		<div class="modal-dialog modal-xl" >
 			<div class="modal-content">
 				<div class="modal-header">
-					<h5 class="modal-title">제품 목록</h5>
+					<h4 class="modal-title">제품 목록</h4>
 					<button type="button" class="btn-close" data-bs-dismiss="modal"	aria-label="Close" id="close_modal"></button>
 				</div>
 				<div class="modal-body">
@@ -177,24 +176,28 @@
 
 <script>
 	
+	//date picker 초기화
+	searchInit();  
 	
-	searchInit(); // date picker 초기화 
-	
-	let manageGrid = tab1gridinit();  // 관리 탭 그리드 초기화
+	// 그리드 초기화
+	let manageGrid = tab1GridInit();  // 관리 탭 그리드 초기화
 	let insertGrid = tab2GridInit();  // 등록 탭 그리드 초기화
 	let requestModalGrid = mastGridInit();  
 	let materialGrid = detailGridInit();  
 	
-	updateBtnhandler();  //  수정버튼 이벤트
-	deleteBtnHandler();  //  데이터 삭제버튼 이벤트
-	tabBtnHandler();	 //  탭 핸들러 이벤트
-	removeBtnHandler();  //  그리드 행 삭제 핸들러 이벤트
-	gridClickHandler();  //  그리드 클릭 이벤트 핸들러
-	insertBtnHandler();  //  등록버튼 이벤트 핸들러
-	plusBtnHandler(); 	 //  그리드 행 추가 이벤트 핸들러
-	showBtnHandler();	 //  모달 버튼 클릭 이벤트 핸들러
-	cancelBtnHandler();  //  date picker input 값 초기화 버튼
-	searchBtnHandler();
+	// 버튼 이벤트 핸들러
+	updateBtnhandler();  	  // 수정버튼 이벤트
+	deleteBtnHandler();  	  // 그리드 행 삭제버튼 이벤트
+	plusBtnHandler(); 	 	  // 그리드 행 추가 이벤트 핸들러
+	tabBtnHandler();	 	  // 탭 핸들러 이벤트
+	removeBtnHandler();  	  // 데이터 삭제버튼 핸들러 이벤트
+	gridClickHandler();  	  // 그리드 클릭 이벤트 핸들러
+	insertBtnHandler();  	  // 등록버튼 이벤트 핸들러
+	showBtnHandler();	 	  // 모달 버튼 클릭 이벤트 핸들러
+	cancelBtnHandler();  	  // date picker input 값 초기화 버튼
+	searchBtnHandler();	 	  // date picker input 값 조회 버튼
+	rModalGridClickHandler(); // 생산요청서 모달에 클릭 이벤트 핸들러
+	
 	
 	/*------------
 	// datepicker
@@ -212,19 +215,27 @@
 	function removeBtnHandler(){
 		// grid 선택 행 삭제
 		$('#removeBtn').on('click',function(){
-			// let change = confirm("행을 삭제하시겠습니까?");
-			let insertGrid = insertGrid;
-			$.confirm({
-			    confirmButton: '얍',
-			    confirmButtonClass: 'btn-danger',
-			    confirm: function(){
-			        // button action goes here.
-			    	insertGrid.removeCheckedRows();
-			    },
-			    cancel: ''
-			})
+			// sweetalert2
+			Swal.fire({
+			      title: '정말로 삭제 하시겠습니까?',
+			      //text: "다시 되돌릴 수 없습니다. 신중하세요.",
+			      icon: 'warning',
+			      showCancelButton: true,
+			      confirmButtonColor: '#3085d6',
+			      cancelButtonColor: '#d33',
+			      confirmButtonText: '승인',
+			      cancelButtonText: '취소',
+			      //reverseButtons: true, // 버튼 순서 거꾸로
+			      
+			    }).then((result) => {
+			      if (result.isConfirmed) {
+			        Swal.fire(
+			          '삭제가 완료되었습니다.'		          
+			        )
+			        insertGrid.removeCheckedRows();
+			      }
+			    })
 			
-			//insertGrid.removeCheckedRows();
 		});	
 	}
 
@@ -232,11 +243,10 @@
 	/*------------
 	// 생산계획 관리 탭
 	----------------*/	
-	function tab1gridinit(){		
+	function tab1GridInit(){		
 		
-		// 생산계획 관리 그리드
+		// 임시 데이터
 		let dataList = [{
-				boardNum : '1',
 				planCode : 'pro_123456',
 				planName : '얇은피 김치만두200',
 				planDCode : 'prod_123456',
@@ -246,7 +256,6 @@
 				days : '2',
 				status : '자재팀 확인'
 				},{
-				boardNum : '2',
 				planCode : 'pro_456789',
 				planName : '얇은피 고기만두600,얇은피 새우만두100',
 				planDCode : 'prod_456789',
@@ -256,7 +265,6 @@
 				days : '1',
 				status : '미지시'
 				},{
-				boardNum : '3',
 				planCode : 'pro_456789',
 				planName : '얇은피 고기만두600,얇은피 새우만두100',
 				planDCode : 'prod_456789',
@@ -269,7 +277,6 @@
 		
 		let manageGrid = new tui.Grid({
 			el : document.getElementById('manageGrid'),
-			// 임시 데이터
 			data : dataList,
 			// data 가져오는 법
 			// data: {
@@ -318,19 +325,8 @@
 				filter: {
 			        type: 'select'			  
 			      }
-			}, ]
+			}]
 		});
-		
-		// 생산계획 관리 grid 계획 수정 후 업데이트
-		// 수정할때 해당 행 클릭시 check 변경(삭제)
-		/*  	 manageGrid.on('click',function(ev){
-
-				const rKey = ev.rowKey;
-
-				manageGrid.check(rKey);	
-				
-
-		});   */
 		
 		// 계획 관리 그리드에서의 수정
 		manageGrid.on('beforeChange', function(ev) {
@@ -379,6 +375,17 @@
 				//console.log(i + '번째 prio = ' + prio);
 				//console.log(i + '번째 days = ' + days);
 				//console.log(days);
+				sweetConfirm('U', function(){
+				
+				// DB delete
+				//ajax 
+				// 성공
+
+				Swal.fire('수정이 완료되었습니다');
+				// grid에서 수정
+				
+				// 실패
+			})
 			} 
 			
 			// DB update
@@ -388,20 +395,30 @@
 	
 	
 	
+
+
 	/*------------
-	// 삭제 버튼 클릭
+	// 삭제 버튼 이벤트 핸들러
 	----------------*/
 	function deleteBtnHandler(){
 		$('#deleteBtn').on('click',function(){
-			// let change = confirm("행을 삭제하시겠습니까?");
-			// grid에서 삭제
-			let showConfirm = true;
-			manageGrid.removeCheckedRows(showConfirm);	
-			// DB delete
+			sweetConfirm('D', function(){
+				
+				// DB delete
+				//ajax 
+				// 성공
+
+				Swal.fire('삭제가 완료되었습니다');
+				// grid에서 삭제
+				manageGrid.removeCheckedRows();
+				// 실패
+			})
+		})
+	};
 			
-		});
-	}
-	
+			
+		
+		
 	
 	/*------------
 	// 탭 버튼 클릭
@@ -489,7 +506,7 @@
 		
 		// 빈창 클릭시 데이터
 		insertGrid.on('click', (ev) => {
-			console.log(ev.rowKey);
+
 			if(!ev.rowKey){
 				return;
 			}
@@ -514,11 +531,17 @@
 			el : document.getElementById('requestModalGrid'),
 			// 임시 데이터
 			data : [ {
-				boardNum : '1',
 				orderCode : 'pro_123456',
 				dates : '20221202',
 				productCode : 'MD-00200',
 				productName : '얇은피 김치만두',
+				planAmt : '300'
+			},
+			{
+				orderCode : 'pro_7777',
+				dates : '20221202',
+				productCode : 'MD-00300',
+				productName : '얇은피 새우만두',
 				planAmt : '300'
 			} ],
 			// data 가져오는 법
@@ -551,8 +574,37 @@
 				name : 'planAmt',
 			}]
 		});
+			
 		return requestModalGrid;
 	}
+	
+	
+	
+	/*------------
+	// 생산요청서 모달에 클릭 이벤트 핸들러
+	----------------*/
+	function rModalGridClickHandler(){
+
+		requestModalGrid.on('click',function(ev){
+			//console.log(ev.rowKey); 선택한 행의 row번호
+			// 클릭한 행의 자재명, 자재코드 
+			let val = requestModalGrid.getRow(ev.rowKey);
+			let RMCode = val.orderCode;
+			let iGDataList = insertGrid.getData();
+			$(iGDataList).each(function(idx,el){
+				let code = el.orderCode; 
+				if(RMCode != code){
+					insertGrid.appendRow(val);
+				}
+					$('#requestModal').modal("hide");				
+			})
+		})
+	
+	}
+	
+	
+	
+	
 	
 	/*------------
 	// insertGrid 빈곳 클릭시 모달에 뜨는 그리드(제품코드, 제품이름)
@@ -598,6 +650,8 @@
 		return materialGrid;
 	}
 	
+	
+	
 	/*------------
 	// insertGrid 빈곳 클릭 핸들러
 	----------------*/
@@ -606,7 +660,7 @@
 		materialGrid.on('focusChange',function(event){
 			let data2 = materialGrid.getRow(event.rowKey);
 			
-			const val = insertGrid.getFocusedCell().rowKey;
+			let val = insertGrid.getFocusedCell().rowKey;
 
 			let prCode = data2.productCode; // 선택된 제품 코드
 			let prName = data2.productName; // 선택된 제품 이름
@@ -641,7 +695,7 @@
 	
 	
 	/*------------
-	// 초기화버튼 이벤트 핸들러
+	// datePicker 초기화버튼 이벤트 핸들러
 	----------------*/
 	function cancelBtnHandler(){
 		$('#cancelBtn').on('click',function(){
@@ -694,20 +748,52 @@
 			let planDate = $('#datepicker-input').val();
 			// grid 데이터
 			let data = insertGrid.getCheckedRows();
-			toastr.options = {
+			$(data).each(function(idx,el){
+
+				let dPrio = el.prio;
+				let dDays = el.days;
+				if(planName == ''){
+					Swal.fire({
+						icon: 'error',
+						title :'생산계획명을 입력하세요!!'});
+
+				}else if(dPrio == null || dDays == null){
+					 Swal.fire({
+						icon: 'error',
+						title :'생산일수 혹은 작업우선순위를 입력하세요!!'});
+
+				}else{
+					
+					sweetConfirm('C', function(){
+						
+						// DB delete
+						// ajax 받아오고
+						// success : function(data){insertGrid.resetData(data);}
+		
+						Swal.fire('등록이 완료되었습니다');
+						// grid에서 등록
+						// insertGrid.resetData(data);
+						// 실패
+					})
+				
+				}
+			})
+
+			// toastr
+			/* toastr.options = {
 					  "closeButton": true,
 					  "newestOnTop": true,
 					  "positionClass": "toast-top-center",
 					  "preventDuplicates": true,
 					  "extendedTimeOut" : 0, 
 					  "timeOut" : 0
-					}
+					} */
 			// if() insert 성공시 -> 
-			toastr.success('성공');
-			/* toastr.warning('경고');
-			toastr.error('실패'); */
-			console.log(data);
-			// 값이 null이면 insert하지 않기
+			//toastr.success('성공');
+			// toastr.warning('경고');
+			// toastr.error('실패'); 
+			//console.log(data);
+
 		});
 	}
 	
