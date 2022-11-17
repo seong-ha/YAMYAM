@@ -51,3 +51,6 @@
 	
 	let today = getTodayStr();
 	
+	var Grid = tui.Grid;
+	Grid.setLanguage('ko');
+	

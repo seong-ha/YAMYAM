@@ -1,15 +1,29 @@
 package com.mandu.yamyam.mat.web;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.mandu.yamyam.mat.service.MatOdService;
 
 
 @Controller
 public class MatController {
 
-	@RequestMapping("/matOd")
+	@Autowired
+	MatOdService service;
+	
+	@GetMapping("/matOd")
 	public String matOd(Model model) {
+		model.addAttribute("odList", service.matOrderList());		// 자재발주관리 리스트(일반 탭)
+		model.addAttribute("matList", service.matList());			// 돋보기 자재목록 모달
+		model.addAttribute("actList", service.actList());			// 돋보기 업체목록 모달
+		model.addAttribute("needMatList", service.needMatList());	// 필요자재 리스트(생산계획 탭)
+		model.addAttribute("newPlanList", service.newPlanList());	// 신규생산계획조회(생산계획서용 탭)
+		model.addAttribute("addNewPlan", service.addNewPlan());		// 신규 생산 계획서 모델 선택 모달창(생산계획서용 탭)
+		model.addAttribute("odMatList", service.odMatList());		// 자재발주 전체리스트(생산계획서용 탭)
 		return "mat/matOd";
 	}
 	

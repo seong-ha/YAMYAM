@@ -1,47 +1,48 @@
 <!DOCTYPE html>
 <html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
-   <head>
-   <title>YAMYAM</title>
-   <meta charset="utf-8">
-   <meta name="viewport" content="width=device-width, initial-scale=1">
-   <link href="css/styles.css" rel="stylesheet" />
-   <link href="css/bootstrap.min.css" rel="stylesheet">
-   <link href="css/tui-grid.css" rel="stylesheet">
-   <link rel="stylesheet"href="https://cdn.jsdelivr.net/npm/sweetalert2@11.6.8/dist/sweetalert2.min.css" />
+<head>
+  <title>YAMYAM</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="css/styles.css" rel="stylesheet" />
+  <link href="css/bootstrap.min.css" rel="stylesheet">
+  <link href="css/tui-grid.css" rel="stylesheet">
+  <link rel="stylesheet"href="https://cdn.jsdelivr.net/npm/sweetalert2@11.6.8/dist/sweetalert2.min.css" />
 
-   <!-- toast-datepicker -->
-   <link rel="stylesheet" href="https://uicdn.toast.com/tui.date-picker/latest/tui-date-picker.css">
-   <!-- toast-selectbox -->
-   <link rel="stylesheet"
-      href="https://uicdn.toast.com/select-box/latest/toastui-select-box.css" />
-   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.css" integrity="sha512-3pIirOrwegjM6erE5gPSwkUzO+3cTjpnV9lexlNZqvupR64iZBnOOTiiLPb9M36zpMScbmUNIcHUqKD47M719g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-      
-      <!-- 제이쿼리 -->
-   <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
-      <!-- 엑셀 저장 -->
-   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.1/xlsx.full.min.js"></script>
-   <script src="js/bootstrap.bundle.min.js"></script>
-   <!-- toast-datepicker -->
-   <script src="https://uicdn.toast.com/tui.date-picker/latest/tui-date-picker.js"></script>
-   <!-- toast-selectbox -->
-   <script src="https://uicdn.toast.com/select-box/latest/toastui-select-box.js"></script>
-   
-   <script src="js/tui-grid.js"></script>
+  <!-- toast-datepicker -->
+  <link rel="stylesheet" href="https://uicdn.toast.com/tui.date-picker/latest/tui-date-picker.css">
+  <!-- toast-selectbox -->
+  <link rel="stylesheet"
+    href="https://uicdn.toast.com/select-box/latest/toastui-select-box.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.css" integrity="sha512-3pIirOrwegjM6erE5gPSwkUzO+3cTjpnV9lexlNZqvupR64iZBnOOTiiLPb9M36zpMScbmUNIcHUqKD47M719g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
-   <script src="js/common.js"></script>
-   <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js" integrity="sha512-VEd+nq25CkR676O+pLBnDW09R7VQX9Mdiij052gVCp5yVH3jGtH70Ho/UUv4mJDsEdTvqRCFZg0NKGiojGnUCw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-   <!-- sweetalert2 -->
-   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.6.8/dist/sweetalert2.min.js"></script>
-   
-      <style type="text/css">
-         .tui-datepicker {
-          z-index: 1001;
-         }
-         .tui-select-box {
-         z-index : 1001;
-         }
-      </style>
-   </head>
+    <!-- 제이쿼리 -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+    <!-- 엑셀 저장 -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.1/xlsx.full.min.js"></script>
+  <script src="js/bootstrap.bundle.min.js"></script>
+  <!-- toast-datepicker -->
+  <script src="https://uicdn.toast.com/tui.date-picker/latest/tui-date-picker.js"></script>
+  <!-- toast-selectbox -->
+  <script src="https://uicdn.toast.com/select-box/latest/toastui-select-box.js"></script>
+
+  <script src="js/tui-grid.js"></script>
+
+  <script src="js/common.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js" integrity="sha512-VEd+nq25CkR676O+pLBnDW09R7VQX9Mdiij052gVCp5yVH3jGtH70Ho/UUv4mJDsEdTvqRCFZg0NKGiojGnUCw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <!-- sweetalert2 -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.6.8/dist/sweetalert2.min.js"></script>
+
+  <style type="text/css">
+     .tui-datepicker {
+      z-index: 1001;
+     }
+     .tui-select-box {
+     z-index : 1001;
+     }
+  </style>
+</head>
+
 <body>
    <nav layout:fragment="menu"
       class="sb-topnav navbar navbar-expand navbar-dark bg-red">
