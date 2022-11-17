@@ -45,14 +45,14 @@
       </li>
 
       <li><label for="actCd">거래처</label><input type="text" 
-          data-bs-toggle="modal" data-bs-target="#exampleModal1" id="actCd">
+          data-bs-toggle="modal" data-bs-target="#actModal" id="actCd">
           <img class="Magnifying-Glass-img" alt="image" src="../images/Magnifying_Glass.png">
           <input type="text" class="back" readonly><br></li>
 
          <li><label for="prdNm">제품명</label><input type="text" 
-            data-bs-toggle="modal" data-bs-target="#exampleModal2" id="prdNm">
+            data-bs-toggle="modal" data-bs-target="#prdModal" id="prdNm">
             <img class="Magnifying-Glass-img" alt="image" src="../images/Magnifying_Glass.png">
-            <input type="text" id="back" readonly><br></li>
+            <input type="text" class="back" readonly><br></li>
 
             <li><label>주문일자</label>
                <div class="tui-datepicker-input tui-datetime-input tui-has-focus">
@@ -67,12 +67,12 @@
                   <div id="endpicker-container" style="margin-left: -1px;"></div>
                </div>
             
-               <button class="btn btn-dark btn-sm">조회</button>
-               <button  class="btn btn-dark btn-sm">초기화</button></li>
+               <button class="btn btn-dark btn-sm" id="searchBtn">조회</button>
+               <button type="button" class="btn btn-dark btn-sm" id="cancelBtn">초기화</button></li>
                </ul>
                
 		<!-- 거래처 Modal -->
-	  <div class="modal" id="exampleModal1" tabindex="-1"
+	  <div class="modal" id="actModal" tabindex="-1"
 	  		aria-labelledby="exampleModalLabel" aria-hidden="true">
 	        <div class="modal-dialog">
 	          <div class="modal-content">
@@ -82,18 +82,14 @@
 	               aria-label="Close"></button>
 	            </div>
 	             <div class="modal-body">
-	              <label>거래처명</label> <input id="actNm" type="text">
-                  <button type="button" class="btn btn-dark btn-sm"
-                     data-bs-dismiss="modal">조회</button>
-                  <button type="button" class="btn btn-dark btn-sm">초기화</button>
-               <div id="modalGrid1"></div>
+               <div id="actModalGrid"></div>
                </div>
 	          </div>
 	        </div>
 	   </div>   
 	   
 	   <!-- 제품명 Modal -->
-      <div class="modal" id="exampleModal2" tabindex="-1"
+      <div class="modal" id="prdModal" tabindex="-1"
          aria-labelledby="exampleModalLabel" aria-hidden="true">
          <div class="modal-dialog">
             <div class="modal-content">
@@ -103,11 +99,7 @@
                      aria-label="Close"></button>
                </div>
                <div class="modal-body">
-                  <label>제품명</label> <input id="prdNm" type="text">
-                  <button type="button" class="btn btn-dark btn-sm"
-                     data-bs-dismiss="modal">조회</button>
-                  <button type="button" class="btn btn-dark btn-sm">초기화</button>
-               <div id="modalGrid2"></div>
+               <div id="prdModalGrid"></div>
                </div>
             </div>
          </div>
@@ -118,165 +110,331 @@
    <div id="od-btn">
    <button class="btn btn-dark btn-sm" id="insertBtn">추가</button>
    <button class="btn btn-dark btn-sm" id="deleteBtn">선택삭제</button>
-   <button class="btn btn-dark btn-sm">저장</button>
+   <button class="btn btn-dark btn-sm" id="saveBtn">저장</button>
    <button class="btn btn-dark btn-sm" id="exportBtn">엑셀 파일 출력</button>
    </div>
    <br>
 <div id="grid"></div>
 
 <script>
-const grid = new tui.Grid({
-    el: document.getElementById('grid'),
-    data: [
-        {
-           odDate : '2022-11-01',
-           odCd : 'ORD-20221101-001',
-           prdCd : 'MD-00100',
-           prdNm : '얇은피 고기만두',
-           odAmt : 200,
-           actCd : 'VDR-1004',
-           actNm : 'YD 마트',
-           deDate : '2022-11-04',
-           sts : '완료'
-        }
-        ],
-    rowHeaders: ['checkbox'],
-    scrollX: false,
-    scrollY: false,
-    columns: [
-      {
-        header: '주문 일자',
-        name: 'odDate'
-      },
-      {
-        header: '주문 코드',
-        name: 'odCd'
-      },
-      {
-        header: '제품 코드',
-        name: 'prdCd'
-      },
-      {
-        header: '제품명',
-        name: 'prdNm'
-      },
-      {
-        header: '주문량',
-        name: 'odAmt'
-      },
-      {
-        header: '거래처 코드',
-        name: 'actCd'
-      },
-      {
-        header: '거래처명',
-        name: 'actNm'
-      },
-      {
-        header: '납기 일자',
-        name: 'deDate'
-      },
-      {
-        header: '진행 상황',
-        name: 'sts'
-      },
-    ]
-  });
 
+	
+	/*------------
+	// function
+	----------------*/
+	cancelBtnHandler();  //  date picker input 값 초기화 버튼
+	searchBtnHandler();
+	
+	let actModalGrid = actGridInit();
+
+
+	/*------------
+	// 데이트피커
+	----------------*/
+   rangeDatepickerInit('#startpicker-input', '#startpicker-container','#endpicker-input','#endpicker-container')
+  
+   
+   /*------------
+	// 검색버튼 이벤트 핸들러
+	----------------*/
+	function searchBtnHandler(){
+		$('#searchBtn').on('click',function(){
+			let getactName = $("actCd").val();
+			let getprdName = $("prdNm").val();
+			let getStartDay = $("startpicker-input").val();
+			let getEndDay = $("#endpicker-input").val();
+		});
+	}
+   
+	
+   /*------------
+	// 데이트피커 초기화 버튼
+	----------------*/
+	function cancelBtnHandler(){
+		$('#cancelBtn').on('click',function(){
+			$("#startpicker-input").val(today);
+			$("#endpicker-input").val(today);
+		});	
+	}
+   
+   
+    /*------------
+	// 주문서 리스트 그리드
+	----------------*/
+	const grid = new tui.Grid({
+	    el: document.getElementById('grid'),
+	    data: [
+	        {
+	           odDate : '2022-11-01',
+	           odCd : 'ORD-20221101-001',
+	           prdCd : 'MD-00100',
+	           prdNm : '얇은피 고기만두',
+	           odAmt : 200,
+	           actCd : 'VDR-1004',
+	           actNm : 'YD 마트',
+	           deDate : '2022-11-04',
+	           sts : '완료'
+	        }
+	        ],
+	    rowHeaders: ['checkbox','rowNum'],
+	    scrollX: false,
+	    scrollY: false,
+	    columns: [
+	      {
+	        header: '주문 일자',
+	        name: 'odDate'
+	      },
+	      {
+	        header: '주문 코드',
+	        name: 'odCd'
+	      },
+	      {
+	        header: '제품 코드',
+	        name: 'prdCd'
+	      },
+	      {
+	        header: '제품명',
+	        name: 'prdNm'
+	      },
+	      {
+	        header: '주문량',
+	        name: 'odAmt',
+	        editor: 'text',
+			// 필수 입력 값
+			validation: {
+			     dataType: 'text',
+			     required: true
+			      }
+	      },
+	      {
+	        header: '거래처 코드',
+	        name: 'actCd'
+	      },
+	      {
+	        header: '거래처명',
+	        name: 'actNm'
+	      },
+	      {
+	        header: '납기 일자',
+	        name: 'deDate',
+	        editor: 'datePicker',
+	        validation: {
+			     dataType: 'datePicker',
+			     required: true
+			      }
+	      },
+	      {
+	        header: '진행 상황',
+	        name: 'sts'
+	      },
+	    ]
+	  });
+
+    
+    
+    
+    /*------------
+	// 해당하는 header의 모달창 띄우기
+	----------------*/
+   	grid.on('click',function(ev){
+
+   		if(ev.columnName =='actCd'){
+   			$('#actModal').modal('show');
+   		 actModalGrid.refreshLayout();
+   		}else if (ev.columnName =='prdCd'){
+   	   			$('#prdModal').modal('show');
+   	   		 prdModalGrid.refreshLayout();
+   	   		}
+   	});
+
+    
+    
+	/*------------
+	// 주문서 추가 버튼
+	----------------*/
    $('#insertBtn').on('click',function(){
+      let rowData = [{odDate: "", odCd: "", prdCd: "", prdNm: "", odAmt: "", actCd : "" , actNm: "", deDate: "", sts:""}]
+      grid.appendRow(rowData); 
+	});
+	
+	
+   /*------------
+	// 모달 정보 넘겨주는 핸들러
+	----------------*/
+	/*
+	function gridClickHandler(){
+	   
+	   if(actModalGrid.on('click',function(event))){
+		   var data2 = actModalGrid.getRow(event.rowKey);
+			
+			const val = insertGrid.getFocusedCell().rowKey;
+
+			let prCode = data2.productCode; // 선택된 제품 코드
+			let prName = data2.productName; // 선택된 제품 이름
+
+			var checkCellState = false;
+			
+			insertGrid.setValue(val, 'productCode' , prCode, checkCellState);
+			insertGrid.setValue(val, 'productName' , prName, checkCellState);
+			$("#materialModal").modal("hide");
+	   }else if(prdModalGrid.on('click',function(event))){
+		   
+	   }
+   }
+   */
    
-      var rowData = [{odDate: "", odCd: "", prdCd: "", prdNm: "", odAmt: "", actCd : "" , actNm: "", deDate: "", sts:""}]
-      grid.appendRow(rowData);
-            
-});
-   
+   	/*------------
+	// 주문서 선택삭제 버튼
+	----------------*/
    $('#deleteBtn').on('click',function(){
 		var showConfirm = true;
 		grid.removeCheckedRows(showConfirm);
-		
 	});
 
-   // 거래처 모달
-const modalGrid1 = new tui.Grid({
-    el: document.getElementById('modalGrid1'),
-    data: [
-        {
-           actCd : 'VDR-1001',
-           actNm : 'AA 마트',
-           actNum : '791-10-000',
-           tel : '053-514-4512'
-        }
-        ],
-    rowHeaders: ['rowNum'],
-    scrollX: false,
-    scrollY: false,
-    columns: [
-      {
-        header: '거래처 코드',
-        name: 'actCd'
-      },
-      {
-        header: '거래처명',
-        name: 'actNm'
-      },
-      {
-        header: '사업자 등록번호',
-        name: 'actNum'
-      },
-      {
-        header: '전화번호',
-        name: 'tel'
-      }
-    ]
-  })
+
+	
+	/*------------
+	// 거래처 Modal
+	----------------*/
+   function actGridInit() {
+		let actModalGrid = new tui.Grid({
+	    el: document.getElementById('actModalGrid'),
+	    data: [
+	        {
+	           actCd : 'VDR-1001',
+	           actNm : 'AA 마트',
+	           actNum : '791-10-000',
+	           tel : '053-514-4512'
+	        },
+	        {
+	           actCd : 'VDR-1002',
+	           actNm : 'AB 마트',
+	           actNum : '791-10-595',
+	           tel : '054-861-8545'
+	        }
+	        ],
+	    rowHeaders: ['rowNum'],
+	    scrollX: false,
+	    scrollY: false,
+	    columns: [
+	      {
+	        header: '거래처 코드',
+	        name: 'actCd'
+	      },
+	      {
+	        header: '거래처명',
+	        name: 'actNm',
+	        filter: {type: 'select'}
+	      },
+	      {
+	        header: '사업자 등록번호',
+	        name: 'actNum'
+	      },
+	      {
+	        header: '전화번호',
+	        name: 'tel'
+	      }]
+	  });
+		return actModalGrid;
+   }
+	    
+
+   
+   /*------------
+	// 모달 클릭
+	----------------*/
    $('#actCd').on('click',function(){
-      setInterval(function () {
-         modalGrid1.refreshLayout();
-      }, 100);
+    	  actModalGrid.refreshLayout();
    });
-   
-   // 제품명 모달
-const modalGrid2 = new tui.Grid({
-    el: document.getElementById('modalGrid2'),
-    data: [
-        {
-           prdCd : 'MD-00100',
-           prdNm : '얇은피 고기만두',
-           won : '1000'
-        }
-        ],
-    rowHeaders: ['rowNum'],
-    scrollX: false,
-    scrollY: false,
-    columns: [
-      {
-        header: '제품 코드',
-        name: 'prdCd'
-      },
-      {
-        header: '제품명',
-        name: 'prdNm'
-      },
-      {
-        header: '단가 (원)',
-        name: 'won'
-      }
-    ]
-  })
-   $('#prdNm').on('click',function(){
-      setInterval(function () {
-         modalGrid2.refreshLayout();
-      }, 100);
-   });
-   
-   // 날짜 계산
-   rangeDatepickerInit('#startpicker-input', '#startpicker-container','#endpicker-input','#endpicker-container')
 
    
-   
+   /*------------
+	// 거래처 모달에서 값 가져오기
+	----------------*/
+   actModalGrid.on('click', ev => {
+	   let val = actModalGrid.getRow(ev.rowKey); // 거래처클릭한 그리드
+	  
+	   let val2 = grid.getFocusedCell().rowKey; // 진짜 큰 그리드
+	    
+	   	console.log(actModalGrid.getValue(ev.rowKey,ev.columnName));
+	    const amg = actModalGrid.getValue(ev.rowKey,ev.columnName);
+	    grid.setValue(val2, 'actCd', val.actCd);
+	    grid.setValue(val2, 'actNm', val.actNm);
 
-   // 엑셀 내보내기
-  
+	    $('#actModal').modal("hide");
+   })
+	    
+   
+   
+   /*------------
+	// 제품명 Modal
+	----------------*/
+	const prdModalGrid = new tui.Grid({
+	    el: document.getElementById('prdModalGrid'),
+	    data: [
+	        {
+	           prdCd : 'MD-00100',
+	           prdNm : '얇은피 고기만두',
+	           won : '1000'
+	        },
+	        {
+	           prdCd : 'MD-00200',
+	           prdNm : '얇은피 김치만두',
+	           won : '2000'
+	        }
+	        ],
+	    rowHeaders: ['rowNum'],
+	    scrollX: false,
+	    scrollY: false,
+	    columns: [
+	      {
+	        header: '제품 코드',
+	        name: 'prdCd'
+	      },
+	      {
+	        header: '제품명',
+	        name: 'prdNm',
+	        filter: {type: 'select'}
+	      },
+	      {
+	        header: '단가 (원)',
+	        name: 'won'
+	      }
+	    ]
+	  })
+   
+	
+	   /*------------
+		// 제품 모달에서 값 가져오기
+		----------------*/
+	  	prdModalGrid.on('click', ev => {
+		   let val = prdModalGrid.getRow(ev.rowKey); // 거래처클릭한 그리드
+		  
+		   let val2 = grid.getFocusedCell().rowKey; // 진짜 큰 그리드
+		    
+		   	console.log(prdModalGrid.getValue(ev.rowKey,ev.columnName));
+		    const pmg = prdModalGrid.getValue(ev.rowKey,ev.columnName);
+		    grid.setValue(val2, 'prdCd', val.prdCd);
+		    grid.setValue(val2, 'prdNm', val.prdNm);
+	
+		    $('#prdModal').modal("hide");
+	   })
+	    
+   
+   
+	/*------------
+	// 모달 클릭
+	----------------*/
+	   $('#prdNm').on('click',function(){
+	    	prdModalGrid.refreshLayout();
+	   });
+   
+   
+	
+   
+	/*------------
+	// 엑셀 내보내기
+	----------------*/
    $('#exportBtn').on('click',function(){
 	   let options = {
 			     includeHeader : true,
@@ -286,6 +444,7 @@ const modalGrid2 = new tui.Grid({
 			   };
    grid.export('xlsx', options);
    });
+   
 </script>
 </div>
 </body>
