@@ -31,17 +31,18 @@ width:80%;	display: inline;
 			</div>
 
 			<div class="col-5">
-				<div id="gird2"></div>
-
+			<form action="">
 
 				<b>자재 정보 표시</b>
 				<hr>
 
 				<div id="input-group">
 					<ul class="ul-style">
-						<li><label for="matCode">자재코드</label><input id="matCode">
+						<li><label for="matCode">자재코드</label>
+						<input id="matCode" name="MTR_CD">
 						&nbsp;&nbsp;&nbsp;
-						<label for="matCode" style="width:80px">자재명</label><input id="matCode">
+						<label for="matCode" style="width:80px">자재명</label>
+						<input id="matCode" name="MTR_NM">
 						</li>
 					</ul>
 					
@@ -50,6 +51,8 @@ width:80%;	display: inline;
 				<hr>
 				
 				<div class="mb-3 row">
+					<!-- 히든값 보내는거 해봐야함 -->
+					<input type="hidden" name="mtrStd"  id="mtrStd">
 					<label class="col-sm-2">&nbsp;규격</label>
 					<span class="col-sm-4" style="width: 195px;" id="select-box"></span>
 					<label class="col-sm-2">작업단위</label>
@@ -58,11 +61,11 @@ width:80%;	display: inline;
 				<hr>
 				
 				<ul class="ul-style">
-					<li><label for="matNm">자재명</label><input id="matNm" readonly>
+					<li><label for="matNm">자재명</label><input id="matNm" name="MTR_NM" readonly>
 						<img id="matNm" class="Magnifying-Glass-img" alt="image"
 							 data-bs-toggle="modal" data-bs-target="#exampleModal"
 							 src="../images/Magnifying_Glass.png" >
-						<input type="text" readonly>
+						<input type="text" name="ACT_NM"readonly>
 					</li>
 				</ul>
 				
@@ -81,7 +84,7 @@ width:80%;	display: inline;
 			               		<h4 align="center"><b>거래처 검색</b></h4>
 			               		<br>
 			               		
-			               		설비명<input type="text">
+			               		설비명&nbsp;<input type="text">
 			               		<button type="button" class="btn btn-dark btn-sm"
 			                     data-bs-dismiss="modal">조회</button>
 			                  	<button type="button" class="btn btn-dark btn-sm">초기화</button>
@@ -100,27 +103,27 @@ width:80%;	display: inline;
 
 				<div class="mb-3 row">
 					<label class="col-sm-2" style="width:100px">&nbsp;안전재고</label>&nbsp;
-					<span class="col-sm-4" style="width: 190px;"><input type="text"></span>
+					<span class="col-sm-4" style="width: 190px;"><input type="text" name="MTR_SFAMT"></span>
 				</div>
 				
 				<hr>
 				
 				사용 유무&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 					<div class="form-check form-check-inline">
-					  <input class="form-check-input" type="radio" name="use" id="inlineRadio1" value="option1">
+					  <input class="form-check-input" type="radio" name="MTR_USE" id="inlineRadio1" value="option1">
 					  <label class="form-check-label" for="inlineRadio1">YES</label>
 					</div>
 					<div class="form-check form-check-inline">
-					  <input class="form-check-input" type="radio" name="use" id="inlineRadio2" value="option2">
+					  <input class="form-check-input" type="radio" name="MTR_USE" id="inlineRadio2" value="option2">
 					  <label class="form-check-label" for="inlineRadio2">NO</label>
 					</div>
 					
 				<hr>
 					<div align="right">
 					<button type="button" class="btn btn-dark btn-sm">저장</button>&nbsp;
-					<button type="button" class="btn btn-dark btn-sm">초기화</button>
+					<input type="reset" class="btn btn-dark btn-sm" id="reset" name="reset">
 					</div>
-
+				</form>
 			</div>
 
 		</div>
@@ -131,89 +134,81 @@ width:80%;	display: inline;
 
 	<script>
 		const gridData = [ {
-			no : '1',
-			matcode : 'HS-001',
-			matname : '고기',
-			standard : '50kg',
-			workunit : 'BOX',
-			safeamount : '1000',
-			matdivision : '원자재'
+			MTR_CD : 'HS-001',
+			MTR_NM : '고기',
+			MTR_STD : '50kg',
+			MTR_UN : 'BOX',
+			MTR_SFAMT : '1000',
+			MTR_STS : '원자재'
 		}, {
-			no : '2',
-			matcode : 'HS-001',
-			matname : '고기',
-			standard : '50kg',
-			workunit : 'BOX',
-			safeamount : '1000',
-			matdivision : '원자재'
+			MTR_CD : 'HS-001',
+			MTR_NM : '고기',
+			MTR_STD : '50kg',
+			MTR_UN : 'BOX',
+			MTR_SFAMT : '1000',
+			MTR_STS : '원자재'
 		}, {
-			no : '3',
-			matcode : 'HS-001',
-			matname : '고기',
-			standard : '50kg',
-			workunit : 'BOX',
-			safeamount : '1000',
-			matdivision : '원자재'
+			MTR_CD : 'HS-001',
+			MTR_NM : '고기',
+			MTR_STD : '50kg',
+			MTR_UN : 'BOX',
+			MTR_SFAMT : '1000',
+			MTR_STS : '원자재'
 		}
 
 		];
 		
 		const gridData2 = [ {
-			no : '1',
-			actcode : 'LHS1005',
-			actname : '만두머신-4',
-			corporateregnum : '477001-20',
-			tel : '053-555-1881'
+			ACT_CD : 'LHS1005',
+			ACT_NM : '만두머신-4',
+			ACT_NUM : '477001-20',
+			ACT_TEL : '053-555-1881'
 		},
 		{
-			no : '2',
-			actcode : 'LHS1005',
-			actname : '만두머신-4',
-			corporateregnum : '477001-20',
-			tel : '053-555-1881'
+			ACT_CD : 'LHS1005',
+			ACT_NM : '만두머신-4',
+			ACT_NUM : '477001-20',
+			ACT_TEL : '053-555-1881'
 		},
 		{
-			no : '3',
-			actcode : 'LHS1005',
-			actname : '만두머신-4',
-			corporateregnum : '477001-20',
-			tel : '053-555-1881'
+			ACT_CD : 'LHS1005',
+			ACT_NM : '만두머신-4',
+			ACT_NUM : '477001-20',
+			ACT_TEL : '053-555-1881'
 		},{
-			no : '4',
-			actcode : 'LHS1005',
-			actname : '만두머신-4',
-			corporateregnum : '477001-20',
-			tel : '053-555-1881'
+			ACT_CD : 'LHS1005',
+			ACT_NM : '만두머신-4',
+			ACT_NUM : '477001-20',
+			ACT_TEL : '053-555-1881'
 		}
 		];
 
 		const grid = new tui.Grid({
 			el : document.getElementById('grid'),
 			data : gridData.slice(0, 6),
-			bodyHeight : 600,
+			bodyHeight : 550,
 			scrollX : true,
 			scrollY : false,
+			rowHeaders: ['rowNum'],
+			
 			columns : [ {
-				header : 'No',
-				name : 'no'
-			}, {
 				header : '자재 코드',
-				name : 'matcode'
+				name : 'MTR_CD'
 			}, {
 				header : '자재명',
-				name : 'matname'
+				name : 'MTR_NM'
 			}, {
 				header : '규격',
-				name : 'standard'
+				name : 'MTR_STD'
 			}, {
 				header : '작업단위',
-				name : 'workunit'
+				name : 'MTR_UN'
 			}, {
-				header : '안전재고',
-				name : 'safeamount'
+				header : '안전 재고 수량',
+				name : 'MTR_SFAMT'
 			}, {
 				header : '제품구분',
-				name : 'matdivision'
+				name : 'MTR_STS'
 			} ],
 			showDummyRows : true
 		});
@@ -224,21 +219,19 @@ width:80%;	display: inline;
 			bodyHeight : 600,
 			scrollX : true,
 			scrollY : false,
+			rowHeaders: ['rowNum'],
 			columns : [ {
-				header : 'No',
-				name : 'no'
-			}, {
 				header : '거래처 코드',
-				name : 'actcode'
+				name : 'ACT_CD'
 			}, {
 				header : '거래처 업체명',
-				name : 'actname'
+				name : 'ACT_NM'
 			}, {
 				header : '사업자등록번호',
-				name : 'corporateregnum'
+				name : 'ACT_NUM'
 			}, {
 				header : '전화번호',
-				name : 'tel'
+				name : 'ACT_TEL'
 			}
 			],
 			showDummyRows : true
@@ -298,8 +291,30 @@ width:80%;	display: inline;
 			autofocus : true
 		});
 		
+		//grid select box change
+		selectBox.on('change', ev => {
+			mtrStd.value=ev.curr.value;
+			  console.log(ev);
+			});
+		
+		selectBox2.on('change', ev => {
+			mtrStd.value=ev.curr.value;
+			  console.log(ev);
+			});
+		
+		/*
+		1. 초기화 버튼에 클릭이벤트를 건다.
+		2. selectBox.deselect()를 해준다.
+		*/
+		
+		 document.getElementsByName('reset')[0].addEventListener('click', function(){
+		    selectBox.deselect();
+		    selectBox2.deselect();
+		  }) 
+		
+		
 		//모달창 리프레시(모달창에 그리드 화면 띄울때 써야함!)
-	      exampleModal.addEventListener('shown.bs.modal', () => {
+	     exampleModal.addEventListener('shown.bs.modal', () => {
 	            grid2.refreshLayout(); //모달창 새로고침
 	       })
 	</script>

@@ -9,39 +9,40 @@
 	<h2>완제품 코드 관리</h2>
 	<hr>
 	
-	<br> <br>
-	
-	<table>
-		<tr>
-			<td>
-				<ul class="ul-style">
-				<li><label for="matCode" style="width:130px">제품 코드</label><input id="matCode">
-				&nbsp;&nbsp;&nbsp;
-				<label for="matCode">제품명</label><input id="matCode">
-				</li>
-				</ul>
-			</td>
-		</tr>
-		
-		<tr>
-			<td>
-				<ul class="ul-style">
-					<li class="d-flex">
-						<label style="width:110px">규격</label>&nbsp;&nbsp;&nbsp;
-						<div style="width: 190px;" id="select-box"></div>
-						
-						<label style="width:100px">
-						&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;단위</label>&nbsp;&nbsp;&nbsp;&nbsp;
-						<div style="width: 190px;" id="select-box2"></div>&nbsp;
-						
-						<button type="button" class="btn btn-dark btn-sm">조회</button>&nbsp;
-						<button type="button" class="btn btn-dark btn-sm">초기화</button>
-				  	</li>
-			    </ul>
-			    
-			</td>
-		</tr>
-	</table>
+	<br>
+	<form>
+		<table>
+			<tr>
+				<td>
+					<ul class="ul-style">
+					<li><label for="matCode" style="width:130px">제품 코드</label><input id="matCode" name="PRD_CD">
+					&nbsp;&nbsp;&nbsp;
+					<label for="matCode">제품명</label><input id="matCode" name="PRD_NM">
+					</li>
+					</ul>
+				</td>
+			</tr>
+			
+			<tr>
+				<td>
+					<ul class="ul-style">
+						<li class="d-flex">
+							<label style="width:110px">규격</label>&nbsp;&nbsp;&nbsp;
+							<div style="width: 190px;" id="select-box"></div>
+							
+							<label style="width:100px">
+							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;단위</label>&nbsp;&nbsp;&nbsp;&nbsp;
+							<div style="width: 190px;" id="select-box2"></div>&nbsp;
+							
+							<button type="button" class="btn btn-dark btn-sm">조회</button>&nbsp;
+							<input type="reset" class="btn btn-dark btn-sm" id="reset" name="reset">
+					  	</li>
+				    </ul>
+				    
+				</td>
+			</tr>
+		</table>
+	</form>
 	
 	<div id="grid"></div>
 	
@@ -70,21 +71,21 @@
 				        <div class="mb-3 row">
 							    <label for="staticEmail" class="col-sm-3 col-form-label">완제품 코드</label>
 							    <div class="col-sm-9">
-							      <input type="text" name="distributeCodeName" class="form-control" id="distributeCodeName">
+							      <input type="text" name="PRD_CD" class="form-control" id="distributeCodeName">
 							    </div>
 						</div>
 				        
 				        <div class="mb-3 row">
 							    <label for="staticEmail" class="col-sm-3 col-form-label">완제품 명</label>
 							    <div class="col-sm-9">
-							      <input type="text" name="distributeCodeName" class="form-control" id="distributeCodeName">
+							      <input type="text" name="PRD_NM" class="form-control" id="distributeCodeName">
 							    </div>
 						</div>
 				        
 				        <div class="mb-3 row">
 							    <label for="staticEmail" class="col-sm-3 col-form-label">규격</label>
 							    <div class="col-sm-9">
-							      <input type="text" name="distributeCodeName" class="form-control" id="distributeCodeName">
+							      <input type="text" name="PRD_STD" class="form-control" id="distributeCodeName">
 							    </div>
 						</div>
 						
@@ -126,36 +127,32 @@
 
 	<script>
 	const gridData = [ {
-	      no: '1',
-	      pdtcode: 'PRD-0001',
-	      pdtname: '만두1',
-	      weight : '20kg',
-	      unit : 'EA',
-	      safedepositnum : '1000',
+		  PRD_CD: 'PRD-0001',
+		  PRD_NM: '만두1',
+		  PRD_STD : '20kg',
+		  PRD_UN : 'EA',
+		  PRD_SFAMT : '1000',
 		  },
 		  {
-		  no: '2',
-		 pdtcode: 'PRD-0001',
-		 pdtname: '만두1',
-		 weight : '20kg',
-		 unit : 'EA',
-		 safedepositnum : '1000',
+		 PRD_CD: 'PRD-0001',
+		 PRD_NM: '만두1',
+		 PRD_STD : '20kg',
+		 PRD_UN : 'EA',
+		 PRD_SFAMT : '1000',
 		 },
 		 {
-		 no: '3',
-		 pdtcode: 'PRD-0001',
-		 pdtname: '만두1',
-		 weight : '20kg',
-		 unit : 'EA',
-		 safedepositnum : '1000',
+		 PRD_CD: 'PRD-0001',
+		 PRD_NM: '만두1',
+		 PRD_STD : '20kg',
+		 PRD_UN : 'EA',
+		 PRD_SFAMT : '1000',
 		 },
 	     {
-		 no: '4',
-		 pdtcode: 'PRD-0001',
-		 pdtname: '만두1',
-		 weight : '20kg',
-		 unit : 'EA',
-		 safedepositnum : '1000',
+		 PRD_CD: 'PRD-0001',
+		 PRD_NM: '만두1',
+		 PRD_STD : '20kg',
+		 PRD_UN : 'EA',
+		 PRD_SFAMT : '1000',
 		 },
 	];
 
@@ -164,26 +161,24 @@
 			data : gridData,
 			scrollX : true,
 			scrollY : false,
-			bodyHeight : 500,
+			bodyHeight : 480,
 			rowHeaders: ['checkbox'],
+			
 			columns : [ {
-				header : 'No',
-				name : 'no'
-			}, {
 				header : '완제품 코드',
-				name : 'pdtcode'
+				name : 'PRD_CD'
 			}, {
 				header : '완제품명',
-				name : 'pdtname'
+				name : 'PRD_NM'
 			}, {
 				header : '규격',
-				name : 'weight'
+				name : 'PRD_STD'
 			}, {
 				header : '단위',
-				name : 'unit'
+				name : 'PRD_UN'
 			}, {
 				header : '안전재고수량',
-				name : 'safedepositnum'
+				name : 'PRD_SFAMT'
 			} ],
 			showDummyRows : true
 		});
@@ -263,6 +258,18 @@
 			],
 			autofocus : true
 		});	
+		
+		//grid select box change
+		selectBox.on('change', ev => {
+			mtrStd.value=ev.curr.value;
+			  console.log(ev);
+		});
+		
+		//셀렉트 박스 초기화
+		 document.getElementsByName('reset')[0].addEventListener('click', function(){
+			    selectBox.deselect();
+			    selectBox2.deselect();
+		 })
 		
 		
     </script>
