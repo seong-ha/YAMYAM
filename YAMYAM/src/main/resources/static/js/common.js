@@ -54,3 +54,32 @@
 	var Grid = tui.Grid;
 	Grid.setLanguage('ko');
 	
+	
+	/*------------
+	// sweetAlert2 - confirm
+	@param msg='C/R/U/D'
+		   callBack = { // 모르겠으면 호출하세요
+		   Swal.fire('삭제/완료,수정가 완료되었습니다')};
+	----------------*/
+	
+	 function sweetConfirm(msg, callBack){
+		let msgA = {'C':'등록','R':'조회','U':'수정','D':'삭제'}
+
+		 Swal.fire({
+		      title: `정말로 ${msgA[msg]} 하시겠습니까?`,
+		      icon: 'warning',
+		      showCancelButton: true,
+		      confirmButtonColor: '#3085d6',
+		      cancelButtonColor: '#d33',
+		      confirmButtonText: '승인',
+		      cancelButtonText: '취소',
+		      //reverseButtons: true, // 버튼 순서 거꾸로
+		      
+		    }).then((result) => {
+		    if(result.isConfirmed){
+		     	callBack();
+		    }
+		     
+		     })
+		     
+	}

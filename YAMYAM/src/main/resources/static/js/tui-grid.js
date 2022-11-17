@@ -4566,7 +4566,7 @@ var messages = {
             beforeEq: 'Before or Equal',
             apply: 'Apply',
             clear: 'Clear',
-            selectAll: 'Select All',
+            selectAll: '전체',
             emptyValue: 'Empty Value',
         },
         contextMenu: {
