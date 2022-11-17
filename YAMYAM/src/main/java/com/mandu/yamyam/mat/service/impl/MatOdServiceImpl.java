@@ -1,6 +1,5 @@
 package com.mandu.yamyam.mat.service.impl;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -9,8 +8,6 @@ import org.springframework.stereotype.Service;
 
 import com.mandu.yamyam.mat.mapper.MatOdMapper;
 import com.mandu.yamyam.mat.service.MatOdService;
-import com.mandu.yamyam.mat.service.MatOdVO;
-import com.mandu.yamyam.mat.service.MatOddVO;
 
 @Service
 public class MatOdServiceImpl implements MatOdService {
@@ -18,49 +15,47 @@ public class MatOdServiceImpl implements MatOdService {
 	@Autowired
 	MatOdMapper mapper;
 
-	// 자재 목록 조회(일반 탭)
-	@Override
-	public List<MatOddVO> matList() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	// 업체 목록 조회(일반 탭)
-	@Override
-	public List<MatOddVO> actList() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 	// 전체조회(일반 탭)
 	@Override
 	public List<Map<String, Object>> matOrderList() {
 		return mapper.matOrderList();
 	}
 
+	// 돋보기 자재목록 모달
 	@Override
-	public MatOdVO matOrderFilter() {
-		// TODO Auto-generated method stub
-		return null;
+	public List<Map<String, Object>> matList() {
+		return mapper.matList();
 	}
 
+	// 돋보기 업체목록 모달
 	@Override
-	public Map insertMatOrder() {
-		// TODO Auto-generated method stub
-		return null;
+	public List<Map<String, Object>> actList() {
+		return mapper.actList();
 	}
 
+	// 필요자재조회(생산계획 탭)
 	@Override
-	public Map deleteMatOrder() {
-		// TODO Auto-generated method stub
-		return null;
+	public List<Map<String, Object>> needMatList() {
+		return mapper.needMatList();
 	}
 	
-	public Map getResult(int count, MatOdVO matVO) {
-		Map<String, Object> result = new HashMap<String,Object>();
-		result.put("result", count);
-		result.put("data", matVO);
-		return result;
+	// 신규생산계획조회(생산계획서용 탭)
+	@Override
+	public List<Map<String, Object>> newPlanList() {
+		return mapper.newPlanList();
 	}
+
+	// 신규 생산 계획서 모델 선택 모달창(생산계획서용 탭)
+	@Override
+	public List<Map<String, Object>> addNewPlan() {
+		return mapper.addNewPlan();
+	}
+	
+	// 자재발주 전체리스트(생산계획서용 탭)
+	@Override
+	public List<Map<String, Object>> odMatList() {
+		return mapper.odMatList();
+	}
+	
 
 }

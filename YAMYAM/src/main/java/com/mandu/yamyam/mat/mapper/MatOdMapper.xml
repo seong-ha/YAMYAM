@@ -7,11 +7,65 @@
 	<!-- 전체조회(일반 탭) -->
 	<select id="matOrderList"
 		resultType="map">
-		SELECT O.M_OD_CD, D.M_CD, C.NAME, D.M_ODD_MN, D.M_ODD_AMT, O.M_SUM, A.NAME,O.M_OD_DD, D.M_ODD_DATE
+		SELECT O.M_OD_CD, D.MTR_CD, C.MTR_NM, TO_CHAR(D.M_ODD_MN, '999,999') AS "M_ODD_MN", D.M_ODD_AMT, 
+		TO_CHAR(O.M_SUM, '999,999,999') AS "M_SUM", A.ACT_NM, TO_CHAR(O.M_OD_DD, 'yyyy-MM-dd') as "M_OD_DD",
+		TO_CHAR(D.M_ODD_DATE,'yyyy-MM-dd') as "M_ODD_DATE"
 		FROM M_OD O 
 		JOIN M_ODD D ON O.M_OD_CD = D.M_OD_CD
-		JOIN C_MTR C ON D.M_CD = C.MTR_CD
+		JOIN C_MTR C ON D.MTR_CD = C.MTR_CD
 		JOIN C_ACTCD A ON D.ACT_CD = A.ACT_CD
 	</select>
 	
+	<!-- 자재목록 모달 -->
+	<select id="matList" resultType="map">
+		SELECT D.MTR_CD, M.MTR_NM, M.MTR_STD, I.M_SAMT
+		FROM C_MTR M
+		JOIN M_ODD D ON M.MTR_CD = D.MTR_CD
+		JOIN M_IN I ON M.MTR_CD = I.MTR_CD
+	</select>
+	
+	<!-- 업체목록 모달 -->
+	<select id="actList" resultType="map">
+		SELECT ACT_CD, ACT_NM
+		FROM C_ACTCD
+	</select>
+	
+	<!-- 신규생산계획조회 -->
+	<select id="newPlanList" resultType="map">
+		SELECT D.PLAND_CD, D.PRD_CD, P.PRD_NM, 
+			   D.PPLND_AMT, TO_CHAR(B.DE_DATE, 'yyyy-MM-dd') AS "DE_DATE"
+		FROM P_PLND D
+		JOIN C_PRD P ON D.PRD_CD = P.PRD_CD
+		JOIN B_POD B ON B.PRD_CD = P.PRD_CD
+	</select>
+	
+	<!-- 필요자재 리스트 -->
+	<select id="needMatList" resultType="map">
+		SELECT M.MTR_CD, M.MTR_NM, B.BOM_AMT
+		FROM C_MTR M
+		JOIN C_BOM B ON M.MTR_CD = B.MTR_CD
+	</select>
+	
+	<!-- 신규 생산 계획서 모델 선택 모달창 -->
+	<select id="addNewPlan" resultType="map">
+		SELECT D.PPLN_CD, P.PPLN_NAME, TO_CHAR(P.PPLN_DAYS, 'yyyy-MM-dd') AS PPLN_DAYS,
+									   TO_CHAR(B.DE_DATE, 'yyyy-MM-dd') AS DE_DATE
+		FROM P_PLND D
+		JOIN P_PLN P ON D.PPLN_CD = P.PPLN_CD
+		JOIN B_POD B ON B.PRD_CD = P.PRD_CD
+	</select>
+	
+	<!-- 자재발주 전체리스트(생산계획서용 탭) -->
+	<select id="odMatList" resultType="map">
+		SELECT M.MTR_CD, M.MTR_NM, D.M_ODD_MN, D.M_ODD_AMT, (D.M_ODD_MN*D.M_ODD_AMT) AS "SUM_PRICE"
+	        , A.ACT_NM
+	        , TO_CHAR(O.M_OD_DD,'YYYY-MM-DD') AS "M_OD_DD" 
+	        , TO_CHAR(D.M_ODD_DATE,'YYYY-MM-DD') AS "M_ODD_DATE"
+		FROM C_MTR M JOIN M_ODD D
+		       ON (M.MTR_CD = D.MTR_CD)
+		    JOIN M_OD O
+		       ON (D.M_OD_CD = O.M_OD_CD)
+		    JOIN C_ACTCD A
+		       ON (D.ACT_CD = A.ACT_CD)
+	</select>
 </mapper>

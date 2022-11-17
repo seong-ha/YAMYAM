@@ -3,31 +3,26 @@ package com.mandu.yamyam.mat.mapper;
 import java.util.List;
 import java.util.Map;
 
-import com.mandu.yamyam.mat.service.MatOdVO;
-
 public interface MatOdMapper {
 	
-	// 자재 목록 조회(일반 탭)
-	public Map<String, Object> matList();
-	
-	// 업체 목록 조회(일반 탭)
-	public Map<String, Object> actList();
-
 	// 전체조회(일반 탭)
 	public List<Map<String, Object>> matOrderList();
 	
-	// 조건조회(일반 탭)
-	public MatOdVO matOrderFilter();
+	// 돋보기 자재목록 모달
+	public List<Map<String, Object>> matList();
 	
-	// 추가(일반 탭)
-	public Map insertMatOrder(MatOdVO matVO);
+	// 돋보기 업체목록 모달
+	public List<Map<String, Object>> actList();
 	
-	// 삭제(일반 탭)
-	public Map deleteMatOrder(MatOdVO matVO);
+	// 필요자재조회(생산계획 탭)
+	public List<Map<String, Object>> needMatList();
 	
-	// 신규 생산 계획 전체조회(생산계획서용 탭)
+	// 신규생산계획조회(생산계획서용 탭)
+	public List<Map<String, Object>> newPlanList();
 	
-	// 필요 자재 전체조회(생산계획서용 탭)
+	// 신규 생산 계획서 모델 선택 모달창(생산계획서용 탭)
+	public List<Map<String, Object>> addNewPlan();
 	
-	// 자재 발주 전체조회(생산계획서용 탭)
+	// 자재발주 전체리스트(생산계획서용 탭)
+	public List<Map<String, Object>> odMatList();
 }
