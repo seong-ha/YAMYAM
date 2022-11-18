@@ -50,4 +50,8 @@ public class OrdController {
 	}
 	
 	// 제품 안전 재고 관리
+	@RequestMapping("/prdSfamtAd")
+	public String prdSfamtAd(Model model) {
+		return "order/prdSfamtAd";
+	}
 }

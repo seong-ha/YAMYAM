@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{/layout/layout}">
+<head>
+<meta charset="UTF-8">
+<title>YAMYAM</title>
+
+<style>
+#od-btn {
+	display: inline-block; margin: 0 5px; float: right;
+}
+</style>
+</head>
+<body>
+<div class="container" layout:fragment="content">
+	<div id="od-title">
+		<h3>제품 안전 재고 관리</h3>
+	</div>
+	
+	<div id="prdSfamtAd-content">
+      <div id="input-group">
+         <ul class="ul-style">
+		     <li><label for="prdCd">제품명</label><input type="text" 
+				          data-bs-toggle="modal" data-bs-target="#prdModal" id="prdCd">
+				          <img class="Magnifying-Glass-img" alt="image" src="../images/Magnifying_Glass.png">
+				          <input type="text" class="back" readonly id="prdCd2">
+					<button class="btn btn-dark btn-sm">조회</button>
+					<button  class="btn btn-dark btn-sm">초기화</button></li>
+               </ul>
+			</div>
+		</div>
+
+
+	 <!-- 제품명 Modal -->
+      <div class="modal" id="prdModal" tabindex="-1"
+         aria-labelledby="exampleModalLabel" aria-hidden="true">
+         <div class="modal-dialog">
+            <div class="modal-content">
+               <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLabel">제품 목록</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal"
+                     aria-label="Close"></button>
+               </div>
+               <div class="modal-body">
+               <div id="prdModalGrid"></div>
+               </div>
+            </div>
+         </div>
+      </div>
+	      
+	      
+	<div id="od-btn">
+	<button class="btn btn-dark btn-sm" id="saveBtn">저장</button>
+	</div>
+	
+<div id="prdListGrid"></div>
+
+<script>
+
+	/*------------
+	// function
+	----------------*/
+	searchBtnHandler();
+	cancelBtnHandler();
+
+	let prdListGrid = prdListGridInit();
+	let prdModalGrid = prdGridInit();
+	
+	
+	/*------------
+	// 검색버튼 이벤트 핸들러
+	----------------*/
+	function searchBtnHandler(){
+		$('#searchBtn').on('click',function(){
+			let getprdName = $("prdCd").val();
+		});
+	}
+   
+	
+   /*------------
+	// 주문 조회 초기화 버튼
+	----------------*/
+	function cancelBtnHandler(){
+		$('#cancelBtn').on('click',function(){
+			$("prdCd").val("");
+		});	
+	}
+   
+   
+    /*------------
+	// 안전재고 리스트 그리드
+	----------------*/	
+	function prdListGridInit(){
+		let prdListGrid = new tui.Grid({
+		    el: document.getElementById('prdListGrid'),
+		    data: [
+		        {
+		        	prdCd : 'MD-00200',
+		        	prdNm : '얇은피 김치만두',
+		        	allSAmt : 2000,
+		        	prdSfamt : 400,
+		        	prdSfamtSts : '경고'
+		        }
+		        ],
+		    rowHeaders: ['rowNum'],
+		    scrollX: false,
+		    scrollY: false,
+		    columns: [
+		      {
+		        header: '제품 코드',
+		        name: 'prdCd'
+		      },
+		      {
+		        header: '제품명',
+		        name: 'prdNm'
+		      },
+		      {
+		        header: '총 재고량',
+		        name: 'allSAmt'
+		      },
+		      {
+		        header: '안전 재고',
+		        name: 'prdSfamt'
+		      },
+		      {
+		        header: '안전 재고 수준',
+		        name: 'prdSfamtSts'
+		      }
+		    ]
+		  });
+			return prdListGrid;
+    }
+
+   
+	/*------------
+	// 제품명 Modal
+	----------------*/
+	function prdGridInit() {
+		let prdModalGrid = new tui.Grid({
+		    el: document.getElementById('prdModalGrid'),
+		    data: [
+		        {
+		        	prdCd : 'MD-00100',
+		        	prdNm : '얇은피 고기만두',
+		        	won : '1000'
+		        }
+		        ],
+		    rowHeaders: ['rowNum'],
+		    scrollX: false,
+		    scrollY: false,
+		    columns: [
+		      {
+		        header: '제품코드',
+		        name: 'prdCd'
+		      },
+		      {
+		        header: '제품명',
+		        name: 'prdNm'
+		      },
+		      {
+		        header: '단가 (원)',
+		        name: 'won'
+		      }
+		    ]
+		  });
+		  	return prdModalGrid;
+		}	
+	
+	
+	/*------------
+	// 제품명 모달 클릭
+	----------------*/
+	$('#prdCd').on('click',function(){
+		prdModalGrid.refreshLayout();
+	});
+	
+	
+	 /*------------
+	// 제품명 모달 데이터 가져오기
+	----------------*/
+   		prdModalGrid.on('click', ev => {
+	   let rowData = prdModalGrid.getRow(ev.rowKey); // 거래처클릭한 그리드
+	   
+	   let cdVal = rowData['prdCd'];
+	   let nmVal = rowData['prdNm'];
+	   
+	   $('#prdCd').val(cdVal);
+	   $('#prdCd2').val(nmVal);
+	   
+	   $('#prdModal').modal("hide");
+   })	
+
+	
+</script>
+</div>
+</body>
+</html>
