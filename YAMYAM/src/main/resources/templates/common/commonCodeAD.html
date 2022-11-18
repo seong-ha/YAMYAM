@@ -49,8 +49,8 @@
 
 					<div align="right">
 
-						<button type="button" class="btn btn-dark btn-sm">코드 추가</button>
-						<button type="button" class="btn btn-dark btn-sm">저장</button>
+						<button type="button" class="btn btn-dark btn-sm" id="addCode">코드 추가</button>
+						<button type="button" class="btn btn-dark btn-sm" id="saveCode">저장</button>
 					</div>
 
 
@@ -250,21 +250,24 @@
 					name : 'COMMD_CD',
 					sortingType: 'desc',
 			        sortable: true,
-			        align: 'center'
+			        align: 'center',
+			        editor: 'text'
 				},
 				{
 					header : '상세 공통 이름',
 					name : 'COMMD_NM',
 					sortingType: 'desc',
 			        sortable: true,
-			        align: 'center'
+			        align: 'center',
+			        editor: 'text'
 				},
 				{
 					header : '상세 공통 내용',
 					name : 'COMMD_INFO',
 					sortingType: 'desc',
 			        sortable: true,
-			        align: 'center'
+			        align: 'center',
+			        editor: 'text'
 				},
 				{
 					
@@ -297,17 +300,30 @@
 	         if(event.keyCode == 13){
 	        	 grid.filter('COMM_CD', [{code: 'eq', value: commSearch.value}]);
 	        	 searchEmpName.value = '';
-	        	
 	         }
 	     });
 		
-		//초기화 버튼 누를시 다시 데이터 원상복구
+		// 초기화 버튼 누를시 다시 데이터 원상복구
 	     
 	    document.getElementById("commreset").addEventListener('click', function(){
 	    	grid.unfilter('COMM_CD', [{code: 'eq', value: commSearch.value}]);
        	 	searchEmpName.value = '';
 	     });
 
+		// 코드조회에 코드 추가
+		
+		document.getElementById("addCode").addEventListener('click', function(){
+		let rowData = [{COMMD_CD: "", COMMD_NM: "", COMMD_INFO: "", COMMD_USE: ""}];
+		grid2.appendRow(rowData);
+		});
+		
+		// 저장버튼(미구현)
+		
+		document.getElementById('saveCode').addEventListener('click', function(){
+		let rowData = [{COMMD_CD: "", COMMD_NM: "", COMMD_INFO: "", COMMD_USE: ""}];
+		
+		})
+		
 	</script>
 
 </div>

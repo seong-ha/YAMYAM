@@ -84,10 +84,6 @@ width:80%;	display: inline;
 			               		<h4 align="center"><b>거래처 검색</b></h4>
 			               		<br>
 			               		
-			               		설비명&nbsp;<input type="text">
-			               		<button type="button" class="btn btn-dark btn-sm"
-			                     data-bs-dismiss="modal">조회</button>
-			                  	<button type="button" class="btn btn-dark btn-sm">초기화</button>
 			               		<div id="modalGrid1"></div>
 			               		
 			               		<br>
@@ -313,10 +309,12 @@ width:80%;	display: inline;
 		  }) 
 		
 		
-		//모달창 리프레시(모달창에 그리드 화면 띄울때 써야함!)
+		// 모달창 리프레시(모달창에 그리드 화면 띄울때 써야함!)
 	     exampleModal.addEventListener('shown.bs.modal', () => {
 	            grid2.refreshLayout(); //모달창 새로고침
-	       })
+	     })
+	       
+ 
 	</script>
 
 </div>

@@ -495,8 +495,6 @@
 	
 	//직원 이름 검색 기능     
 	
-	 grid.findRows({EMP_NM : searchEmpName.value});
-	
      document.getElementById('searchBtn').addEventListener('click', function(){
     	grid.filter('EMP_NM', [{code: 'eq', value: searchEmpName.value}]);
      
