@@ -6,104 +6,199 @@
 <div class="container" layout:fragment="content">
 
 
-	거래처코드관리
+	<br>
+	<h2>거래처 코드관리</h2>
+	<hr>
+	<br>
+	<form action="#">
+		<table>
+			<tr>
+				<td>
+					<ul class="ul-style">
+					<li><label for="matCode" style="width:130px">거래처 업체명</label><input id="matCode" name="ACT_NM">
+					&nbsp;&nbsp;&nbsp;
+					<label for="matCode">거래처 코드</label><input id="matCode" name="ACT_CD">
+					</li>
+					</ul>
+				</td>
+			</tr>
+		
+			<tr>
+				<td>
+					<ul class="ul-style">
+					<li><label for="matCode" style="width:130px">사업자 등록번호</label><input id="matCode" name="ACT_NUM">
+					&nbsp;&nbsp;&nbsp;
+					<label for="matCode" style="width:100px">전화번호</label><input id="matCode" name="ACT_TEL">
+					</li>
+				</ul>
+				</td>
+			</tr>
+			
+			<tr>
+				<td>
+					<ul class="ul-style">
+					<li class="d-flex">
+					  <label for="matCode" style="width:130px">거래처 구분</label>
+					  <input id="matCode" name="ACT_DIV">	&nbsp;&nbsp;&nbsp;
+					  <label style="width:110px">&nbsp;&nbsp;거래상태</label>
+					  <div style="width: 190px;" id="select-box"></div>
+					  <div align="right">&nbsp;&nbsp;
+						  <button type="button" class="btn btn-dark btn-sm">구매 거래처 등록</button>&nbsp;
+						  <button type="button" class="btn btn-dark btn-sm">거래처 수정</button>&nbsp;
+						  <input type="reset" class="btn btn-dark btn-sm" id="reset" name="reset">
+					  </div>
+					</li>
+				</ul>
+				</td>
+			</tr>
+				
+		</table>
+	</form>
+	
 	
 	<div id="grid"></div>
-
+	
+	<br>
+	
 	<script>
 		const gridData = [ {
-      no: '1',
-      emp_no: '1100',
-      emp_name: '홍길동',
-      hire_date : '2002/07/05',
-      id : 'no',
-      dept_name : '영업부',
-      role : '0'
-		},
-    {
-      no: '2',
-      emp_no: '1101',
-      emp_name: '김길동',
-      hire_date : '2008/02/05',
-      id : 'no',
-      dept_name : '영업부',
-      role : '0'
-		},
-    {
-      no: '3',
-      emp_no: '1123',
-      emp_name: '홍길동',
-      hire_date : '2002/07/05',
-      id : 'no',
-      dept_name : '영업부',
-      role : '0'
-		},
-    {
-      no: '4',
-      emp_no: '1154',
-      emp_name: '황길동',
-      hire_date : '2003/11/15',
-      id : 'no',
-      dept_name : '영업부',
-      role : '0'
-		},
-    {
-      no: '5',
-      emp_no: '1199',
-      emp_name: '최길동',
-      hire_date : '2006/07/05',
-      id : 'no',
-      dept_name : '영업부',
-      role : '0'
-		},
-    {
-      no: '6',
-      emp_no: '1207',
-      emp_name: '홍길동',
-      hire_date : '2002/04/25',
-      id : 'no',
-      dept_name : '영업부',
-      role : '0'
-		},
-    {
-      no: '7',
-      emp_no: '1500',
-      emp_name: '홍길동',
-      hire_date : '2004/03/05',
-      id : 'no',
-      dept_name : '영업부',
-      role : '0'
-		},
+		  ACT_NM: 'HS-001',
+		  ACT_CD: 'VDR-10001',
+		  ACT_NUM : '300014-141',
+		  ACT_TEL : '02-123-1234',
+		  ACT_DIV : '자재',
+		  ACT_STS : '0'
+	  
+	  },
+	  {
+		  ACT_NM: 'HS-001',
+		  ACT_CD: 'VDR-10001',
+		  ACT_NUM : '300014-141',
+		  ACT_TEL : '02-123-1234',
+		  ACT_DIV : '자재',
+		  ACT_STS : '0'
+		  
+	  },
+	  {
+		  ACT_NM: 'HS-001',
+		  ACT_CD: 'VDR-10001',
+		  ACT_NUM : '300014-141',
+		  ACT_TEL : '02-123-1234',
+		  ACT_DIV : '자재',
+		  ACT_STS : '0'
+		  
+	  }
+    
   ];
+		
+		// 렌더링 에디터 (라디오박스)
+		
+		 class CustomSliderRenderer {
+	      constructor(props) {
+	        const el = document.createElement('div');
+	        el.innerHTML = `<input type ="radio" value="1" name="use">yes &nbsp;&nbsp;&nbsp;&nbsp;
+	        <input type ="radio" value="2" name="use">no`;
+	        this.el=el;
+	        this.render(props);
+	      }
+
+	      getElement() {
+	        return this.el;
+	      }
+
+	      render(props) {
+	        this.el.value = String(props.value);
+	      }
+	    }
+		
 
 		const grid = new tui.Grid({
 			el : document.getElementById('grid'),
-			data : gridData,
-			scrollX : false,
+			data : gridData.slice(0, 6),
+		    bodyHeight: 450,
+			scrollX : true,
 			scrollY : false,
+			rowHeaders: ['rowNum'],
 			columns : [ {
-				header : 'No',
-				name : 'no'
+				header : '거래처 업체명',
+				name : 'ACT_NM',
+				sortingType: 'desc',
+		        sortable: true,
+		        align: 'center',
+		        editor: 'text'
 			}, {
-				header : '직원고유번호',
-				name : 'emp_no'
+				header : '거래처 코드',
+				name : 'ACT_CD',
+				sortingType: 'desc',
+		        sortable: true,
+		        align: 'center',
+		        editor: 'text'
 			}, {
-				header : '직원이름',
-				name : 'emp_name'
+				header : '사업자 등록번호',
+				name : 'ACT_NUM',
+				sortingType: 'desc',
+		        sortable: true,
+		        align: 'center',
+		        editor: 'text'
 			}, {
-				header : '입사일',
-				name : 'hire_date'
+				header : '전화번호',
+				name : 'ACT_TEL',
+				sortingType: 'desc',
+		        sortable: true,
+		        align: 'center',
+		        editor: 'text'
 			}, {
-				header : '계정아이디',
-				name : 'id'
+				header : '거래처구분',
+				name : 'ACT_DIV',
+				sortingType: 'desc',
+		        sortable: true,
+		        align: 'center',
+		        editor: 'text'
 			}, {
-				header : '부서명',
-				name : 'dept_name'
+				header : '거래 상태',
+				name : 'ACT_STS',
+				sortingType: 'desc',
+		        sortable: true,
+		        align: 'center',
+		        renderer: {
+			    type: CustomSliderRenderer,
+			            
+			    } 
+			}, 
+		],
+		showDummyRows: true
+	});
+		
+	// 렌더링 에디터 (라디오박스)
+		
+	   grid.resetData(gridData);
+	
+	// toast - select box
+	
+	var selectBox = new tui.SelectBox('#select-box', {
+			placeholder : '거래상태',
+			data : [ {
+				label : 'Yes',
+				value : 'Yes' // 코드 바꾸기
 			}, {
-				header : '직급정보',
-				name : 'role'
-			}, ]
+				label : 'No',
+				value : 'No'
+			} ],
+			autofocus : true
 		});
+	
+	
+	//grid select box change
+	selectBox.on('change', ev => {
+		mtrStd.value=ev.curr.value;
+		  console.log(ev);
+		});
+	
+	
+	//셀렉트 박스 초기화
+	 document.getElementsByName('reset')[0].addEventListener('click', function(){
+		    selectBox.deselect();
+	 }) 
     </script>
     
 </div>

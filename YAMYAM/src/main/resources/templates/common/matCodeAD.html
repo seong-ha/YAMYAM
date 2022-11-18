@@ -31,58 +31,99 @@ width:80%;	display: inline;
 			</div>
 
 			<div class="col-5">
-				<div id="gird2"></div>
-
+			<form action="">
 
 				<b>자재 정보 표시</b>
 				<hr>
 
-				<span class="mb-3 row"> <label for="staticEmail"
-					class="col-sm-3 col-form-label" style="width: 100px">자재 코드</label>
-					<span class="col-sm-4"> <input type="text"
-						name="distributeCodeName" class="form-control"
-						id="distributeCodeName">
-
-					</span> 
-				<label for="staticEmail" class="col-sm-3 col-form-label"
-					style="width: 80px">자재명</label> <span class="col-sm-4"> <input
-						type="text" name="distributeCodeName" class="form-control"
-						id="distributeCodeName">
-				</span>
-
-				</span>
+				<div id="input-group">
+					<ul class="ul-style">
+						<li><label for="matCode">자재코드</label>
+						<input id="matCode" name="MTR_CD">
+						&nbsp;&nbsp;&nbsp;
+						<label for="matCode" style="width:80px">자재명</label>
+						<input id="matCode" name="MTR_NM">
+						</li>
+					</ul>
+					
+				</div>
+				
 				<hr>
 				
 				<div class="mb-3 row">
-					<label class="col-sm-2">규격</label><span class="col-sm-4" style="width: 190px;" id="select-box"></span>
-					<label class="col-sm-2">&nbsp;&nbsp;작업단위</label><span class="col-sm-4" style="width: 190px;" id="select-box2"></span>
+					<!-- 히든값 보내는거 해봐야함 -->
+					<input type="hidden" name="mtrStd"  id="mtrStd">
+					<label class="col-sm-2">&nbsp;규격</label>
+					<span class="col-sm-4" style="width: 195px;" id="select-box"></span>
+					<label class="col-sm-2">작업단위</label>
+					<span class="col-sm-4" style="width: 185px;" id="select-box2"></span>
 				</div>
 				<hr>
 				
-				<div id="od-container">
-				<span class="mb-3 row"> <label for="staticEmail"
-					class="col-sm-3 col-form-label" style="width: 100px">자재 코드</label>
-					<span class="col-sm-4"> 
-					<input type="text" name="distributeCodeName" class="form-control" id="distributeCodeName">
-					<img class="Magnifying-Glass-img" alt="image" src="../images/Magnifying_Glass.png">
-					</span>
-				</span>
-				</div>
-				<hr>
+				<ul class="ul-style">
+					<li><label for="matNm">자재명</label><input id="matNm" name="MTR_NM" readonly>
+						<img id="matNm" class="Magnifying-Glass-img" alt="image"
+							 data-bs-toggle="modal" data-bs-target="#exampleModal"
+							 src="../images/Magnifying_Glass.png" >
+						<input type="text" name="ACT_NM"readonly>
+					</li>
+				</ul>
 				
+				<!-- Modal -->
+			      <div class="modal fade" id="exampleModal" tabindex="-1"
+			         aria-labelledby="exampleModalLabel" aria-hidden="true">
+			         <div class="modal-dialog">
+			            <div class="modal-content">
+			               <div class="modal-header">
+			                  <h4 class="modal-title" id="exampleModalLabel">거래처 코드 목록</h4>
+			                  <button type="button" class="btn-close" data-bs-dismiss="modal"
+			                     aria-label="Close"></button>
+			               </div>
+			               <div class="modal-body">
+			               <br>
+			               		<h4 align="center"><b>거래처 검색</b></h4>
+			               		<br>
+			               		
+			               		설비명&nbsp;<input type="text">
+			               		<button type="button" class="btn btn-dark btn-sm"
+			                     data-bs-dismiss="modal">조회</button>
+			                  	<button type="button" class="btn btn-dark btn-sm">초기화</button>
+			               		<div id="modalGrid1"></div>
+			               		
+			               		<br>
+			               		<div id="grid2"></div>
+			               			
+			               
+			               </div>
+			            </div>
+			         </div>
+			      </div>
+				
+				<hr>
+
 				<div class="mb-3 row">
-					<label class="col-sm-2">제품구분</label><span class="col-sm-4" style="width: 190px;" id="select-box3"></span>
-					<label class="col-sm-2">안전재고</label><span class="col-sm-4" style="width: 190px;"><input type="text"></span>
+					<label class="col-sm-2" style="width:100px">&nbsp;안전재고</label>&nbsp;
+					<span class="col-sm-4" style="width: 190px;"><input type="text" name="MTR_SFAMT"></span>
 				</div>
 				
+				<hr>
 				
-				
-				
-								
-				
-
-
-
+				사용 유무&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+					<div class="form-check form-check-inline">
+					  <input class="form-check-input" type="radio" name="MTR_USE" id="inlineRadio1" value="option1">
+					  <label class="form-check-label" for="inlineRadio1">YES</label>
+					</div>
+					<div class="form-check form-check-inline">
+					  <input class="form-check-input" type="radio" name="MTR_USE" id="inlineRadio2" value="option2">
+					  <label class="form-check-label" for="inlineRadio2">NO</label>
+					</div>
+					
+				<hr>
+					<div align="right">
+					<button type="button" class="btn btn-dark btn-sm">저장</button>&nbsp;
+					<input type="reset" class="btn btn-dark btn-sm" id="reset" name="reset">
+					</div>
+				</form>
 			</div>
 
 		</div>
@@ -91,64 +132,108 @@ width:80%;	display: inline;
 	</div>
 
 
-
 	<script>
 		const gridData = [ {
-			no : '1',
-			matcode : 'HS-001',
-			matname : '고기',
-			standard : '50kg',
-			workunit : 'BOX',
-			safeamount : '1000',
-			matdivision : '원자재'
+			MTR_CD : 'HS-001',
+			MTR_NM : '고기',
+			MTR_STD : '50kg',
+			MTR_UN : 'BOX',
+			MTR_SFAMT : '1000',
+			MTR_STS : '원자재'
 		}, {
-			no : '2',
-			matcode : 'HS-001',
-			matname : '고기',
-			standard : '50kg',
-			workunit : 'BOX',
-			safeamount : '1000',
-			matdivision : '원자재'
+			MTR_CD : 'HS-001',
+			MTR_NM : '고기',
+			MTR_STD : '50kg',
+			MTR_UN : 'BOX',
+			MTR_SFAMT : '1000',
+			MTR_STS : '원자재'
 		}, {
-			no : '3',
-			matcode : 'HS-001',
-			matname : '고기',
-			standard : '50kg',
-			workunit : 'BOX',
-			safeamount : '1000',
-			matdivision : '원자재'
+			MTR_CD : 'HS-001',
+			MTR_NM : '고기',
+			MTR_STD : '50kg',
+			MTR_UN : 'BOX',
+			MTR_SFAMT : '1000',
+			MTR_STS : '원자재'
 		}
 
+		];
+		
+		const gridData2 = [ {
+			ACT_CD : 'LHS1005',
+			ACT_NM : '만두머신-4',
+			ACT_NUM : '477001-20',
+			ACT_TEL : '053-555-1881'
+		},
+		{
+			ACT_CD : 'LHS1005',
+			ACT_NM : '만두머신-4',
+			ACT_NUM : '477001-20',
+			ACT_TEL : '053-555-1881'
+		},
+		{
+			ACT_CD : 'LHS1005',
+			ACT_NM : '만두머신-4',
+			ACT_NUM : '477001-20',
+			ACT_TEL : '053-555-1881'
+		},{
+			ACT_CD : 'LHS1005',
+			ACT_NM : '만두머신-4',
+			ACT_NUM : '477001-20',
+			ACT_TEL : '053-555-1881'
+		}
 		];
 
 		const grid = new tui.Grid({
 			el : document.getElementById('grid'),
 			data : gridData.slice(0, 6),
+			bodyHeight : 550,
+			scrollX : true,
+			scrollY : false,
+			rowHeaders: ['rowNum'],
+			
+			columns : [ {
+				header : '자재 코드',
+				name : 'MTR_CD'
+			}, {
+				header : '자재명',
+				name : 'MTR_NM'
+			}, {
+				header : '규격',
+				name : 'MTR_STD'
+			}, {
+				header : '작업단위',
+				name : 'MTR_UN'
+			}, {
+				header : '안전 재고 수량',
+				name : 'MTR_SFAMT'
+			}, {
+				header : '제품구분',
+				name : 'MTR_STS'
+			} ],
+			showDummyRows : true
+		});
+		
+		const grid2 = new tui.Grid({
+			el : document.getElementById('grid2'),
+			data : gridData2.slice(0, 6),
 			bodyHeight : 600,
 			scrollX : true,
 			scrollY : false,
+			rowHeaders: ['rowNum'],
 			columns : [ {
-				header : 'No',
-				name : 'no'
+				header : '거래처 코드',
+				name : 'ACT_CD'
 			}, {
-				header : '자재 코드',
-				name : 'matcode'
+				header : '거래처 업체명',
+				name : 'ACT_NM'
 			}, {
-				header : '자재 명',
-				name : 'matname'
+				header : '사업자등록번호',
+				name : 'ACT_NUM'
 			}, {
-				header : '규격',
-				name : 'standard'
-			}, {
-				header : '작업단위',
-				name : 'workunit'
-			}, {
-				header : '안전재고',
-				name : 'safeamount'
-			}, {
-				header : '제품구분',
-				name : 'matdivision'
-			} ],
+				header : '전화번호',
+				name : 'ACT_TEL'
+			}
+			],
 			showDummyRows : true
 		});
 
@@ -197,21 +282,41 @@ width:80%;	display: inline;
 			}, {
 				label : 'EA',
 				value : 'EA'
-			} ],
+			},
+			{
+				label : 'BUNDLE',
+				value : 'BUNDLE'
+			}
+			],
 			autofocus : true
 		});
 		
-		var selectBox3 = new tui.SelectBox('#select-box3', {
-			placeholder : '단위',
-			data : [ {
-				label : '원자재',
-				value : '원자재' // 코드 바꾸기
-			}, {
-				label : '반제품',
-				value : '반제품'
-			} ],
-			autofocus : true
-		});
+		//grid select box change
+		selectBox.on('change', ev => {
+			mtrStd.value=ev.curr.value;
+			  console.log(ev);
+			});
+		
+		selectBox2.on('change', ev => {
+			mtrStd.value=ev.curr.value;
+			  console.log(ev);
+			});
+		
+		/*
+		1. 초기화 버튼에 클릭이벤트를 건다.
+		2. selectBox.deselect()를 해준다.
+		*/
+		
+		 document.getElementsByName('reset')[0].addEventListener('click', function(){
+		    selectBox.deselect();
+		    selectBox2.deselect();
+		  }) 
+		
+		
+		//모달창 리프레시(모달창에 그리드 화면 띄울때 써야함!)
+	     exampleModal.addEventListener('shown.bs.modal', () => {
+	            grid2.refreshLayout(); //모달창 새로고침
+	       })
 	</script>
 
 </div>

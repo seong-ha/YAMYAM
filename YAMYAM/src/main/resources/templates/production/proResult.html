@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{/layout/layout}">
+
+<head>
+<meta charset="UTF-8">
+<title>YAMYAM</title>
+<style>
+
+</style>
+</head>
+
+<body>
+	<!-- 본문 시작 -->
+	<div layout:fragment="content" class="container">
+	<div class="row">
+		<h3>공정 실적 조회</h3>
+		<table style="width: 100%;">
+			<tr>
+				<td style="width: 140px;">생산 지시 코드 &nbsp;</td>
+				<td><input type="text" name="orderCd" id="orderCd"></td>
+			</tr>
+			<tr>
+				<td style="width: 140px;">공정명 &nbsp;</td>
+				<td><input type="text" name="prName" id="prName"></td>
+			</tr>
+			<tr>
+				<td style="width: 140px;">불량분류 &nbsp;</td>
+				<td>
+					<select id="eList" name="eList">
+					    <option value="ERR-PRO-001" selected>불량없음</option>
+					    <option value="ERR-PRO-002">이물질 혼입</option>
+					    <option value="ERR-PRO-003">자재초과</option>	
+					    <option value="ERR-PRO-004">자재부족</option>	
+					    <option value="ERR-PRO-005">증숙불량</option>	
+					    <option value="ERR-PRO-006">동결불량</option>	
+					    <option value="ERR-PRO-007">포장불량</option>	
+					    <option value="ERR-PRO-008">제품모양불량</option>										
+					</select>
+				</td>
+			</tr>
+			
+			<tr>
+				<td style="width: 80px">계획일자 &nbsp;</td>
+				<td>
+					<!-- date-picker -->
+					<div id ="modalDate"
+						class="tui-datepicker-input tui-datetime-input tui-has-focus">
+						<input id="startpicker-input" type="text" aria-label="Date">
+						<span class="tui-ico-date"></span>
+						<div id="startpicker-container" style="margin-left: -1px;"></div>
+					</div> <span>-</span>
+					<div
+						class="tui-datepicker-input tui-datetime-input tui-has-focus">
+						<input id="endpicker-input" type="text" aria-label="Date">
+						<span class="tui-ico-date"></span>
+						<div id="endpicker-container" style="margin-left: -1px;"></div>
+					</div>
+					<button type="button" id="searchBtn" class="btn btn-dark btn-sm">검색</button>
+					<button type="button" id="cancelBtn" class="btn btn-dark btn-sm">초기화</button>
+				</td>
+				<td></td>
+			</tr>
+		</table>
+	</div>
+	<div class="row">
+		<div id="grid"></div>
+	</div>
+	
+	<!-- 생산지시목록 모달 -->
+	<div class="modal" id="orderModal" tabindex="-1">
+		<div class="modal-dialog modal-xl" >
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4 class="modal-title">생산지시 목록</h4>
+					<button type="button" class="btn-close" data-bs-dismiss="modal"	aria-label="Close" id="close_modal"></button>
+				</div>
+				<div class="modal-body">
+					<table>
+						<tr>
+							<td style="width: 80px">지시 기간 &nbsp;</td>
+							<td id ="modalDate">
+								<!-- date-picker -->
+								<div
+									class="tui-datepicker-input tui-datetime-input tui-has-focus">
+									<input id="startpicker-i" type="text" aria-label="Date">
+									<span class="tui-ico-date"></span>
+									<div id="startpicker-c" style="margin-left: -1px;"></div>
+								</div> <span>-</span>
+								<div
+									class="tui-datepicker-input tui-datetime-input tui-has-focus">
+									<input id="endpicker-i" type="text" aria-label="Date">
+									<span class="tui-ico-date"></span>
+									<div id="endpicker-c" style="margin-left: -1px;"></div>
+								</div>
+								<button type="button" id="mSBtn" class="btn btn-dark btn-sm">검색</button>
+								<button type="button" id="mCBtn" class="btn btn-dark btn-sm">초기화</button>
+							</td>
+						</tr>
+					</table>
+						
+					<div>
+						<div id="orModalGrid"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<!-- 공정목록 모달 -->
+	<div class="modal" id="pModal" tabindex="-1">
+		<div class="modal-dialog modal-xl" >
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4 class="modal-title">공정 목록</h4>
+					<button type="button" class="btn-close" data-bs-dismiss="modal"	aria-label="Close" id="close_modal"></button>
+				</div>
+				<div class="modal-body">
+					<table>
+						<tr>
+							<td style="width: 80px">공정 분류 &nbsp;</td>
+							<td>
+								<select id="pList" name="pList">
+							    <option value="blen" selected>혼합 공정</option>
+							    <option value="shap">성형 공정</option>
+							    <option value="frez">냉동 공정</option>	
+							    <option value="unit">포장 공정</option>		
+							    <option value="boxs">박스 공정</option>							
+								</select>
+							</td>
+							<td><button type="button" id="pSBtn" class="btn btn-dark btn-sm">검색</button></td>
+						</tr>
+					</table>
+						
+					<div>
+						<div id="pModalGrid"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	
+	<!-- 불량코드 모달 -->
+	<div class="modal" id="eModal" tabindex="-1">
+		<div class="modal-dialog" >
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4 class="modal-title">불량코드 목록</h4>
+					<button type="button" class="btn-close" data-bs-dismiss="modal"	aria-label="Close" id="close_modal"></button>
+				</div>
+				<div class="modal-body">					
+					<div>
+						<div id="eModalGrid"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+<script>
+
+	let grid = gridInit()					// 실적조회 grid 초기화
+	let orModalGrid = orModalGridInit();	// 생산지시목록 모달 grid
+	let pModalGrid = pModalGridInit();		// 공정목록 모달 grid
+	let eModalGrid = eModalGridInit(); 		// 불량코드 모달 grid
+	
+	cancelBtnHandler();  	  // date picker input 값 초기화 버튼
+	searchBtnHandler();	 	  // date picker input 값 조회 버튼
+	orderCdClickHandler();	  // 생산지시코드 input 클릭 이벤트
+	prNameClickHandler();     // 공정명 input 클릭 이벤트
+	mSBtnHandler();			  // date picker 값 조회 버튼 (생산지시모달 그리드)
+	mCBtnHandler();			  // date picker 값 초기화 버튼 (생산지시모달 그리드)
+	orModalClickHandler(); 	  // 생산지시목록 모달 grid 클릭 이벤트
+	pSBtnHandler();			  // 공정분류 선택 클릭 이벤트
+	pModalClickHandler();	  // 공정목록 모달 grid 클릭 이벤트
+	gridClick(); 			  // 생산지시 그리드 클릭 이벤트(불량코드 모달 오픈)
+	eModalClickHandler();	  // 불량코드 모달 그리드 클릭 이벤트
+	
+	/*------------
+	// date-picker
+	----------------*/
+	// 실적조회
+	rangeDatepickerInit('#startpicker-input', '#startpicker-container','#endpicker-input','#endpicker-container')
+	// 생산지시목록 모달
+	rangeDatepickerInit('#startpicker-i', '#startpicker-c','#endpicker-i','#endpicker-c')
+	
+	/*------------
+	// 진행생산지시 grid
+	----------------*/
+	
+	function gridInit(){
+		let grid = new tui.Grid({
+			el: document.getElementById('grid'),
+			// 임시 데이터
+			data: [{
+				podCd : '',
+				pplnCd : '',
+				eqpCd : '',
+				plineCd : '',
+				pproInAmt : '',
+				pproOtAmt : '',
+				pproErAmt : '',
+				pproErCd : '',
+				pproErDtl : '',
+				pproSTime : '',
+				pproETime : '',
+				pproEmpName : '',
+				podDate : ''
+			}],
+			// data 가져오는 법
+			// data: {
+			// 	api: {
+			// 		readData: {
+			// 			url: '/api/readData',
+			// 			method: 'GET'
+			// 		}
+			// 	}
+			// },
+			scrollX: false,
+			scrollY: false,
+			rowHeaders: ['rowNum'],
+			columns: [
+				{
+					header: '생산지시코드',
+					name: 'podCd'
+				},
+				{
+					header: '생산코드',
+					name: 'pplnCd'
+				},
+				{
+					header: '설비코드',
+					name: 'eqpCd'
+				},
+				{
+					header: '설비명',
+					name: 'plineCd'
+				},
+				{
+					header: '투입량',
+					name: 'pproInAmt'
+				},
+				{
+					header: '생산량',
+					name: 'pproOtAmt'
+				},
+				{
+					header: '불량량',
+					name: 'pproErAmt'
+				},
+				{
+					header: '불량코드',
+					name: 'pproErCd'
+				},
+				{
+					header: '불량상세',
+					name: 'pproErDtl'
+				},
+				{
+					header: '시작시간',
+					name: 'pproSTime'
+				},
+				{
+					header: '종료시간',
+					name: 'pproETime'
+				},
+				{
+					header: '담당자',
+					name: 'pproEmpName'
+				},
+				{
+					header: '지시일자',
+					name: 'podDates'
+				}
+			]
+		});
+		return grid;
+	}
+	
+	/*------------
+	// 생산지시 그리드 클릭 이벤트
+	----------------*/
+	function gridClick(){
+		grid.on('click',function(ev){
+			if(ev.columnName =='pproErCd'){
+	   			$('#eModal').modal('show');
+	   			eModalGrid.refreshLayout();
+	   		}
+		})
+	}
+	
+	/*------------
+	// 생산지시목록 모달 grid
+	----------------*/
+	
+	function orModalGridInit(){
+		let orModalGrid = new tui.Grid({
+			el: document.getElementById('orModalGrid'),
+			// 임시 데이터
+			data: [{
+				podCd : 'PID-20221117-001',
+				prdNm : '얇은피 고기만두',
+				poddAmt : '500'
+			}],
+			// data 가져오는 법
+			// data: {
+			// 	api: {
+			// 		readData: {
+			// 			url: '/api/readData',
+			// 			method: 'GET'
+			// 		}
+			// 	}
+			// },
+			scrollX: false,
+			scrollY: false,
+			rowHeaders: ['rowNum'],
+			columns: [
+				{
+					header: '생산지시코드',
+					name: 'podCd'
+				},
+				{
+					header: '제품명',
+					name: 'prdNm'
+				},
+				{
+					header: '생산량',
+					name: 'poddAmt'
+				}
+			]
+		});
+		return orModalGrid;
+	}
+	
+	
+	/*------------
+	// 공정목록 모달 grid
+	----------------*/
+	
+	function pModalGridInit(){
+		let pModalGrid = new tui.Grid({
+			el: document.getElementById('pModalGrid'),
+			// 임시 데이터
+			data: [{
+				pproCd : 'PRO-BLEN-001',
+				pproName : '혼합 공정',
+				eqpCd : 'LHS-0001',
+				eqpName : '만두머신-1'
+			},
+			{
+				pproCd : 'PRO-SHAP-001',
+				pproName : '성형 공정',
+				eqpCd : 'LHS-0002',
+				eqpName : '만두머신-2'
+			}
+			],
+			scrollX: false,
+			scrollY: false,
+			rowHeaders: ['rowNum'],
+			columns: [
+				{
+					header: '공정코드',
+					name: 'pproCd'
+				},
+				{
+					header: '공정명',
+					name: 'pproName'
+				},
+				{
+					header: '설비코드',
+					name: 'eqpCd'
+				},
+				{
+					header: '설비명',
+					name: 'eqpName'
+				}
+			]
+		});
+		return pModalGrid;
+	}
+	
+	/*------------
+	// 불량코드 모달 grid
+	----------------*/
+	
+	function eModalGridInit(){
+		let eModalGrid = new tui.Grid({
+			el: document.getElementById('eModalGrid'),
+			// 임시 데이터
+			data: [{
+				pproErCd : 'ERR-PRO-001',
+				pproErDtl : '불량없음'
+			}
+			],
+			scrollX: false,
+			scrollY: false,
+			rowHeaders: ['rowNum'],
+			columns: [
+				{
+					header: '불량코드',
+					name: 'pproErCd'
+				},
+				{
+					header: '불량상세',
+					name: 'pproErDtl'
+				}
+			]
+		});
+		return eModalGrid;
+	}
+	
+	
+	/*------------
+	// 생산지시목록 모달 grid 클릭 이벤트
+	----------------*/
+	function orModalClickHandler(){
+		orModalGrid.on('click', (ev) => {
+	
+			let podCd = orModalGrid.getValue(ev.rowKey, 'podCd')
+			$('#orderCd').attr("value",podCd);
+			$('#orderModal').modal('hide');
+		
+		});
+	}
+	
+	
+	/*------------
+	// 공정목록목록 모달 grid 클릭 이벤트
+	----------------*/
+	function pModalClickHandler(){
+		pModalGrid.on('click', (ev) => {
+	
+			let pproName = pModalGrid.getValue(ev.rowKey, 'pproName')
+			$('#prName').attr("value",pproName);
+			$('#pModal').modal('hide');
+		
+		});
+	}
+	
+	/*------------
+	// 검색버튼 이벤트 핸들러
+	----------------*/
+	function searchBtnHandler(){
+
+		$('#searchBtn').on('click',function(){
+			// 지시코드
+			let orderCd = $('#orderCd').val();
+			// 공정명
+			let prName = $('#prName').val();
+			// 불량분류
+			let eName = $('select[name=eList] option:selected').val();
+			// 계획일자
+			let getStartDay = $("#startpicker-input").val();
+			let getEndDay = $("#endpicker-input").val();
+			console.log('지시코드 : ' + orderCd + '공정명 : ' + prName + '불량분류 : ' + eName)
+			console.log('계획일자 : ' + getStartDay,getEndDay);
+			
+			// 갖고온 start, end 값을 넘겨서 select 해오기
+			// ajax 받아오고
+			// success : function(data){manageGrid.resetData(data);}
+			
+		})
+	}
+	
+	/*------------
+	// 공정분류 선택 이벤트 핸들러
+	----------------*/
+	function pSBtnHandler(){
+
+		$('#pSBtn').on('click',function(){
+			let pName = $('select[name=pList] option:selected').val(); // 공정분류 선택값
+
+			console.log('공정분류 : ' + pName);
+			
+			// 갖고온 start, end 값을 넘겨서 select 해오기
+			// ajax 받아오고
+			// success : function(data){manageGrid.resetData(data);}
+			
+		})
+	}
+	
+	
+	/*------------
+	// datePicker 초기화버튼 이벤트 핸들러
+	----------------*/
+	function cancelBtnHandler(){
+		$('#cancelBtn').on('click',function(){
+
+			$("#startpicker-input").val(today);
+			$("#endpicker-input").val(today);
+		});	
+	}
+	
+	
+	/*------------
+	// 생산지시목록 클릭 버튼 이벤트 핸들러
+	----------------*/
+	function orderCdClickHandler(){
+		// 모달 클릭 버튼 이벤트
+		$('#orderCd').on('click',function(){
+	
+			 $("#orderModal").modal("show");
+
+			// 모달이 로드 되는데 시간이 걸리므로 인터벌 걸어주기
+			setInterval(function(){
+				orModalGrid.refreshLayout()
+				},100);	
+		});
+	}
+	
+	
+	
+	/*------------
+	// 공정명 클릭 버튼 이벤트 핸들러
+	----------------*/
+	function prNameClickHandler(){
+		// 모달 클릭 버튼 이벤트
+		$('#prName').on('click',function(){
+	
+			 $("#pModal").modal("show");
+
+			// 모달이 로드 되는데 시간이 걸리므로 인터벌 걸어주기
+			setInterval(function(){
+				pModalGrid.refreshLayout()
+				},100);	
+		});
+	}
+	
+	
+	
+	/*------------
+	// 불량코드 모달 grid 클릭 이벤트
+	----------------*/
+	function eModalClickHandler(){
+		eModalGrid.on('click', (ev) => {
+			let pproErCd = eModalGrid.getValue(ev.rowKey, 'pproErCd')
+			let gRowKey = grid.getFocusedCell().rowKey; // 진짜 큰 그리드
+			grid.setValue(gRowKey, 'pproErCd', pproErCd);
+			$('#eModal').modal('hide');
+		});
+	}
+	
+	
+	
+	/*------------
+	// 검색버튼 이벤트 핸들러
+	----------------*/
+	function mSBtnHandler(){
+
+		$('#mSBtn').on('click',function(){
+			
+			// 계획일자
+			let getStartDay = $("#modalDate div #startpicker-i").val();
+			let getEndDay = $("#modalDate div #endpicker-i").val();
+			console.log('계획일자 : ' + getStartDay,getEndDay);
+			
+			// 갖고온 start, end 값을 넘겨서 select 해오기
+			// ajax 받아오고
+			// success : function(data){manageGrid.resetData(data);}
+			
+		})
+	}
+	
+	
+	/*------------
+	// 모달창의 datePicker 초기화버튼 이벤트 핸들러
+	----------------*/
+	function mCBtnHandler(){
+		$('#mCBtn').on('click',function(){
+
+			$("#startpicker-input").val(today);
+			$("#endpicker-input").val(today);
+		});	
+	}
+
+</script>		
+</div>
+</body>
+</html>

@@ -5,105 +5,273 @@
 	layout:decorate="~{/layout/layout}">
 <div class="container" layout:fragment="content">
 
-
-	BOM관리
-
+	<br>
+	
+	<h2>BOM관리</h2>
+	
+	<hr>
+	
+	<br> <br>
+	
+	<ul class="ul-style">
+			<li><label for="matNm">제품 코드</label><input id="matNm" name="PRD_CD" readonly>
+				<img id="matNm" class="Magnifying-Glass-img" alt="image"
+					data-bs-toggle="modal" data-bs-target="#exampleModal"
+					src="../images/Magnifying_Glass.png" >
+				<input type="text" name="PRD_NM" readonly>
+				&nbsp;&nbsp;사용여부&nbsp;<input type="checkbox">
+			</li>
+			
+			
+	</ul>
+	
+	<!-- Modal -->
+		<div class="modal fade" id="exampleModal" tabindex="-1"
+			aria-labelledby="exampleModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+			    	<h4 class="modal-title" id="exampleModalLabel">제품 코드 목록</h4>
+			    	<button type="button" class="btn-close" data-bs-dismiss="modal"
+			            aria-label="Close"></button>
+		    		</div>
+			     		<div class="modal-body">
+							<h4 align="center"><b>제품 목록</b></h4>
+			               	<br>
+			               	
+			               	제품명&nbsp;<input type="text">
+			               	<button type="button" class="btn btn-dark btn-sm"
+			                 data-bs-dismiss="modal">조회</button>
+			                <button type="button" class="btn btn-dark btn-sm">초기화</button>
+			                
+			                <br> <br>
+			               	
+			               	<div id="grid2"></div>
+			            	   	
+			               	
+			     	    </div>
+			     </div>
+			 </div>
+	    </div>
+		
+	<div align="right">
+			<button type="button" class="btn btn-dark btn-sm">조회</button>
+			<button type="button" class="btn btn-dark btn-sm">초기화</button>
+			<button type="button" class="btn btn-dark btn-sm">추가</button>
+			
+			
+			<button type="button" class="btn btn-dark btn-sm"
+			data-bs-toggle="modal" data-bs-target="#exampleModal2">저장</button>
+			
+			
+			
+					<div class="modal fade" id="exampleModal2" tabindex="-1"
+					aria-labelledby="exampleModalLabel" aria-hidden="true">
+						<div class="modal-dialog">
+							<div class="modal-content">
+								<div class="modal-header">
+						    	<h4 class="modal-title" id="exampleModalLabel">저장 확인</h4>
+						    	<button type="button" class="btn-close" data-bs-dismiss="modal"
+						            aria-label="Close"></button>
+					    		</div>
+						     		<div class="modal-body">
+						     		
+										<div align="center">해당 정보를 BOM 코드로 저장 하시겠습니까?</div><br>
+										
+										<button type="button" class="btn btn-dark btn-sm"
+										data-bs-toggle="modal" data-bs-target="#exampleModal3">확인</button>
+										<button type="button" class="btn btn-dark btn-sm" data-bs-dismiss="modal">취소</button>
+												
+						     	    </div>
+						     </div>
+						 </div>
+			         </div>
+		         
+	         								<!-- Modal -->
+											<div class="modal fade" id="exampleModal3" tabindex="-1"
+												aria-labelledby="exampleModalLabel" aria-hidden="true">
+												<div class="modal-dialog">
+													<div class="modal-content">
+														<div class="modal-header">
+												    	<h4 class="modal-title" id="exampleModalLabel">저장 완료</h4>
+												    	<button type="button" class="btn-close" data-bs-dismiss="modal"
+												            aria-label="Close"></button>
+											    		</div>
+												     		<div class="modal-body">
+																
+												               	<div align="center">저장 되었습니다.</div><br>
+												               	<button type="button" class="btn btn-dark btn-sm" data-bs-dismiss="modal">확인</button>
+												               	
+												               	
+												     	    </div>
+												     </div>
+												 </div>
+										    </div>
+			
+			
+	</div>
+	
+	<br>
+	
 	<div id="grid"></div>
 
 	<script>
-		const gridData = [ {
-      no: '1',
-      emp_no: '1100',
-      emp_name: '홍길동',
-      hire_date : '2002/07/05',
-      id : 'no',
-      dept_name : '영업부',
-      role : '0'
-		},
-    {
-      no: '2',
-      emp_no: '1101',
-      emp_name: '김길동',
-      hire_date : '2008/02/05',
-      id : 'no',
-      dept_name : '영업부',
-      role : '0'
-		},
-    {
-      no: '3',
-      emp_no: '1123',
-      emp_name: '홍길동',
-      hire_date : '2002/07/05',
-      id : 'no',
-      dept_name : '영업부',
-      role : '0'
-		},
-    {
-      no: '4',
-      emp_no: '1154',
-      emp_name: '황길동',
-      hire_date : '2003/11/15',
-      id : 'no',
-      dept_name : '영업부',
-      role : '0'
-		},
-    {
-      no: '5',
-      emp_no: '1199',
-      emp_name: '최길동',
-      hire_date : '2006/07/05',
-      id : 'no',
-      dept_name : '영업부',
-      role : '0'
-		},
-    {
-      no: '6',
-      emp_no: '1207',
-      emp_name: '홍길동',
-      hire_date : '2002/04/25',
-      id : 'no',
-      dept_name : '영업부',
-      role : '0'
-		},
-    {
-      no: '7',
-      emp_no: '1500',
-      emp_name: '홍길동',
-      hire_date : '2004/03/05',
-      id : 'no',
-      dept_name : '영업부',
-      role : '0'
-		},
-  ];
+	  const gridData = [ {
+		  BOM_NO: '1',
+	      PPRO_NAME: '1100',
+	      BOM_CD: '홍길동',
+	      PRD_CD : '2002/07/05',
+	      MTR_CD : 'no',
+	      MTR_NM : '영업부',
+	      BOM_AMT : '0',
+	      BOM_USE : '사용여부'
+		  },
+		  {
+		   BOM_NO: '2',
+		   PPRO_NAME: '1100',
+		   BOM_CD: '홍길동',
+		   PRD_CD : '2002/07/05',
+		   MTR_CD : 'no',
+		   MTR_NM : '영업부',
+		   BOM_AMT : '0',
+		   BOM_USE : '사용여부'
+		   }
+       ];
+	  
+	  const gridData2 = [{
+		  BOM_NO: '1',
+	      PRD_CD: 'GGMD-01',
+	      PRD_NM: '고기만두',
+	      PRD_STD : 'SPEC02',
+		  },
+		  {
+		  BOM_NO: '2',
+		  PRD_CD: 'GGMD-02',
+		  PRD_NM: '고기만두',
+		  PRD_STD : 'SPEC02',
+		  },
+		  {
+		  BOM_NO: '3',
+		  PRD_CD: 'GGMD-03',
+		  PRD_NM: '고기만두',
+		  PRD_STD : 'SPEC02',
+		  }
+	  ];
+	  
+	  const gridData3 = [{
+		  BOM_NO: '1',
+		  PPRO_CD: 'LHS-0001',
+		  PPRO_NAME: '혼합 공정',
+		  },
+		  {
+		  BOM_NO: '2',
+		  PPRO_CD: 'LHS-0002',
+		  PPRO_NAME: '성형 공정',
+		  },
+		  {
+		  BOM_NO: '3',
+		  PPRO_CD: 'LHS-0003',
+		  PPRO_NAME: '냉동 공정',
+		  },
+		  {
+		  BOM_NO: '4',
+		  PPRO_CD: 'LHS-0004',
+		  PPRO_NAME: '포장 공정',
+		  }
+	  ];
+	  
+	  const gridData4 = [{
+		  BOM_NO: '1',
+		  MTR_CD: 'WJJ-06',
+		  MTR_NM: '밀가루',
+		  },
+		  {
+		  BOM_NO: '2',
+		  MTR_CD: 'WJJ-05',
+		  MTR_NM: '혼합 야채',
+		  },
+		  {
+		  BOM_NO: '3',
+		  MTR_CD: 'WJJ-03',
+		  MTR_NM: '당면',
+		  },
+		  {
+		  BOM_NO: '4',
+		  MTR_CD: 'WJJ-01',
+		  MTR_NM: '고기',
+		  }
+	  ];
 
+	  
 		const grid = new tui.Grid({
 			el : document.getElementById('grid'),
 			data : gridData,
-			scrollX : false,
+			scrollX : true,
 			scrollY : false,
+			bodyHeight : 500,
 			columns : [ {
 				header : 'No',
-				name : 'no'
+				name : 'BOM_NO'
 			}, {
-				header : '직원고유번호',
-				name : 'emp_no'
+				header : '사용 공정명',
+				name : 'PPRO_NAME'
 			}, {
-				header : '직원이름',
-				name : 'emp_name'
+				header : 'BOM코드',
+				name : 'BOM_CD'
 			}, {
-				header : '입사일',
-				name : 'hire_date'
+				header : '제품 코드',
+				name : 'PRD_CD'
 			}, {
-				header : '계정아이디',
-				name : 'id'
+				header : '자재 코드',
+				name : 'MTR_CD'
 			}, {
-				header : '부서명',
-				name : 'dept_name'
+				header : '자재명',
+				name : 'MTR_NM'
 			}, {
-				header : '직급정보',
-				name : 'role'
-			}, ]
+				header : '소모량',
+				name : 'BOM_AMT'
+			}, {
+				header : '사용 여부',
+				name : 'BOM_USE'
+			}
+			],
+			showDummyRows : true
 		});
+		
+		
+		const grid2 = new tui.Grid({
+			el : document.getElementById('grid2'),
+			data : gridData2,
+			scrollX : true,
+			scrollY : false,
+			bodyHeight : 500,
+			columns : [ {
+				header : 'No',
+				name : 'BOM_NO'
+			}, {
+				header : '제품 코드',
+				name : 'PRD_CD'
+			}, {
+				header : '제품명',
+				name : 'PRD_NM'
+			}, {
+				header : '규격',
+				name : 'PRD_STD'
+			}
+			],
+		});
+		
+		
+		//모달창 리프레시(모달창에 그리드 화면 띄울때 써야함!)
+	     exampleModal.addEventListener('shown.bs.modal', () => {
+	            grid2.refreshLayout(); //모달창 새로고침
+	       })
+	       
+	       
+	    //각종 이벤트 함수 모음
+	    
+	    
+	    
     </script>
     
 </div>

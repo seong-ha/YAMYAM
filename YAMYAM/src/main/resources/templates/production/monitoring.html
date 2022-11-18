@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{/layout/layout}">
+
+<head>
+<meta charset="UTF-8">
+<title>YAMYAM</title>
+ <link rel="stylesheet" href="https://uicdn.toast.com/chart/latest/toastui-chart.min.css" />
+<script src="https://uicdn.toast.com/chart/latest/toastui-chart.min.js"></script>
+
+</head>
+
+<body>
+	<!-- 본문 시작 -->
+	<div layout:fragment="content" class="container">
+		<div class="row">
+			<h3>공정 모니터링</h3>
+		</div>
+		<div class="row">
+			<div class="col-6" style="background-color:rgba(12, 9, 9, 0.16);">
+				<table>
+					<tr>
+						<th colspan="3">생산공정1</th>
+					</tr>
+					<tr>
+						<td colspan="3">
+							 <div id="chart1"></div>
+						</td>
+			
+					</tr>
+					<tr style="text-align:center;">
+						<td>
+							상태
+						</td>
+						<td colspan="2">
+							작업시간
+						</td>
+					</tr>
+					<tr style="text-align:center;">
+						<td>
+							생산수
+						</td>
+						<td>
+							남은수
+						</td>
+						<td>
+							불량량
+						</td>
+					</tr>
+					<tr>
+						<td><button type="button" id="stopBtn" class="btn btn-dark btn2">작업중지</button></td>
+						<td><button type="button" id="restartBtn" class="btn btn-dark btn2">재시작</button></td>
+					</tr>
+				</table>
+			</div>
+			<div class="col-6" style="background-color:rgba(12, 9, 9, 0.16);">
+				<table>
+					<tr>
+						<th colspan="3">생산공정2</th>
+					</tr>
+					<tr>
+						<td colspan="3">
+							 <div id="chart2"></div>
+						</td>
+			
+					</tr>
+					<tr style="text-align:center;">
+						<td>
+							상태
+						</td>
+						<td colspan="2">
+							작업시간
+						</td>
+					</tr>
+					<tr style="text-align:center;">
+						<td>
+							생산수
+						</td>
+						<td>
+							남은수
+						</td>
+						<td>
+							불량량
+						</td>
+					</tr>
+					<tr>
+						<td><button type="button" id="stopBtn" class="btn btn-dark btn2">작업중지</button></td>
+						<td><button type="button" id="restartBtn" class="btn btn-dark btn2">재시작</button></td>
+					</tr>
+				</table>
+			</div>
+		</div>
+
+		<script>
+		makeChart1();
+		makeChart2();
+		
+		/*------------
+		// 차트 초기화
+		----------------*/
+		function makeChart1(){
+		  let el = document.getElementById('chart1');
+	      
+		  let data = {
+	        series: [{name: 'Speed',data: [20]}]
+	      };
+	      
+	      let options = {
+	        chart: {width: 450, height: 400},
+	        series: {
+	          solid: true,
+	          dataLabels: { visible: true, offsetY: -30, formatter: (value) => `${value}%` },
+	        },
+	          circularAxis: { scale: { min: 0, max: 100 }},
+	        theme: {
+	           circularAxis: {
+	            lineWidth: 0,
+	            strokeStyle: 'rgba(0, 0, 0, 0)',
+	            tick: {
+	              lineWidth: 0,
+	              strokeStyle: 'rgba(0, 0, 0, 0)',
+	            },
+	            label: {color: 'rgba(0, 0, 0, 0)'}
+	          }, 
+	          series: {
+	            dataLabels: {
+	              fontSize:	40,
+	              fontFamily: 'Impact',
+	              fontWeight: 40,
+	              color: '#00a9ff',
+	              textBubble: {
+	                visible: false,
+	              },
+	            },
+	          },
+	          
+	        },
+	      };
+
+	      let chart = toastui.Chart.gaugeChart({ el, data, options });
+	      
+		}
+
+		function makeChart2(){
+			  let el = document.getElementById('chart2');
+		      
+			  let data = {
+		        series: [{name: 'Speed',data: [20]}]
+		      };
+		      
+		      let options = {
+		        chart: {width: 450, height: 400 },
+		        series: {
+		          solid: true,
+		          dataLabels: { visible: true, offsetY: -30, formatter: (value) => `${value}%` },
+		        },
+		          circularAxis: { scale: { min: 0, max: 100 }},
+		        theme: {
+		           circularAxis: {
+		            lineWidth: 0,
+		            strokeStyle: 'rgba(0, 0, 0, 0)',
+		            tick: {
+		              lineWidth: 0,
+		              strokeStyle: 'rgba(0, 0, 0, 0)',
+		            },
+		            label: {color: 'rgba(0, 0, 0, 0)'}
+		          }, 
+		          series: {
+		            dataLabels: {
+		              fontSize: 40,
+		              fontFamily: 'Impact',
+		              fontWeight: 40,
+		              color: '#00a9ff',
+		              textBubble: {
+		                visible: false,
+		              },
+		            },
+		          },
+		          
+		        },
+		      };
+
+		      let chart = toastui.Chart.gaugeChart({ el, data, options });
+			}
+		</script>
+	</div>
+</body>
+</html>

@@ -4423,7 +4423,7 @@ var messages = {
         net: {
             confirmCreate: '{{count}}건을 생성하시겠습니까',
             confirmUpdate: '{{count}}건을 변경을 업데이트 하시겠습니까?',
-            confirmDelete: '{{count}}건을 삭제하시겠습니까?',
+            confirmDelete: 'did you delete {{count}}',
             confirmModify: '{{count}}건을 수정하시겠습니까',
             noDataToCreate: 'No data to create.',
             noDataToUpdate: 'No data to update.',
@@ -4566,7 +4566,7 @@ var messages = {
             beforeEq: 'Before or Equal',
             apply: 'Apply',
             clear: 'Clear',
-            selectAll: 'Select All',
+            selectAll: '전체',
             emptyValue: 'Empty Value',
         },
         contextMenu: {

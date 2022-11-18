@@ -14,20 +14,24 @@
 
 		<br> <br> <br> <br> <br>
 
-
-		<div class="col-4">
-			<br> <br><b>공통 코드 검색</b>&nbsp;&nbsp; <input type="text" size="15">
-			<button type="button" class="btn btn-dark btn-sm">검색</button>
-			<div id="grid" style="width: 400px"></div>
-		</div>
+		
+			<div class="col-4" style="padding-left: 50px">
+			<form action="" onsubmit="return false">
+				<br> <br><b>공통 코드 검색</b>&nbsp;&nbsp; 
+				<input type="text" size="15" id="commSearch">
+				<button type="button" class="btn btn-dark btn-sm" id="commBtn">검색</button>
+				<button type="reset" class="btn btn-dark btn-sm" id="commreset">초기화</button>
+			</form>
+				<div id="grid" style="width: 400px"></div>
+			</div>
 
 		<div class="col-7">
 			<ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
 				<li class="nav-item" role="presentation">
 					<button class="nav-link active" id="pills-home-tab"
 						data-bs-toggle="pill" data-bs-target="#pills-home" type="button"
-						role="tab" aria-controls="pills-home" aria-selected="true">코드
-						조회</button>
+						role="tab" aria-controls="pills-home" aria-selected="true">
+						코드 조회</button>
 				</li>
 				<li class="nav-item" role="presentation">
 					<button class="nav-link" id="pills-profile-tab"
@@ -62,43 +66,36 @@
 					<b>그룹 코드 등록</b>
 					<br>
 					<hr>
-					
-					
+
+					  
 					  <div class="mb-3 row">
-					    <label for="staticEmail" class="col-sm-2 col-form-label">분류 코드 명</label>
+					    <label for="staticEmail" class="col-sm-2 col-form-label">공통 코드</label>
 					    <div class="col-sm-10">
-					      <input type="text" name="distributeCodeName" class="form-control" id="distributeCodeName">
+					      <input type="text" name="COMM_CD" class="form-control" id="distributeCodeName">
 					    </div>
 					  </div>
 					  
 					  <div class="mb-3 row">
-					    <label for="staticEmail" class="col-sm-2 col-form-label">그룹 코드</label>
+					    <label for="staticEmail" class="col-sm-2 col-form-label">공통 코드 이름</label>
 					    <div class="col-sm-10">
-					      <input type="text" name="distributeCodeName" class="form-control" id="distributeCodeName">
+					      <input type="text" name="COMM_NM" class="form-control" id="distributeCodeName">
 					    </div>
 					  </div>
 					  
 					  <div class="mb-3 row">
-					    <label for="staticEmail" class="col-sm-2 col-form-label">그룹 코드 이름</label>
+					    <label for="staticEmail" class="col-sm-2 col-form-label">공통 코드 내용</label>
 					    <div class="col-sm-10">
-					      <input type="text" name="distributeCodeName" class="form-control" id="distributeCodeName">
-					    </div>
-					  </div>
-					  
-					  <div class="mb-3 row">
-					    <label for="staticEmail" class="col-sm-2 col-form-label">그룹 코드 상세</label>
-					    <div class="col-sm-10">
-					      <input type="text" name="distributeCodeName" class="form-control" id="distributeCodeName">
+					      <input type="text" name="COMM_INFO" class="form-control" id="distributeCodeName">
 					    </div>
 					  </div>
 					
 					사용 여부&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 					<div class="form-check form-check-inline">
-					  <input class="form-check-input" type="radio" name="use" id="inlineRadio1" value="option1">
+					  <input class="form-check-input" type="radio" name="COMM_USE" id="inlineRadio1" value="option1">
 					  <label class="form-check-label" for="inlineRadio1">YES</label>
 					</div>
 					<div class="form-check form-check-inline">
-					  <input class="form-check-input" type="radio" name="use" id="inlineRadio2" value="option2">
+					  <input class="form-check-input" type="radio" name="COMM_USE" id="inlineRadio2" value="option2">
 					  <label class="form-check-label" for="inlineRadio2">NO</label>
 					</div>
 					
@@ -116,10 +113,11 @@
 
 	</div>
 	<div class="row">
+		
 		<div class="col-4">
 			<div id="grid" style="width: 400px"></div>
 		</div>
-		<div class="col-8">
+		<div class="col-7">
 			<div id="grid2" style="width: 400px"></div>
 		</div>
 	</div>
@@ -128,96 +126,65 @@
 	
 	<script>
 		const gridData = [ {
-			no : '1',
-			groupcode : 'ABC001',
-			groupcodename : '규격',
+			COMM_CD : 'ABC001',
+			COMM_NM : '규격',
 		}, {
-			no : '2',
-			groupcode : 'ABC002',
-			groupcodename : '단위',
+			COMM_CD : 'ABC002',
+			COMM_NM : '단위',
 		}, {
-			no : '3',
-			groupcode : 'ABC003',
-			groupcodename : '설비상태',
+			COMM_CD : 'ABC003',
+			COMM_NM : '설비상태',
 		}, {
-			no : '4',
-			groupcode : 'ABC004',
-			groupcodename : '단위',
+			COMM_CD : 'ABC004',
+			COMM_NM : '단위',
 		}, {
-			no : '5',
-			groupcode : 'ABC005',
-			groupcodename : '단위',
+			COMM_CD : 'ABC005',
+			COMM_NM : '단위',
 		}, {
-			no : '6',
-			groupcode : 'ABC006',
-			groupcodename : '규격',
+			COMM_CD : 'ABC006',
+			COMM_NM : '규격',
 		}, {
-			no : '7',
-			groupcode : 'ABC006',
-			groupcodename : '규격',
+			COMM_CD : 'ABC006',
+			COMM_NM : '규격',
 		}, {
-			no : '8',
-			groupcode : 'ABC006',
-			groupcodename : '규격',
+			COMM_CD : 'ABC006',
+			COMM_NM : '규격',
 		}, {
-			no : '9',
-			groupcode : 'ABC006',
-			groupcodename : '규격',
+			COMM_CD : 'ABC006',
+			COMM_NM : '규격',
 		}, {
-			no : '10',
-			groupcode : 'ABC006',
-			groupcodename : '규격',
+			COMM_CD : 'ABC006',
+			COMM_NM : '규격',
 		}, {
-			no : '11',
-			groupcode : 'ABC006',
-			groupcodename : '규격',
+			COMM_CD : 'ABC006',
+			COMM_NM : '규격',
 		},
 
 		];
 
 		const gridData2 = [ {
-			code : 'STATE-1',
-			codename : '가동',
-			codedetail : '가동 중을 뜻하는 코드',
-			codestatus : '사용여부'
+			COMMD_CD : 'STATE-1',
+			COMMD_NM : '가동',
+			COMMD_INFO : '가동 중을 뜻하는 코드',
+			COMMD_USE : '사용여부'
 		}, {
-			code : 'STATE-2',
-			codename : '가동',
-			codedetail : '가동 중을 뜻하는 코드',
-			codestatus : '사용여부'
+			COMMD_CD : 'STATE-2',
+			COMMD_NM : '가동',
+			COMMD_INFO : '가동 중을 뜻하는 코드',
+			COMMD_USE : '사용여부'
 		}, {
-			code : 'STATE-3',
-			codename : '가동',
-			codedetail : '가동 중을 뜻하는 코드',
-			codestatus : '사용여부'
+			COMMD_CD : 'STATE-3',
+			COMMD_NM : '가동',
+			COMMD_INFO : '가동 중을 뜻하는 코드',
+			COMMD_USE : '사용여부'
 		}, {
-			code : 'STATE-4',
-			codename : '가동',
-			codedetail : '가동 중을 뜻하는 코드',
-			codestatus : '사용여부'
+			COMMD_CD : 'STATE-4',
+			COMMD_NM : '가동',
+			COMMD_INFO : '가동 중을 뜻하는 코드',
+			COMMD_USE : '사용여부'
 		} ];
 
-		const gridData3 = [ {
-			code : 'STATE-1',
-			codename : '가동',
-			codedetail : '가동 중을 뜻하는 코드',
-			codestatus : '사용여부'
-		}, {
-			code : 'STATE-2',
-			codename : '가동',
-			codedetail : '가동 중을 뜻하는 코드',
-			codestatus : '사용여부'
-		}, {
-			code : 'STATE-3',
-			codename : '가동',
-			codedetail : '가동 중을 뜻하는 코드',
-			codestatus : '사용여부'
-		}, {
-			code : 'STATE-4',
-			codename : '가동',
-			codedetail : '가동 중을 뜻하는 코드',
-			codestatus : '사용여부'
-		} ];
+		
 
 		const grid = new tui.Grid({
 			el : document.getElementById('grid'),
@@ -227,22 +194,17 @@
 			width : 400,
 			scrollX : true,
 			scrollY : true,
-
-			columns : [ {
-				header : 'No',
-				name : 'no',sortingType: 'desc',
-		        sortable: true,
-		        align: 'center'
-				
-			}, {
-				header : '그룹 코드',
-				name : 'groupcode',
+			rowHeaders: ['rowNum'],
+			columns : [{
+				header : '공통 코드',
+				name : 'COMM_CD',
 				sortingType: 'desc',
 		        sortable: true,
-		        align: 'center'
+		        align: 'center',
+		        filter: 'text'
 			}, {
-				header : '그룹 코드 이름',
-				name : 'groupcodename',
+				header : '공통 코드 이름',
+				name : 'COMM_NM',
 				sortingType: 'desc',
 		        sortable: true,
 		        align: 'center'
@@ -250,26 +212,26 @@
 
 		});
 
-	// 렌더링 에디터 (라디오박스)
 	
-	 class CustomSliderRenderer {
-      constructor(props) {
-        const el = document.createElement('div');
-        el.innerHTML = `<input type ="radio" value="1" name="use">yes &nbsp;&nbsp;&nbsp;&nbsp;
-        <input type ="radio" value="2" name="use">no`;
-        this.el=el;
-        this.render(props);
-      }
-
-      getElement() {
-        return this.el;
-      }
-
-      render(props) {
-        this.el.value = String(props.value);
-      }
-    }
+		// 렌더링 에디터 (라디오박스)
 		
+		 class CustomSliderRenderer {
+	      constructor(props) {
+	        const el = document.createElement('div');
+	        el.innerHTML = `<input type ="radio" value="1" name="COMMD_USE">yes &nbsp;&nbsp;&nbsp;&nbsp;
+	        <input type ="radio" value="2" name="COMMD_USE">no`;
+	        this.el=el;
+	        this.render(props);
+	      }
+
+	      getElement() {
+	        return this.el;
+	      }
+
+	      render(props) {
+	        this.el.value = String(props.value);
+	      }
+	    }
 		
 
 		const grid2 = new tui.Grid({
@@ -284,22 +246,22 @@
 
 			columns : [
 				{
-					header : '코드',
-					name : 'code',
+					header : '상세 공통 코드',
+					name : 'COMMD_CD',
 					sortingType: 'desc',
 			        sortable: true,
 			        align: 'center'
 				},
 				{
-					header : '코드 이름',
-					name : 'codename',
+					header : '상세 공통 이름',
+					name : 'COMMD_NM',
 					sortingType: 'desc',
 			        sortable: true,
 			        align: 'center'
 				},
 				{
-					header : '코드 상세',
-					name : 'codedetail',
+					header : '상세 공통 내용',
+					name : 'COMMD_INFO',
 					sortingType: 'desc',
 			        sortable: true,
 			        align: 'center'
@@ -307,7 +269,7 @@
 				{
 					
 					header : '사용 여부',
-					name : 'codestatus',
+					name : 'COMMD_USE',
 					sortingType: 'desc',
 			        sortable: true,
 			        align: 'center',
@@ -319,9 +281,32 @@
 			],
 		});
 		
+		
 		// 렌더링 에디터 (라디오박스)
 		
 		  grid.resetData(gridData);
+		
+		// 공통 코드 검색
+		
+		document.getElementById('commBtn').addEventListener('click', function(){
+    	grid.filter('COMM_CD', [{code: 'eq', value: commSearch.value}]);
+     		
+        });
+		
+		document.getElementById('commSearch').addEventListener("keydown", function(){
+	         if(event.keyCode == 13){
+	        	 grid.filter('COMM_CD', [{code: 'eq', value: commSearch.value}]);
+	        	 searchEmpName.value = '';
+	        	
+	         }
+	     });
+		
+		//초기화 버튼 누를시 다시 데이터 원상복구
+	     
+	    document.getElementById("commreset").addEventListener('click', function(){
+	    	grid.unfilter('COMM_CD', [{code: 'eq', value: commSearch.value}]);
+       	 	searchEmpName.value = '';
+	     });
 
 	</script>
 

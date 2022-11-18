@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{/layout/layout}">
+
+<head>
+<meta charset="UTF-8">
+<title>YAMYAM</title>
+<style>
+.btn2 {
+	padding : 10px;
+	margin : 5px;
+	width : 90px;
+}
+
+</style>
+</head>
+
+<body>
+	<!-- 본문 시작 -->
+	<div layout:fragment="content" class="container">
+	<div class="row">
+		<h3>생산 관리</h3>
+		<table style="width: 100%;">
+			<tr>
+				<td><button type="button" id="progressBtn" class="btn btn-dark btn-sm" data-bs-toggle="modal" data-bs-target="#orderModal">생산지시목록</button></td>
+				<td><button type="button" id="scheduleBtn" class="btn btn-dark btn-sm" style="float: right">공정이동표</button></td>
+			</tr>
+
+		</table>
+	</div>
+	<div class="row">
+		<p>진행생산지시</p>
+		<div id="pOrderGrid"></div>
+	</div>
+	<div class="row">
+		<div class="col-11">
+			<p>공정목록</p>
+			<div id="proGrid"></div>
+		</div>
+		<div class="col-1" >
+			<p>공정상세사항</p>
+			<div>
+			
+				<table style="width: 100%; float:center;">
+					<tr>
+						<td><button type="button" id="startBtn" class="btn btn-dark btn2">생산시작</button></td>
+					</tr>
+					<tr>
+						<td><button type="button" id="stopBtn" class="btn btn-dark btn2">긴급중지</button></td>
+					</tr>
+					<tr>
+						<td><button type="button" id="restartBtn" class="btn btn-dark btn2">재시작</button></td>
+					</tr>
+				</table>
+			</div>
+		</div>
+		
+	</div>
+	
+	<!-- 생산지시목록 모달 -->
+	<div class="modal" id="orderModal" tabindex="-1">
+		<div class="modal-dialog" >
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4 class="modal-title">생산지시 목록</h4>
+					<button type="button" class="btn-close" data-bs-dismiss="modal"	aria-label="Close" id="close_modal"></button>
+				</div>
+				<div class="modal-body">
+					<div>
+						<div class="tui-datepicker-input tui-datetime-input tui-has-focus">
+							<input type="text" id="datepicker-input" aria-label="Date-Time">
+							<span class="tui-ico-date"></span>
+							<div id="wrapper" style="margin-top: -1px;"></div>
+						
+						</div>
+					
+						<button type="button" id="searchBtn" class="btn btn-dark btn-sm">검색</button>
+					</div>
+					<div>
+						<div id="orModalGrid"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<!-- 공정이동표 모달 -->
+	<div class="modal" id="progressModal" tabindex="-1">
+		<div class="modal-dialog modal-xl" >
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4 class="modal-title">공정이동표</h4>
+					<button type="button" class="btn-close" data-bs-dismiss="modal"	aria-label="Close" id="close_modal"></button>
+				</div>
+				<div class="modal-body">
+					<div>
+						<table style="margin:auto;">
+							<tr>
+								<td>라인코드</td>
+								<td>LIN-BAR-001</td>
+								<td>제폼코드</td>
+								<td>MD-00100</td>
+							</tr>
+							<tr>
+								<td>제품명</td>
+								<td>얇은피 고기만두</td>
+								<td>수량</td>
+								<td>300</td>
+							</tr>
+						</table>
+					</div>
+					<div id="pLModalGrid"></div>
+					
+				</div>
+			</div>
+		</div>
+	</div>
+		
+<script>
+
+	let orderGrid = orderGridInit();			// 진행생산지시 grid 초기화
+	let progressGrid = progressGridInit();		// 공정목록 grid 초기화
+	let orModalGrid = orModalGridInit();		// 생산지시목록 모달 grid
+	let pLModalGrid = pLModalGridInit();		// 공정이동표 모달 grid
+	
+	
+	progressBtnHandler();		// 생산지시목록 클릭 버튼 이벤트 핸들러
+	searchBtnHandler();			// 날짜 검색버튼 이벤트 핸들러
+	orModalGridClickHandler();	// 생산지시목록 모달에 클릭 이벤트 핸들러
+	startBtnHandler();  		// 시작 버튼 이벤트 핸들러
+	stopBtnHandler();			// 중지 버튼 이벤트 핸들러
+	restartBtnHandler();		// 재시작 버튼 이벤트 핸들러
+	scheduleBtnHandler();		// 공정이동표 클릭 버튼 이벤트 핸들러
+	
+	
+	/*------------
+	// datepicker
+	----------------*/	
+	pickerInit('#wrapper', '#datepicker-input');
+	
+	
+	
+	/*------------
+	// 진행생산지시 grid
+	----------------*/
+	
+	function orderGridInit(){
+		let pOrderGrid = new tui.Grid({
+			el: document.getElementById('pOrderGrid'),
+			// 임시 데이터
+			data: [{
+				podCd : '',
+				prdCd : '',
+				prdNm : '',
+				poddAmt : '',
+				plineCd : '',
+				plineNo : ''
+			}],
+			// data 가져오는 법
+			// data: {
+			// 	api: {
+			// 		readData: {
+			// 			url: '/api/readData',
+			// 			method: 'GET'
+			// 		}
+			// 	}
+			// },
+			scrollX: false,
+			scrollY: false,
+			rowHeaders: ['rowNum'],
+			// columnOptions: {
+			// 	minWidth: 180
+			// },
+			columns: [
+				{
+					header: '생산지시코드',
+					name: 'podCd'
+				},
+				{
+					header: '제품코드',
+					name: 'prdCd'
+				},
+				{
+					header: '제품명',
+					name: 'prdNm'
+				},
+				{
+					header: '수량',
+					name: 'poddAmt'
+				},
+				{
+					header: '라인코드',
+					name: 'plineCd'
+				},
+				{
+					header: '지시순번',
+					name: 'plineNo'
+				}
+			]
+		});
+		return pOrderGrid;
+	}
+	
+	
+	
+	
+	/*------------
+	// 공정목록 grid
+	----------------*/
+	
+	function progressGridInit(){
+		let proGrid = new tui.Grid({
+			el: document.getElementById('proGrid'),
+			// 임시 데이터
+			data: [{
+				plineNo : '',
+				pproCd : '',
+				pproName : '',
+				eqpCd : '',
+				plineCd : '',
+				pproEmpName : '',
+				pproInAmt : '',
+				pproErAmt : '',
+				pproOtAmt : '',
+				pproSTime : '',
+				pproETime : '',
+				eqpSts : ''
+			}],
+			// data 가져오는 법
+			// data: {
+			// 	api: {
+			// 		readData: {
+			// 			url: '/api/readData',
+			// 			method: 'GET'
+			// 		}
+			// 	}
+			// },
+			scrollX: false,
+			scrollY: false,
+			rowHeaders: ['rowNum'],
+			// columnOptions: {
+			// 	minWidth: 180
+			// },
+			columns: [
+				{
+					header: '진행순번',
+					name: 'plineNo'
+				},
+				{
+					header: '공정코드',
+					name: 'pproCd'
+				},
+				{
+					header: '공정명',
+					name: 'pproName'
+				},
+				{
+					header: '설비코드',
+					name: 'eqpCd'
+				},
+				{
+					header: '설비명',
+					name: 'plineCd'
+				},
+				{
+					header: '담당자',
+					name: 'pproEmpName'
+				},
+				{
+					header: '투입량',
+					name: 'pproInAmt'
+				},
+				{
+					header: '불량량',
+					name: 'pproErAmt'
+				},
+				{
+					header: '생산량',
+					name: 'pproOtAmt'
+				},
+				{
+					header: '시작시간',
+					name: 'pproSTime'
+				},
+				{
+					header: '종료시간',
+					name: 'pproETime'
+				},
+				{
+					header: '상태', // 설비상태
+					name: 'eqpSts'
+				},
+			]
+		});
+		return proGrid;
+	}
+	
+	
+	
+	/*------------
+	// 생산지시목록 모달 grid
+	----------------*/
+	
+	function orModalGridInit(){
+		let orModalGrid = new tui.Grid({
+			el: document.getElementById('orModalGrid'),
+			// 임시 데이터
+			data: [{
+				podCd : 'PID-20221117-001',
+				prdNm : '얇은피 고기만두',
+				poddAmt : '500'
+			}],
+			// data 가져오는 법
+			// data: {
+			// 	api: {
+			// 		readData: {
+			// 			url: '/api/readData',
+			// 			method: 'GET'
+			// 		}
+			// 	}
+			// },
+			scrollX: false,
+			scrollY: false,
+			rowHeaders: ['rowNum'],
+			columns: [
+				{
+					header: '생산지시코드',
+					name: 'podCd'
+				},
+				{
+					header: '제품명',
+					name: 'prdNm'
+				},
+				{
+					header: '생산량',
+					name: 'poddAmt'
+				}
+			]
+		});
+		return orModalGrid;
+	}
+	
+	
+	/*------------
+	// 공정이동표 모달 grid
+	----------------*/
+	
+	function pLModalGridInit(){
+		let pLModalGrid = new tui.Grid({
+			el: document.getElementById('pLModalGrid'),
+			// 임시 데이터
+			data: [{
+				plineNo : '',
+				pproCd : '',
+				pproName : '',
+				eqpCd : '',
+				plineCd : '',
+				pproEmpName : '',
+				pproInAmt : '',
+				pproErAmt : '',
+				pproOtAmt : ''
+			}],
+			// data 가져오는 법
+			// data: {
+			// 	api: {
+			// 		readData: {
+			// 			url: '/api/readData',
+			// 			method: 'GET'
+			// 		}
+			// 	}
+			// },
+			scrollX: false,
+			scrollY: false,
+			rowHeaders: ['rowNum'],
+			// columnOptions: {
+			// 	minWidth: 180
+			// },
+			columns: [
+				{
+					header: '진행순번',
+					name: 'plineNo'
+				},
+				{
+					header: '공정코드',
+					name: 'pproCd'
+				},
+				{
+					header: '공정명',
+					name: 'pproName'
+				},
+				{
+					header: '설비코드',
+					name: 'eqpCd'
+				},
+				{
+					header: '설비명',
+					name: 'plineCd'
+				},
+				{
+					header: '담당자',
+					name: 'pproEmpName'
+				},
+				{
+					header: '투입량',
+					name: 'pproInAmt'
+				},
+				{
+					header: '불량량',
+					name: 'pproErAmt'
+				},
+				{
+					header: '생산량',
+					name: 'pproOtAmt'
+				}
+			]
+		});
+		return pLModalGrid;
+	}
+	
+	
+	
+	
+	
+
+	/*------------
+	// 생산지시목록 클릭 버튼 이벤트 핸들러
+	----------------*/
+	function progressBtnHandler(){
+		// 모달 클릭 버튼 이벤트
+		$('#progressBtn').on('click',function(){
+	
+			 $("#orderModal").modal("show");
+
+			// 모달이 로드 되는데 시간이 걸리므로 인터벌 걸어주기
+			setInterval(function(){
+				orModalGrid.refreshLayout()
+				},100);	
+		});
+	}
+	
+	
+	
+	/*------------
+	// 날짜 검색버튼 이벤트 핸들러
+	----------------*/
+	function searchBtnHandler(){
+
+		$('#searchBtn').on('click',function(){
+			let date = $("#datepicker-input").val();
+			console.log(date);
+			// 갖고온 start, end 값을 넘겨서 select 해오기
+			// ajax 받아오고
+			// success : function(data){manageGrid.resetData(data);}
+			
+		})
+	}
+	
+	
+	
+	/*------------
+	// 생산지시목록 모달에 클릭 이벤트 핸들러
+	----------------*/
+	function orModalGridClickHandler(){
+
+		orModalGrid.on('click',function(ev){
+			//console.log(ev.rowKey); 선택한 행의 row번호
+			// 클릭한 행의 자재명, 자재코드 
+			let val = [orModalGrid.getRow(ev.rowKey)];
+			console.log(val);
+			orderGrid.resetData(val);
+			$('#orderModal').modal("hide");	
+			
+			// 이미 존재하는 값 불러오지 않기(필터링)
+			
+			/* let RMCode = val.orderCode;
+			let iGDataList = insertGrid.getData();
+			$(iGDataList).each(function(idx,el){
+				let code = el.orderCode; 
+				if(RMCode != code){
+					pOrderGrid.appendRow(val);
+				}
+					$('#requestModal').modal("hide");				
+			}) */
+		})
+	
+	}
+	
+	/*------------
+	// sweetConfirm 
+	----------------*/
+	function sweetConfirm(msg, ic, callBack){
+		let msgA = {'S':'시작', 'T':'중지', 'R':'재시작'}
+
+		 Swal.fire({
+		      title: `${msgA[msg]} 하시겠습니까?`,
+		      icon: ic,
+		      showCancelButton: true,
+		      confirmButtonColor: '#3085d6',
+		      cancelButtonColor: '#d33',
+		      confirmButtonText: '승인',
+		      cancelButtonText: '취소'
+		      
+		    }).then((result) => {
+		    if(result.isConfirmed){
+		     	callBack();
+		    }
+		     
+		     })
+		     
+	}
+	
+	
+	/*------------
+	// 시작 버튼 이벤트 핸들러
+	----------------*/
+	function startBtnHandler(){
+
+		$('#startBtn').on('click',function(){
+			// sweetalert2
+			sweetConfirm('S', 'success',function(){
+				
+				
+			})
+
+			// 갖고온 start, end 값을 넘겨서 select 해오기
+			// ajax 받아오고
+			// success : function(data){manageGrid.resetData(data);}
+			
+		})
+	}
+	
+	
+	
+	
+	/*------------
+	// 긴급중지 버튼 이벤트 핸들러
+	----------------*/
+	function stopBtnHandler(){
+
+		$('#stopBtn').on('click',function(){
+			// sweetalert2
+			sweetConfirm('T', 'error', function(){
+				
+				
+			})
+
+			// 갖고온 start, end 값을 넘겨서 select 해오기
+			// ajax 받아오고
+			// success : function(data){manageGrid.resetData(data);}
+			
+		})
+	}
+	
+	
+	
+	/*------------
+	// 재시작 버튼 이벤트 핸들러
+	----------------*/
+	function restartBtnHandler(){
+
+		$('#restartBtn').on('click',function(){
+			// sweetalert2
+			sweetConfirm('R', 'info', function(){
+				
+				
+			})
+
+			// 갖고온 start, end 값을 넘겨서 select 해오기
+			// ajax 받아오고
+			// success : function(data){manageGrid.resetData(data);}
+			
+		})
+	}
+	
+	/*------------
+	// 공정표 클릭 버튼 이벤트 핸들러
+	----------------*/
+	function scheduleBtnHandler(){
+		// 모달 클릭 버튼 이벤트
+		$('#scheduleBtn').on('click',function(){
+	
+			 $("#progressModal").modal("show");
+
+			// 모달이 로드 되는데 시간이 걸리므로 인터벌 걸어주기
+			setInterval(function(){
+				pLModalGrid.refreshLayout()
+				},100);	
+		});
+	}
+	
+	
+	
+</script>		
+</div>
+</body>
+</html>

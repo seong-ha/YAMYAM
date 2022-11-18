@@ -5,12 +5,9 @@
 	layout:decorate="~{/layout/layout}">
 <head>
 <meta charset="UTF-8">
-<title>완제품 출고 조회</title>
+<title>YAMYAM</title>
 
 <style>
-#od-title{
-	font-weight: bold;
-}
 #od-btn {
 	display: inline-block; margin: 0 5px; float: right;
 }
@@ -22,7 +19,10 @@
 		<h3>완제품 출고 조회</h3>
 	</div>
 	
-	<table id="form-check">
+	 <div id="prdOutList-content">
+      <div id="input-group">
+         <ul class="ul-style">
+      <li><table id="form-check">
 	<tr>
 		<td>진행 상황</td>
 		<td>
@@ -36,24 +36,42 @@
 		</td>
 	
 		<td>
-		  <input class="form-check-input" type="radio" name="flexRadioDefault" id="odEnd" value="option13">
+		  <input class="form-check-input" type="radio" name="flexRadioDefault" id="odEnd" value="option3">
 		  <label class="form-check-label" for="odEnd">출고 완료</label>
 		</td>
 	</tr>
 	</table>
-
-	<div>
-    제품명<input type="text" data-bs-toggle="modal" data-bs-target="#exampleModal">
-    <img class="Magnifying-Glass-img" alt="image" src="../images/Magnifying_Glass.png">
-    <input type="text" readonly><br>
-    </div>
-	<div>
-    완제품LOT<input type="text" data-bs-toggle="modal" data-bs-target="#exampleModal">
-    <img class="Magnifying-Glass-img" alt="image" src="../images/Magnifying_Glass.png">
-    <input type="text" readonly><br>
-    </div>
-          <!-- Modal -->
-      <div class="modal fade" id="exampleModal" tabindex="-1"
+	 </li>
+	 <li><label for="prdNm">제품명</label><input type="text" 
+            data-bs-toggle="modal" data-bs-target="#prdModal" id="prdNm">
+            <img class="Magnifying-Glass-img" alt="image" src="../images/Magnifying_Glass.png">
+            <input type="text" class="back" id="prdNm2" readonly><br></li>
+            
+        <li><label for="lot">완제품LOT</label><input type="text" 
+            data-bs-toggle="modal" data-bs-target="#lotModal" id="lot">
+            <img class="Magnifying-Glass-img" alt="image" src="../images/Magnifying_Glass.png">
+            <input type="text" class="back" id="lot2" readonly><br></li>     
+            
+        <li><label>제조일자</label>
+	
+	    <div class="tui-datepicker-input tui-datetime-input tui-has-focus">
+	        <input id="startpicker-input" type="text" aria-label="Date">
+	        <span class="tui-ico-date"></span>
+	        <div id="startpicker-container" style="margin-left: -1px;"></div>
+	    </div>
+	    <span>-</span>
+	    <div class="tui-datepicker-input tui-datetime-input tui-has-focus">
+	        <input id="endpicker-input" type="text" aria-label="Date">
+	        <span class="tui-ico-date"></span>
+	        <div id="endpicker-container" style="margin-left: -1px;"></div>
+	    </div>
+	
+		<button class="btn btn-dark btn-sm" id="searchBtn">조회</button>
+		<button  class="btn btn-dark btn-sm" id="cancelBtn">초기화</button></li>
+		</ul>    
+            
+           <!-- 제품명 Modal -->
+      <div class="modal" id="prdModal" tabindex="-1"
          aria-labelledby="exampleModalLabel" aria-hidden="true">
          <div class="modal-dialog">
             <div class="modal-content">
@@ -63,151 +81,292 @@
                      aria-label="Close"></button>
                </div>
                <div class="modal-body">
-                  <button type="button" class="btn btn-dark btn-sm"
-                     data-bs-dismiss="modal">등록</button>
-                  <button type="button" class="btn btn-dark btn-sm">초기화</button>
-               <div id="modalGrid1"></div>
+               <div id="prdModalGrid"></div>
                </div>
             </div>
          </div>
       </div>
-	
-	<div id="od-container">
-     <label>제조일자</label>
-
-    <div class="tui-datepicker-input tui-datetime-input tui-has-focus">
-        <input id="startpicker-input" type="text" aria-label="Date">
-        <span class="tui-ico-date"></span>
-        <div id="startpicker-container" style="margin-left: -1px;"></div>
-    </div>
-    <span>-</span>
-    <div class="tui-datepicker-input tui-datetime-input tui-has-focus">
-        <input id="endpicker-input" type="text" aria-label="Date">
-        <span class="tui-ico-date"></span>
-        <div id="endpicker-container" style="margin-left: -1px;"></div>
-    </div>
-
-	<button class="btn btn-dark btn-sm">조회</button>
-	<button  class="btn btn-dark btn-sm">초기화</button>
-	
+      
+      <!-- 완제품 Modal -->
+      <div class="modal" id="lotModal" tabindex="-1"
+         aria-labelledby="exampleModalLabel" aria-hidden="true">
+         <div class="modal-dialog">
+            <div class="modal-content">
+               <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLabel">완제품LOT NO</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal"
+                     aria-label="Close"></button>
+               </div>
+               <div class="modal-body">
+               <div id="lotModalGrid"></div>
+               </div>
+            </div>
+         </div>
+      </div>
+	</div>
 </div>
 
 	<div id="od-btn">
-	<button class="btn btn-dark btn-sm">엑셀 파일 출력</button>
+	<button class="btn btn-dark btn-sm" id="exportBtn">엑셀 파일 출력</button>
 	</div>
 	
 <div id="grid"></div>
 
 <script>
-const grid = new tui.Grid({
-    el: document.getElementById('grid'),
-    data: [
-        {
-        	odDate : '2022-11-01',
-        	odCd : 'ORD-20221101-001',
-        	prdCd : 'MD-00100',
-        	prdNm : '얇은피 고기만두',
-        	odAmt : 200,
-        	actCd : 'VDR-1004',
-        	actNm : 'YD 마트',
-        	deDate : '2022-11-04',
-        	sts : '완료'
-        }
-        ],
-    rowHeaders: ['rowNum'],
-    scrollX: false,
-    scrollY: false,
-    columns: [
-      {
-        header: '완제품LOT',
-        name: 'odDate'
-      },
-      {
-        header: '제품 코드',
-        name: 'prdCd'
-      },
-      {
-        header: '제품명',
-        name: 'prdNm'
-      },
-      {
-        header: '거래처명',
-        name: 'actNm'
-      },
-      {
-        header: '출고량',
-        name: 'outAmt'
-      },
-      {
-        header: '출고 일자',
-        name: 'outDate'
-      },
-      {
-        header: '유통기한',
-        name: 'eDate'
-      },
-      {
-        header: '비고',
-        name: 'etc'
-      },
-    ]
-  });
+	
+	
+	/*------------
+	// function
+	----------------*/
+	prdClick();
+	lotClick();
+	
+	searchBtnHandler();
+	cancelBtnHandler();
+	exportBtnHandler();
+	
+	let grid = MainGridInit();
+	let prdModalGrid = prdGridInit();
+	let lotModalGrid = lotGridInit();
+	
+	/*------------
+	// 데이트피커
+	----------------*/
+	rangeDatepickerInit('#startpicker-input', '#startpicker-container','#endpicker-input','#endpicker-container')
+
+	
+	/*------------
+	// 검색버튼 이벤트 핸들러
+	----------------*/
+	function searchBtnHandler(){
+		$('#searchBtn').on('click',function(){
+			let getprdName = $("prdNm").val();
+			let getlot = $("lot").val();
+			let getStartDay = $("startpicker-input").val();
+			let getEndDay = $("#endpicker-input").val();
+		});
+	}
+
+	
+	/*------------
+	// 주문 조회 초기화 버튼
+	----------------*/
+	function cancelBtnHandler(){
+		$('#cancelBtn').on('click',function(){
+			$("#startpicker-input").val(today);
+			$("#endpicker-input").val(today);
+			$("#prdNm").val("");
+			$("#prdNm2").val("");
+			$("#lot").val("");
+			$("#lot2").val("");
+		});	
+	}
+	
+	
+	/*------------
+	// 주문서 리스트 그리드
+	----------------*/
+	function MainGridInit() {
+		let grid = new tui.Grid({
+		    el: document.getElementById('grid'),
+		    data: [
+		        {
+		        	lot : 'LOT-PRO-221104-620',
+		        	prdCd : 'MD-00100',
+		        	prdNm : '얇은피 고기만두',
+		        	actNm : 'YD 마트',
+		        	outAmt : 200,
+		        	outDate : '2022-11-04',
+		        	eDate : '2023-10-04',
+		        	etc : ''
+		        },
+		        {
+		        	lot : 'LOT-PRO-221106-810',
+		        	prdCd : 'MD-00300',
+		        	prdNm : '얇은피 새우만두',
+		        	actNm : 'AA 마트',
+		        	outAmt : 100,
+		        	outDate : '2022-11-06',
+		        	eDate : '2023-10-06',
+		        	etc : ''
+		        }
+		        ],
+		    rowHeaders: ['rowNum'],
+		    scrollX: false,
+		    scrollY: false,
+		    columns: [
+		      {
+		        header: '완제품LOT',
+		        name: 'lot'
+		      },
+		      {
+		        header: '제품 코드',
+		        name: 'prdCd'
+		      },
+		      {
+		        header: '제품명',
+		        name: 'prdNm'
+		      },
+		      {
+		        header: '거래처명',
+		        name: 'actNm'
+		      },
+		      {
+		        header: '출고량',
+		        name: 'outAmt'
+		      },
+		      {
+		        header: '출고 일자',
+		        name: 'outDate'
+		      },
+		      {
+		        header: '유통기한',
+		        name: 'eDate'
+		      },
+		      {
+		        header: '비고',
+		        name: 'etc'
+		      }
+		    ]
+		  });
+		return grid;
+	}
+	  
   
-const modalGrid1 = new tui.Grid({
-    el: document.getElementById('modalGrid1'),
-    data: [
-        {
-        	prdCd : 'MD-00100',
-        	prdNm : '얇은피 고기만두',
-        	won : '1000'
-        }
-        ],
-    rowHeaders: ['rowNum'],
-    scrollX: false,
-    scrollY: false,
-    columns: [
-      {
-        header: '제품코드',
-        name: 'prdCd'
-      },
-      {
-        header: '제품명',
-        name: 'prdNm'
-      },
-      {
-        header: '단가 (원)',
-        name: 'won'
-      }
-    ]
-  });
-  
-const modalGrid2 = new tui.Grid({
-    el: document.getElementById('modalGrid2'),
-    data: [
-        {
-        	lot : 'LOT-PRO-221104-620',
-        	prdNm : '얇은피 고기만두',
-        	eDate : '2023-10-04'
-        }
-        ],
-    rowHeaders: ['rowNum'],
-    scrollX: false,
-    scrollY: false,
-    columns: [
-      {
-        header: '완제품LOT',
-        name: 'lot'
-      },
-      {
-        header: '제품명',
-        name: 'prdNm'
-      },
-      {
-        header: '유통기한',
-        name: 'eDate'
-      }
-    ]
-  })
+	/*------------
+	// 제품명 Modal
+	----------------*/
+	function prdGridInit() {
+		let prdModalGrid = new tui.Grid({
+		    el: document.getElementById('prdModalGrid'),
+		    data: [
+		        {
+		        	prdCd : 'MD-00100',
+		        	prdNm : '얇은피 고기만두',
+		        	won : '1000'
+		        }
+		        ],
+		    rowHeaders: ['rowNum'],
+		    scrollX: false,
+		    scrollY: false,
+		    columns: [
+		      {
+		        header: '제품코드',
+		        name: 'prdCd'
+		      },
+		      {
+		        header: '제품명',
+		        name: 'prdNm'
+		      },
+		      {
+		        header: '단가 (원)',
+		        name: 'won'
+		      }
+		    ]
+		  });
+			return prdModalGrid;
+	}
+	
+	/*------------
+	// 제품명 모달 클릭
+	----------------*/
+	function prdClick(){
+	$('#prdNm').on('click',function(){
+	    	prdModalGrid.refreshLayout();
+	 });
+	}
+	
+	
+	 /*------------
+	// 제품명 모달 데이터 가져오기
+	----------------*/
+		prdModalGrid.on('click', ev => {
+	   let rowData = prdModalGrid.getRow(ev.rowKey);
+	   
+	   let cdVal = rowData['prdCd'];
+	   let nmVal = rowData['prdNm'];
+	   
+	   $('#prdNm').val(cdVal);
+	   $('#prdNm2').val(nmVal);
+	   
+	   $('#prdModal').modal("hide");
+   		});
+
+   
+	/*------------
+	// LOT Modal
+	----------------*/
+	function lotGridInit() {
+	let lotModalGrid = new tui.Grid({
+	    el: document.getElementById('lotModalGrid'),
+	    data: [
+	        {
+	        	lot : 'LOT-PRO-221104-620',
+	        	prdNm : '얇은피 고기만두',
+	        	eDate : '2023-10-04'
+	        }
+	        ],
+	    rowHeaders: ['rowNum'],
+	    scrollX: false,
+	    scrollY: false,
+	    columns: [
+	      {
+	        header: '완제품LOT',
+	        name: 'lot'
+	      },
+	      {
+	        header: '제품명',
+	        name: 'prdNm'
+	      },
+	      {
+	        header: '유통기한',
+	        name: 'eDate'
+	      }
+	    ]
+	  });
+	return lotModalGrid;
+	 }
+	
+	
+	/*------------
+	// LOT 모달 클릭
+	----------------*/
+	function lotClick(){
+	$('#lot').on('click',function(){
+		lotModalGrid.refreshLayout();
+	 });
+	}
+
+	/*------------
+	// LOT 모달 데이터 가져오기
+	----------------*/
+	lotModalGrid.on('click', ev => {
+	   let rowData = lotModalGrid.getRow(ev.rowKey);
+	   
+	   let noVal = rowData['lot'];
+	   let nmVal = rowData['prdNm'];
+	   
+	   $('#lot').val(noVal);
+	   $('#lot2').val(nmVal);
+	   
+	   $('#lotModal').modal("hide");
+   		});
+
+   
+	/*------------
+	// 엑셀 내보내기
+	----------------*/
+	function exportBtnHandler() {
+		$('#exportBtn').on('click',function(){
+		   let options = {
+				     includeHeader : true,
+				     includeHiddenColumns : true,
+				     onlySelected : true,
+				     fileName: 'lot Out List'
+				   };
+	   grid.export('xlsx', options);
+	   });
+	}
 
 </script>
 </div>

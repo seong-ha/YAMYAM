@@ -5,105 +5,273 @@
 	layout:decorate="~{/layout/layout}">
 <div class="container" layout:fragment="content">
 
+	<br>
+	<h2>완제품 코드 관리</h2>
+	<hr>
 	
-	완제품관리
-
+	<br>
+	<form>
+		<table>
+			<tr>
+				<td>
+					<ul class="ul-style">
+					<li><label for="matCode" style="width:130px">제품 코드</label><input id="matCode" name="PRD_CD">
+					&nbsp;&nbsp;&nbsp;
+					<label for="matCode">제품명</label><input id="matCode" name="PRD_NM">
+					</li>
+					</ul>
+				</td>
+			</tr>
+			
+			<tr>
+				<td>
+					<ul class="ul-style">
+						<li class="d-flex">
+							<label style="width:110px">규격</label>&nbsp;&nbsp;&nbsp;
+							<div style="width: 190px;" id="select-box"></div>
+							
+							<label style="width:100px">
+							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;단위</label>&nbsp;&nbsp;&nbsp;&nbsp;
+							<div style="width: 190px;" id="select-box2"></div>&nbsp;
+							
+							<button type="button" class="btn btn-dark btn-sm">조회</button>&nbsp;
+							<input type="reset" class="btn btn-dark btn-sm" id="reset" name="reset">
+					  	</li>
+				    </ul>
+				    
+				</td>
+			</tr>
+		</table>
+	</form>
+	
 	<div id="grid"></div>
+	
+	<div align="right">
+		
+		<br>
+		<!-- 등록 모달 -->
+		<button type="button" class="btn btn-dark btn-sm"
+		data-bs-toggle="modal" data-bs-target="#exampleModal">등록</button>&nbsp;
+		
+		<!-- 삭제 모달! -->
+		<button type="button" class="btn btn-dark btn-sm" 
+		data-bs-toggle="modal" data-bs-target="#exampleModal2">삭제</button>
+		
+		<!-- 등록 Modal -->
+		<div align="center">
+			<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+			  <div class="modal-dialog">
+			    <div class="modal-content">
+			      <div class="modal-header">
+			        <h5 class="modal-title" id="exampleModalLabel">완제품 코드 추가</h5>
+			        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			      </div>
+			      <div class="modal-body">
+			        
+				        <div class="mb-3 row">
+							    <label for="staticEmail" class="col-sm-3 col-form-label">완제품 코드</label>
+							    <div class="col-sm-9">
+							      <input type="text" name="PRD_CD" class="form-control" id="distributeCodeName">
+							    </div>
+						</div>
+				        
+				        <div class="mb-3 row">
+							    <label for="staticEmail" class="col-sm-3 col-form-label">완제품 명</label>
+							    <div class="col-sm-9">
+							      <input type="text" name="PRD_NM" class="form-control" id="distributeCodeName">
+							    </div>
+						</div>
+				        
+				        <div class="mb-3 row">
+							    <label for="staticEmail" class="col-sm-3 col-form-label">규격</label>
+							    <div class="col-sm-9">
+							      <input type="text" name="PRD_STD" class="form-control" id="distributeCodeName">
+							    </div>
+						</div>
+						
+						<div class="mb-3 row" style="padding-left: 46px;">
+								
+							    단위<div style="width: 190px; padding-left: 56px;
+							    text-align: left;" id="select-box3" ></div>
+						</div>
+				        
+			      </div>
+			      <div class="modal-footer">
+			        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">등록</button>
+			        <button type="button" class="btn btn-primary">취소</button>
+			      </div>
+			    </div>
+			  </div>
+			</div>
+		</div>	
+	
+		<!-- 삭제 Modal -->
+			<div class="modal fade" id="exampleModal2" tabindex="-1" aria-labelledby="exampleModalLabel2" aria-hidden="true">
+			  <div class="modal-dialog">
+			    <div class="modal-content">
+			      <div class="modal-header">
+			        <h5 class="modal-title" id="exampleModalLabel2">삭제 확인</h5>
+			        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			      </div>
+			      <div class="modal-body">
+			        <div align="center">정말 해당 완제품 코드를 삭제 하시겠습니까?</div>
+			      </div>
+			      <div class="modal-footer">
+			        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">확인</button>
+			        <button type="button" class="btn btn-primary">취소</button>
+			      </div>
+			    </div>
+			  </div>
+			</div>
+	</div>
 
 	<script>
-		const gridData = [ {
-      no: '1',
-      emp_no: '1100',
-      emp_name: '홍길동',
-      hire_date : '2002/07/05',
-      id : 'no',
-      dept_name : '영업부',
-      role : '0'
-		},
-    {
-      no: '2',
-      emp_no: '1101',
-      emp_name: '김길동',
-      hire_date : '2008/02/05',
-      id : 'no',
-      dept_name : '영업부',
-      role : '0'
-		},
-    {
-      no: '3',
-      emp_no: '1123',
-      emp_name: '홍길동',
-      hire_date : '2002/07/05',
-      id : 'no',
-      dept_name : '영업부',
-      role : '0'
-		},
-    {
-      no: '4',
-      emp_no: '1154',
-      emp_name: '황길동',
-      hire_date : '2003/11/15',
-      id : 'no',
-      dept_name : '영업부',
-      role : '0'
-		},
-    {
-      no: '5',
-      emp_no: '1199',
-      emp_name: '최길동',
-      hire_date : '2006/07/05',
-      id : 'no',
-      dept_name : '영업부',
-      role : '0'
-		},
-    {
-      no: '6',
-      emp_no: '1207',
-      emp_name: '홍길동',
-      hire_date : '2002/04/25',
-      id : 'no',
-      dept_name : '영업부',
-      role : '0'
-		},
-    {
-      no: '7',
-      emp_no: '1500',
-      emp_name: '홍길동',
-      hire_date : '2004/03/05',
-      id : 'no',
-      dept_name : '영업부',
-      role : '0'
-		},
-  ];
+	const gridData = [ {
+		  PRD_CD: 'PRD-0001',
+		  PRD_NM: '만두1',
+		  PRD_STD : '20kg',
+		  PRD_UN : 'EA',
+		  PRD_SFAMT : '1000',
+		  },
+		  {
+		 PRD_CD: 'PRD-0001',
+		 PRD_NM: '만두1',
+		 PRD_STD : '20kg',
+		 PRD_UN : 'EA',
+		 PRD_SFAMT : '1000',
+		 },
+		 {
+		 PRD_CD: 'PRD-0001',
+		 PRD_NM: '만두1',
+		 PRD_STD : '20kg',
+		 PRD_UN : 'EA',
+		 PRD_SFAMT : '1000',
+		 },
+	     {
+		 PRD_CD: 'PRD-0001',
+		 PRD_NM: '만두1',
+		 PRD_STD : '20kg',
+		 PRD_UN : 'EA',
+		 PRD_SFAMT : '1000',
+		 },
+	];
 
 		const grid = new tui.Grid({
 			el : document.getElementById('grid'),
 			data : gridData,
-			scrollX : false,
+			scrollX : true,
 			scrollY : false,
+			bodyHeight : 480,
+			rowHeaders: ['checkbox'],
+			
 			columns : [ {
-				header : 'No',
-				name : 'no'
+				header : '완제품 코드',
+				name : 'PRD_CD'
 			}, {
-				header : '직원고유번호',
-				name : 'emp_no'
+				header : '완제품명',
+				name : 'PRD_NM'
 			}, {
-				header : '직원이름',
-				name : 'emp_name'
+				header : '규격',
+				name : 'PRD_STD'
 			}, {
-				header : '입사일',
-				name : 'hire_date'
+				header : '단위',
+				name : 'PRD_UN'
 			}, {
-				header : '계정아이디',
-				name : 'id'
-			}, {
-				header : '부서명',
-				name : 'dept_name'
-			}, {
-				header : '직급정보',
-				name : 'role'
-			}, ]
+				header : '안전재고수량',
+				name : 'PRD_SFAMT'
+			} ],
+			showDummyRows : true
 		});
+		
+		// toast - select box
+		
+		var selectBox = new tui.SelectBox('#select-box', {
+				placeholder : '규격',
+				data : [ {
+					label : '10kg',
+					value : '10kg' // 코드 바꾸기
+				}, {
+					label : '20kg',
+					value : '20kg'
+				},
+				{
+					label : '30kg',
+					value : '30kg' // 코드 바꾸기
+				}, {
+					label : '40kg',
+					value : '40kg'
+				},
+				{
+					label : '50kg',
+					value : '50kg' // 코드 바꾸기
+				}, {
+					label : '60kg',
+					value : '60kg'
+				},
+				{
+					label : '70kg',
+					value : '70kg' // 코드 바꾸기
+				}, {
+					label : '80kg',
+					value : '80kg'
+				},
+				{
+					label : '90kg',
+					value : '90kg' // 코드 바꾸기
+				}, {
+					label : '100kg',
+					value : '100kg'
+				}],
+				autofocus : true
+			});	
+		
+		var selectBox2 = new tui.SelectBox('#select-box2', {
+			placeholder : '단위',
+			data : [ {
+				label : 'BOX',
+				value : 'BOX' // 코드 바꾸기
+			}, {
+				label : 'EA',
+				value : 'EA'
+			},
+			{
+				label : 'BUNDLE',
+				value : 'BUNDLE'
+			}
+			],
+			autofocus : true
+		});	
+		
+		var selectBox3 = new tui.SelectBox('#select-box3', {
+			placeholder : '단위',
+			data : [ {
+				label : 'BOX',
+				value : 'BOX' // 코드 바꾸기
+			}, {
+				label : 'EA',
+				value : 'EA'
+			},
+			{
+				label : 'BUNDLE',
+				value : 'BUNDLE'
+			}
+			],
+			autofocus : true
+		});	
+		
+		//grid select box change
+		selectBox.on('change', ev => {
+			mtrStd.value=ev.curr.value;
+			  console.log(ev);
+		});
+		
+		//셀렉트 박스 초기화
+		 document.getElementsByName('reset')[0].addEventListener('click', function(){
+			    selectBox.deselect();
+			    selectBox2.deselect();
+		 })
+		
+		
     </script>
     
 </div>

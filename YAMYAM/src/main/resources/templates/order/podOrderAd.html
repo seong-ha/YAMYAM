@@ -5,16 +5,9 @@
 	layout:decorate="~{/layout/layout}">
 <head>
 <meta charset="UTF-8">
-<title>주문 관리</title>
-<!-- 제이쿼리 -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
-<!-- 엑셀 기능 -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.1/xlsx.full.min.js"></script>
-<style>
+<title>YAMYAM</title>
 
-#od-title{
-	font-weight: bold;
-}
+<style>
 #od-btn {
 	display: inline-block; margin: 0 5px; float: right;
 }
@@ -23,182 +16,331 @@
 <body>
 <div class="container" layout:fragment="content">
 	<div id="od-title">
-		<h3>주문서 관리</h3>
+		<h3>생산 요청 관리</h3>
 	</div>
 	
-	<table id="form-check">
+	<div id="odAd-content">
+      <div id="input-group">
+         <ul class="ul-style">
+      <li><table id="form-check">
 	<tr>
 		<td>진행 상황</td>
 		<td>
-		  <input class="form-check-input" type="radio" name="flexRadioDefault" id="odAll" value="option1" checked>
-		  <label class="form-check-label" for="odAll">전체</label>
+		  <input class="form-check-input" type="radio" name="flexRadioDefault" id="podAll" value="option1" checked>
+		  <label class="form-check-label" for="podAll">전체</label>
 		</td>
 	
 		<td>
-		  <input class="form-check-input" type="radio" name="flexRadioDefault" id="odIng" value="option2">
-		  <label class="form-check-label" for="odIng">진행</label>
+		  <input class="form-check-input" type="radio" name="flexRadioDefault" id="podNo" value="option2">
+		  <label class="form-check-label" for="podNo">미계획</label>
+		</td>
+		
+		<td>
+		  <input class="form-check-input" type="radio" name="flexRadioDefault" id="podIng" value="option3">
+		  <label class="form-check-label" for="podIng">진행</label>
 		</td>
 	
 		<td>
-		  <input class="form-check-input" type="radio" name="flexRadioDefault" id="odEnd" value="option13">
-		  <label class="form-check-label" for="odEnd">완료</label>
+		  <input class="form-check-input" type="radio" name="flexRadioDefault" id="podEnd" value="option4">
+		  <label class="form-check-label" for="podEnd">완료</label>
 		</td>
 	</tr>
 	</table>
+	</li>
 
-	<div class="modal" tabindex="-1">
-		  <div class="modal-dialog">
-		    <div class="modal-content">
-		      <div class="modal-header">
-		        <h5 class="modal-title">거래처 목록</h5>
-		        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-		      </div>
-		      <div class="modal-body">
-		        <p>Modal body text goes here.</p>
-		      </div>
-		      <div class="modal-footer">
-		        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-		        <button type="button" class="btn btn-primary">Save changes</button>
-		      </div>
-		    </div>
-		  </div>
-	</div>
-	
-	<div id="od-container">
-	<label for="actCd">거래처</label> <input id="actCd"><img class="Magnifying-Glass-img" alt="image" src="../images/Magnifying_Glass.png"><input type="text" readonly><br>
-	<label for="prdNm">제품명</label> <input id="prdNm"><img class="Magnifying-Glass-img" alt="image" src="../images/Magnifying_Glass.png"><input type="text" readonly><br>
+         <li><label>요청일자</label>
+               <div class="tui-datepicker-input tui-datetime-input tui-has-focus">
+                  <input id="startpicker-input" type="text" aria-label="Date">
+                  <span class="tui-ico-date"></span>
+                  <div id="startpicker-container" style="margin-left: -1px;"></div>
+               </div>
+               <span>-</span>
+               <div class="tui-datepicker-input tui-datetime-input tui-has-focus">
+                  <input id="endpicker-input" type="text" aria-label="Date">
+                  <span class="tui-ico-date"></span>
+                  <div id="endpicker-container" style="margin-left: -1px;"></div>
+               </div>
+            
+               <button class="btn btn-dark btn-sm" id="searchBtn">조회</button>
+               <button type="button" class="btn btn-dark btn-sm" id="cancelBtn">초기화</button></li>
+               </ul>
+			</div>
+		</div>
 
-     <label>주문일자</label>
 
-    <div class="tui-datepicker-input tui-datetime-input tui-has-focus">
-        <input id="startpicker-input" type="text" aria-label="Date">
-        <span class="tui-ico-date"></span>
-        <div id="startpicker-container" style="margin-left: -1px;"></div>
-    </div>
-    <span>-</span>
-    <div class="tui-datepicker-input tui-datetime-input tui-has-focus">
-        <input id="endpicker-input" type="text" aria-label="Date">
-        <span class="tui-ico-date"></span>
-        <div id="endpicker-container" style="margin-left: -1px;"></div>
-    </div>
-
-	<button class="btn btn-dark btn-sm">조회</button>
-	<button  class="btn btn-dark btn-sm">초기화</button>
-	
-</div>
-
+	 <!-- 주문서 Modal -->
+	      <div class="modal" id="orderModal" tabindex="-1"
+	         aria-labelledby="exampleModalLabel" aria-hidden="true">
+	         <div class="modal-dialog">
+	            <div class="modal-content">
+	               <div class="modal-header">
+	                  <h5 class="modal-title" id="exampleModalLabel">주문서 관리</h5>
+	                  <button type="button" class="btn-close" data-bs-dismiss="modal"
+	                     aria-label="Close"></button>
+	               </div>
+	               <div class="modal-body">
+	               <div id="orderModalGrid"></div>
+	               </div>
+	            </div>
+	         </div>
+	      </div>
+	      
+	      
 	<div id="od-btn">
 	<button class="btn btn-dark btn-sm" id="insertBtn">추가</button>
-	<button class="btn btn-dark btn-sm">선택삭제</button>
-	<button class="btn btn-dark btn-sm">저장</button>
+	<button class="btn btn-dark btn-sm" id="deleteBtn">선택삭제</button>
+	<button class="btn btn-dark btn-sm" id="saveBtn">저장</button>
 	<button class="btn btn-dark btn-sm" id="exportBtn">엑셀 파일 출력</button>
 	</div>
 	
-<div id="grid"></div>
+<div id="podListGrid"></div>
 
 <script>
-const grid = new tui.Grid({
-    el: document.getElementById('grid'),
-    data: [
-        {
-        	odDate : '2022-11-01',
-        	odCd : 'ORD-20221101-001',
-        	prdCd : 'MD-00100',
-        	prdNm : '얇은피 고기만두',
-        	odAmt : 200,
-        	actCd : 'VDR-1004',
-        	actNm : 'YD 마트',
-        	deDate : '2022-11-04',
-        	sts : '완료'
-        }
-        ],
-    rowHeaders: ['checkbox'],
-    scrollX: false,
-    scrollY: false,
-    columns: [
-      {
-        header: '주문 일자',
-        name: 'odDate'
-      },
-      {
-        header: '주문 코드',
-        name: 'odCd'
-      },
-      {
-        header: '제품 코드',
-        name: 'prdCd'
-      },
-      {
-        header: '제품명',
-        name: 'prdNm'
-      },
-      {
-        header: '주문량',
-        name: 'odAmt'
-      },
-      {
-        header: '거래처 코드',
-        name: 'actCd'
-      },
-      {
-        header: '거래처명',
-        name: 'actNm'
-      },
-      {
-        header: '납기 일자',
-        name: 'deDate'
-      },
-      {
-        header: '진행 상황',
-        name: 'sts'
-      },
-    ]
-  });
 
-	$('#insertBtn').on('click',function(){
+	/*------------
+	// function
+	----------------*/
+	searchBtnHandler();
+	cancelBtnHandler();
+	deleteBtnHandler();
 	
-		var rowData = [{odDate: "", odCd: "", prdCd: "", prdNm: "", odAmt: "", actCd : "" , actNm: "", deDate: "", sts:""}]
-		grid.appendRow(rowData);
-				
-});
-	// 날짜 계산
-	var today = new Date();
-	var picker = tui.DatePicker.createRangePicker({
-	    startpicker: {
-	        date: today,
-	        input: '#startpicker-input',
-	        container: '#startpicker-container'
-	    },
-	    endpicker: {
-	        date: today,
-	        input: '#endpicker-input',
-	        container: '#endpicker-container'
-	    },
-	    selectableRanges: [
-	        [today, new Date(today.getFullYear() + 1, today.getMonth(), today.getDate())]
-	    ]
+	let podListGrid = podListGridInit();
+	let orderModalGrid = orderGridInit();
+	
+	
+	/*------------
+	// 데이트피커
+	----------------*/
+	rangeDatepickerInit('#startpicker-input', '#startpicker-container','#endpicker-input','#endpicker-container')
+	
+	
+	/*------------
+	// 검색버튼 이벤트 핸들러
+	----------------*/
+	function searchBtnHandler(){
+		$('#searchBtn').on('click',function(){
+			let getStartDay = $("startpicker-input").val();
+			let getEndDay = $("#endpicker-input").val();
+		});
+	}
+   
+	
+   /*------------
+	// 주문 조회 초기화 버튼
+	----------------*/
+	function cancelBtnHandler(){
+		$('#cancelBtn').on('click',function(){
+			$("#startpicker-input").val(today);
+			$("#endpicker-input").val(today);
+		});	
+	}
+   
+   
+    /*------------
+	// 생산요청서 리스트 그리드
+	----------------*/	
+	function podListGridInit(){
+		let podListGrid = new tui.Grid({
+		    el: document.getElementById('podListGrid'),
+		    data: [
+		        {
+		        	rqtDate : '2022-11-05',
+		        	odCd : 'ORD-20221105-001',
+		        	prdCd : 'MD-00100',
+		        	prdNm : '얇은피 고기만두',
+		        	odAmt : 200,
+		        	sAmt : 100,
+		        	rqtAmt : 100,
+		        	deDate : '2022-11-08',
+		        	sts : '완료'
+		        }
+		        ],
+		    rowHeaders: ['checkbox'],
+		    scrollX: false,
+		    scrollY: false,
+		    columns: [
+		      {
+		        header: '생산요청 일자',
+		        name: 'rqtDate',
+		        editor: 'datePicker',
+		        validation: {
+				     dataType: 'datePicker',
+				     required: true
+				      }
+		      },
+		      {
+		        header: '주문 코드',
+		        name: 'odCd'
+		      },
+		      {
+		        header: '제품 코드',
+		        name: 'prdCd'
+		      },
+		      {
+		        header: '제품명',
+		        name: 'prdNm'
+		      },
+		      {
+		        header: '주문량',
+		        name: 'odAmt'
+		      },
+		      {
+		        header: '재고량',
+		        name: 'sAmt'
+		      },
+		      {
+		        header: '요청수량',
+		        name: 'rqtAmt',
+		        editor: 'text',
+				// 필수 입력 값
+				validation: {
+				     dataType: 'text',
+				     required: true
+				      }
+		      },
+		      {
+		        header: '납기 일자',
+		        name: 'deDate',
+		        editor: 'datePicker',
+		        validation: {
+				     dataType: 'datePicker',
+				     required: true
+				      }
+		      },
+		      {
+		        header: '진행 상황',
+		        name: 'sts'
+		      },
+		    ]
+		  });
+			return podListGrid;
+    }
+
+    
+	 /*------------
+	// 해당하는 header의 모달창 띄우기
+	----------------*/
+	podListGrid.on('click',function(ev){
+
+   		if(ev.columnName =='odCd'){
+   			$('#orderModal').modal('show');
+   		 orderModalGrid.refreshLayout();
+   		}
+   	});
+
+    
+	/*------------
+	// 주문서 추가 버튼
+	----------------*/
+   $('#insertBtn').on('click',function(){
+      let rowData = [{rqtDate: "", odCd: "", prdCd: "", prdNm: "", odAmt: "", sAmt : "" , rqtAmt: "", deDate: "", sts:""}]
+      podListGrid.appendRow(rowData); 
 	});
-
-
-  
-	var myModal = document.getElementById('myModal')
-	var myInput = document.getElementById('myInput')
 	
-	myModal.addEventListener('shown.bs.modal', function () {
-	  myInput.focus()
-	})
+	
+   /*------------
+	// 삭제 버튼 클릭(그리드행 삭제)
+	----------------*/	
+	function deleteBtnHandler(){
+		// grid 선택 행 삭제
+		$('#deleteBtn').on('click',function(){
+			// sweetalert2
+			Swal.fire({
+			      title: '정말로 삭제 하시겠습니까?',
+			      //text: "다시 되돌릴 수 없습니다. 신중하세요.",
+			      icon: 'warning',
+			      showCancelButton: true,
+			      confirmButtonColor: '#3085d6',
+			      cancelButtonColor: '#d33',
+			      confirmButtonText: '승인',
+			      cancelButtonText: '취소',
+			      //reverseButtons: true, // 버튼 순서 거꾸로
+			      
+			    }).then((result) => {
+			      if (result.isConfirmed) {
+			        Swal.fire(
+			          '삭제가 완료되었습니다.'		          
+			        )
+			        podListGrid.removeCheckedRows();
+			      }
+			    })
+			
+		});	
+	}
+   
+   
+	/*------------
+	// 주문서 Modal
+	----------------*/
+	function orderGridInit() {
+		let orderModalGrid = new tui.Grid({
+		    el: document.getElementById('orderModalGrid'),
+		    data: [
+		        {
+		           odCd : 'ORD-20221110-001',
+		           prdCd : 'MD-00100',
+		           prdNm : '얇은피 고기만두',
+		           odAmt : '500'
+		        }
+		        ],
+		    rowHeaders: ['rowNum'],
+		    scrollX: false,
+		    scrollY: false,
+		    columns: [
+		      {
+		        header: '주문 코드',
+		        name: 'odCd'
+		      },
+		      {
+		        header: '제품 코드',
+		        name: 'prdCd'
+		      },
+		      {
+		        header: '제품명',
+		        name: 'prdNm'
+		      },
+		      {
+		        header: '주문량',
+		        name: 'odAmt'
+		      }
+		    ]
+		  });
+			return orderModalGrid;
+	   }
+	
+	
+	 /*------------
+	// 제품 모달에서 값 가져오기
+	----------------*/
+  	orderModalGrid.on('click', ev => {
+	   let val = orderModalGrid.getRow(ev.rowKey); // 클릭한 그리드
+	  
+	   let val2 = podListGrid.getFocusedCell().rowKey; // 진짜 큰 그리드
+	    
+	   	console.log(podListGrid.getValue(ev.rowKey,ev.columnName));
+	    const pmg = podListGrid.getValue(ev.rowKey,ev.columnName);
+	    podListGrid.setValue(val2, 'odCd', val.odCd);
+	    podListGrid.setValue(val2, 'prdCd', val.prdCd);
+	    podListGrid.setValue(val2, 'prdNm', val.prdNm);
+	    podListGrid.setValue(val2, 'odAmt', val.odAmt);
 
+	    $('#orderModal').modal("hide");
+   })
+   
+   
+	/*------------
 	// 엑셀 내보내기
-	const options = {
-	  includeHeader : true,
-	  includeHiddenColumns : true,
-	  onlySelected : true,
-	  fileName: 'myExport'
-	};
-	$('#exportBtn').on('click',function(){
-	//grid.export('xlsx');
-	grid.export('xlsx', options);
-	});
+	----------------*/
+   $('#exportBtn').on('click',function(){
+	   let options = {
+			     includeHeader : true,
+			     includeHiddenColumns : true,
+			     onlySelected : true,
+			     fileName: 'Pod Order List'
+			   };
+	 podListGrid.export('xlsx', options);
+   });
+	
 </script>
 </div>
 </body>

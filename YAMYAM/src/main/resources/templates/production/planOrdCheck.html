@@ -13,68 +13,57 @@
 <body>
 	<!-- 본문 시작 -->
 	<div layout:fragment="content" class="container">
-			<h4>생산지시 조회</h4>
-			<div style="margin: 15px;">
-					<table style="width: 100%;">
-						<tr>
-							<td style="width: 70px;">지시일자 &nbsp;</td>
-							<td>
-								<div class="tui-datepicker-input tui-datetime-input tui-has-focus">
-							        <input id="startpicker-input" type="text" aria-label="Date">
-							        <span class="tui-ico-date"></span>
-							        <div id="startpicker-container" style="margin-left: -1px;"></div>
-							    </div>
-							    <span>-</span>
-							    <div class="tui-datepicker-input tui-datetime-input tui-has-focus">
-							        <input id="endpicker-input" type="text" aria-label="Date">
-							        <span class="tui-ico-date"></span>
-							        <div id="endpicker-container" style="margin-left: -1px;"></div>
-							    </div>
-								<button type="button" id="searchBtn"
-									class="btn btn-dark btn-sm">검색</button>
-								<button type="button" id="cancelBtn"
-									class="btn btn-dark btn-sm">초기화</button>
-							</td>
-							<td></td>
-						</tr>
-						<tr>
-							<td colspan="3">
-								<div id="grid"></div>
-							</td>
-						</tr>
-						
-					</table>
+		<h3>생산지시 조회</h3>
+		<div>
+			<table style="width: 100%;">
+				<tr>
+					<td style="width: 70px;">지시일자 &nbsp;</td>
+					<td>
+						<div class="tui-datepicker-input tui-datetime-input tui-has-focus">
+					        <input id="startpicker-input" type="text" aria-label="Date">
+					        <span class="tui-ico-date"></span>
+					        <div id="startpicker-container" style="margin-left: -1px;"></div>
+					    </div>
+					    <span>-</span>
+					    <div class="tui-datepicker-input tui-datetime-input tui-has-focus">
+					        <input id="endpicker-input" type="text" aria-label="Date">
+					        <span class="tui-ico-date"></span>
+					        <div id="endpicker-container" style="margin-left: -1px;"></div>
+					    </div>
+						<button type="button" id="searchBtn"
+							class="btn btn-dark btn-sm">검색</button>
+						<button type="button" id="cancelBtn"
+							class="btn btn-dark btn-sm">초기화</button>
+					</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td colspan="3">
+						<div id="grid"></div>
+					</td>
+				</tr>
+				
+			</table>
 
-				</div>
+		</div>
 
 	<script>
-	
-	$(document).ready(function() {
 		
-		// toast - datepicker
-		var today = new Date();
-	    var picker = tui.DatePicker.createRangePicker({
-	        startpicker: {
-	            date: today,
-	            input: '#startpicker-input',
-	            container: '#startpicker-container'
-	        },
-	        endpicker: {
-	            date: today,
-	            input: '#endpicker-input',
-	            container: '#endpicker-container'
-	        },
-	        selectableRanges: [
-	            [today, new Date(today.getFullYear() + 1, today.getMonth(), today.getDate())]
-	        ]
-	    });
-	
-			// toast - grid
-			var grid = new tui.Grid({
+		//date picker 초기화
+		searchInit(); 
+		gridInit();
+		
+		cancelBtnHandler();  //  date picker input 값 초기화 버튼
+		searchBtnHandler();	 //  date picker input 값 조회 버튼
+
+		/*------------
+		// grid 초기화
+		----------------*/
+		function gridInit(){
+			let grid = new tui.Grid({
 				el : document.getElementById('grid'),
 				// 임시 데이터
 				data : [{
-							boardNum : '1',
 							podCd : 'PID-20221101-001',
 							prdCd : 'MD-00200',
 							name : '얇은피 김치만두',
@@ -83,7 +72,6 @@
 							prio : '1',
 							sts : '완료'},
 						{
-							boardNum : '2',
 							podCd : 'PID-20221101-002',
 							prdCd : 'MD-00300',
 							name : '얇은피 새우만두',
@@ -103,14 +91,9 @@
 				// },
 				scrollX : false,
 				scrollY : false,
-				// columnOptions: {
-				// 	minWidth: 180
-				// },
-				columns : [ {
-					header : 'No',
-					name : 'boardNum',
-					width : 'auto'
-				}, {
+				rowHeaders: ['rowNum'],				
+				columns : [ 
+				{
 					header : '생산지시코드',
 					name : 'podCd',
 				}, {
@@ -140,34 +123,47 @@
 					name : 'other',
 				}, ]
 			});
+		}
+		
 			
+			/*------------
+			// datepicker
+			----------------*/	
+			function searchInit(){
+				// toast - datepicker
+				rangeDatepickerInit('#startpicker-input', '#startpicker-container','#endpicker-input','#endpicker-container')
+			}
 			
-			// 진행구분 radio 필터링
-			/* $('#radioTable > input').click(function() {
-		        var val = $("input[type=radio][name=process]:checked").val();
-		        if (val) {
-		             const state = {
-		            		  code: 'eq',
-		            		  value: val 
-		            		}; 
-					
-		            grid.findRows(row => {
-	            	
-		            	var status = row.sts;
-		            	if(val == '진행' || val == '완료' ){
-		            		grid.filter('sts',[{code:'eq', value:val}]);   
-		            	} else if(val == '전체') {
-		            		grid.filter('sts',[{code:'contain', value:'진행'},{code:'contain', value:'완료'}]); 
-		            	}
-		            }); 
-		        }
-		        else {
-		        	console.log('아무것도 선택되지 않음');
-		        }
-		    }); */
+			/*------------
+			// 검색버튼 이벤트 핸들러
+			----------------*/
+			function searchBtnHandler(){
 
-		    
-		})
+				$('#searchBtn').on('click',function(){
+					let getStartDay = $("#startpicker-input").val();
+					let getEndDay = $("#endpicker-input").val();
+					console.log(getStartDay);
+					console.log(getEndDay);
+					// 갖고온 start, end 값을 넘겨서 select 해오기
+					// ajax 받아오고
+					// success : function(data){manageGrid.resetData(data);}
+					
+				})
+			}
+
+			
+			
+			/*------------
+			// datePicker 초기화버튼 이벤트 핸들러
+			----------------*/
+			function cancelBtnHandler(){
+				$('#cancelBtn').on('click',function(){
+
+					$("#startpicker-input").val(today);
+					$("#endpicker-input").val(today);
+				});	
+			}
+
 	</script>
 
 	</div>

@@ -6,7 +6,7 @@
 
 <div class="container" layout:fragment="content">
 	<div id="mat-od-title">
-		<h2>자재 반품 관리</h2>
+		<h3>자재 반품 관리</h3>
 	</div>
 	<hr>
 	<ul class="ul-style">
@@ -59,8 +59,8 @@
 						<div id="modalGrid" style="width: 100%;"></div>
 					</div>
 					<div align="center">
-						<button class="btn btn-dark btn-sm">확인</button>
-						<button class="btn btn-dark btn-sm">취소</button>
+						<button class="btn btn-dark btn-sm" data-bs-dismiss="modal">확인</button>
+						<button class="btn btn-dark btn-sm" data-bs-dismiss="modal">취소</button>
 					</div>
 				</div>
 
@@ -83,8 +83,8 @@
 						<div id="modalGrid2"></div>
 					</div>
 					<div align="center">
-						<button class="btn btn-dark btn-sm">추가</button>
-						<button class="btn btn-dark btn-sm">취소</button>
+						<button class="btn btn-dark btn-sm" data-bs-dismiss="modal">추가</button>
+						<button class="btn btn-dark btn-sm" data-bs-dismiss="modal">취소</button>
 					</div>
 				</div>
 
@@ -106,8 +106,8 @@
 						<div id="modalGrid3"></div>
 					</div>
 					<div align="center">
-						<button class="btn btn-dark btn-sm">추가</button>
-						<button class="btn btn-dark btn-sm">취소</button>
+						<button class="btn btn-dark btn-sm" data-bs-dismiss="modal">추가</button>
+						<button class="btn btn-dark btn-sm" data-bs-dismiss="modal">취소</button>
 					</div>
 				</div>
 
@@ -116,100 +116,109 @@
 	</div>
 
 	<script>
-const grid = new tui.Grid({
-      el: document.getElementById('grid'),
-      bodyHeight: 500,
-      data: [
-    {
-    	matCode: 'OAF-20221104-011',
-        mtCode: 'RML-10101',
-        maNm: '얇은 만두피',
-        actNm: 'YD 만두피',
-        rCount: 1,
-        rDate: '2023-11-12',
-        eDate: '2022-11-12',
-        eCode: 'RMB-00102',
-        eInfo: '유통기한 임박'
-    },
-    {
-    	matCode: 'OAF-20221105-012',
-        mtCode: 'RML-10102',
-        maNm: '굵은 만두피',
-        actNm: 'SJ 만두피',
-        rCount: 7,
-        rDate: '2023-11-12',
-        eDate: '2022-11-12',
-        eCode: 'RMB-00100',
-        eInfo: '포장지 훼손'
-    }
-  ],
-      rowHeaders: ['checkbox', 'rowNum'],
-      scrollX: false,
-      scrollY: true,
-      columns: [
-        {
-          header: '발주코드',
-          name: 'matCode'
-        },
-        {
-          header: '자재코드',
-          name: 'mtCode'
-        },
-        {
-          header: '자재명',
-          name: 'maNm'
-        },
-        {
-          header: '업체명',
-          name: 'actNm'
-        },
-        {
-          header: '반품수량',
-          name: 'rCount'
-        },
-        {
-          header: '반품요청일',
-          name: 'rDate'
-        },
-        {
-          header: '검사일자',
-          name: 'eDate'
-        },
-        {
-            header: '불량코드',
-            name: 'eCode'
-        },
-        {
-            header: '불량내용',
-            name: 'eInfo'
-        }
-      ]
-    });
-
-    grid.on('check', ev => {
-      console.log('check!', ev);
-    });
-
-    grid.on('uncheck', ev => {
-      console.log('uncheck!', ev);
-    });
-
-    grid.on('focusChange', ev => {
-      console.log('change focused cell!', ev);
-    });
-    </script>
-
-	<script>
-	document.addEventListener('shown.bs.modal', function (){
-		modalGrid.refreshLayout();
-		modalGrid2.refreshLayout();
-		modalGrid3.refreshLayout();
-	}, '.modal');
+	let grid = matReList();				// 반품재고리스트 그리드
 	
-	var modalGrid = new tui.Grid({
-		el: document.getElementById('modalGrid'),
-		bodyHeight: 400,
-		data: [{
+	let modalGrid = matList();			// 자재목록리스트 모달
+	let modalGrid2 = actList();			// 자재목록리스트 모달
+	let modalGrid3 = addPlan();			// 추가버튼 모달
+	
+	modalRef();							// 모달 리프레쉬
+	datePicker();
+	
+	/*------------------------------
+	// 반품재고 리스트 그리드
+	--------------------------------*/
+	function matReList(){
+		let dataList = [
+		    {
+		    	matCode: 'OAF-20221104-011',
+		        mtCode: 'RML-10101',
+		        maNm: '얇은 만두피',
+		        actNm: 'YD 만두피',
+		        rCount: 1,
+		        rDate: '2023-11-12',
+		        eDate: '2022-11-12',
+		        eCode: 'RMB-00102',
+		        eInfo: '유통기한 임박'
+		    },
+		    {
+		    	matCode: 'OAF-20221105-012',
+		        mtCode: 'RML-10102',
+		        maNm: '굵은 만두피',
+		        actNm: 'SJ 만두피',
+		        rCount: 7,
+		        rDate: '2023-11-12',
+		        eDate: '2022-11-12',
+		        eCode: 'RMB-00100',
+		        eInfo: '포장지 훼손'
+		    }
+		  ]
+		let grid = new tui.Grid({
+		      el: document.getElementById('grid'),
+		      bodyHeight: 500,
+		      data: dataList,
+		      rowHeaders: ['checkbox', 'rowNum'],
+		      scrollX: false,
+		      scrollY: true,
+		      columns: [
+		        {
+		          header: '발주코드',
+		          name: 'matCode'
+		        },
+		        {
+		          header: '자재코드',
+		          name: 'mtCode'
+		        },
+		        {
+		          header: '자재명',
+		          name: 'maNm'
+		        },
+		        {
+		          header: '업체명',
+		          name: 'actNm'
+		        },
+		        {
+		          header: '반품수량',
+		          name: 'rCount'
+		        },
+		        {
+		          header: '반품요청일',
+		          name: 'rDate'
+		        },
+		        {
+		          header: '검사일자',
+		          name: 'eDate'
+		        },
+		        {
+		            header: '불량코드',
+		            name: 'eCode'
+		        },
+		        {
+		            header: '불량내용',
+		            name: 'eInfo'
+		        }
+		      ]
+		    });
+		
+		    grid.on('check', ev => {
+		      console.log('check!', ev);
+		    });
+		
+		    grid.on('uncheck', ev => {
+		      console.log('uncheck!', ev);
+		    });
+		
+		    grid.on('focusChange', ev => {
+		      console.log('change focused cell!', ev);
+		    });
+		    return grid;
+		}
+
+	/*------------------------------
+	// 자재목록 모달 그리드
+	--------------------------------*/
+	function matList() {
+		let dataList = [{
 			matCode: 'OAF-20221104-001',
 			maCode: 'RML-10101',
 			maNm: '얇은 만두피',
@@ -224,41 +233,48 @@ const grid = new tui.Grid({
 			actNm: 'SJ 만두피',
 			count: 9,
 			date: '2022-11-12'
-		}],
-		rowHeaders: ['checkbox'],
-		scrollX: false,
-		scrollY: true,
-		columns: [{
-	          header: '발주코드',
-	          name: 'matCode'
-	        },
-	        {
-	          header: '자재코드',
-	          name: 'maCode'
-	        },
-	        {
-	          header: '자재명',
-	          name: 'maNm'
-	        },
-	        {
-		      header: '업체명',
-		      name: 'actNm'
-		    },
-	        {
-			  header: '불합격량',
-			  name: 'count'
-			},
-		    {
-			  header: '검사일자',
-			  name: 'date'
-			}
-      ] 
-	});
+		}]
+		let modalGrid = new tui.Grid({
+			el: document.getElementById('modalGrid'),
+			bodyHeight: 400,
+			data: dataList,
+			rowHeaders: ['checkbox'],
+			scrollX: false,
+			scrollY: true,
+			columns: [{
+		          header: '발주코드',
+		          name: 'matCode'
+		        },
+		        {
+		          header: '자재코드',
+		          name: 'maCode'
+		        },
+		        {
+		          header: '자재명',
+		          name: 'maNm'
+		        },
+		        {
+			      header: '업체명',
+			      name: 'actNm'
+			    },
+		        {
+				  header: '불합격량',
+				  name: 'count'
+				},
+			    {
+				  header: '검사일자',
+				  name: 'date'
+				}
+	      ] 
+		});
+		return modalGrid;
+	}
 	
-	var modalGrid2 = new tui.Grid({
-		el: document.getElementById('modalGrid2'),
-		bodyHeight: 150,
-		data: [{
+	/*------------------------------
+	// 추가버튼 모달 그리드
+	--------------------------------*/
+	function addPlan(){
+		let dataList = [{
 			code: 'RML-10101',
 			name: '얇은 만두피',
 			size: 100,
@@ -269,52 +285,85 @@ const grid = new tui.Grid({
 			name: '굵은 만두피',
 			size: 100,
 			count: 200
-		}],
-		rowHeaders: ['checkbox'],
-		scrollX: false,
-		scrollY: true,
-		columns: [{
-	          header: '자재코드',
-	          name: 'code'
-	        },
-	        {
-	          header: '자재명',
-	          name: 'name'
-	        },
-	        {
-	          header: '규격',
-	          name: 'size'
-	        },
-	        {
-		      header: '수량',
-		      name: 'count'
-		    }
-      ] 
-	});
+		}]
+		let modalGrid2 = new tui.Grid({
+			el: document.getElementById('modalGrid2'),
+			bodyHeight: 150,
+			data: dataList,
+			rowHeaders: ['checkbox'],
+			scrollX: false,
+			scrollY: true,
+			columns: [{
+		          header: '자재코드',
+		          name: 'code'
+		        },
+		        {
+		          header: '자재명',
+		          name: 'name'
+		        },
+		        {
+		          header: '규격',
+		          name: 'size'
+		        },
+		        {
+			      header: '수량',
+			      name: 'count'
+			    }
+	      ] 
+		});
+		return modalGrid2;
+	}
 	
-	var modalGrid3 = new tui.Grid({
-		el: document.getElementById('modalGrid3'),
-		bodyHeight: 150,
-		data: [{
+	/*------------------------------
+	// 업체목록 모달 그리드
+	--------------------------------*/
+	function actList(){
+		let dataList = [{
 			actCode: 'VDR-1101',
 			actName: 'YD 만두피'
-		}],
-		rowHeaders: ['checkbox'],
-		scrollX: false,
-		scrollY: true,
-		columns: [
-			{
-				header: '업체 코드',
-				name: 'actCode',
-			},
-			{
-				header: '업체명',
-				name: 'actName',
-			}
-		]
-	});
+			}]
+		let modalGrid3 = new tui.Grid({
+			el: document.getElementById('modalGrid3'),
+			bodyHeight: 150,
+			data: dataList,
+			rowHeaders: ['checkbox'],
+			scrollX: false,
+			scrollY: true,
+			columns: [
+				{
+					header: '업체 코드',
+					name: 'actCode',
+				},
+				{
+					header: '업체명',
+					name: 'actName',
+				}
+			]
+		});
+		return modalGrid3;
+	}
 	
-	   // Date Picker
+	/*------------------------------
+	// 모달 그리드 리프레쉬
+	--------------------------------*/
+	function modalRef(){
+		document.addEventListener('shown.bs.modal', function (){
+			modalGrid.refreshLayout();
+		}, '.modal');
+		
+		document.addEventListener('shown.bs.modal', function (){
+			modalGrid2.refreshLayout();
+		}, '.modal');
+		
+		document.addEventListener('shown.bs.modal', function (){
+			modalGrid3.refreshLayout();
+		}, '.modal');
+	}
+	
+	/*------------
+	// datepicker
+	----------------*/
+	function datePicker() {
 	   var today = new Date();
 	    var picker = tui.DatePicker.createRangePicker({
 	        startpicker: {
@@ -331,5 +380,6 @@ const grid = new tui.Grid({
 	            [today, new Date(today.getFullYear() + 1, today.getMonth(), today.getDate())]
 	        ]
 	    });
+	}
 	</script>
 </div>
