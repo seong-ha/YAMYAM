@@ -11837,3 +11837,8 @@ body {
 .ul-style li{
 	padding: 5px;
 }
+
+/* readonly인 input태그 배경색은 어둡게~ */
+input[readonly] {
+		background-color: gainsboro;
+}
