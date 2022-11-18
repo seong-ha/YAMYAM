@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.mandu.yamyam.mat.mapper.MatOdMapper;
 import com.mandu.yamyam.mat.service.MatOdService;
+import com.mandu.yamyam.mat.service.MatVO;
 
 @Service
 public class MatOdServiceImpl implements MatOdService {
@@ -55,6 +56,12 @@ public class MatOdServiceImpl implements MatOdService {
 	@Override
 	public List<Map<String, Object>> odMatList() {
 		return mapper.odMatList();
+	}
+
+	// 신규생산계획 추가하면 리스트로.
+	@Override
+	public List<Map<String, Object>> newPlanInfo(MatVO vo) {
+		return mapper.newPlanInfo(vo.getPplnCd());
 	}
 	
 

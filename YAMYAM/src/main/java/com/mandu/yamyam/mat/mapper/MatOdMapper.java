@@ -3,6 +3,8 @@ package com.mandu.yamyam.mat.mapper;
 import java.util.List;
 import java.util.Map;
 
+import com.mandu.yamyam.mat.service.MatVO;
+
 public interface MatOdMapper {
 	
 	// 전체조회(일반 탭)
@@ -25,4 +27,7 @@ public interface MatOdMapper {
 	
 	// 자재발주 전체리스트(생산계획서용 탭)
 	public List<Map<String, Object>> odMatList();
+	
+	// 자재발주 전체리스트(생산계획서용 탭)
+	public List<Map<String, Object>> newPlanInfo(String pplnCd);
 }
