@@ -5,7 +5,7 @@
    layout:decorate="~{/layout/layout}">
 <head>
 <meta charset="UTF-8">
-<title>주문 관리</title>
+<title>YAMYAM</title>
 
 <style>
 #od-btn {
@@ -20,7 +20,7 @@
       <h3>주문서 관리</h3>
    </div>
    
-   <div id="prdOutAd-content">
+   <div id="odAd-content">
       <div id="input-group">
          <ul class="ul-style">
       <li><table id="form-check">
@@ -162,6 +162,8 @@
 	----------------*/
 	cancelBtnHandler();  //  date picker input 값 초기화 버튼
 	searchBtnHandler();
+	deleteBtnHandler();
+	//insertBtnHandler();
 	
 	let actModalGrid = actGridInit();
 	let actModalGrid2 = actGridInit2();
@@ -206,7 +208,7 @@
     /*------------
 	// 주문서 리스트 그리드
 	----------------*/
-	const grid = new tui.Grid({
+	let grid = new tui.Grid({
 	    el: document.getElementById('grid'),
 	    data: [
 	        {
@@ -293,7 +295,9 @@
 	// 해당하는 header의 모달창 띄우기
 	----------------*/
    	grid.on('click',function(ev){
-
+		if(!ev.rowKey) {
+			return;
+		}
    		if(ev.columnName =='actCd'){
    			$('#actModal').modal('show');
    		 actModalGrid.refreshLayout();
@@ -313,17 +317,53 @@
       grid.appendRow(rowData); 
 	});
 	
-   
 	
-   	/*------------
-	// 주문서 선택삭제 버튼
+   /*------------
+	// 등록 버튼 클릭
 	----------------*/
-   $('#deleteBtn').on('click',function(){
-		var showConfirm = true;
-		grid.removeCheckedRows(showConfirm);
-	});
-
-
+	/*
+	function insertBtnHandler(){
+		$('#insertBtn').on('click',function(){
+			let odAmt = $('#odAmt').val();
+			sweetConfirm('C', function(){
+				
+				Swal.fire('등록이 완료되었습니다');
+			
+			})
+		}
+   }
+   */
+   
+   /*------------
+	// 삭제 버튼 클릭(그리드행 삭제)
+	----------------*/	
+	function deleteBtnHandler(){
+		// grid 선택 행 삭제
+		$('#deleteBtn').on('click',function(){
+			// sweetalert2
+			Swal.fire({
+			      title: '정말로 삭제 하시겠습니까?',
+			      //text: "다시 되돌릴 수 없습니다. 신중하세요.",
+			      icon: 'warning',
+			      showCancelButton: true,
+			      confirmButtonColor: '#3085d6',
+			      cancelButtonColor: '#d33',
+			      confirmButtonText: '승인',
+			      cancelButtonText: '취소',
+			      //reverseButtons: true, // 버튼 순서 거꾸로
+			      
+			    }).then((result) => {
+			      if (result.isConfirmed) {
+			        Swal.fire(
+			          '삭제가 완료되었습니다.'		          
+			        )
+			        grid.removeCheckedRows();
+			      }
+			    })
+			
+		});	
+	}
+   
 	
 	/*------------
 	// 거래처 Modal (행 추가 시, 사용)
