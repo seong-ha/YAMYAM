@@ -25,4 +25,8 @@ public interface MatOdService {
 
 	// 자재발주 전체리스트(생산계획서용 탭)
 	public List<Map<String, Object>> odMatList();
+	
+	// 자재발주 전체리스트(생산계획서용 탭)
+	public List<Map<String, Object>> newPlanInfo(MatVO vo);
+	
 }

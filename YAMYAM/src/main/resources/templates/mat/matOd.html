@@ -91,7 +91,6 @@
 					<h3>자재 발주</h3>
 					<div id="grid4"></div>
 				</div>
-					<span>안전발주량:</span>
 			</div>
 		</div>
 	</div>
@@ -112,8 +111,8 @@
 						<div id="modalGrid"></div>
 					</div>
 					<div align="center">
-						<button class="btn btn-dark btn-sm">추가</button>
-						<button class="btn btn-dark btn-sm">취소</button>
+						<button class="btn btn-dark btn-sm" data-bs-dismiss="modal">추가</button>
+						<button class="btn btn-dark btn-sm" data-bs-dismiss="modal">취소</button>
 					</div>
 				</div>
 
@@ -136,8 +135,8 @@
 						<div id="modalGrid2"></div>
 					</div>
 					<div align="center">
-						<button class="btn btn-dark btn-sm">추가</button>
-						<button class="btn btn-dark btn-sm">취소</button>
+						<button class="btn btn-dark btn-sm" data-bs-dismiss="modal">추가</button>
+						<button class="btn btn-dark btn-sm" data-bs-dismiss="modal">취소</button>
 					</div>
 				</div>
 			</div>
@@ -152,7 +151,7 @@
 				<div class="modal-header">
 					<h5 class="modal-title" id="planModalLabel">신규 생산 계획서 모델</h5>
 					<button type="button" class="btn-close" data-bs-dismiss="modal"
-						aria-label="Close"></button>
+						aria-label="Close" id="planModalClose"></button>
 				</div>
 				<div class="modal-body">
 					<!-- Date Picker -->
@@ -173,12 +172,7 @@
 					<div>
 						<div id="modalGrid3"></div>
 					</div>
-					<div align="center">
-						<button class="btn btn-dark btn-sm">추가</button>
-						<button class="btn btn-dark btn-sm">취소</button>
-					</div>
 				</div>
-
 			</div>
 		</div>
 	</div>
@@ -198,8 +192,10 @@
 		let actList = actListModal();		// 업체목록 모달
 		let planModal = addPlan(); 			// 생산계획서 모달
 		
-		gridRef();	// 그리드 리프레쉬
+		gridRef();			// 그리드 리프레쉬
 		modalRef();			// 모달 리프레쉬
+		
+		addNewPlan();			// 신규생산계획 추가 이벤트
 		
 		datePicker(); 		// datePicker
 		datePicker2();		// datePicker
@@ -218,39 +214,39 @@
 	      columns: [
 	        {
 	          header: '발주코드',
-	          name: 'M_OD_CD'
+	          name: 'mOdCd'
 	        },
 	        {
 	          header: '자재코드',
-	          name: 'MTR_CD'
+	          name: 'mtrCd'
 	        },
 	        {
 	          header: '자재명',
-	          name: 'MTR_NM'
+	          name: 'mtrNm'
 	        },
 	        {
 	          header: '단가(원)',
-	          name: 'M_ODD_MN'
+	          name: 'mOddNm'
 	        },
 	        {
 	          header: '발주량',
-	          name: 'M_ODD_AMT'
+	          name: 'mOddAmt'
 	        },
 	        {
 	          header: '총액',
-	          name: 'M_SUM'
+	          name: 'mSum'
 	        },
 	        {
 	          header: '업체명',
-	          name: 'ACT_NM'
+	          name: 'actNm'
 	        },
 	        {
 	          header: '발주신청일',
-	          name: 'M_OD_DD'
+	          name: 'mOdDd'
 	        },
 	        {
 	          header: '납기요청일',
-	          name: 'M_ODD_DATE'
+	          name: 'mOddDate'
 	        }
 	      ]
 	    });
@@ -277,30 +273,30 @@
 		let newPlan = new tui.Grid({
 		      el: document.getElementById('grid2'),
 		      bodyHeight: 200,
-		      data: [[${newPlanList}]],
+		      data: null,
 		      rowHeaders: ['checkbox', 'rowNum'],
 		      scrollX: false,
 		      scrollY: true,
 		      columns: [
 		        {
 		          header: '상세계획번호',
-		          name: 'PLAND_CD'
+		          name: 'plandCd'
 		        },
 		        {
 		          header: '제품코드',
-		          name: 'PRD_CD'
+		          name: 'prdCd'
 		        },
 		        {
 		          header: '제품명',
-		          name: 'PRD_NM'
+		          name: 'prdNm'
 		        },
 		        {
 		          header: '계획량',
-		          name: 'PPLND_AMT'
+		          name: 'pplndAmt'
 		        },
 		        {
 		          header: '주문납기일',
-		          name: 'DE_DATE'
+		          name: 'deDate'
 		        }
 		      ]
 		    });
@@ -327,22 +323,22 @@
 		let needMat = new tui.Grid({
 		      el: document.getElementById('grid3'),
 		      bodyHeight: 200,
-		      data: [[${needMatList}]],
+		      data: null,
 		      rowHeaders: ['checkbox', 'rowNum'],
 		      scrollX: false,
 		      scrollY: true,
 		      columns: [
 		    	  {
 			          header: '자재코드',
-			          name: 'MTR_CD'
+			          name: 'mtrCd'
 			        },
 			        {
 			          header: '자재명',
-			          name: 'MTR_NM'
+			          name: 'mtrNm'
 			        },
 			        {
 			          header: '소모량',
-			          name: 'BOM_AMT'
+			          name: 'bomAmt'
 			        }
 		      ]
 		    });
@@ -369,42 +365,46 @@
 		let odMat = new tui.Grid({
 		      el: document.getElementById('grid4'),
 		      bodyHeight: 200,
-		      data: [[${odMatList}]],
-		      rowHeaders: ['checkbox', 'rowNum'],
+		      data: null,
+		      rowHeaders: ['rowNum'],
 		      scrollX: false,
 		      scrollY: true,
 		      columns: [
 		    	  {
 			          header: '자재코드',
-			          name: 'MTR_CD'
+			          name: 'mtrCd'
 			        },
 			        {
 			          header: '자재명',
-			          name: 'MTR_NM'
+			          name: 'mtrNm'
 			        },
 			        {
+				      header: '안전발주량',
+				      name: 'safeod'
+				    },
+			        {
 				      header: '단가(원)',
-				      name: 'M_ODD_MN'
+				      name: 'mOddMn'
 				    },
 				    {
 					  header: '발주량',
-					  name: 'M_ODD_AMT'
+					  name: 'mOddAmt'
 					},
 					{
 					  header: '총액',
-					  name: 'SUM_PRICE'
+					  name: 'sumPrice'
 					},
 					{
 					  header: '업체명',
-					  name: 'ACT_NM'
+					  name: 'actNm'
 					},
 					{
 					  header: '발주신청일',
-					  name: 'M_OD_DD'
+					  name: 'mOdDd'
 					},
 					{
 					  header: '납기요청일',
-					  name: 'M_ODD_DATE'
+					  name: 'mOddDate'
 					}
 						        
 		      ]
@@ -448,19 +448,19 @@
 			columns: [
 				{
 					header: '자재코드',
-					name: 'MTR_CD',
+					name: 'mtrCd',
 				},
 				{
 					header: '자재명',
-					name: 'MTR_NM',
+					name: 'mtrNm',
 				},
 				{
 					header: '규격',
-					name: 'MTR_STD'
+					name: 'mtrStd'
 				},
 				{
 					header: '수량',
-					name: 'M_SAMT'
+					name: 'mSamt'
 				}
 			]
 		});
@@ -471,24 +471,24 @@
 	// 업체목록 모달 그리드
 	--------------------------------*/
 	function actListModal() {
-	let actList = new tui.Grid({
-		el: document.getElementById('modalGrid2'),
-		bodyHeight: 200,
-		data: [[${actList}]],
-		rowHeaders: ['checkbox'],
-		scrollX: false,
-		scrollY: true,
-		columns: [
-				{
-					header: '업체 코드',
-					name: 'ACT_CD',
-				},
-				{
-					header: '업체명',
-					name: 'ACT_NM',
-				}
-			]
-		});
+		let actList = new tui.Grid({
+			el: document.getElementById('modalGrid2'),
+			bodyHeight: 200,
+			data: [[${actList}]],
+			rowHeaders: ['checkbox'],
+			scrollX: false,
+			scrollY: true,
+			columns: [
+					{
+						header: '업체 코드',
+						name: 'actCd',
+					},
+					{
+						header: '업체명',
+						name: 'actNm',
+					}
+				]
+			});
 		return actList;
 	}
 	
@@ -496,35 +496,66 @@
 	// 생산계획 모달 그리드
 	--------------------------------*/
 	function addPlan() {
-	let planModal = new tui.Grid({
-		el: document.getElementById('modalGrid3'),
-		bodyHeight: 400,
-		data: [[${addNewPlan}]],
-		rowHeaders: ['checkbox','rowNum'],
-		scrollX: false,
-		scrollY: true,
-		columns: [
-			{
-				header: '생산 계획 코드',
-				name: 'PPLN_CD',
-			},
-			{
-				header: '계획명',
-				name: 'PPLN_NAME',
-			},
-			{
-				header: '계획일자',
-				name: 'PPLN_DAYS',
-			},
-			{
-				header: '납기일자',
-				name: 'DE_DATE',
-			}
-		]
-	});
-	return planModal;
-}
+		let planModal = new tui.Grid({
+			el: document.getElementById('modalGrid3'),
+			bodyHeight: 400,
+			data: [[${addNewPlan}]],
+			rowHeaders: ['rowNum'],
+			scrollX: false,
+			scrollY: true,
+			columns: [
+				{
+					header: '생산 계획 코드',
+					name: 'pplnCd',
+				},
+				{
+					header: '계획명',
+					name: 'pplnName',
+				},
+				{
+					header: '계획일자',
+					name: 'pplnDays',
+				},
+				{
+					header: '납기일자',
+					name: 'deDate',
+				}
+			]
+		});
+		
+		return planModal;
+	}
 	
+	 /*-----------------------------------------
+	// 새로운계획 모달에서 행 클릭 시에 그리드에 추가 
+	-------------------------------------------*/
+  	function addNewPlan() {
+ 		planModal.on('click', function(ev) {
+	 	    let data = planModal.getRow(ev.rowKey);
+	 	    
+	 	   			$.ajax({
+					url: '/matAddNewPlan',
+					type: 'POST',
+					contentType: 'application/json',	// json타입으로 반환 하겠다.
+					data: JSON.stringify(data),			// 데이터를 json타입으로.
+					success: function(result) {
+						newPlan.resetData(result);
+						planModalClose.click();
+					},
+					error: function(reject) {
+						console.log(reject);
+					}
+				})
+ 			})
+		}  
+	 
+	 /*-----------------------------------------
+	// 신규생산계획 체크 시 자재목록으로 넘어가도록 처리. 
+	-------------------------------------------*/
+	function chkPlanMat() {
+		 
+	 } 
+	 
 	/*------------------------------
 	// 모달 그리드 리프레쉬
 	--------------------------------*/
