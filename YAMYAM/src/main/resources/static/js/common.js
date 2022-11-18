@@ -19,16 +19,24 @@
 	}	
 	
 	
-	function pickerInit(targetel, inputel){
+	/*------------
+	@param rangel : getToday()[오늘부터], 0[range를 정하지않음]
+	-------------*/
+	function pickerInit(targetel, inputel, rangel){
+		if(!rangel){
+			rangel = 0;
+		} 
 		return new tui.DatePicker(targetel, {
 			date : new Date(),
 			input : {
 				element : inputel,
 				format : 'yyyy-MM-dd'
 			},
+			selectableRanges : [[rangel,addDay(1)]],
 			language: 'ko'
 		}); 	
 	}
+	
 	
 	function rangeDatepickerInit(sdt, sdtcont, edt, edtcont){
 	 return	tui.DatePicker.createRangePicker({
@@ -43,7 +51,7 @@
 				container : edtcont
 			},
 			selectableRanges : [ [
-					getToday(),
+					0,
 					addDay(1) ] ],
 			language: 'ko'
 		});
@@ -72,8 +80,7 @@
 		      confirmButtonColor: '#3085d6',
 		      cancelButtonColor: '#d33',
 		      confirmButtonText: '승인',
-		      cancelButtonText: '취소',
-		      //reverseButtons: true, // 버튼 순서 거꾸로
+		      cancelButtonText: '취소'
 		      
 		    }).then((result) => {
 		    if(result.isConfirmed){
