@@ -14,12 +14,16 @@
 
 		<br> <br> <br> <br> <br>
 
-
-		<div class="col-4">
-			<br> <br><b>공통 코드 검색</b>&nbsp;&nbsp; <input type="text" size="15">
-			<button type="button" class="btn btn-dark btn-sm" name="COMMD_CD">검색</button>
-			<div id="grid" style="width: 400px"></div>
-		</div>
+		
+			<div class="col-4" style="padding-left: 50px">
+			<form action="" onsubmit="return false">
+				<br> <br><b>공통 코드 검색</b>&nbsp;&nbsp; 
+				<input type="text" size="15" id="commSearch">
+				<button type="button" class="btn btn-dark btn-sm" id="commBtn">검색</button>
+				<button type="reset" class="btn btn-dark btn-sm" id="commreset">초기화</button>
+			</form>
+				<div id="grid" style="width: 400px"></div>
+			</div>
 
 		<div class="col-7">
 			<ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
@@ -109,10 +113,11 @@
 
 	</div>
 	<div class="row">
+		
 		<div class="col-4">
 			<div id="grid" style="width: 400px"></div>
 		</div>
-		<div class="col-8">
+		<div class="col-7">
 			<div id="grid2" style="width: 400px"></div>
 		</div>
 	</div>
@@ -195,7 +200,8 @@
 				name : 'COMM_CD',
 				sortingType: 'desc',
 		        sortable: true,
-		        align: 'center'
+		        align: 'center',
+		        filter: 'text'
 			}, {
 				header : '공통 코드 이름',
 				name : 'COMM_NM',
@@ -276,10 +282,31 @@
 		});
 		
 		
-		
 		// 렌더링 에디터 (라디오박스)
 		
 		  grid.resetData(gridData);
+		
+		// 공통 코드 검색
+		
+		document.getElementById('commBtn').addEventListener('click', function(){
+    	grid.filter('COMM_CD', [{code: 'eq', value: commSearch.value}]);
+     		
+        });
+		
+		document.getElementById('commSearch').addEventListener("keydown", function(){
+	         if(event.keyCode == 13){
+	        	 grid.filter('COMM_CD', [{code: 'eq', value: commSearch.value}]);
+	        	 searchEmpName.value = '';
+	        	
+	         }
+	     });
+		
+		//초기화 버튼 누를시 다시 데이터 원상복구
+	     
+	    document.getElementById("commreset").addEventListener('click', function(){
+	    	grid.unfilter('COMM_CD', [{code: 'eq', value: commSearch.value}]);
+       	 	searchEmpName.value = '';
+	     });
 
 	</script>
 
