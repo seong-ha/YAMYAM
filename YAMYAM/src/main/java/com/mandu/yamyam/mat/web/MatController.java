@@ -27,10 +27,9 @@ public class MatController {
 		model.addAttribute("odList", service.matOrderList());		// 자재발주관리 리스트(일반 탭)
 		model.addAttribute("matList", service.matList());			// 돋보기 자재목록 모달
 		model.addAttribute("actList", service.actList());			// 돋보기 업체목록 모달
-		model.addAttribute("needMatList", service.needMatList());	// 필요자재 리스트(생산계획 탭)
 		model.addAttribute("newPlanList", service.newPlanList());	// 신규생산계획조회(생산계획서용 탭)
 		model.addAttribute("addNewPlan", service.addNewPlan());		// 신규 생산 계획서 모델 선택 모달창(생산계획서용 탭)
-		model.addAttribute("odMatList", service.odMatList());		// 자재발주 전체리스트(생산계획서용 탭)
+//		model.addAttribute("odMatList", service.odMatList());		// 자재발주 전체리스트(생산계획서용 탭)
 		return "mat/matOd";
 	}
 	
@@ -45,6 +44,20 @@ public class MatController {
 	@ResponseBody
 	public List<Map<String,Object>> addNewPlan(@RequestBody MatVO vo){
 		return service.newPlanInfo(vo);
+	}
+	
+	// 필요자재 리스트(생산계획 탭)
+	@PostMapping("/needMatList")
+	@ResponseBody
+	public List<Map<String,Object>> needMatList(@RequestBody MatVO vo){
+		return service.needMatList(vo);
+	}
+	
+	// 자재발주 리스트(생산계획 탭)
+	@PostMapping("/chkMatList")
+	@ResponseBody
+	public List<Map<String,Object>> chkMatList(@RequestBody MatVO vo){
+		return service.chkMatList(vo);
 	}
 	
 	

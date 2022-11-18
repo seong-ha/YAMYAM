@@ -195,7 +195,9 @@
 		gridRef();			// 그리드 리프레쉬
 		modalRef();			// 모달 리프레쉬
 		
-		addNewPlan();			// 신규생산계획 추가 이벤트
+		addNewPlan();			// 신규생산계획 모달창 행 클릭 이벤트
+		chkPlanMat();			// 신규생산계획 체크 이벤트
+		chkMatList();			// 자재목록 체크 이벤트
 		
 		datePicker(); 		// datePicker
 		datePicker2();		// datePicker
@@ -300,18 +302,6 @@
 		        }
 		      ]
 		    });
-		
-			newPlan.on('check', ev => {
-		      console.log('check!', ev);
-		    });
-	
-			newPlan.on('uncheck', ev => {
-		      console.log('uncheck!', ev);
-		    });
-	
-			newPlan.on('focusChange', ev => {
-		      console.log('change focused cell!', ev);
-		    });
 		 
 		   	return newPlan;
 	}
@@ -342,19 +332,6 @@
 			        }
 		      ]
 		    });
-	
-			needMat.on('check', ev => {
-		      console.log('check!', ev);
-		    });
-	
-			needMat.on('uncheck', ev => {
-		      console.log('uncheck!', ev);
-		    });
-	
-			needMat.on('focusChange', ev => {
-		      console.log('change focused cell!', ev);
-		    });
-			
 			return needMat;
 	}
 	
@@ -409,10 +386,6 @@
 						        
 		      ]
 		    });
-	
-		odMat.on('focusChange', ev => {
-	        console.log('change focused cell!', ev);
-	      });
 	    
 	    	return odMat;
 		}
@@ -553,7 +526,45 @@
 	// 신규생산계획 체크 시 자재목록으로 넘어가도록 처리. 
 	-------------------------------------------*/
 	function chkPlanMat() {
-		 
+		newPlan.on('click', function(){
+			let data = newPlan.getCheckedRows();
+			/* console.log(data[0]); */
+			$.ajax({
+				url: '/needMatList',
+				type: 'POST',
+				contentType: 'application/json',
+				data: JSON.stringify(data[0]),
+				success: function(result) {
+					needMat.resetData(result);
+				},
+				error: function(reject) {
+					console.log(reject);
+				}
+			})
+			
+		})
+	 } 
+	 
+	 /*-----------------------------------------
+	// 필요자재 클릭시 자재발주 리스트로 
+	-------------------------------------------*/
+	function chkMatList() {
+		needMat.on('click', function(){
+			let data = needMat.getCheckedRows();
+		/* 	console.log(data[0]); */
+ 			$.ajax({
+				url: '/chkMatList',
+				type: 'POST',
+				contentType: 'application/json',
+				data: JSON.stringify(data[0]),
+				success: function(result) {
+					odMat.appendRows(result);
+				},
+				error: function(reject) {
+					console.log(reject);
+				}
+			}) 
+		})
 	 } 
 	 
 	/*------------------------------

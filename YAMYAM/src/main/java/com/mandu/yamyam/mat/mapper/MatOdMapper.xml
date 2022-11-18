@@ -64,16 +64,6 @@
 			 ON B.PRD_CD = P.PRD_CD
 	</select>
 	
-	<!-- 필요자재 리스트 -->
-	<select id="needMatList" resultType="com.mandu.yamyam.common.LowerKeyMap">
-		SELECT M.MTR_CD, 
-			   M.MTR_NM, 
-			   B.BOM_AMT
-		  FROM C_MTR M
-		  JOIN C_BOM B 
-		  	ON M.MTR_CD = B.MTR_CD
-	</select>
-	
 	<!-- 신규 생산 계획서 모델 선택 모달창 -->
 	<select id="addNewPlan" resultType="com.mandu.yamyam.common.LowerKeyMap">
 		SELECT D.PPLN_CD, 
@@ -87,28 +77,6 @@
 		   	
 		   JOIN B_OD B 
 		  	ON B.PRD_CD = P.PRD_CD
-	</select>
-	
-	<!-- 자재발주 전체리스트(생산계획서용 탭) -->
-	<select id="odMatList" resultType="com.mandu.yamyam.common.LowerKeyMap">
-		SELECT M.MTR_CD, 
-			   M.MTR_NM, 
-			   D.M_ODD_MN, 
-			   D.M_ODD_AMT, 
-			   (D.M_ODD_MN*D.M_ODD_AMT) AS "SUM_PRICE",
-	           A.ACT_NM,
-	           TO_CHAR(O.M_OD_DD,'YYYY-MM-DD') AS "M_OD_DD",
-	           TO_CHAR(D.M_ODD_DATE,'YYYY-MM-DD') AS "M_ODD_DATE"
-		  FROM C_MTR M 
-		  
-		    JOIN M_ODD D
-		       ON (M.MTR_CD = D.MTR_CD)
-		       
-		    JOIN M_OD O
-		       ON (D.M_OD_CD = O.M_OD_CD)
-		       
-		    JOIN C_ACTCD A
-		       ON (D.ACT_CD = A.ACT_CD)
 	</select>
 	
 	<!-- 신규생산계획서에서 추가한 생산계획을 조회해오는 쿼리 -->
@@ -131,5 +99,44 @@
 		  ON (B.OD_CD = P.OD_CD)
 		
 		WHERE D.PPLN_CD = #{value}
+	</select>
+	
+	<!-- 필요자재 리스트 -->
+	<select id="needMatList" parameterType="String" 
+							resultType="com.mandu.yamyam.common.LowerKeyMap">
+		SELECT O.MTR_CD,
+			   M.MTR_NM,
+               B.BOM_AMT
+		  FROM M_ODD O
+		  JOIN C_MTR M
+		  	ON M.MTR_CD = O.MTR_CD
+          JOIN C_BOM B
+            ON B.MTR_CD = M.MTR_CD
+          WHERE B.PRD_CD = #{value}
+	</select>
+	
+		<!-- 자재발주 전체리스트(생산계획서용 탭) -->
+	<select id="chkMatList" parameterType="String"
+						   resultType="com.mandu.yamyam.common.LowerKeyMap">
+		SELECT M.MTR_CD, 
+			   M.MTR_NM, 
+			   D.M_ODD_MN, 
+			   D.M_ODD_AMT, 
+			   (D.M_ODD_MN*D.M_ODD_AMT) AS "SUM_PRICE",
+	           A.ACT_NM,
+	           TO_CHAR(O.M_OD_DD,'YYYY-MM-DD') AS "M_OD_DD",
+	           TO_CHAR(D.M_ODD_DATE,'YYYY-MM-DD') AS "M_ODD_DATE"
+		  FROM C_MTR M 
+		  
+		    JOIN M_ODD D
+		       ON (M.MTR_CD = D.MTR_CD)
+		       
+		    JOIN M_OD O
+		       ON (D.M_OD_CD = O.M_OD_CD)
+		       
+		    JOIN C_ACTCD A
+		       ON (D.ACT_CD = A.ACT_CD)
+            
+            WHERE M.MTR_CD = #{value}
 	</select>
 </mapper>
