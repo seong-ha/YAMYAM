@@ -33,12 +33,6 @@ public class MatOdServiceImpl implements MatOdService {
 	public List<Map<String, Object>> actList() {
 		return mapper.actList();
 	}
-
-	// 필요자재조회(생산계획 탭)
-	@Override
-	public List<Map<String, Object>> needMatList() {
-		return mapper.needMatList();
-	}
 	
 	// 신규생산계획조회(생산계획서용 탭)
 	@Override
@@ -64,5 +58,16 @@ public class MatOdServiceImpl implements MatOdService {
 		return mapper.newPlanInfo(vo.getPplnCd());
 	}
 	
+	// 필요자재조회(생산계획 탭)
+	@Override
+	public List<Map<String, Object>> needMatList(MatVO vo) {
+		return mapper.needMatList(vo.getPrdCd());
+	}
+
+	// 자재발주 리스트(생산계획 탭)
+	@Override
+	public List<Map<String, Object>> chkMatList(MatVO vo) {
+		return mapper.chkMatList(vo.getMtrCd());
+	}
 
 }

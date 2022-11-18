@@ -16,9 +16,6 @@ public interface MatOdMapper {
 	// 돋보기 업체목록 모달
 	public List<Map<String, Object>> actList();
 	
-	// 필요자재조회(생산계획 탭)
-	public List<Map<String, Object>> needMatList();
-	
 	// 신규생산계획조회(생산계획서용 탭)
 	public List<Map<String, Object>> newPlanList();
 	
@@ -30,4 +27,10 @@ public interface MatOdMapper {
 	
 	// 자재발주 전체리스트(생산계획서용 탭)
 	public List<Map<String, Object>> newPlanInfo(String pplnCd);
+	
+	// 필요자재조회(생산계획 탭)
+	public List<Map<String, Object>> needMatList(String prdCd);
+	
+	// 자재발주 리스트(생산계획 탭)
+	public List<Map<String, Object>> chkMatList(String mtrCd);
 }
