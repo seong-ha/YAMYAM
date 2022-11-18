@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{/layout/layout}">
+
+<head>
+<meta charset="UTF-8">
+<title>YAMYAM</title>
+</head>
+
+<body>
+	<!-- 본문 시작 -->
+	<div layout:fragment="content" class="container">
+		
+		<div class="row">
+			<div class="col-6">
+				<h3>제품 공정 흐름도</h3>
+				<div id="flowGrid"></div>
+			</div>
+			<div class="col-6" >
+				 <table>
+					<tr>
+						<td colspan="4">
+							<h3>제품 공정 흐름도 관리</h3>
+						</td>
+					</tr>
+					<tr>
+						<td>제품코드 : </td>
+						<td><input type="text" id="pName" name="pName" readonly="readonly"></td>
+						<td>라인코드 : </td>
+						<td><input type="text" id="lineName" name="lineName" placeholder="라인코드를 입력하세요"></td>
+					</tr>
+						 
+				 </table>
+
+				<div id="flowManage"></div>
+				<div style="float:right;">
+						<button type="button" id="plusBtn" class="btn btn-dark btn-sm">행 추가</button>
+						<button type="button" id="deleteBtn" class="btn btn-dark btn-sm">행 삭제</button>	
+						<button type="button" id="insertBtn" class="btn btn-dark btn-sm">저장</button>	
+					</div>
+				
+			</div>
+		
+	</div>
+		
+	<!-- 공정목록 그리드 모달 -->
+	<div class="modal" id="listModal" tabindex="-1">
+		<div class="modal-dialog" >
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4 class="modal-title">미사용 설비 목록</h4>
+					<button type="button" class="btn-close" data-bs-dismiss="modal"	aria-label="Close" id="close_modal"></button>
+				</div>
+				<div class="modal-body">					
+					<div>
+						<div id="listModalGrid"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<script>
+		let flowGrid = flowGridInit();			// 공정흐름도 그리드
+		let flowManage = flowManageInit();		// 공정흐름도관리 그리드
+		let listModalGrid = listModalGridInit();	// 공정목록 모달 그리드
+
+		
+		flowGridClick();		  //공정흐름도 그리드 클릭 이벤트
+		flowManageClick();  	  // 흐름도 관리 그리드 클릭 이벤트
+		listModalGridClick();	  // 공정목록 모달 그리드 클릭 이벤트
+		deleteBtnHandler();  	  // 그리드 행 삭제버튼 이벤트
+		plusBtnHandler(); 	 	  // 그리드 행 추가 이벤트 핸들러
+		insertBtnHandler();  	  // 등록버튼 이벤트 핸들러
+		
+		/*------------
+		// 공정흐름도 그리드 초기화
+		----------------*/
+		function flowGridInit(){
+			let flowGrid = new tui.Grid({
+				el : document.getElementById('flowGrid'),
+				// 임시 데이터
+				data : [{
+							prdCd : 'MD-00100',
+							prdNm: '얇은피 고기만두',
+							plineCd : 'LIN-BAR-001'
+						},{
+							prdCd : 'MD-00200',
+							prdNm: '얇은피 김치만두',
+							plineCd : '' 
+						},{
+							prdCd : 'MD-00300',
+							prdNm: '얇은피 새우만두',
+							plineCd : 'LIN-BAR-002' 
+						}
+						],
+				// data 가져오는 법
+				// data: {
+				// 	api: {
+				// 		readData: {
+				// 			url: '/api/readData',
+				// 			method: 'GET'
+				// 		}
+				// 	}
+				// },
+				scrollX : false,
+				scrollY : false,
+				rowHeaders: ['rowNum'],				
+				columns : [ 
+				{
+					header : '제품코드',
+					name : 'prdCd',
+				}, {
+					header : '제품명',
+					name : 'prdNm'
+					
+				}, {
+					header : '라인코드',
+					name : 'plineCd'
+				}]
+			});
+			return flowGrid;
+		}
+		
+		
+		
+		/*------------
+		// 공정흐름도관리 그리드 초기화
+		----------------*/
+		function flowManageInit(){
+			let flowManage = new tui.Grid({
+				el : document.getElementById('flowManage'),
+				// 임시 데이터
+				data : [],
+				// data 가져오는 법
+				// data: {
+				// 	api: {
+				// 		readData: {
+				// 			url: '/api/readData',
+				// 			method: 'GET'
+				// 		}
+				// 	}
+				// },
+				scrollX : false,
+				scrollY : false,
+				rowHeaders: ['checkbox','rowNum'],				
+				columns : [ 
+				{
+					header : '공정코드',
+					name : 'pproCd',
+				}, {
+					header : '공정명',
+					name : 'pproName'
+				}, {
+					header : '설비코드',
+					name : 'eqpCd'				
+				}, {
+					header : '설비명',
+					name : 'eqpNm'	
+				}]
+			});
+			return flowManage;
+		}
+		
+		
+		/*------------
+		// 공정목록 모달 grid
+		----------------*/
+		
+		function listModalGridInit(){
+			let listModalGrid = new tui.Grid({
+				el: document.getElementById('listModalGrid'),
+				// 임시 데이터
+				data: [
+				{
+					pproCd:'PRO-BLEN-001',
+					pproName : '혼합 공정',
+					eqpCd : 'LHS-001',
+					eqpNm : '만두머신-1'
+				},{
+					pproCd:'PRO-SHAP-001',
+					pproName : '성형 공정',
+					eqpCd : 'LHS-002',
+					eqpNm : '만두머신-2'
+				},{
+					pproCd:'PRO-FREZ-001',
+					pproName : '냉동 공정',
+					eqpCd : 'LHS-003',
+					eqpNm : '만두머신-3'
+				}
+				],
+				scrollX: false,
+				scrollY: false,
+				rowHeaders: ['rowNum'],
+				columns: [
+					{
+						header: '공정코드',
+						name: 'pproCd'
+					},{
+						header: '공정명',
+						name: 'pproName'
+					},{
+						header: '설비코드',
+						name: 'eqpCd'
+					},
+					{
+						header: '설비명',
+						name: 'eqpNm'
+					}]
+			});
+			return listModalGrid;
+		}
+		
+		/*------------
+		// 공정흐름도 그리드 클릭 이벤트
+		----------------*/
+		function flowGridClick(){
+			flowGrid.on('click',function(ev){
+				if(ev.rowKey==null){
+					return;
+				}
+				
+				let pCode = flowGrid.getValue(ev.rowKey, 'prdCd');
+				console.log(pCode);
+				$('#pName').val(pCode);
+					/* let data = {pproCd :'',pproName:'',eqpCd:'',eqpNm :''};	
+					flowManage.appendRow(data);
+				
+					// ajax 
+					// 가져온 데이터 담아주기
+					// flowManage.resetData(data);	 */				
+				
+				
+			})
+		}
+		
+		/*------------
+		// 흐름도 관리 그리드 클릭 이벤트
+		----------------*/
+		function flowManageClick(){
+			flowManage.on('focusChange',function(ev){
+				
+				let code = flowManage.getValue(ev.rowKey, 'pproCd')
+				console.log(code);
+	
+	   			$('#listModal').modal('show');
+	   			listModalGrid.refreshLayout();
+
+			})
+		}
+		
+		
+		/*------------
+		// 공정목록 모달 그리드 클릭 이벤트
+		----------------*/
+		function listModalGridClick(){
+			listModalGrid.on('click',function(ev){
+
+				let data = listModalGrid.getRow(ev.rowKey);
+				console.log(data);
+				
+				let val = flowManage.getFocusedCell().rowKey;
+				flowManage.setRow(val,data);
+				$('#listModal').modal('hide');
+			})
+		}
+		
+		
+		/*------------
+		// 그리드 행 추가 버튼 이벤트 핸들러
+		----------------*/
+		function plusBtnHandler(){
+			
+			$('#plusBtn').on('click',function(){
+		
+				let data = {pproCd :'',pproName:'',eqpCd:'',eqpNm :''};	
+				flowManage.appendRow(data);
+			});
+
+		}
+		
+		
+		/*------------
+		// 삭제 버튼 클릭(그리드행 삭제)
+		----------------*/	
+		function deleteBtnHandler(){
+			// grid 선택 행 삭제
+			$('#deleteBtn').on('click',function(){
+				// sweetalert2
+				sweetConfirm('D', function(){
+					
+					// DB delete
+					//ajax 
+					// 성공
+
+					Swal.fire('삭제가 완료되었습니다');
+					// grid에서 삭제
+					flowManage.removeCheckedRows();
+					// 실패
+				})
+				
+			});	
+		}
+		
+		
+		/*------------
+		// 계획 등록 버튼 이벤트 핸들러
+		----------------*/
+		function insertBtnHandler(){
+		
+			$('#insertBtn').on('click',function(){
+				// 라인코드 이름
+				let lineName = $('#lineName').val();
+
+				// grid 데이터
+				let data = flowManage.getCheckedRows();
+
+					if(lineName == ''){
+						Swal.fire({
+							icon: 'error',
+							title :'라인코드를 입력하세요!!'});
+					}else{
+						sweetConfirm('C', function(){
+							
+							// DB delete
+							// ajax 받아오고
+							// success : function(data){insertGrid.resetData(data);}
+			
+							Swal.fire('등록이 완료되었습니다');
+							// grid에서 등록
+							// insertGrid.resetData(data);
+							// 실패
+						})
+					}
+			});
+		}
+		
+	</script>
+
+	</div>
+
+	<!-- 본문 끝 -->
+
+</body>
+
+</html>
