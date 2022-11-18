@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{/layout/layout}">
+
+<head>
+<meta charset="UTF-8">
+<title>YAMYAM</title>
+<style type="text/css">
+	form table {
+		font-size: 0.9em;
+		border-top: 3px solid black;
+		border-bottom: 2px solid black;
+		width: 100%;
+		height: 200px;
+	}
+	
+	table tr {
+		border-top: 1px solid gainsboro;
+	}
+	
+	form table input[type='text'] {
+		width: 180px;
+	}
+	
+	form table input[type='date'] {
+		width: 120px;
+	}
+	
+	select option[value=""][disabled] {
+	display: none;
+	}
+	
+	form > button {
+		float:right;
+		margin-top: 10px;
+		margin-right:10px;
+	}
+</style>
+</head>
+
+<body>
+	<!-- 본문 시작 -->
+	<div layout:fragment="content" class="container">
+		<h3>설비 비가동 관리</h3>
+		<hr>
+		
+		<div class="row">
+			<div class="col-5">
+				<h3>설비목록</h3>
+				<div id="selectEqp"></div>
+			</div>
+			<div class="col-7">
+				<h3>비가동 이력</h3>
+				<form action="">
+					<ul class="ul-style">
+						<li>
+							<label for="searchEqpCd">설비코드</label>
+							<input id="searchEqpCd" name="eqpCd" readonly>
+							<img id="actNm" class="Magnifying-Glass-img" alt="image"
+								data-bs-toggle="modal" data-bs-target="#eqpModal" src="../images/Magnifying_Glass.png">
+							<input type="text" id="searchEqpNm" name="eqpNm" readonly>
+						</li>
+	
+						<!-- Date Picker -->
+						<li>
+							<label for="startpicker-input">발주신청일</label>
+							<div class="tui-datepicker-input tui-datetime-input tui-has-focus">
+								<input id="startpicker-input" type="text" aria-label="Date">
+								<span class="tui-ico-date"></span>
+								<div id="startpicker-container" style="margin-left: -1px;"></div>
+							</div>
+							<span>-</span>
+							<div class="tui-datepicker-input tui-datetime-input tui-has-focus">
+								<input id="endpicker-input" type="text" aria-label="Date">
+								<span class="tui-ico-date"></span>
+								<div id="endpicker-container" style="margin-left: -1px;"></div>
+							</div>
+							<button class="btn btn-dark btn-sm">조회</button>
+							<button class="btn btn-dark btn-sm">초기화</button>
+						</li>
+					</ul>
+				</form>
+				<div id="selectUop"></div>
+				<h3>비가동 등록</h3>
+				<form action="">
+					<table>
+						<tr>
+							<th>설비코드</th>
+							<td>
+								<input type="text" id="EQP_CD" name="eqpCd" readonly>
+							</td>
+							<td></td>
+							<th>설비명</th>
+							<td>
+								<input type="text" id="EQP_NM" name="EQP_NM" readonly>
+							</td>
+							<td></td>
+							<th>비가동번호</th>
+							<td>
+								<input type="text" id="UOP_NO" name="UOP_NO" readonly>
+							</td>
+						</tr>
+						<tr>
+							<th>비가동명</th>
+							<td>
+								<select name="EQP_STS" id="EQP_STS">
+									<option class="form-select form-select-sm" value="" disabled selected>비가동명 선택</option>
+							        <option value="수리">수리</option>
+							        <option value="점검">점검</option>
+							        <option value="기타">기타</option>
+							    </select>
+							</td>
+							<td></td>
+							<th>작업내용</th>
+							<td colspan="4">
+								<input type="text" id="UOP_INFO" name="UOP_INFO" style="width:510px">
+							</td>
+							<td></td>
+							<th></th>
+							<td></td>
+						</tr>
+						<tr>
+							<th colspan="8">
+								비가동시작시간&nbsp;
+								<input type="datetime-local" id="UOP_STIME" name="UOP_STIME">
+								<button type="button" class="btn btn-success btn-sm" id="start" style="margin-right: 40px">시작</button>
+								비가동종료시간&nbsp;
+								<input type="datetime-local" id="UOP_ETIME" name="UOP_ETIME">
+								<button type="button" class="btn btn-success btn-sm" id="end">종료</button>
+							</th>
+						</tr>
+					</table>
+					<button type="button" class="btn btn-dark btn-sm" id="uopUpdate">비가동 해제</button>
+					<button type="button" class="btn btn-dark btn-sm" id="uopInsert">비가동 등록</button>
+					<button type="reset" class="btn btn-dark btn-sm" id="reset">초기화</button>
+				</form>
+			</div>
+		</div>
+		
+		
+		<!-- 업체 목록 모달 -->
+		<div class="modal" id="#eqpModal" tabindex="-1"
+			aria-labelledby="eqpModalLabel" aria-hidden="true">
+			<div class="modal-dialog modal-xl">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="eqpModalLabel">업체 목록</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal"
+							aria-label="Close"></button>
+					</div>
+					<div class="modal-body">
+						<div>
+							<div id="modalGrid2"></div>
+						</div>
+						<div align="center">
+							<button class="btn btn-dark btn-sm">추가</button>
+							<button class="btn btn-dark btn-sm">취소</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script>
+		let selectEqpGrid = selectEqpGridInit();	// 설비목록 grid 초기화
+		let selectUopGrid = selectUopGridInit();	// 비가동 이력 grid 초기화
+		
+		uopStartBtn();								// 비가동 폼의 비가동시작시간버튼 입력 이벤트
+		
+		
+		
+		
+		/* ---------------
+		설비목록 grid 초기화
+		--------------- */
+		function selectEqpGridInit() {
+			let selectEqpGrid = new tui.Grid({
+			      el: document.getElementById('selectEqp'),
+			      bodyHeight: 500, // 스크롤
+			      data: [
+			    	{
+			    		EQP_CD: 'eqp-20221104-001',
+			    		EQP_NM: '만두소 배합기1',
+			    		EQP_TYPE: '대기',
+			    		EQP_STS: '가동'
+				    },
+				    {
+				    	EQP_CD: 'eqp-20221104-002',
+			    		EQP_NM: '만두소 배합기2',
+			    		EQP_TYPE: '대기',
+			    		EQP_STS: '비가동'
+				    }
+				  ],
+			      rowHeaders: ['rowNum'],
+			      scrollX: false,
+			      scrollY: true,
+			      columns: [
+			        {
+			          header: '설비코드',
+			          name: 'EQP_CD',
+				      sortable: true,
+				      align: 'center'
+			        },
+			        {
+			          header: '설비명',
+			          name: 'EQP_NM',
+				      sortable: true,
+				      align: 'left'
+			        },
+			        {
+			          header: '설비구분',
+			          name: 'EQP_TYPE',
+				      align: 'center',
+				      filter: {
+				    	  type: 'select'
+				      }
+			        },
+			        {
+			          header: '설비상태',
+			          name: 'EQP_STS',
+				      align: 'center',
+				      filter: {
+				    	  type: 'select'
+				      }
+			        }
+			      ]
+			});
+			
+			return selectEqpGrid;
+		}
+		
+		
+		function selectUopGridInit() {
+			let selectUopGrid = new tui.Grid({
+			      el: document.getElementById('selectUop'),
+			      bodyHeight: 200, // 스크롤
+			      data: [
+			    	{
+			    		UOP_NO: '1',
+			    		EQP_CD: 'eqp-20221104-001',
+			    		EQP_NM: '만두소 배합기1',
+			    		UOP_NM: '수리',
+			    		UOP_INFO: '부품교체',
+			    		UOP_STIME: '2022-11-17 22:22',
+			    		UOP_ETIME: '2022-11-17 22:23'
+				    },
+			    	{
+			    		UOP_NO: '2',
+			    		EQP_CD: 'eqp-20221104-001',
+			    		EQP_NM: '만두소 배합기1',
+			    		UOP_NM: '수리',
+			    		UOP_INFO: '부품교체',
+			    		UOP_STIME: '2022-11-17 22:22',
+			    		UOP_ETIME: '2022-11-17 22:23'
+				    }
+				  ],
+			      rowHeaders: ['rowNum'],
+			      scrollX: false,
+			      scrollY: true,
+			      columns: [
+			        {
+			          header: '비가동번호',
+			          name: 'UOP_NO',
+				      sortable: true,
+				      align: 'center'
+			        },
+			        {
+			          header: '설비코드',
+			          name: 'EQP_CD',
+				      sortable: true,
+				      align: 'center'
+			        },
+			        {
+			          header: '설비명',
+			          name: 'EQP_NM',
+				      sortable: true,
+				      align: 'left'
+			        },
+			        {
+			          header: '비가동명',
+			          name: 'UOP_NM',
+				      align: 'left',
+				      filter: {
+				    	  type: 'select'
+				      }
+			        },
+			        {
+			          header: '작업내용',
+			          name: 'UOP_INFO',
+				      align: 'left'
+			        },
+			        {
+			          header: '시작시간',
+			          name: 'UOP_STIME',
+				      align: 'right'
+			        },
+			        {
+			          header: '종료시간',
+			          name: 'UOP_ETIME',
+				      align: 'right'
+			        },
+			      ]
+			});
+			
+			
+			/* ---------------
+			설비목록 grid 클릭 시 비가동 폼에 설비코드/설비명 입력 이벤트
+			--------------- */
+			selectEqpGrid.on('click', function (ev) {
+				let clickedRow = selectEqpGrid.getRow(ev.rowKey);
+				
+				if (clickedRow.EQP_STS != 'N') {
+					console.log(document.getElementById('EQP_CD'));
+					document.getElementById('EQP_CD').value = clickedRow.EQP_CD;
+					document.getElementById('EQP_NM').value = clickedRow.EQP_NM;
+				}
+			});
+			
+			return selectUopGrid;
+		}
+		
+		
+		
+		const grid2 = new tui.Grid({
+		      el: document.getElementById('grid2'),
+		      bodyHeight: 200,
+		      data: [
+		    {
+		    	mNo: 'PPD-20221101-001',
+		    	mCode: 'MD-00100',
+		    	name: '얇은피 고기만두',
+		    	count: 200,
+		        eDate: '2022-11-18'
+		    },
+		    {
+		    	mNo: 'PPD-20221101-002',
+		    	mCode: 'MD-00300',
+		    	name: '얇은피 새우만두',
+		    	count: 100,
+		        eDate: '2022-11-18'
+		    }
+		  ],
+		      rowHeaders: ['checkbox'],
+		      scrollX: false,
+		      scrollY: true,
+		      columns: [
+		        {
+		          header: '상세계획번호',
+		          name: 'mNo'
+		        },
+		        {
+		          header: '제품코드',
+		          name: 'mCode'
+		        },
+		        {
+		          header: '제품명',
+		          name: 'name'
+		        },
+		        {
+		          header: '계획량',
+		          name: 'count'
+		        },
+		        {
+		          header: '주문납기일',
+		          name: 'eDate'
+		        }
+		      ]
+		    });
+		
+		    grid2.on('check', ev => {
+		      console.log('check!', ev);
+		    });
+
+		    grid2.on('uncheck', ev => {
+		      console.log('uncheck!', ev);
+		    });
+
+		    grid2.on('focusChange', ev => {
+		      console.log('change focused cell!', ev);
+		    });
+		
+		
+
+		/* ---------------
+		비가동 폼의 비가동시작시간버튼 입력 이벤트
+		--------------- */
+		function uopStartBtn() {
+			document.getElementById('start').addEventListener('click', function () {
+				
+				console.log('2017-06-01T08:30');
+				let date = new Date();
+				
+				let year = date.getFullYear() 
+				console.log(year);
+				let month = ('0' + (date.getMonth() + 1)).slice(-2);
+				console.log(month);
+				let day = ('0' + date.getDate()).slice(-2);
+				let hour = ('0' + date.getHours()).slice(-2);
+				let minute = ('0' + date.getMinutes()).slice(-2);
+				
+				date = year + '-' + month + '-' + day + ' ' + hour + ':' + minute;
+				
+				document.getElementById('UOP_STIME').value = date;
+				console.log(document.getElementById('UOP_STIME').value);
+				
+			})
+		}
+		
+		</script>
+	</div>
+
+
+	
+</body>
+
+</html>
