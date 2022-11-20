@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mandu.yamyam.pro.mapper.ProMapper">
+	<!-- 상세생산계획조회 -->
+	<select id="getPlanDetail" resultType="com.mandu.yamyam.common.LowerKeyMap">
+		SELECT P.PPLN_CD, P.PPLN_NAME, D.PPLND_CD, D.PRD_CD, D.PPLND_AMT, D.PPLND_PRIO, D.PPLND_DAYS, P.PPLN_STS, C.PRD_NM
+		FROM P_PLN P JOIN P_PLND D
+             		 ON P.PPLN_CD = D.PPLN_CD
+             		 JOIN C_PRD C
+             		 ON C.PRD_CD = D.PRD_CD
+		 
+		<!-- <where>
+            <if test='startDate!="" and endDate !=""'>
+               TO_DATE(P.PPLN_DATE, 'yyyy-MM-dd') BETWEEN TO_DATE(#{startDate}, 'yyyy-MM-dd') 
+                      AND TO_DATE(#{endDate}, 'yyyy-MM-dd')
+            </if>
+        </where> -->
+        
+	</select>
+	
+	<!-- 생산계획 우선순위, 생산일자 수정 -->
+	<update id="updatePlanDetail" parameterType="com.mandu.yamyam.pro.service.ProVO">
+		UPDATE P_PLND
+		   <set>
+		   		<if test="pplndPrio != null">
+		   			PPLND_PRIO = #{pplndPrio},
+		   		</if>
+		   		<if test="pplndDays != null">
+		   			PPLND_DAYS = #{pplndDays}
+		   		</if>
+		   </set>
+		 WHERE PPLND_CD = #{pplndCd}
+	</update>
+	
+	<!-- 생산요청서 -->
+	<select id="orderList" resultType="com.mandu.yamyam.common.LowerKeyMap">
+		SELECT B.OD_CD, TO_DATE(B.DE_DATE,'yyyy-MM-dd') AS DE_DATE, B.PRD_CD, C.PRD_NM, B.OD_AMT
+		FROM B_OD B JOIN C_PRD C
+              		ON B.PRD_CD = C.PRD_CD
+	</select>
+	
+</mapper>
