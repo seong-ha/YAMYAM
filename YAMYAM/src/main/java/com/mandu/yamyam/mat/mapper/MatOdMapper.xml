@@ -4,9 +4,30 @@
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.mandu.yamyam.mat.mapper.MatOdMapper">
 
-	<!-- 전체조회(일반 탭) -->
-	<select id="matOrderList"
-		resultType="com.mandu.yamyam.common.LowerKeyMap">
+	<!-- 공용 - 자재목록 모달 -->
+	<select id="matList" resultType="com.mandu.yamyam.common.LowerKeyMap">
+		SELECT D.MTR_CD, 
+			   M.MTR_NM, 
+			   M.MTR_STD, 
+			   I.M_SAMT
+		  FROM C_MTR M
+		  
+		  JOIN M_ODD D 
+		  	ON M.MTR_CD = D.MTR_CD
+		  	
+		  JOIN M_IN I 
+		  	ON M.MTR_CD = I.MTR_CD
+	</select>
+	
+	<!-- 공용 - 업체목록 모달 -->
+	<select id="actList" resultType="com.mandu.yamyam.common.LowerKeyMap">
+		SELECT ACT_CD, 
+			   ACT_NM
+		  FROM C_ACTCD
+	</select>
+	
+	<!-- 자재 발주 관리(일반 탭) - 전체 조회 -->
+	<select id="matOrderList" resultType="com.mandu.yamyam.common.LowerKeyMap">
 		SELECT O.M_OD_CD,
 		       D.MTR_CD,
 		       C.MTR_NM,
@@ -27,31 +48,16 @@
 		   ON D.ACT_CD = A.ACT_CD
 	</select>
 	
-	<!-- 자재목록 모달 -->
-	<select id="matList" resultType="com.mandu.yamyam.common.LowerKeyMap">
-		SELECT D.MTR_CD, 
-			   M.MTR_NM, 
-			   M.MTR_STD, 
-			   I.M_SAMT
-		  FROM C_MTR M
-		  
-		  JOIN M_ODD D 
-		  	ON M.MTR_CD = D.MTR_CD
-		  	
-		  JOIN M_IN I 
-		  	ON M.MTR_CD = I.MTR_CD
-	</select>
+	<!-- 자재 발주 관리(일반 탭) - 삭제버튼 -->
+	<delete id="delMatOdList" parameterType="com.mandu.yamyam.mat.service.MatVO">
+		DELETE 
+		FROM M_OD
+		WHERE M_OD_CD = #{mOdCd} <!-- null -->
+	</delete>
 	
-	<!-- 업체목록 모달 -->
-	<select id="actList" resultType="com.mandu.yamyam.common.LowerKeyMap">
-		SELECT ACT_CD, 
-			   ACT_NM
-		  FROM C_ACTCD
-	</select>
-	
-	<!-- 신규생산계획조회 -->
+	<!-- 자재 발주 관리(생산계획서용 탭) - 신규 생산 계획 조회 -->
 	<select id="newPlanList" resultType="com.mandu.yamyam.common.LowerKeyMap">
-		SELECT D.PLAND_CD, 
+		SELECT D.PPLN_CD, 
 			   D.PRD_CD, 
 			   P.PRD_NM, 
 			   D.PPLND_AMT, 
@@ -64,11 +70,11 @@
 			 ON B.PRD_CD = P.PRD_CD
 	</select>
 	
-	<!-- 신규 생산 계획서 모델 선택 모달창 -->
+	<!-- 자재 발주 관리(생산계획서용 탭) - 신규 생산 계획서 모델 선택 모달창 -->
 	<select id="addNewPlan" resultType="com.mandu.yamyam.common.LowerKeyMap">
 		SELECT D.PPLN_CD, 
 			   P.PPLN_NAME, 
-			   TO_CHAR(P.PPLN_DAYS, 'yyyy-MM-dd') AS "PPLN_DAYS",
+			   TO_CHAR(P.PPLN_DATE, 'yyyy-MM-dd') AS "PPLN_DAYS",
 			   TO_CHAR(B.DE_DATE, 'yyyy-MM-dd') AS "DE_DATE"
 		   FROM P_PLND D
 		   
@@ -76,15 +82,15 @@
 		   	ON D.PPLN_CD = P.PPLN_CD
 		   	
 		   JOIN B_OD B 
-		  	ON B.PRD_CD = P.PRD_CD
+		  	ON B.OD_CD = P.OD_CD
 	</select>
 	
-	<!-- 신규생산계획서에서 추가한 생산계획을 조회해오는 쿼리 -->
+	<!-- 자재 발주 관리(생산계획서용 탭) - 신규생산계획서에서 추가한 생산계획을 조회 -->
 	<select id="newPlanInfo" parameterType="String" 
 							 resultType="com.mandu.yamyam.common.LowerKeyMap">
-		SELECT D.PLAND_CD,
+		SELECT D.PPLN_CD,
 		       D.PRD_CD,
-		       CP.PRD_NM,
+		       C.PRD_NM,
 		       D.PPLND_AMT,
 		       TO_CHAR(B.DE_DATE, 'YYYY-MM-DD') AS "DE_DATE"
 		FROM   P_PLND D 
@@ -92,8 +98,8 @@
 		JOIN P_PLN P
 		  ON (D.PPLN_CD = P.PPLN_CD)
 		  
-		JOIN C_PRD CP
-		  ON (D.PRD_CD = CP.PRD_CD)
+		JOIN C_PRD C
+		  ON (D.PRD_CD = C.PRD_CD)
 		  
 		JOIN B_OD B
 		  ON (B.OD_CD = P.OD_CD)
@@ -101,9 +107,9 @@
 		WHERE D.PPLN_CD = #{value}
 	</select>
 	
-	<!-- 필요자재 리스트 -->
+	<!-- 자재 발주 관리(생산계획서용 탭) - 필요 자재 리스트 -->
 	<select id="needMatList" parameterType="String" 
-							resultType="com.mandu.yamyam.common.LowerKeyMap">
+							 resultType="com.mandu.yamyam.common.LowerKeyMap">
 		SELECT O.MTR_CD,
 			   M.MTR_NM,
                B.BOM_AMT
@@ -115,9 +121,9 @@
           WHERE B.PRD_CD = #{value}
 	</select>
 	
-		<!-- 자재발주 전체리스트(생산계획서용 탭) -->
+	<!-- 자재 발주 관리(생산계획서용 탭) - 자재 발주 리스트 -->
 	<select id="chkMatList" parameterType="String"
-						   resultType="com.mandu.yamyam.common.LowerKeyMap">
+						    resultType="com.mandu.yamyam.common.LowerKeyMap">
 		SELECT M.MTR_CD, 
 			   M.MTR_NM, 
 			   D.M_ODD_MN, 
@@ -139,4 +145,13 @@
             
             WHERE M.MTR_CD = #{value}
 	</select>
+	
+	<!-- 자재 발주 조회(조건 조회 탭) - 발주 신청일 검색 조회 -->
+	<select id="odListSearch" parameterType="com.mandu.yamyam.mat.service.MatVO"
+							  resultType="com.mandu.yamyam.common.LowerKeyMap">
+		SELECT M_OD_CD, TO_CHAR(M_OD_DD,'YYYY-MM-DD') AS "M_OD_DD"
+		FROM M_OD
+		WHERE M_OD_DD <![CDATA[<=]]> #{mOdDd}<!-- null -->
+	</select>
+	
 </mapper>
