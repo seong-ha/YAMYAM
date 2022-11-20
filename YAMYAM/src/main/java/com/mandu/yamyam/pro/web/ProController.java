@@ -1,16 +1,63 @@
 package com.mandu.yamyam.pro.web;
 
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.mandu.yamyam.pro.service.ProService;
+import com.mandu.yamyam.pro.service.ProVO;
 
 @Controller
 public class ProController {
+	@Autowired
+	ProService service;
+	
+	// 생산계획(관리탭)
 	
 	// 생산계획
 	@RequestMapping("/proPlan")
 	public String plan(Model model) {
+		
 		return "production/proPlan";
+	}
+	
+	// 상세생산계획조회
+	@GetMapping("/plandList")
+	@ResponseBody // response contentType : json
+	public List<ProVO> planDetail() {
+		
+		return service.planDetail();
+	}
+	
+	// 상세생산계획 수정()
+	@PostMapping("/planUpdate")
+	@ResponseBody
+	public int updatPlanDetail(@RequestBody ProVO vo) {
+		vo.getPplndCd();
+		vo.getPplndPrio();
+		vo.getPplndDays();
+		return service.updatePlanDetail(vo);
+	}
+	
+	// 생산계획(등록탭)
+	@PostMapping("/planInsert")
+	@ResponseBody
+	public int insertPlanDetail() {
+		return 0;
+	}
+	
+	// 생산요청서 모달 그리드 조회
+	@RequestMapping("/getOrderList")
+	@ResponseBody
+	public List<ProVO> getOrderList(){
+		return service.orderList();
 	}
 	
 	// 생산지시관리
