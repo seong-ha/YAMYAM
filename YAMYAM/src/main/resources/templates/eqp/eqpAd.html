@@ -22,7 +22,8 @@
 		margin-right: 20px;
 	}
 	
-	#eqpTable input[readonly] {
+	input#eqpTypeCd,
+	input#eqpTypeNm {
 		background-color: gainsboro;
 		width: 100px;
 	}
@@ -62,17 +63,17 @@
 				<div class="tab-pane show active" id="select" role="tabpanel"
 					aria-labelledby="select-tab">
 					<div style="margin-top:10px">
-						<form action="#">
-							<ul class="ul-style">
-								<li>
-									<label for="eName">설비명</label>
-									<input type="text" name="eName" id="firstEName">
+						<ul class="ul-style">
+							<li>
+								<form action="" onsubmit="return false">
+									<label for="eName" style="margin-left:20px; margin-right:20px;">설비명</label>
+									<input type="text" name="eqpNm" id="searchedEqpNm">
 									<button type="button" class="btn btn-dark btn-sm" id="searchBtn">검색</button>
-									<input type="reset" class="btn btn-dark btn-sm">
-									<button type="button" class="btn btn-dark btn-sm me-md-2" style="float:right" id="deleteBtn">삭제</button>
-								</li>
-							</ul>
-						</form>
+									<button type="reset" class="btn btn-dark btn-sm">초기화</button>
+								</form>
+								<button type="button" class="btn btn-dark btn-sm me-md-2" style="float:right" id="deleteBtn">삭제</button>
+							</li>
+						</ul>
 						<!-- 조회 grid -->
 						<div id="selectEqp"></div>
 					</div>
@@ -100,69 +101,70 @@
 										<tr>
 											<th>설비코드</th>
 											<td>
-												<input type="text" id="EQP_CD" name="eqpCd">
+												<input type="text" id="eqpCd" name="eqpCd" readonly>
 											</td>
 											<th>설비업체명</th>
 											<td>
-												<input type="text" id="ACT_NM" name="sal">
+												<input type="text" id="actNm" name="actNm">
 											</td>
-											<th>사용여부</th>
+											<th>가동여부</th>
 											<td>
-								  			    <select class="form-select form-select-sm" name="EQP_STS" id="EQP_STS">
-											        <option value="가동상태코드">가동</option>
-											        <option value="비가동상태코드">비가동</option>
-											        <option value="대기상태코드">대기</option>
+								  			    <select class="form-select form-select-sm" name="eqpSts" id="eqpSts">
+											        <option value="Y">Y</option>
+											        <option value="N">N</option>
 											    </select>
 											</td>
 										</tr>
 										<tr>
 											<th>설비명</th>
 											<td>
-												<input type="text" id="EQP_NM" name="EQP_NM">
+												<input type="text" id="eqpNm" name="eqpNm">
 											</td>
 											<th>제작일자</th>
 											<td>
-												<input type="text" id="MK_DATE" name="MK_DATE">
+												<input type="text" id="mkDate" name="mkDate">
 											</td>
 											<th>UPH</th>
 											<td>
-												<input type="text" id="UPH" name="UPH">
+												<input type="text" id="uph" name="uph">
 											</td>
 										</tr>
 										<tr>
 											<th>모델명</th>
 											<td>
-												<input type="text" id="MD_NM" name="MD_NM">
+												<input type="text" id="mdNm" name="mdNm">
 											</td>
 											<th>구매일자</th>
 											<td>
-												<input type="text" id="BUY_DATE" name="BUY_DATE">
+												<input type="text" id="buyDate" name="buyDate">
 											</td>
 											<th>온도</th>
 											<td>
-												<input type="text" id="H_TEMP" name="H_TEMP" style="margin-right: 0; width: 90px;"> - 
-												<input type="text" id="L_TEMP" name="L_TEMP" style="width: 90px; margin-right: 0;"> ℃
+												<input type="text" id="hTemp" name="hTemp" style="margin-right: 0; width: 90px;"> - 
+												<input type="text" id="lTemp" name="lTemp" style="width: 90px; margin-right: 0;"> ℃
 											</td>
 										</tr>
 										<tr>
 											<th>점검주기</th>
 											<td>
-												<input type="text" id="CHK_CYCLE" name="CHK_CYCLE">
+												<input type="text" id="chkCycle" name="chkCycle">
 											</td>
 											<th>설비구분</th>
 											<td colspan="1">
 												<!-- 설비구분 공통상세코드 및 코드명을 name과 id에 넣어주기 -->
-												<input type="text" id="eqpTypeCode" name="eqpTypeCode" style="margin-right: 0;" readonly>
+												<input type="text" id="eqpTypeCd" name="eqpTypeCd" style="margin-right: 0;" readonly>
 												<img class="Magnifying-Glass-img" alt="image" data-bs-toggle="modal"
 													data-bs-target="#eqpTypeModal" src="../images/Magnifying_Glass.png">
-												<input type="text" id="eqpTypeName" name="eqpTypeName" readonly>
+												<input type="text" id="eqpTypeNm" name="eqpTypeNm" readonly>
 											</td>
 										</tr>
 									</table>
 								</div>
-								<div class="col-3" id="imgDiv" width=" 300px" height="300px">
-									<img id="img" name="img" alt="설비사진" src="">
-									<input type="file" id="IMG" name="IMG">
+								<div class="col-3">
+									<div id="imgDiv" width=" 300px" height="300px">
+										<img id="imgTag" name="imgTag" alt="설비사진" src="">
+									</div>
+									<input type="file" id="img" name="img">
 								</div>
 							</div>
 							<!-- 테이블과 사진 배치 end -->
@@ -177,7 +179,7 @@
 		<!-- 설비목록 modal -->
 		<div class="modal" id="eqpListModal" tabindex="-1"
 			aria-labelledby="#eqpListLabel" aria-hidden="true">
-			<div class="modal-dialog">
+			<div class="modal-dialog modal-dialog-centered">
 				<div class="modal-content">
 					<div class="modal-header">
 						<h5 class="modal-title" id="eqpListLabel">설비 목록</h5>
@@ -195,7 +197,7 @@
 		<!-- 설비구분 modal -->
 		<div class="modal" id="eqpTypeModal" tabindex="-1"
 			aria-labelledby="#eqpTypeLabel" aria-hidden="true">
-			<div class="modal-dialog">
+			<div class="modal-dialog modal-dialog-centered">
 				<div class="modal-content">
 					<div class="modal-header">
 						<h5 class="modal-title" id="eqpTypeLabel">설비 구분</h5>
@@ -225,6 +227,20 @@
 			imgTagReset();								// 관리탭 초기화 버튼 눌렀을때 img태그 src도 같이 초기화
 			
 			
+			
+			// toastr
+			toastr.options = {
+				    "closeButton": false,
+				    "newestOnTop": true,
+				    "positionClass": "toast-top-center",
+				    "preventDuplicates": true,
+				    "extendedTimeOut" : 1500, 
+				    "timeOut" : 2500
+			}
+			
+			
+			
+			
 			/* ---------------
 			조회탭 그리드
 			--------------- */
@@ -235,32 +251,32 @@
 				      bodyHeight: 500, // 스크롤
 				      data: [
 				    	{
-				    		EQP_CD: 'eqp-20221104-001',
-				    		EQP_NM: '만두소 배합기1',
-				    		MD_NM: 'mandu-01',
-				    		ACT_NM: '최고배합상사',
-				    		MK_DATE: '2022-10-01',
-				    		BUY_DATE: '2022-11-01',
-				    		H_TEMP: '2022-11-01',
-				    		L_TEMP: '2022-11-14',
-				    		CHK_CYCLE: 60,
-				    		CHK_DATE: '2022-11-14',
-				    		EQP_TYPE: '대기',
-				    		EQP_STS: '대기'
+				    		eqpCd: 'eqp-20221104-001',
+				    		eqpNm: '만두소 배합기1',
+				    		mdNm: 'mandu-01',
+				    		actNm: '최고배합상사',
+				    		mkDate: '2022-10-01',
+				    		buyDate: '2022-11-01',
+				    		hTemp: '2022-11-01',
+				    		lTemp: '2022-11-14',
+				    		chkCycle: 60,
+				    		chkDate: '2022-11-14',
+				    		eqpType: '대기',
+				    		eqpSts: '대기'
 					    },
 					    {
-					    	EQP_CD: 'eqp-20221104-002',
-				    		EQP_NM: '만두소 배합기2',
-				    		MD_NM: 'mandu-01',
-				    		ACT_NM: 'ACT-최고배합상사',
-				    		MK_DATE: '2022-10-01',
-				    		BUY_DATE: 2000000,
-				    		H_TEMP: '2022-11-01',
-				    		L_TEMP: '2022-11-14',
-				    		CHK_CYCLE: 60,
-				    		CHK_DATE: '2022-11-14',
-				    		EQP_TYPE: '대기',
-				    		EQP_STS: '대기'
+					    	eqpCd: 'eqp-20221104-002',
+					    	eqpNm: '만두소 배합기2',
+					    	mdNm: 'mandu-01',
+					    	actNm: 'ACT-최고배합상사',
+					    	mkDate: '2022-10-01',
+					    	buyDate: 2000000,
+					    	hTemp: '2022-11-01',
+					    	lTemp: '2022-11-14',
+					    	chkCycle: 60,
+				    		chkDate: '2022-11-14',
+				    		eqpType: '대기',
+				    		eqpSts: '대기'
 					    }
 					  ],
 				      rowHeaders: ['checkbox'],
@@ -269,67 +285,70 @@
 				      columns: [
 				        {
 				          header: '설비코드',
-				          name: 'EQP_CD',
+				          name: 'eqpCd',
 					      sortable: true,
 					      align: 'center'
 				        },
 				        {
 				          header: '설비명',
-				          name: 'EQP_NM',
+				          name: 'eqpNm',
 					      sortable: true,
-					      align: 'left'
+					      align: 'left',
+					      filter: {
+					    	  type: 'text'
+					      }
 				        },
 				        {
 				          header: '모델명',
-				          name: 'MD_NM',
+				          name: 'mdNm',
 					      sortable: true,
 					      align: 'center'
 				        },
 				        {
 				          header: '설비업체명',
-				          name: 'ACT_NM',
+				          name: 'actNm',
 					      sortable: true,
 					      align: 'left'
 				        },
 				        {
 				          header: '제작일자',
-				          name: 'MK_DATE',
+				          name: 'mkDate',
 					      sortable: true,
 					      align: 'right'
 				        },
 				        {
 				          header: '구매일자',
-				          name: 'BUY_DATE',
+				          name: 'buyDate',
 					      sortable: true,
 					      align: 'right'
 				        },
 				        {
 				          header: '최고온도',
-				          name: 'H_TEMP',
+				          name: 'hTemp',
 					      sortable: true,
 					      align: 'right'
 				        },
 				        {
 				          header: '최저온도',
-				          name: 'L_TEMP',
+				          name: 'lTemp',
 					      sortable: true,
 					      align: 'right'
 				        },
 				        {
 				          header: '점검주기(주기일수)',
-				          name: 'CHK_CYCLE',
+				          name: 'chkCycle',
 					      sortable: true,
 					      align: 'right'
 				        },
 				        {
 				          header: '마지막점검일',
-				          name: 'CHK_DATE',
+				          name: 'chkDate',
 					      sortable: true,
 					      align: 'right'
 				        },
 				        {
 				          header: '설비구분',
-				          name: 'EQP_TYPE',
+				          name: 'eqpType',
 					      align: 'left',
 					      filter: {
 					    	  type: 'select'
@@ -337,7 +356,7 @@
 				        },
 				        {
 				          header: '설비상태',
-				          name: 'EQP_STS',
+				          name: 'eqpSts',
 					      align: 'left',
 					      filter: {
 					    	  type: 'select'
@@ -357,15 +376,15 @@
 			function eqpListModalInit() {
 				let eqpListModalGrid = new tui.Grid({
 					el: document.getElementById('eqpListModalGrid'),
-					bodyHeight: 150,
+					bodyHeight: 400,
 					data: [{
-						code: 'eqpCode-001',
-						name: '만두 배합',
+						eqpCd: 'eqpCode-001',
+						eqpNm: '만두 배합',
 						proName: '혼합'
 					},
 					{
-						code: 'eqpCode-002',
-						name: '만두 성형',
+						eqpCd: 'eqpCode-002',
+						eqpNm: '만두 성형',
 						proName: '성형'
 					}],
 					rowHeaders: ['rowNum'],
@@ -373,12 +392,12 @@
 					scrollY: true,
 					columns: [{
 				          header: '설비코드',
-				          name: 'code',
+				          name: 'eqpCd',
 				          align: 'center'
 				        },
 				        {
 				          header: '설비명',
-				          name: 'name',
+				          name: 'eqpNm',
 				          align: 'left'
 				        },
 				        {
@@ -400,15 +419,33 @@
 			function eqpTypeModalInit() {
 				let eqpTypeModalGrid = new tui.Grid({
 					el: document.getElementById('eqpTypeModalGrid'),
-					bodyHeight: 150,
-					data: [{
-						code: 'eqptype-01',
-						name: '만두 배합'
-					},
-					{
-						code: 'eqptype-02',
-						name: '만두 성형',
-					}],
+					bodyHeight: 250,
+					data: [
+						{
+							code: 'eqptype-01',
+							name: '만두 배합'
+						},
+						{
+							code: 'eqptype-02',
+							name: '만두 성형',
+						},
+						{
+							code: 'eqptype-01',
+							name: '만두 배합'
+						},
+						{
+							code: 'eqptype-02',
+							name: '만두 성형',
+						},
+						{
+							code: 'eqptype-02',
+							name: '만두 성형',
+						},
+						{
+							code: 'eqptype-02',
+							name: '만두 성형',
+						}
+					],
 					rowHeaders: ['rowNum'],
 					scrollX: false,
 					scrollY: true,
@@ -432,7 +469,7 @@
 			// 탭 버튼 클릭
 			----------------*/
 			function tabBtnHandler(){
-				$('#select-tab').on('click', function(){
+				document.getElementById('select-tab').addEventListener('click', function () {
 					selectEqpGrid.refreshLayout();
 				});	
 			}
@@ -443,14 +480,14 @@
 			function searchBtn() {
 				
 				document.getElementById('searchBtn').addEventListener('click', function () {
-					let firstEName = document.getElementById('firstEName');
+					let searchedEqpNm = document.getElementById('searchedEqpNm');
 					
 					// 검색창 글자 안 적으면 전체 조회 ajax
-					if (firstEName.value == null || firstEName.value == '') {
-						// ajax
-						
-						
+					if (searchedEqpNm.value == null || searchedEqpNm.value == '') {
+						selectEqpGrid.unfilter('eqpNm');
 						return;
+					} else {
+						selectEqpGrid.filter('eqpNm', [{code: 'contain', value: searchedEqpNm.value}]);
 					}
 					
 					// ajax로 검색어가 포함된 데이터 ajax로 가져오기
@@ -465,15 +502,17 @@
 			--------------- */
 			function deleteBtn() {
 				document.getElementById('deleteBtn').addEventListener('click', function () {
-					console.log(selectEqpGrid.getCheckedRows());
-					let showConfirm = true;
 					
-					// ajax후 성공하면
-					selectEqpGrid.removeCheckedRows(showConfirm);
+					sweetConfirm('D', function () {
+						// ajax success
+						toastr.success('정상적으로 삭제되었습니다.');
+						selectEqpGrid.removeCheckedRows();
+						// ajax fail
+						toastr.error('삭제에 실패했습니다.');  
+					});
 				});
 				
 			}
-			
 			
 			
 			
@@ -538,8 +577,8 @@
 					let eqpTypeCode = data.code; // 선택된 설비 구분 코드
 					let eqpTypeName = data.name; // 선택된 설비 구분명
 					
-					document.getElementById('eqpTypeCode').value = eqpTypeCode;
-					document.getElementById('eqpTypeName').value = eqpTypeName;
+					document.getElementById('eqpTypeCd').value = eqpTypeCode;
+					document.getElementById('eqpTypeNm').value = eqpTypeName;
 					
 					document.querySelector('#eqpTypeModal button.btn-close').click();
 				});
@@ -562,6 +601,19 @@
 		
 					insert든 update든 완료되면 알림 띄워주고
 					화면단에 적힌거 reset버튼 타겟팅 후 click으로 지워준다.
+					
+					설비코드가 비워져있으면 insert => sweetConfirm('C', function() {})
+					설비코드가 비워져있으면 update => sweetConfirm('U', function() {})
+					
+					sweetConfirm('', function () {
+						// ajax success
+						toastr.success('정상적으로 저장되었습니다.');
+						toastr.success('정상적으로 수정되었습니다.');
+						selectEqpGrid.removeCheckedRows();
+						// ajax fail
+						toastr.error('저장에 실패했습니다.');  
+						toastr.error('수정에 실패했습니다.');  
+					});
 				*/
 			}
 			
@@ -571,33 +623,33 @@
 			input#IMG에 값 들어오면 img태그 만들어서 사진 나오는 이벤트
 			--------------- */
 			function inputImgInteract() {
-				IMG.addEventListener('change', function (event) {
+				img.addEventListener('change', function (event) {
 					// 파일명 가져오기
-					let index = IMG.value.lastIndexOf('\\');
-					let fileStr = IMG.value.substring(index + 1);
+					let index = document.getElementById('img').value.lastIndexOf('\\');
+					let fileStr = document.getElementById('img').value.substring(index + 1);
 					
 					// img태그 생성
-					let imgTag = document.createElement('img');
-					imgTag.setAttribute('id', 'img');
-					imgTag.setAttribute('name', 'img');
-					imgTag.setAttribute('alt', '설비사진');
-					imgTag.setAttribute('width', '300px');
-					imgTag.setAttribute('height', '300px');
+					let newImgTag = document.createElement('img');
+					newImgTag.setAttribute('id', 'imgTag');
+					newImgTag.setAttribute('name', 'imgTag');
+					newImgTag.setAttribute('alt', '설비사진');
+					newImgTag.setAttribute('width', '300px');
+					newImgTag.setAttribute('height', '300px');
 					
 					// 이미 document에 img태그 존재시 삭제. 미존재시 src 속성 만들어 넣기
-					if (document.getElementById('img') != null) {
-						document.getElementById('img').remove();
+					if (document.getElementById('imgTag') != null) {
+						document.getElementById('imgTag').remove();
 						
 						// 새 파일을 고른 경우
 						if (fileStr != '') {
-							imgTag.setAttribute('src', 'images/' + fileStr);
+							newImgTag.setAttribute('src', 'images/' + fileStr);
 						}
 					} else {
-						imgTag.setAttribute('src', 'images/' + fileStr);
+						newImgTag.setAttribute('src', 'images/' + fileStr);
 					}
 					
 					// document에 삽입
-					imgDiv.prepend(imgTag);
+					imgDiv.prepend(newImgTag);
 				});
 				
 			}
@@ -609,7 +661,7 @@
 			--------------- */
 			function imgTagReset() {
 				reset.addEventListener('click', function () {
-					img.src = '';
+					document.getElementById('imgTag').src = '';
 				});
 			}
 			

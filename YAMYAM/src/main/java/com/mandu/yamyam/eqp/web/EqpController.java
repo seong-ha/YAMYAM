@@ -15,4 +15,10 @@ public class EqpController {
 	public String uopAd() {
 		return "eqp/uopAd";
 	}
+	
+	@RequestMapping("/eqpChkAd")
+	public String eqpChkAd() {
+		// 설비구분 데이터들 가져와서 model로 내려주기
+		return "eqp/eqpChkAd";
+	}
 }
