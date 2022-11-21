@@ -2,11 +2,16 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.mandu.yamyam.comm.mapper.CommMapper">
 
-	<!-- 직원 전체 조회 -->
+	<!-- ajax 데이터 불러오기 -->
 	
-	<select id="selectAllEmp" resultType="com.mandu.yamyam.comm.service.CommVO">
+	<select id="ajaxSelectAllEmp" resultType="com.mandu.yamyam.common.LowerKeyMap">
 	
-	SELECT EMP_NO, EMP_NM, EMP_DATE, EMP_ID, DEPT_NM, EMP_ROLE
+	SELECT EMP_NO,
+	       EMP_NM,
+	       TO_CHAR(EMP_DATE, 'yyyy-MM-dd') as EMP_DATE,
+	       EMP_ID,
+	       DEPT_NM,
+	       EMP_ROLE
 	FROM C_EMP E, C_DEPT D
 	WHERE E.DEPT_CD  = D.DEPT_CD
 	
@@ -37,5 +42,6 @@
 	
 	
 	</insert>
+
 	
 </mapper>

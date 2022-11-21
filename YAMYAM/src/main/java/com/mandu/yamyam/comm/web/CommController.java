@@ -1,23 +1,29 @@
 package com.mandu.yamyam.comm.web;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.mandu.yamyam.comm.service.CommService;
+import com.mandu.yamyam.comm.service.EmpVO;
 
 
 @Controller
 public class CommController {
 
 	@Autowired
-	CommService service;
+	CommService commservice;
+
 	
 	@RequestMapping("/employeeAD")
 	public String employeeAD(Model model) {
-		model.addAttribute("depts", service.selectDept());
-		model.addAttribute("jobs", service.selectCommCode("JOB-GRD"));
+		model.addAttribute("depts", commservice.selectDept());
+		model.addAttribute("jobs", commservice.selectCommCode("JOB-GRD"));
 		return "comm/employeeAD";
 	}
 	
@@ -51,6 +57,12 @@ public class CommController {
 		return "comm/BOMAD";
 	}
 	
-	
+	// ajax 전체 조회
+	@GetMapping("ajax/selectEmp")
+	@ResponseBody
+	public List<EmpVO> ajaxSelectAllEmp() {
+		
+		return commservice.ajaxSelectAllEmp();
+	}
 	
 }

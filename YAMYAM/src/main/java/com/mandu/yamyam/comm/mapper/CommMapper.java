@@ -5,6 +5,7 @@ import java.util.List;
 import com.mandu.yamyam.comm.service.CommVO;
 import com.mandu.yamyam.comm.service.CommdVO;
 import com.mandu.yamyam.comm.service.DeptVO;
+import com.mandu.yamyam.comm.service.EmpVO;
 
 public interface CommMapper {
 	
@@ -21,6 +22,9 @@ public interface CommMapper {
 	public List<DeptVO> selectDept();
 	// 상세 공통조회(modaL)
 	public List<CommdVO> selectCommCode(String cd);
+	
+	// ajax 데이터 불러오기
+	public List<EmpVO> ajaxSelectAllEmp();
 	
 	
 }

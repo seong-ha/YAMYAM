@@ -272,25 +272,6 @@
 	    }
 
 	
-		const gridData = [ {
-			EMP_NO : '1100',
-			EMP_NM : '홍길동',
-			EMP_DATE : '2002/07/05',
-			EMP_ID : 'no',
-			DEPT_NM : '영업부',
-			EMP_ROLE : '0'
-		},
-		{
-			EMP_NO : '1100',
-			EMP_NM : '홍길동',
-			EMP_DATE : '2002/07/05',
-			EMP_ID : 'no',
-			DEPT_NM : '영업부',
-			EMP_ROLE : '0'
-		}
-		];
-		
-   
 		const grid = new tui.Grid({
 			
 			rowHeaders: ['rowNum', 'checkbox'], // 체크박스
@@ -299,44 +280,42 @@
 
 			bodyHeight: 500, // 스크롤
 			
-			data : gridData,
-				
 			scrollX : false,
 			scrollY : true,
 			columns : [ {	
 				header : '직원 번호',
-				name : 'EMP_NO',
+				name : 'empNo',
 				sortingType: 'desc',
 		        sortable: true,
 		        align: 'center'
 			}, {
 				header : '직원이름',
-				name : 'EMP_NM',
+				name : 'empNm',
 				sortingType: 'desc',
 		        sortable: true,
 		        align: 'center',
 		        filter: 'text'
 			}, {
 				header : '입사일',
-				name : 'EMP_DATE',
+				name : 'empDate',
 				sortingType: 'desc',
 		        sortable: true,
 		        align: 'center'
 			}, {
 				header : '계정아이디',
-				name : 'EMP_ID',
+				name : 'empId',
 				sortingType: 'desc',
 		        sortable: true,
 		        align: 'center'
 			}, {
 				header : '부서명',
-				name : 'DEPT_NM',
+				name : 'deptNm',
 				sortingType: 'desc',
 		        sortable: true,
 		        align: 'center'
 			}, {
 				header : '직급정보',
-				name : 'EMP_ROLE',
+				name : 'empRole',
 				sortingType: 'desc',
 		        sortable: true,
 		        align: 'center'
@@ -344,7 +323,21 @@
 			showDummyRows: true
 			
 		});
-		
+	
+		// ajax 직원 정보 불러오기
+		$.ajax({
+			url : "ajax/selectEmp",
+			type : "get",
+			dataType: "json",
+			success : function(data){
+				console.log(data);
+				grid.resetData(data);
+			},
+			error : function(reject){
+				console.log(reject);
+			}
+		})
+	
 	// 체크박스
 	 grid.on('check', function(ev) {
 	      console.log('check', ev);

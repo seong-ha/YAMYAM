@@ -18,4 +18,7 @@ public interface CommService {
 	// 상세 공통조회(modaL)
 	public List<CommdVO> selectCommCode(String cd);
 	
+	// ajax 데이터 불러오기
+	public List<EmpVO> ajaxSelectAllEmp();
+	
 }

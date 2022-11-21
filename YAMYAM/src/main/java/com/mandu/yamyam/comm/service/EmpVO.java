@@ -12,6 +12,7 @@ public class EmpVO {
 	// 직원
 	private int empNo; // 직원 번호
 	private String deptCd; // 부서코드
+	private String deptNm; // 부서이름
 	private String empNm; // 직원 이름
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date empDate; // 입사일

@@ -10,6 +10,7 @@ import com.mandu.yamyam.comm.service.CommService;
 import com.mandu.yamyam.comm.service.CommVO;
 import com.mandu.yamyam.comm.service.CommdVO;
 import com.mandu.yamyam.comm.service.DeptVO;
+import com.mandu.yamyam.comm.service.EmpVO;
 
 @Service
 public class CommServiceImpl implements CommService{
@@ -51,6 +52,12 @@ public class CommServiceImpl implements CommService{
 	@Override
 	public List<CommdVO> selectCommCode(String cd) {
 		return commMapper.selectCommCode(cd);
+	}
+	
+	// ajax 데이터 불러오기
+	@Override
+	public List<EmpVO> ajaxSelectAllEmp() {
+		return commMapper.ajaxSelectAllEmp();
 	}
 
 }
