@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mandu.yamyam.comm.mapper.CommMapper">
+
+	<!-- ajax 데이터 불러오기 -->
+	
+	<select id="ajaxSelectAllEmp" resultType="com.mandu.yamyam.common.LowerKeyMap">
+	
+	SELECT EMP_NO,
+	       EMP_NM,
+	       TO_CHAR(EMP_DATE, 'yyyy-MM-dd') as EMP_DATE,
+	       EMP_ID,
+	       DEPT_NM,
+	       EMP_ROLE
+	FROM C_EMP E, C_DEPT D
+	WHERE E.DEPT_CD  = D.DEPT_CD
+	
+	</select>
+	
+	<!-- 부서 조회(modal) -->
+	<select id="selectDept" resultType="com.mandu.yamyam.comm.service.DeptVO">
+	
+	SELECT * 
+	FROM C_DEPT
+	
+	</select>
+	
+	<!-- 상세 공통조회(modaL) -->
+	
+	<select id="selectCommCode" resultType="com.mandu.yamyam.comm.service.CommdVO">
+	
+	SELECT *
+	FROM C_COMMD
+	WHERE COMM_CD = #{value}
+	
+	</select>
+	
+	
+	<!-- 회원 등록 -->
+	<insert id="inserEmpInfo" parameterType="com.mandu.yamyam.comm.service.CommVO">
+	
+	
+	
+	</insert>
+
+	
+</mapper>
