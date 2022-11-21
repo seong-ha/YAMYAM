@@ -11852,23 +11852,8 @@ h3,h4 {
 	padding: 5px;
 }
 
-/* 설비관리 화면 테이블 style 속성 */
-#eqpTable {
-	margin-left: 40px;
-	margin-top: 30px;
-	height: 230px;
-}
-
-#eqpTable th {
-	width: 90px;
-}
-
-#eqpTable input[type="text"] {
-	margin-right: 40px;
-}
-
-#eqpTable tr {
-	border-bottom: 1px #C9BABA solid;
-	border-top: 1px #C9BABA solid;
+/* readonly인 input태그 배경색은 어둡게~ */
+input[readonly] {
+		background-color: gainsboro;
 }
 

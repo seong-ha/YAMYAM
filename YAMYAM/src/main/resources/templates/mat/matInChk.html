@@ -10,14 +10,15 @@
 	</div>
 	<hr>
 	<ul class="ul-style">
-		<li><label for="matNm">자재명</label><input id="matNm" readonly><img
+			<li><label for="matNm">자재명</label><input id="matNm"
+				name="matNm" readonly> <img id="matNm"
+				class="Magnifying-Glass-img" alt="image" data-bs-toggle="modal"
+				data-bs-target="#matModal" src="../images/Magnifying_Glass.png"> <input
+				id="matCd" name="matCd" type="text" readonly></li>
+		<li><label for="empNm">담당자</label><input id="empNm" readonly> <img
 			class="Magnifying-Glass-img" alt="image" data-bs-toggle="modal"
-			data-bs-target="#matModal" src="../images/Magnifying_Glass.png">
-			<input type="text" readonly></li>
-		<li><label for="empNm">담당자</label><input id="empNm" readonly><img
-			class="Magnifying-Glass-img" alt="image" data-bs-toggle="modal"
-			data-bs-target="#empModal" src="../images/Magnifying_Glass.png">
-			<input type="text" readonly></li>
+			data-bs-target="#empModal" src="../images/Magnifying_Glass.png"> 
+			<input id="empId" type="text" readonly></li>
 			
 		<!-- Date Picker -->
 		<li><label for="startpicker-input">검사일자</label>
@@ -32,13 +33,13 @@
 				<div id="endpicker-container" style="margin-left: -1px;"></div>
 			</div>
 			<button class="btn btn-dark btn-sm">조회</button>
-			<button class="btn btn-dark btn-sm">초기화</button></li>
+			<button class="btn btn-dark btn-sm" id="resetBtn">초기화</button></li>
 	</ul>
 
 	<div style="text-align: right;">
 		<button class="btn btn-dark btn-sm" data-bs-toggle="modal"
 			data-bs-target="#addModal">추가</button>
-		<button class="btn btn-dark btn-sm">선택삭제</button>
+		<button class="btn btn-dark btn-sm" id="deleteBtn">선택삭제</button>
 		<button class="btn btn-dark btn-sm">저장</button>
 	</div>
 
@@ -52,7 +53,7 @@
 				<div class="modal-header">
 					<h5 class="modal-title" id="matModalLabel">자재 목록</h5>
 					<button type="button" class="btn-close" data-bs-dismiss="modal"
-						aria-label="Close"></button>
+						aria-label="Close" id="matModalClose"></button>
 				</div>
 				<div class="modal-body">
 					<div>
@@ -76,18 +77,13 @@
 				<div class="modal-header">
 					<h5 class="modal-title" id="empModalLabel">사원 목록</h5>
 					<button type="button" class="btn-close" data-bs-dismiss="modal"
-						aria-label="Close"></button>
+						aria-label="Close" id="empModalClose"></button>
 				</div>
 				<div class="modal-body">
 					<div>
 						<div id="modalGrid2"></div>
 					</div>
-					<div align="center">
-						<button class="btn btn-dark btn-sm">추가</button>
-						<button class="btn btn-dark btn-sm">취소</button>
-					</div>
 				</div>
-
 			</div>
 		</div>
 	</div>
@@ -106,25 +102,25 @@
 					<div>
 						<div id="modalGrid3" style="width: 100%;"></div>
 					</div>
-					<div align="center">
-						<button class="btn btn-dark btn-sm">추가</button>
-						<button class="btn btn-dark btn-sm">취소</button>
-					</div>
 				</div>
-
 			</div>
 		</div>
 	</div>
-	<script>
-	let gird = chkMatList();			// 자재전체조회 그디르
+	<script th:inline="javascript">
+	let grid = chkMatList();			// 자재전체조회 그디르
 	
 	let modalGrid = matList();			// 자재목록 모달 그리드
 	let modalGrid2 = empList();			// 담당자목록 모달 그리드
 	let modalGrid3 = addPlan();			// 추가 목록 모달 그리드
 	
+	matListSelect();					// 자재목록 행 클릭 이벤트
+	empListSelect();					// 담당자목록 행 클릭 이벤트
+	deleteBtn();						// 삭제버튼 이벤트
+	
 	modalRef();							// 모달 리프레쉬
 	
 	datePicker();
+	resetDate();
 	/*------------------------------
 	// 자재전체조회 그리드
 	--------------------------------*/
@@ -240,7 +236,7 @@
 			el: document.getElementById('modalGrid'),
 			bodyHeight: 150,
 			data: dataList,
-			rowHeaders: ['checkbox'],
+			rowHeaders: ['rowNum'],
 			scrollX: false,
 			scrollY: true,
 			columns: [{
@@ -281,7 +277,7 @@
 			el: document.getElementById('modalGrid2'),
 			bodyHeight: 150,
 			data: dataList,
-			rowHeaders: ['checkbox'],
+			rowHeaders: ['rowNum'],
 			scrollX: false,
 			scrollY: true,
 			columns: [
@@ -302,23 +298,11 @@
 	// 추가 모달 그리드
 	--------------------------------*/
 	function addPlan(){
-		let dataList = [{
-			code: 'OAF-20221104-001',
-			maCode: 'RML-10101',
-			maNm: '얇은 만두피',
-			count: 999
-		},
-		{
-			code: 'OAF-20221105-002',
-			maCode: 'RML-10102',
-			maNm: '얇은 만두피',
-			count: 1000
-		}]
 		let modalGrid3 = new tui.Grid({
 			el: document.getElementById('modalGrid3'),
 			bodyHeight: 400,
-			data: dataList,
-			rowHeaders: ['checkbox'],
+			data: [[${addChkList}]],
+			rowHeaders: ['rowNum'],
 			scrollX: false,
 			scrollY: true,
 			columns: [{
@@ -376,5 +360,73 @@
 			        ]
 			    });
 			}
+		
+		/*----------------------------------
+		// 자재 목록 클릭 시 인풋태그 안으로
+		------------------------------------*/
+		function matListSelect() {
+			let matNm = document.getElementById('matNm');	// 값이 담길 input 태그
+			let matCd = document.getElementById('matCd');	// 값이 담길 input 태그
+			modalGrid.on('click', function(ev){
+				let data = modalGrid.getRow(ev.rowKey);
+				console.log(data);
+				matNm.value = data.name;
+				matCd.value = data.code;
+				matModalClose.click();
+			})
+		}
+		
+		/*----------------------------------
+		// 직원 목록 클릭 시 인풋태그 안으로
+		------------------------------------*/
+		function empListSelect() {
+			let empNm = document.getElementById('empNm');	// 값이 담길 input 태그
+			let empId = document.getElementById('empId');	// 값이 담길 input 태그
+			modalGrid2.on('click', function(ev){
+				let data = modalGrid2.getRow(ev.rowKey);
+				console.log(data);
+				empNm.value = data.empNm;
+				empId.value = data.empId; 
+				empModalClose.click();
+			})
+		}
+		
+		/*-----------
+		// 행 삭제 버튼
+		--------------*/
+		function deleteBtn() {
+			let deleteBtn = document.getElementById('deleteBtn');
+			deleteBtn.addEventListener('click', function(){
+				Swal.fire({
+				      title: '정말로 삭제 하시겠습니까?',
+				      //text: "다시 되돌릴 수 없습니다. 신중하세요.",
+				      icon: 'warning',
+				      showCancelButton: true,
+				      confirmButtonColor: '#3085d6',
+				      cancelButtonColor: '#d33',
+				      confirmButtonText: '승인',
+				      cancelButtonText: '취소',
+				      //reverseButtons: true, // 버튼 순서 거꾸로
+				      
+				    }).then((result) => {
+				      if (result.isConfirmed) {
+				        Swal.fire(
+				          '삭제가 완료되었습니다.'		          
+				        )
+				        grid.removeCheckedRows();
+				      }
+				   })
+			})
+		}
+		
+		/*--------------------------------
+		// 모달창 안의 DatePicker 초기화버튼 이벤트
+		----------------------------------*/
+		function resetDate() {
+			document.getElementById('resetBtn').addEventListener('click',function(){
+				document.getElementById('startpicker-input').value = today;
+				document.getElementById('endpicker-input').value = today;
+			});	
+		}
 	</script>
 </div>

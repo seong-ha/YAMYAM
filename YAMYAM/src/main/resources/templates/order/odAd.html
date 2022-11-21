@@ -160,10 +160,11 @@
 	/*------------
 	// function
 	----------------*/
-	cancelBtnHandler();  //  date picker input 값 초기화 버튼
-	searchBtnHandler();
-	deleteBtnHandler();
-	//insertBtnHandler();
+	getOrdList();			// grid List DB에서 불러오기 
+	cancelBtnHandler();  	// date picker input 값 초기화 버튼
+	searchBtnHandler();		// 검색 버튼 핸들러
+	deleteBtnHandler();		// 삭제 버튼 핸들러
+	SaveBtnHandler();
 	
 	let actModalGrid = actGridInit();
 	let actModalGrid2 = actGridInit2();
@@ -210,52 +211,33 @@
 	----------------*/
 	let grid = new tui.Grid({
 	    el: document.getElementById('grid'),
-	    data: [
-	        {
-	           odDate : '2022-11-01',
-	           odCd : 'ORD-20221101-001',
-	           prdCd : 'MD-00100',
-	           prdNm : '얇은피 고기만두',
-	           odAmt : 200,
-	           actCd : 'VDR-1004',
-	           actNm : 'YD 마트',
-	           deDate : '2022-11-04',
-	           sts : '완료'
-	        },
-	        {
-	           odDate : '2022-11-07',
-	           odCd : 'ORD-20221107-003',
-	           prdCd : 'MD-00200',
-	           prdNm : '얇은피 김치만두',
-	           odAmt : 400,
-	           actCd : 'VDR-1005',
-	           actNm : 'H 백화점',
-	           deDate : '2022-11-10',
-	           sts : '진행'
-	        }
-	        ],
 	    rowHeaders: ['checkbox','rowNum'],
 	    scrollX: false,
 	    scrollY: false,
 	    columns: [
 	      {
 	        header: '주문 일자',
+	        align : 'center',
 	        name: 'odDate'
 	      },
 	      {
 	        header: '주문 코드',
+	        align : 'center',
 	        name: 'odCd'
 	      },
 	      {
 	        header: '제품 코드',
+	        align : 'center',
 	        name: 'prdCd'
 	      },
 	      {
 	        header: '제품명',
+	        align : 'center',
 	        name: 'prdNm'
 	      },
 	      {
 	        header: '주문량',
+	        align : 'center',
 	        name: 'odAmt',
 	        editor: 'text',
 			// 필수 입력 값
@@ -266,14 +248,17 @@
 	      },
 	      {
 	        header: '거래처 코드',
+	        align : 'center',
 	        name: 'actCd'
 	      },
 	      {
 	        header: '거래처명',
+	        align : 'center',
 	        name: 'actNm'
 	      },
 	      {
 	        header: '납기 일자',
+	        align : 'center',
 	        name: 'deDate',
 	        editor: 'datePicker',
 	        validation: {
@@ -283,12 +268,28 @@
 	      },
 	      {
 	        header: '진행 상황',
+	        align : 'center',
 	        name: 'sts'
 	      },
 	    ]
 	  });
 
     
+	/*------------
+	// 주문서 리스트 가져오기
+	----------------*/
+	  function getOrdList() {
+          $.ajax({
+             url : '/ordList',
+             dataType : "json",
+             success : function(data) {
+                grid.resetData(data);
+             },
+             error : function(reject) {
+                console.log(reject);
+             }
+          })
+       }
     
     
     /*------------
@@ -318,21 +319,53 @@
 	});
 	
 	
+	
    /*------------
 	// 등록 버튼 클릭
 	----------------*/
-	/*
-	function insertBtnHandler(){
-		$('#insertBtn').on('click',function(){
-			let odAmt = $('#odAmt').val();
-			sweetConfirm('C', function(){
-				
-				Swal.fire('등록이 완료되었습니다');
+	function SaveBtnHandler(){
+		$('#saveBtn').on('click',function(){
+			let rowData = grid.getCheckedRows();
+			let ordList = [];
+			for (let i=0; i<rowData.length; i++) {
+				let odDate = rowData[i].odDate;
+				let odCd = rowData[i].odCd;
+				let prdCd = rowData[i].prdCd;
+				let odAmt = rowData[i].odAmt;
+				let actCd = rowData[i].actCd;
+				let deDate = rowData[i].deDate;
+				let odSts = rowData[i].odSts;
+				ordList.push({odDate,odCd,prdCd,odAmt,actCd,deDate,odSts});
+				console.log(rowData);
 			
+			sweetConfirm('C', function(){
+						$.ajax({
+							url : '/insertOrd',
+							type : 'post',
+							contentType: 'application/json',
+							data: JSON.stringify(ordList),
+							dataType : 'json',
+							 success : function(result) {
+				                 if(result > 0){
+				                	 Swal.fire(
+				       			          '등록이 완료되었습니다.'	);
+				                	 grid.refreshLayout();
+				                 }else {
+				                	 Swal.fire(
+				                			 '등록이 실패하였습니다.');
+				                 }
+				              },
+				              error : function(reject) {
+				                 console.log(reject);
+				              }
+						})
 			})
-		}
+			}
+		})
+		
    }
-   */
+
+   
    
    /*------------
 	// 삭제 버튼 클릭(그리드행 삭제)
@@ -340,29 +373,32 @@
 	function deleteBtnHandler(){
 		// grid 선택 행 삭제
 		$('#deleteBtn').on('click',function(){
-			// sweetalert2
-			Swal.fire({
-			      title: '정말로 삭제 하시겠습니까?',
-			      //text: "다시 되돌릴 수 없습니다. 신중하세요.",
-			      icon: 'warning',
-			      showCancelButton: true,
-			      confirmButtonColor: '#3085d6',
-			      cancelButtonColor: '#d33',
-			      confirmButtonText: '승인',
-			      cancelButtonText: '취소',
-			      //reverseButtons: true, // 버튼 순서 거꾸로
-			      
-			    }).then((result) => {
-			      if (result.isConfirmed) {
-			        Swal.fire(
-			          '삭제가 완료되었습니다.'		          
-			        )
-			        grid.removeCheckedRows();
-			      }
-			    })
-			
+			let rowData = grid.getCheckedRows();
+			sweetConfirm('D', function(){
+				    	  $.ajax({
+				              url : '/deleteOrd',
+				              type: 'delete',
+				              contentType: 'application/json',
+								data: JSON.stringify(rowData[0]),
+				              success : function(result) {
+				                 if(result == 1){
+				                	 Swal.fire(
+				       			          '삭제가 완료되었습니다.'	);
+				                 }else {
+				                	 Swal.fire(
+				                			 '삭제에 실패하였습니다.');
+				                 }
+				              },
+				              error : function(reject) {
+				                 console.log(reject);
+				              }
+				           })
+				        grid.removeCheckedRows();
+				      
+			})
 		});	
 	}
+   
    
 	
 	/*------------
@@ -409,6 +445,23 @@
 	  });
 		return actModalGrid;
    }
+	
+	
+	/*------------
+	// 거래처 Modal 리스트 가져오기 (행 추가 시, 사용)
+	----------------*/
+	  function getActList() {
+         $.ajax({
+            url : '/ordList',
+            dataType : "json",
+            success : function(data) {
+               grid.resetData(data);
+            },
+            error : function(reject) {
+               console.log(reject);
+            }
+         })
+      }
 	
 	
 	
