@@ -13,7 +13,7 @@
 
 	<div align="right">
 		<form action="" onsubmit="return false">
-			직원 이름 <input type="text" name="EMP_NM" id="searchEmpName" size="15">
+			직원 이름 <input type="text" name="empNm" id="searchEmpName" size="15">
 			<button type="button" class="btn btn-dark btn-sm" id="searchBtn">검색</button>
 			<button type="reset" class="btn btn-dark btn-sm" id="searchReset">초기화</button>
 		</form>
@@ -27,18 +27,105 @@
 		<br> <br>
 		
 			<button type="button" class="btn btn-dark btn-sm"
-				data-bs-toggle="modal" data-bs-target="#staticBackdrop1" id="insertBtn">회원 등록</button>
+			data-bs-toggle="modal" data-bs-target="#staticBackdrop1" id="mainInsertBtn">회원 등록</button>
 		
-			<!-- 모달창 1번 -->
-			<div class="modal fade" id="staticBackdrop1" data-bs-backdrop="static"
+		<!-- 모달창 1번 -->
+		<div class="modal fade" id="staticBackdrop1" data-bs-backdrop="static" 
+			data-bs-keyboard="false" tabindex="-1"
+			aria-labelledby="staticBackdropLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<form action="#" method="post">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title" id="staticBackdropLabel">회원 등록</h5>
+							<button type="button" class="btn-close" data-bs-dismiss="modal" id="insertModalClose"
+								aria-label="Close"></button>
+						</div>
+	
+						<!-- 모달창 input type -->
+						<div class="modal-body">
+							
+							<div class="mb-3 row">
+						    <label for="staticEmail" class="col-sm-3 col-form-label">계정 아이디</label>
+						    <div class="col-sm-9">
+						      <input type="text" name="empId" class="form-control" id="insertId">
+						    </div>
+						  </div>
+						  
+						  	<div class="mb-3 row">
+						    <label for="staticEmail" class="col-sm-3 col-form-label">비밀번호</label>
+						    <div class="col-sm-9">
+						      <input type="text" name="empPw" class="form-control" id="insertPw">
+						    </div>
+						  </div>
+						  
+						  	<div class="mb-3 row">
+						    <label for="staticEmail" class="col-sm-3 col-form-label">비밀번호확인</label>
+						    <div class="col-sm-9">
+						      <input type="text" name="empPwcr" class="form-control" id="insertPwcr">
+						    </div>
+						  </div>
+						  
+						  	<div class="mb-3 row">
+						    <label for="staticEmail" class="col-sm-3 col-form-label">직원 이름</label>
+						    <div class="col-sm-9">
+						      <input type="text" name="empNm" class="form-control" id="insertName">
+						    </div>
+						  </div>
+						  
+						  	<div class="mb-3 row">
+						    <label for="staticEmail" class="col-sm-3 col-form-label">입사일</label>
+						    <div class="col-sm-9">
+						      <input type="text" name="empDate" class="form-control" id="hireDate">
+						    </div>
+						  </div>
+						  
+						  	<div class="mb-3 row">
+						    <label for="staticEmail" class="col-sm-3 col-form-label">부서명</label>
+						    <div class="col-sm-9">
+						      <select name="deptCd" class="form-control" id="deptName">
+						      	<option th:each="dept : ${depts}" th:value="${dept.deptCd}" th:text="${dept.deptNm}"></option>
+						      </select>
+						    </div>
+						  </div>
+						  
+						  	<div class="mb-3 row">
+						    <label for="staticEmail" class="col-sm-3 col-form-label">직급 정보</label>
+						    <div class="col-sm-9">
+						      <select name="empRole" class="form-control" id="insertRole">
+						      	<option th:each="job : ${jobs}" th:value="${job.commdCd}" th:text="${job.commdNm}"></option>
+						      </select>
+						    </div>
+						  </div>
+						  
+						  
+						</div>
+	
+	
+						<div class="modal-footer">
+							<button type="button" class="btn btn-primary" id="insertBtn">등록</button>
+							<input type="reset" class="btn btn-secondary">
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+		
+			
+
+		<button type="button" class="btn btn-dark btn-sm"
+			data-bs-toggle="modal" data-bs-target="#staticBackdrop2" name="mainUpdateBtn" id="mainUpdateBtn">회원 수정</button>
+
+		<!-- 모달창 2번 -->
+			<div class="modal" id="staticBackdrop2" data-bs-backdrop="static"
 				data-bs-keyboard="false" tabindex="-1"
 				aria-labelledby="staticBackdropLabel" aria-hidden="true">
 				<div class="modal-dialog">
 					<form action="#" method="post">
 						<div class="modal-content">
 							<div class="modal-header">
-								<h5 class="modal-title" id="staticBackdropLabel">회원 등록</h5>
-								<button type="button" class="btn-close" data-bs-dismiss="modal" id="insertModalClose"
+								<h5 class="modal-title" id="staticBackdropLabel">회원 수정</h5>
+								<button type="button" class="btn-close" data-bs-dismiss="modal" id="updateModalClose"
 									aria-label="Close"></button>
 							</div>
 					    
@@ -49,35 +136,35 @@
 							  <div class="mb-2 row">
 							    <label for="staticEmail" class="col-sm-3 col-form-label">계정 아이디</label>
 							    <div class="col-sm-9">
-							      <input type="text" name="EMP_ID" class="form-control" id="id">
+							      <input type="text" name="empId" class="form-control" id="updateId">
 							    </div>
 							  </div>
 							  
 							  	<div class="mb-3 row">
 							    <label for="staticEmail" class="col-sm-3 col-form-label">비밀번호</label>
 							    <div class="col-sm-9">
-							      <input type="text" name="EMP_PW" class="form-control" id="pw">
+							      <input type="text" name="empPw" class="form-control" id="updatePw">
 							    </div>
 							  </div>
 							  
 							  	<div class="mb-3 row">
 							    <label for="staticEmail" class="col-sm-3 col-form-label">비밀번호확인</label>
 							    <div class="col-sm-9">
-							      <input type="text" name="EMP_PW" class="form-control" id="pwcorrect">
+							      <input type="text" name="empPwcr" class="form-control" id="updatePwcr">
 							    </div>
 							  </div>
 							  
 							  	<div class="mb-3 row">
 							    <label for="staticEmail" class="col-sm-3 col-form-label">직원 이름</label>
 							    <div class="col-sm-9">
-							      <input type="text" name="EMP_NM" class="form-control" id="EMP_NM">
+							      <input type="text" name="empNm" class="form-control" id="updateEmpName">
 							    </div>
 							  </div>
 							  
 							  	<div class="mb-3 row">
 							    <label for="staticEmail" class="col-sm-3 col-form-label">직급 정보</label>
 							    <div class="col-sm-9">
-							      <input type="text" name="EMP_ROLE" class="form-control" id="insertRole">
+							      <input type="text" name="empRole" class="form-control" id="updateRole">
 							    </div>
 							  </div>
 		
@@ -85,96 +172,13 @@
 							</div>
 					    
 							<div class="modal-footer">
-								<button type="button" class="btn btn-primary" name="insertBtn" id="insertBtn">등록</button>
+								<button type="button" class="btn btn-primary" name="updateBtn" id="updateBtn">수정</button>
 								<input type="reset" class="btn btn-secondary" name="reset">
 							</div>
 						</div>
 					</form>
 				</div>
 			</div>
-		
-		
-
-		<button type="button" class="btn btn-dark btn-sm"
-			data-bs-toggle="modal" data-bs-target="#staticBackdrop2" name="mainUpdateBtn" id="mainUpdateBtn">회원 수정</button>
-
-		<!-- 모달창 2번 -->
-		<div class="modal fade" id="staticBackdrop2" data-bs-backdrop="static"
-			data-bs-keyboard="false" tabindex="-1"
-			aria-labelledby="staticBackdropLabel" aria-hidden="true">
-			<div class="modal-dialog">
-				<form action="#" method="post">
-					<div class="modal-content">
-						<div class="modal-header">
-							<h5 class="modal-title" id="staticBackdropLabel">회원 수정</h5>
-							<button type="button" class="btn-close" data-bs-dismiss="modal" id="updateModalClose"
-								aria-label="Close"></button>
-						</div>
-	
-						<!-- 모달창 input type -->
-						<div class="modal-body">
-							
-							<div class="mb-3 row">
-						    <label for="staticEmail" class="col-sm-3 col-form-label">계정 아이디</label>
-						    <div class="col-sm-9">
-						      <input type="text" name="EMP_ID" class="form-control" id="updateId">
-						    </div>
-						  </div>
-						  
-						  	<div class="mb-3 row">
-						    <label for="staticEmail" class="col-sm-3 col-form-label">비밀번호</label>
-						    <div class="col-sm-9">
-						      <input type="text" name="EMP_PW" class="form-control" id="updatePw">
-						    </div>
-						  </div>
-						  
-						  	<div class="mb-3 row">
-						    <label for="staticEmail" class="col-sm-3 col-form-label">비밀번호확인</label>
-						    <div class="col-sm-9">
-						      <input type="text" name="EMP_PWCR" class="form-control" id="updatePwcr">
-						    </div>
-						  </div>
-						  
-						  	<div class="mb-3 row">
-						    <label for="staticEmail" class="col-sm-3 col-form-label">직원 이름</label>
-						    <div class="col-sm-9">
-						      <input type="text" name="EMP_NM" class="form-control" id="empName">
-						    </div>
-						  </div>
-						  
-						  	<div class="mb-3 row">
-						    <label for="staticEmail" class="col-sm-3 col-form-label">입사일</label>
-						    <div class="col-sm-9">
-						      <input type="text" name="EMP_DATE" class="form-control" id="hireDate">
-						    </div>
-						  </div>
-						  
-						  	<div class="mb-3 row">
-						    <label for="staticEmail" class="col-sm-3 col-form-label">부서명</label>
-						    <div class="col-sm-9">
-						      <input type="text" name="DEPT_NM" class="form-control" id="deptName">
-						    </div>
-						  </div>
-						  
-						  	<div class="mb-3 row">
-						    <label for="staticEmail" class="col-sm-3 col-form-label">직급 정보</label>
-						    <div class="col-sm-9">
-						      <input type="text" name="EMP_ROLE" class="form-control" id="updateRole">
-						    </div>
-						  </div>
-						  
-						  
-						</div>
-	
-	
-						<div class="modal-footer">
-							<button type="button" class="btn btn-primary" id="updateBtn">수정</button>
-							<input type="reset" class="btn btn-secondary">
-						</div>
-					</div>
-				</form>
-			</div>
-		</div>
 
 		<button type="button" class="btn btn-dark btn-sm"
 			data-bs-toggle="modal" data-bs-target="#staticBackdrop3">회원 삭제</button>
@@ -275,92 +279,16 @@
 			EMP_ID : 'no',
 			DEPT_NM : '영업부',
 			EMP_ROLE : '0'
-		}, {
-			EMP_NO : '1101',
-			EMP_NM : '김길동',
-			EMP_DATE : '2008/02/05',
-			EMP_ID : 'no',
-			DEPT_NM : '영업부',
-			EMP_ROLE : '0'
-		}, {
-			EMP_NO : '1123',
+		},
+		{
+			EMP_NO : '1100',
 			EMP_NM : '홍길동',
 			EMP_DATE : '2002/07/05',
 			EMP_ID : 'no',
 			DEPT_NM : '영업부',
 			EMP_ROLE : '0'
-		}, {
-			EMP_NO : '1154',
-			EMP_NM : '황길동',
-			EMP_DATE : '2003/11/15',
-			EMP_ID : 'no',
-			DEPT_NM : '영업부',
-			EMP_ROLE : '0'
-		}, {
-			EMP_NO : '1199',
-			EMP_NM : '최길동',
-			EMP_DATE : '2006/07/05',
-			EMP_ID : 'no',
-			DEPT_NM : '영업부',
-			EMP_ROLE : '0'
-		}, {
-			EMP_NO : '1207',
-			EMP_NM : '홍길동',
-			EMP_DATE : '2002/04/25',
-			EMP_ID : 'no',
-			DEPT_NM : '영업부',
-			EMP_ROLE : '0'
-		}, {
-			EMP_NO : '1500',
-			EMP_NM : '홍길동',
-			EMP_DATE : '2004/03/05',
-			EMP_ID : 'no',
-			DEPT_NM : '영업부',
-			EMP_ROLE : '0'
-
-		}, {
-			EMP_NO : '1500',
-			EMP_NM : '홍길동',
-			EMP_DATE : '2004/03/05',
-			EMP_ID : 'no',
-			DEPT_NM : '영업부',
-			EMP_ROLE : '0'
-		}, {
-			EMP_NO : '1500',
-			EMP_NM : '홍길동',
-			EMP_DATE : '2004/03/05',
-			EMP_ID : 'no',
-			DEPT_NM : '영업부',
-			EMP_ROLE : '0'
-		}, {
-			EMP_NO : '1500',
-			EMP_NM : '홍길동',
-			EMP_DATE : '2004/03/05',
-			EMP_ID : 'no',
-			DEPT_NM : '영업부',
-			EMP_ROLE : '0'
-		}, {
-			EMP_NO : '1500',
-			EMP_NM : '홍길동',
-			EMP_DATE : '2004/03/05',
-			EMP_ID : 'no',
-			DEPT_NM : '영업부',
-			EMP_ROLE : '0'
-		}, {
-			EMP_NO : '1500',
-			EMP_NM : '홍길동',
-			EMP_DATE : '2004/03/05',
-			EMP_ID : 'no',
-			DEPT_NM : '영업부',
-			EMP_ROLE : '0'
-		}, {
-			EMP_NO : '1500',
-			EMP_NM : '홍길동',
-			EMP_DATE : '2004/03/05',
-			EMP_ID : 'no',
-			DEPT_NM : '영업부',
-			EMP_ROLE : '0'
-		}, ];
+		}
+		];
 		
    
 		const grid = new tui.Grid({
@@ -413,6 +341,7 @@
 		        sortable: true,
 		        align: 'center'
 			}  ],
+			showDummyRows: true
 			
 		});
 		
@@ -424,20 +353,13 @@
 	    grid.on('uncheck', function(ev) {
 	      console.log('uncheck', ev);
 	    });
-		    
-	
-	//모달창 초기화 버튼
-
-    $('.modal').on('hidden.bs.modal', function(e){
-      $(this).find('form')[0].reset()
-    });
 	
 	
 	//회원 등록하기
 	
-	document.getElementsByName('insertBtn')[0].addEventListener('click', function(){
+	document.getElementById('insertBtn').addEventListener('click', function(){
 		
-		let rowData = {EMP_ID: "", EMP_NM: "", EMP_DATE: "", EMP_ID: "", DEPT_NM: "", EMP_ROLE: ""};
+		let rowData = {empId: "", empPw: "", empPwcr: "", deptNm: "", empRole: ""};
 		grid.appendRow(rowData);
 		
 		insertModalClose.click();
@@ -445,13 +367,14 @@
 	
 	//회원 수정하기
 	
-	$("#mainUpdateBtn").click(function(){  //메인 화면 수정버튼
+	$("#mainUpdateBtn").click(function(e){  //메인 화면 수정버튼
 		let rowData = grid.getCheckedRows();
 		
-		console.log(rowData[0].EMP_NO);
+		console.log(rowData[0].empId);
 		
 		if (rowData.length > 1) {
-			alert('한개만가져와좀..');
+			alert('하나의 열만 선택하세요.');
+			updateModalClose.click()
 			return;
 		}
 		 
@@ -460,13 +383,11 @@
 	 모달의 input태그들의 value값에 변수들을 담아준다.
 	 */
 	 
-		 updateId.value = rowData[0].EMP_ID;
-		 updatePw.value = rowData[0].EMP_PW;
-		 updatePwcr.value = rowData[0].EMP_PWCR;
-		 document.getElementById('empName').value = rowData[0].EMP_NM;
-		 hireDate.value = rowData[0].EMP_DATE;
-		 deptName.value = rowData[0].DEPT_NM;
-		 updateRole.value = rowData[0].EMP_ROLE;
+	 updateId.value = rowData[0].empId;
+	 updatePw.value = rowData[0].empPw;
+	 updatePwcr.value = rowData[0].empPwcr;
+	 document.getElementById('updateEmpName').value = rowData[0].empNm;
+	 updateRole.value = rowData[0].empRole;
 	 });
 	
 	// 모달창 수정버튼 이벤트
@@ -476,13 +397,11 @@
 		console.log(rowData);
 
 		
-		grid.setValue(rowData[0].rowKey, 'EMP_ID', updateId.value);
-		grid.setValue(rowData[0].rowKey, 'EMP_PW', updatePw.value);
-		grid.setValue(rowData[0].rowKey, 'EMP_PWCR', updatePwcr.value);
-		grid.setValue(rowData[0].rowKey, 'EMP_NM', document.getElementById('empName').value);
-		grid.setValue(rowData[0].rowKey, 'EMP_DATE', hireDate.value);
-		grid.setValue(rowData[0].rowKey, 'DEPT_NM', deptName.value);
-		grid.setValue(rowData[0].rowKey, 'EMP_ROLE', updateRole.value);
+		grid.setValue(rowData[0].rowKey, 'empId', updateId.value);
+		grid.setValue(rowData[0].rowKey, 'empPw', updatePw.value);
+		grid.setValue(rowData[0].rowKey, 'empPwcr', updatePwcr.value);
+		grid.setValue(rowData[0].rowKey, 'empNm', document.getElementById('updateEmpName').value);
+		grid.setValue(rowData[0].rowKey, 'empRole', updateRole.value);
 	})
 	
 	//회원 삭제하기
@@ -496,13 +415,13 @@
 	//직원 이름 검색 기능     
 	
      document.getElementById('searchBtn').addEventListener('click', function(){
-    	grid.filter('EMP_NM', [{code: 'eq', value: searchEmpName.value}]);
+    	grid.filter('empNm', [{code: 'eq', value: searchEmpName.value}]);
      
      });
      
      document.getElementById('searchEmpName').addEventListener("keydown", function(){
          if(event.keyCode == 13){
-        	 grid.filter('EMP_NM', [{code: 'eq', value: searchEmpName.value}]);
+        	 grid.filter('empNm', [{code: 'eq', value: searchEmpName.value}]);
         	 searchEmpName.value = '';
         	 
          }
@@ -511,7 +430,7 @@
      //초기화 버튼 누를시 다시 데이터 원상복구
      
      document.getElementById("searchReset").addEventListener('click', function(){
-    	grid.unfilter('EMP_NM', [{code: 'eq', value: searchEmpName.value}]);
+    	grid.unfilter('empNm', [{code: 'eq', value: searchEmpName.value}]);
      });
      
 	</script>
