@@ -159,15 +159,15 @@
 	        },
 	        {
 	          header: '단가(원)',
-	          name: 'mOddNm'
+	          name: 'matOddNm'
 	        },
 	        {
 	          header: '발주량',
-	          name: 'mOddAmt'
+	          name: 'matOddAmt'
 	        },
 	        {
 	          header: '총액',
-	          name: 'mSum'
+	          name: 'matSum'
 	        },
 	        {
 	          header: '업체명',
@@ -175,7 +175,7 @@
 	        },
 	        {
 	          header: '납기요청일',
-	          name: 'mOddDate'
+	          name: 'matOddDate'
 	        }
 	      ]
 	    });
@@ -201,18 +201,15 @@
 		      columns: [
 		    	  {
 			          header: '발주코드',
-			          name: 'mOdCd'
+			          name: 'matOdCd'
 			        },
 			        {
 			          header: '발주신청일',
-			          name: 'mOdDd'
+			          name: 'matOdDd'
 			        }
 		      ]
 		    });
 	
-		    grid2.on('focusChange', ev => {
-		      console.log('change focused cell!', ev);
-		    });
 		    return grid2;
 		}
 	
@@ -230,23 +227,23 @@
 		      columns: [
 		    	  {
 			          header: '자재코드',
-			          name: 'code'
+			          name: 'mtrCd'
 			        },
 			        {
 			          header: '자재명',
-			          name: 'mNm'
+			          name: 'mtrNm'
 			        },
 			        {
 			        	header: '단가(원)',
-				        name: 'price'
+				        name: 'matOddMn'
 			        },
 			        {
 			        	header: '발주량',
-			        	name: 'count'
+			        	name: 'matOddAmt'
 			        },
 			        {
 			        	header: '총액',
-			        	name: 'sumPrice'
+			        	name: 'matSum'
 			        },
 			        {
 			        	header: '업체명',
@@ -254,14 +251,11 @@
 			        },
 			        {
 			        	header: '납기요청일',
-			        	name: 'eDate'
+			        	name: 'matOddDate'
 			        }
 		      ]
 		    });
 	
-		    grid3.on('focusChange', ev => {
-		      console.log('change focused cell!', ev);
-		    });
 			return grid3;
 		} 
 	    
@@ -307,7 +301,7 @@
 					},
 					{
 						header: '수량',
-						name: 'mSamt'
+						name: 'matSamt'
 					}
 				]
 			});
@@ -390,14 +384,14 @@
 		function odListSearch() {
 			/* let startDate = document.getElementById('startpicker-input').value; */
 			document.getElementById('odSearch').addEventListener('click', function(){
-				let mOdDd = document.getElementById('endpicker-input').value;
+				let matOdDd = document.getElementById('endpicker-input').value;
 				$.ajax({
 					url: '/odListSearch',
-					type: 'POST',
+					method: 'POST',
 					contentType: 'application/json',					
-					data: JSON.stringify({mOdDd:mOdDd}),
+					data: JSON.stringify({matOdDd:matOdDd}),
 					success: function(result){
-						console.log(JSON.stringify({mOdDd}));
+						console.log(JSON.stringify({matOdDd:matOdDd}));
 						console.log(result);
 						grid2.resetData(result);
 					},

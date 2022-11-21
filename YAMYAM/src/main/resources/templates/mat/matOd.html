@@ -99,7 +99,7 @@
 	<!-- 자재 목록 모달 -->
 	<div class="modal" id="matModal" tabindex="-1"
 		aria-labelledby="matModalLabel" aria-hidden="true">
-		<div class="modal-dialog modal-xl">
+		<div class="modal-dialog modal-sm">
 			<div class="modal-content">
 				<div class="modal-header">
 					<h5 class="modal-title" id="matModalLabel">자재 목록</h5>
@@ -118,7 +118,7 @@
 	<!-- 업체 목록 모달 -->
 	<div class="modal" id="actModal" tabindex="-1"
 		aria-labelledby="actModalLabel" aria-hidden="true">
-		<div class="modal-dialog modal-xl">
+		<div class="modal-dialog modal-sm">
 			<div class="modal-content">
 				<div class="modal-header">
 					<h5 class="modal-title" id="actModalLabel">업체 목록</h5>
@@ -200,7 +200,7 @@
 		resetDate();						// datepicker2 초기화 버튼
 	
 		insertOrder();						// 행 추가(일반 탭)
-		deleteOrder();						// 행 삭제(일반 탭)
+		deleteOrderList();					// 행 삭제(일반 탭)
 		saveOrder();						// 행 저장(일반 탭)
 		
 	/*------------------------------
@@ -217,7 +217,7 @@
 	      columns: [
 	        {
 	          header: '발주코드',
-	          name: 'mOdCd'
+	          name: 'matOdCd'
 	        },
 	        {
 	          header: '자재코드',
@@ -232,32 +232,39 @@
 	        },
 	        {
 	          header: '단가(원)',
-	          name: 'mOddNm',
+	          name: 'matOddMn',
 			  editor: 'text'
 	        },
 	        {
 	          header: '발주량',
-	          name: 'mOddAmt',
+	          name: 'matOddAmt',
 			  editor: 'text'
 	        },
 	        {
 	          header: '총액',
-	          name: 'mSum'
+	          name: 'matSum'
 	        },
+	        {
+		      header: '업체코드',
+		      name: 'actCd',
+			  filter: {
+			  	type: 'select'			  
+				      	 }
+		        },
 	        {
 	          header: '업체명',
 	          name: 'actNm',
 			  filter: {
-			        type: 'select'			  
+			    type: 'select'			  
 			      	 }
 	        },
 	        {
 	          header: '발주신청일',
-	          name: 'mOdDd'
+	          name: 'matOdDd'
 	        },
 	        {
 	          header: '납기요청일',
-	          name: 'mOddDate',
+	          name: 'matOddDate',
 		      editor: 'datePicker',
 		      validation: {
 				     dataType: 'datePicker',
@@ -265,18 +272,6 @@
 				      }
 	        }
 	      ]
-	    });
-		
-		odLookUp.on('check', ev => {
-	      console.log('check!', ev);
-	    });
-	
-	    odLookUp.on('uncheck', ev => {
-	      console.log('uncheck!', ev);
-	    });
-	
-	    odLookUp.on('focusChange', ev => {
-	      console.log('change focused cell!', ev);
 	    });
 	    
 	    return odLookUp;
@@ -296,17 +291,17 @@
 	   			needMatModal.refreshLayout();
 	   			
 	   		// 업체 목록 선택 시 행으로 가져오기
-	   		}else if (ev.columnName =='actNm'){
+	   		}else if (ev.columnName =='actCd' || ev.columnName =='actNm'){
 	   	   			$('#actModal').modal('show');
 	   	   		 actList.refreshLayout();
 	   	   		}
 	   		
 	   		// 단가 * 발주량 = 총합
-	   		else if (ev.columnName == 'mSum'){
+	   		else if (ev.columnName == 'matSum'){
 	   			let data = odLookUp.getRow(ev.rowKey);
 	   			let val =  odLookUp.getFocusedCell().rowKey;
-				if(data.mOddNm != null && data.mOddAmt != null){
-					odLookUp.setValue(val, 'mSum', (data.mOddNm * data.mOddAmt));
+				if(data.matOddMn != null && data.matOddAmt != null){
+					odLookUp.setValue(val, 'matSum', (data.matOddMn * data.matOddAmt));
 				}
 	   		}
 	   	});
@@ -326,7 +321,7 @@
 		      columns: [
 		        {
 		          header: '상세계획번호',
-		          name: 'plandCd'
+		          name: 'pplnCd'
 		        },
 		        {
 		          header: '제품코드',
@@ -405,11 +400,11 @@
 				    },
 			        {
 				      header: '단가(원)',
-				      name: 'mOddMn'
+				      name: 'matOddMn'
 				    },
 				    {
 					  header: '발주량',
-					  name: 'mOddAmt'
+					  name: 'matOddAmt'
 					},
 					{
 					  header: '총액',
@@ -421,11 +416,11 @@
 					},
 					{
 					  header: '발주신청일',
-					  name: 'mOdDd'
+					  name: 'matOdDd'
 					},
 					{
 					  header: '납기요청일',
-					  name: 'mOddDate'
+					  name: 'matOddDate'
 					}
 						        
 		      ]
@@ -470,14 +465,6 @@
 				{
 					header: '자재명',
 					name: 'mtrNm',
-				},
-				{
-					header: '규격',
-					name: 'mtrStd'
-				},
-				{
-					header: '수량',
-					name: 'mSamt'
 				}
 			]
 		});
@@ -533,6 +520,7 @@
 			let data = actList.getRow(ev.rowKey);
 			let val =  odLookUp.getFocusedCell().rowKey;
 			
+			odLookUp.setValue(val, 'actCd', data.actCd);
 			odLookUp.setValue(val, 'actNm', data.actNm);
 
 			actModalClose.click();
@@ -579,7 +567,7 @@
   	function addNewPlan() {
  		planModal.on('click', function(ev) {
 	 	    let data = planModal.getRow(ev.rowKey);
-	 	    
+	 	    console.log(data);
 	 	   			$.ajax({
 					url: '/matAddNewPlan',
 					type: 'POST',
@@ -734,11 +722,11 @@
 		let insertBtn = document.getElementById('insertBtn');
 		insertBtn.addEventListener('click', function(){
 			insertBtn.setAttribute('disabled','true');
-		    let rowData = [{mOdCd: "", mtrCd: "", 
-		    				mtrNm: "", mOddNm: "", mOddAmt: "",
-		    				mSum : "" , actNm: "", mOdDd: "", mOddDate:""}]
-/* 			rowData.mOdCd = [[${matCdPlus}]][0].modcd; */
-		    rowData.mOdDd = today;
+		    let rowData = [{matOdCd: "", mtrCd: "", 
+		    				mtrNm: "", matOddMn: "", matOddAmt: "", matSum : "" ,
+		    				actCd: "", actNm: "", matOdDd: "", matOddDate:""}]
+/* 			rowData.matOdCd = [[${matCdPlus}]][0].modcd; */
+		    rowData.matOdDd = today;
 		    odLookUp.appendRow(rowData);
 		})
 	}
@@ -748,21 +736,12 @@
 	----------------------------*/
 	function saveOrder(){
 		let saveBtn = document.getElementById('saveBtn');
-		saveBtn.addEventListener('click', function(){
-			insertBtn.removeAttribute('disabled');
-		})
-	}
-	
-	/*------------------------
-	// 자재발주 전체조회 행 삭제 버튼
-	----------------------------*/
-	function deleteOrder() {
-		let deleteBtn = document.getElementById('deleteBtn');
-		deleteBtn.addEventListener('click', function(){
+		saveBtn.addEventListener('click', function(ev){
 			let data = odLookUp.getCheckedRows();
-			console.log(JSON.stringify(data[0]));
+			console.log(JSON.stringify(data[0].matOddDate));
+			console.log(data);
 			Swal.fire({
-			      title: '정말로 삭제 하시겠습니까?',
+			      title: '저장 하시겠습니까?',
 			      icon: 'warning',
 			      showCancelButton: true,
 			      confirmButtonColor: '#3085d6',
@@ -774,22 +753,85 @@
 			      if (result.isConfirmed) {
 			        $.ajax({
 			        	url: '/matOd',
-			        	type: 'DELETE',
-			        	contentType: 'application/json',
+			        	method: 'POST',
+			        	contentType: 'application/JSON',
 						data: JSON.stringify(data[0]),
 						success: function(result){
 							console.log(result);
-							if(result == 1){
-					        	Swal.fire('삭제가 완료되었습니다.');
+							if(result == 2){
+					        	Swal.fire('저장이 완료되었습니다.');
+								setTimeout(() => location.reload(),400);
 							} else {
-								Swal.fire('삭제에 실패하였습니다.');
+								Swal.fire('저장에 실패하였습니다.');
 							}
 						},
 						error: function(reject){
 							console.log(reject);
 						}
 			        })
-			        odLookUp.removeCheckedRows();
+			      }
+			   })
+			insertBtn.removeAttribute('disabled');	// 추가버튼 활성화
+		})
+	}
+	
+	/*------------------------
+	// 자재발주 전체조회 행 여러건 삭제 버튼
+	----------------------------*/
+	function deleteOrderList() {
+		let deleteBtn = document.getElementById('deleteBtn');
+		deleteBtn.addEventListener('click', function(){
+			let data = odLookUp.getCheckedRows();
+			Swal.fire({
+			      title: '정말로 삭제 하시겠습니까?',
+			      icon: 'warning',
+			      showCancelButton: true,
+			      confirmButtonColor: '#3085d6',
+			      cancelButtonColor: '#d33',
+			      confirmButtonText: '승인',
+			      cancelButtonText: '취소',
+			      
+			    }).then((result) => {
+			      if (result.isConfirmed) {
+			    	if(data.length==1){
+				        $.ajax({
+				        	url: '/matOd',
+				        	method: 'DELETE',
+				        	contentType: 'application/JSON',
+							data: JSON.stringify(data[0]),
+							success: function(result){
+								console.log(result);
+								if(result == 1 || result == -1){
+						        	Swal.fire('삭제가 완료되었습니다.');
+						        	odLookUp.removeCheckedRows();
+								} else {
+									Swal.fire('삭제에 실패하였습니다.');
+								}
+							},
+							error: function(reject){
+								console.log(reject);
+							}
+			        	})
+			    	} else if(data.length > 1) {
+				        $.ajax({
+				        	url: '/matOdDel',
+				        	method: 'DELETE',
+				        	contentType: 'application/JSON',
+							data: JSON.stringify(data[0]),
+							success: function(result){
+								console.log(result);
+								if(result != 1 && result != -1 && result != 0){
+						        	Swal.fire('삭제가 완료되었습니다.');
+						        	odLookUp.removeCheckedRows();
+								} else {
+									Swal.fire('삭제에 실패하였습니다.');
+								}
+							},
+							error: function(reject){
+								console.log(reject);
+							}
+			        	})
+			    	}
 			      }
 			   })
 		})
