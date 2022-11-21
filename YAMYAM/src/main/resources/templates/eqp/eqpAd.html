@@ -110,8 +110,8 @@
 											<th>가동여부</th>
 											<td>
 								  			    <select class="form-select form-select-sm" name="eqpSts" id="eqpSts">
-											        <option value="Y">Y</option>
-											        <option value="N">N</option>
+											        <option value="가동">가동</option>
+											        <option value="비가동">비가동</option>
 											    </select>
 											</td>
 										</tr>
@@ -140,8 +140,8 @@
 											</td>
 											<th>온도</th>
 											<td>
-												<input type="text" id="hTemp" name="hTemp" style="margin-right: 0; width: 90px;"> - 
-												<input type="text" id="lTemp" name="lTemp" style="width: 90px; margin-right: 0;"> ℃
+												<input type="text" id="highTemp" name="highTemp" style="margin-right: 0; width: 90px;"> - 
+												<input type="text" id="lowTemp" name="lowTemp" style="width: 90px; margin-right: 0;"> ℃
 											</td>
 										</tr>
 										<tr>
@@ -257,8 +257,8 @@
 				    		actNm: '최고배합상사',
 				    		mkDate: '2022-10-01',
 				    		buyDate: '2022-11-01',
-				    		hTemp: '2022-11-01',
-				    		lTemp: '2022-11-14',
+				    		highTemp: '2022-11-01',
+				    		lowTemp: '2022-11-14',
 				    		chkCycle: 60,
 				    		chkDate: '2022-11-14',
 				    		eqpType: '대기',
@@ -271,8 +271,8 @@
 					    	actNm: 'ACT-최고배합상사',
 					    	mkDate: '2022-10-01',
 					    	buyDate: 2000000,
-					    	hTemp: '2022-11-01',
-					    	lTemp: '2022-11-14',
+					    	highTemp: '2022-11-01',
+					    	lowTemp: '2022-11-14',
 					    	chkCycle: 60,
 				    		chkDate: '2022-11-14',
 				    		eqpType: '대기',
@@ -324,13 +324,13 @@
 				        },
 				        {
 				          header: '최고온도',
-				          name: 'hTemp',
+				          name: 'highTemp',
 					      sortable: true,
 					      align: 'right'
 				        },
 				        {
 				          header: '최저온도',
-				          name: 'lTemp',
+				          name: 'lowTemp',
 					      sortable: true,
 					      align: 'right'
 				        },
