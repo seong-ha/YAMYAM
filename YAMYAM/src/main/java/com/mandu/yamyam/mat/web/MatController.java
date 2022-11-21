@@ -23,6 +23,7 @@ public class MatController {
 	@Autowired
 	MatOdService service;
 	
+	// 자재 발주 관리 - 전체 조회(일반 탭)
 	@GetMapping("/matOd")
 	public String matOd(Model model) {
 		model.addAttribute("odList", service.matOrderList());		// 자재발주관리 리스트(일반 탭)
@@ -33,14 +34,32 @@ public class MatController {
 		return "mat/matOd";
 	}
 	
-	// 자재 발주 관리 - 삭제(일반 탭)
+	// 자재 발주 관리 - 단건 delete (일반 탭)
 	@DeleteMapping("/matOd")
 	@ResponseBody
-	public int delMatOd(MatVO vo) {
+	public int delMatOd(@RequestBody MatVO vo) {
+		int result = service.delMatOd(vo);
+		return result;
+	}
+	
+	// 자재 발주 관리 - 여러건 delete (일반 탭)
+	@DeleteMapping("/matOdDel")
+	@ResponseBody
+	public int delMatOdList(@RequestBody MatVO vo) {
+		
 		int result = service.delMatOdList(vo);
 		return result;
 	}
 	
+	// 자재 발주 관리 - insert (일반 탭)
+	@PostMapping("/matOd")
+	@ResponseBody
+	public int insMatOd(@RequestBody MatVO vo) {
+		int result = service.insMatOdList(vo);
+		return result;
+	}
+	
+	// 자재 발주 조회
 	@RequestMapping("/matLookup")
 	public String matLookup(Model model) {
 		model.addAttribute("odList", service.matOrderList());		// 자재전체조회
@@ -77,9 +96,9 @@ public class MatController {
 		return service.odListSearch(vo);
 	}
 	
-	
 	@RequestMapping("/matInChk")
 	public String matInChk(Model model) {
+		model.addAttribute("addChkList", service.addChkModal());
 		return "mat/matInChk";
 	}
 	
