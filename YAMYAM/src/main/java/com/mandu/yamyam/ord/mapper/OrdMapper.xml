@@ -49,7 +49,7 @@
 		VALUES 
 		(
 		 sysdate,
-		 #{odCd},
+		 'OUTPRD-'|| TO_CHAR(SYSDATE, 'yyyyMMdd-') || LPAD(B_OD_SEQ.NEXTVAL, 3, 0),
 		 #{prdCd},
 		 #{odAmt},
 		 #{actCd},
@@ -60,6 +60,7 @@
 	
 	<!-- 주문서 수정 -->
 	<update id="updateOrd" parameterType="com.mandu.yamyam.ord.service.OrdVO">
+		
 	</update>
 	
 	<!-- 주문서 삭제 -->

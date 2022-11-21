@@ -28,6 +28,9 @@ public class OrdController {
 		return service.getOrdList();
 	}
 	
+	// 거래처 Modal 조회
+
+	
 	// 주문서 등록
 	@PostMapping("/insertOrd")
 	@ResponseBody
