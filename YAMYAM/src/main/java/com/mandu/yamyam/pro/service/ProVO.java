@@ -32,6 +32,7 @@ public class ProVO {
 	private int pplndPrio;		// 작업우선순위
 	private int pplndDays;		// 생산일수
 	private String prdCd;		// 완제품코드
+	private String prdNm;		// 완제품
 	private int pplndAmt;		// 생산계획량
 	
 	// 생산지시 테이블 P_OD
