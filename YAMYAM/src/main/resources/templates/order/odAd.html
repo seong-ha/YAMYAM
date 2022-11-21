@@ -223,13 +223,7 @@
 	      {
 	        header: '주문 코드',
 	        align : 'center',
-	        name: 'odCd',
-	        editor: 'text',
-			// 필수 입력 값
-			validation: {
-			     dataType: 'text',
-			     required: true
-			      }
+	        name: 'odCd'
 	      },
 	      {
 	        header: '제품 코드',
@@ -451,6 +445,23 @@
 	  });
 		return actModalGrid;
    }
+	
+	
+	/*------------
+	// 거래처 Modal 리스트 가져오기 (행 추가 시, 사용)
+	----------------*/
+	  function getActList() {
+         $.ajax({
+            url : '/ordList',
+            dataType : "json",
+            success : function(data) {
+               grid.resetData(data);
+            },
+            error : function(reject) {
+               console.log(reject);
+            }
+         })
+      }
 	
 	
 	
