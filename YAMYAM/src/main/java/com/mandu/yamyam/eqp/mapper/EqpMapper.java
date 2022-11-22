@@ -2,7 +2,7 @@ package com.mandu.yamyam.eqp.mapper;
 
 import java.util.List;
 
-import com.mandu.yamyam.emp.service.EmpVO;
+import com.mandu.yamyam.comm.service.EmpVO;
 import com.mandu.yamyam.eqp.service.EqpVO;
 
 public interface EqpMapper {

@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.mandu.yamyam.emp.service.EmpVO;
+import com.mandu.yamyam.comm.service.EmpVO;
 import com.mandu.yamyam.eqp.mapper.EqpMapper;
 import com.mandu.yamyam.eqp.service.EqpService;
 import com.mandu.yamyam.eqp.service.EqpVO;

@@ -2,7 +2,7 @@ package com.mandu.yamyam.eqp.service;
 
 import java.util.List;
 
-import com.mandu.yamyam.emp.service.EmpVO;
+import com.mandu.yamyam.comm.service.EmpVO;
 
 public interface EqpService {
 	// 설비 리스트 전체 조회
