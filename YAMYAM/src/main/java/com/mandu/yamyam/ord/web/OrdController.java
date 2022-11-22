@@ -21,6 +21,28 @@ public class OrdController {
 	@Autowired
 	OrdService service;
 	
+	// 거래처 Modal 조회
+	@GetMapping("actListModal")
+	@ResponseBody
+	public List<OrdVO> actList() {
+		return service.actList();
+	}
+	
+	// 제품명 Modal 조회
+	@GetMapping("prdListModal")
+	@ResponseBody
+	public List<OrdVO> prdList() {
+		return service.prdList();
+	}
+	
+	// 완제품LOT Modal 조회
+	@GetMapping("lotListModal")
+	@ResponseBody
+	public List<OrdVO> lotList() {
+		return service.lotList();
+	}
+	
+	
 	// 주문서 조회
 	@GetMapping("ordList")
 	@ResponseBody
@@ -28,16 +50,26 @@ public class OrdController {
 		return service.getOrdList();
 	}
 	
-	// 거래처 Modal 조회
-
+	// 주문서 조건조회
+	@GetMapping("detailList")
+	@ResponseBody
+	public List<OrdVO> getList(OrdVO vo) {
+		return service.getList(vo);
+	}
 	
 	// 주문서 등록
-	@PostMapping("/insertOrd")
+	@PostMapping("insertOrd")
 	@ResponseBody
 	public int insertOrd(@RequestBody List<OrdVO> vo) {
-		System.out.println(1213);
 		int result =  service.insertOrd(vo);
-		System.out.println(result);
+		return result;
+	}
+	
+	// 주문서 수정
+	@PostMapping("updateOrd")
+	@ResponseBody
+	public int updateOrd(@RequestBody List<OrdVO> vo) {
+		int result =  service.updateOrd(vo);
 		return result;
 	}
 	
