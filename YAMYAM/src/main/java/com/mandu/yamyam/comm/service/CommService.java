@@ -4,21 +4,25 @@ import java.util.List;
 
 public interface CommService {
 	
+	// ajax 데이터 불러오기
+	public List<EmpVO> ajaxSelectAllEmp();
+	
+	
 	// 직원 전체조회
 	public List<CommVO> selectAllEmp();
 	// 직원 정보 등록
-	public int inserEmpInfo(CommVO commonVO);
+	public int inserEmpInfo(EmpVO empVO);
 	// 직원 정보 수정
-	public int updateEmpInfo(CommVO commonVO);
+	public int updateEmpInfo(EmpVO empVO);
 	// 직원 정보 삭제
-	public int deleteEmpInfo(CommVO commonVO);
+	public int deleteEmpInfo(List<EmpVO> empVO);
+	
 	
 	// 부서 조회(modal)
 	public List<DeptVO> selectDept();
 	// 상세 공통조회(modaL)
 	public List<CommdVO> selectCommCode(String cd);
 	
-	// ajax 데이터 불러오기
-	public List<EmpVO> ajaxSelectAllEmp();
+	
 	
 }

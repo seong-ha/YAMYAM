@@ -18,6 +18,12 @@ public class CommServiceImpl implements CommService{
 	@Autowired
 	CommMapper commMapper;
 	
+	// ajax 데이터 불러오기
+	@Override
+	public List<EmpVO> ajaxSelectAllEmp() {
+		return commMapper.ajaxSelectAllEmp();
+	}
+	
 	// 전체 조회
 	@Override
 	public List<CommVO> selectAllEmp() {
@@ -26,20 +32,30 @@ public class CommServiceImpl implements CommService{
 	
 	// 회원 등록(모달)
 	@Override
-	public int inserEmpInfo(CommVO commonVO) {
-		return commMapper.inserEmpInfo(commonVO);
+	public int inserEmpInfo(EmpVO empVO) {
+		
+		
+		
+		return commMapper.inserEmpInfo(empVO);
 	}
 	
 	// 회원 수정(모달)
 	@Override
-	public int updateEmpInfo(CommVO commonVO) {
-		return commMapper.updateEmpInfo(commonVO);
+	public int updateEmpInfo(EmpVO empVO) {
+		return commMapper.updateEmpInfo(empVO);
 	}
 	
 	// 회원 삭제(모달)
 	@Override
-	public int deleteEmpInfo(CommVO commonVO) {
-		return commMapper.deleteEmpInfo(commonVO);
+	public int deleteEmpInfo(List<EmpVO> empVO) {
+		int result = 0;
+		
+		for (int i = 0; i < empVO.size(); i++) {
+			System.out.println(empVO.get(i));
+			result += commMapper.deleteEmpInfo(empVO.get(i));
+		}
+		
+		return result;
 	}
 	
 	// 회원 등록 부서(modal)
@@ -54,10 +70,6 @@ public class CommServiceImpl implements CommService{
 		return commMapper.selectCommCode(cd);
 	}
 	
-	// ajax 데이터 불러오기
-	@Override
-	public List<EmpVO> ajaxSelectAllEmp() {
-		return commMapper.ajaxSelectAllEmp();
-	}
+
 
 }

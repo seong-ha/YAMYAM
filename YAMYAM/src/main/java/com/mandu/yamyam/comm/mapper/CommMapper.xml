@@ -36,12 +36,44 @@
 	</select>
 	
 	
-	<!-- 회원 등록 -->
-	<insert id="inserEmpInfo" parameterType="com.mandu.yamyam.comm.service.CommVO">
-	
-	
+	<!-- 회원 등록(모달) -->
+	<insert id="inserEmpInfo" parameterType="com.mandu.yamyam.comm.service.EmpVO">
+		
 	
 	</insert>
+	
+	<!-- 회원 수정(모달) -->
+	<update id="updateEmpInfo" parameterType="com.mandu.yamyam.comm.service.EmpVO">
+		UPDATE C_EMP
+			<set>
+				<if test ="empId != null and !empId.equals('')">
+					emp_id = #{empId},
+				</if>
+				
+				<if test ="empPw != null and !empPw.equals('') and empPw == empPwcr">
+					emp_pw = #{empPw},
+				</if>
+				
+				<if test ="empNm != null and !empNm.equals('')">
+					emp_nm = #{empNm},
+				</if>
+				
+				<if test ="empRole != null and !empRole.equals('')">
+					emp_role = #{empRole}
+				</if>
+			</set>
+		WHERE EMP_NO = #{empNo}
+	
+	</update>
+	
+	
+	<!-- 회원 삭제(모달) -->
+	<delete id="deleteEmpInfo" parameterType="com.mandu.yamyam.comm.service.EmpVO">
+	
+	DELETE FROM C_EMP 
+	WHERE EMP_NO = #{empNo}
+	
+	</delete>
 
 	
 </mapper>
