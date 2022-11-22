@@ -42,14 +42,32 @@ public class MatOdServiceImpl implements MatOdService {
 	
 	// 자재 발주 관리 - 발주코드 여러건 삭제(일반 탭)
 	@Override
-	public int delMatOdList(MatVO vo) {
-		return mapper.delMatOdList(vo);
+	public int delMatOdList(List<MatVO> list) {
+		int result = 0;
+		for(int i=0; i<list.size(); i++) {
+			result += mapper.delMatOdList(list.get(i));
+		}
+		return result;
+	}
+	
+	// 자재 발주 관리 - 발주상세코드 여러건 삭제(일반 탭)
+	@Override
+	public int delMatOddList(List<MatVO> list) {
+		int result = 0;
+		for(int i=0; i<list.size(); i++) {
+			result += mapper.delMatOddList(list.get(i));
+		}
+		return result;
 	}
 	
 	// 자재 발주 관리 - 발주상세코드 등록(일반 탭)
 	@Override
-	public int insMatOdList(MatVO vo) {
-		return mapper.insMatOdList(vo);
+	public int insMatOdList(List<MatVO> list) {
+		int result = 0;
+		for(int i=0; i<list.size(); i++) {
+			result += mapper.insMatOdList(list.get(i));
+		}
+		return result;
 	}
 
 	// 신규생산계획조회(생산계획서용 탭)
@@ -98,6 +116,16 @@ public class MatOdServiceImpl implements MatOdService {
 	@Override
 	public List<Map<String, Object>> addChkModal() {
 		return mapper.addChkModal();
+	}
+
+	@Override
+	public List<Map<String, Object>> clickOdDate(MatVO vo) {
+		return mapper.clickOdDate(vo);
+	}
+
+	@Override
+	public List<Map<String, Object>> newPlanLookUpBtn(MatVO vo) {
+		return mapper.newPlanLookUpBtn(vo);
 	}
 
 }
