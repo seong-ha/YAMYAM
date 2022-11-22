@@ -43,6 +43,14 @@ public class CommController {
 	
 	// (직원관리-회원등록)
 	
+	@PostMapping("/ajax/insertEmp")
+	@ResponseBody
+	public int employeeInsert(EmpVO empVO, Model model) {
+		System.out.println(empVO.getEmpId());
+		int result = commservice.inserEmpInfo(empVO);
+		System.out.println("result = " + result);
+		return result;
+	}
 	
 	
 	

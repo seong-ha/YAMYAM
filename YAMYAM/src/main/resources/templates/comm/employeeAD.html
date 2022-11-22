@@ -103,7 +103,7 @@
 	
 	
 						<div class="modal-footer">
-							<button type="button" class="btn btn-primary" id="insertBtn">등록</button>
+							<button type="button" class="btn btn-primary" id="insertBtn" data-bs-dismiss="modal">등록</button>
 							<input type="reset" class="btn btn-secondary">
 						</div>
 					</div>
@@ -124,7 +124,7 @@
 					<form action="/ajax/updateEmp" method="post" onsubmit="return false">
 						<div class="modal-content">
 							<div class="modal-header">
-								<h5 class="modal-title" id="staticBackdropLabel">회원 수정</h5>
+								<h5 class="modal-title" id="staticBackdropLabel" >회원 수정</h5>
 								<button type="button" class="btn-close" data-bs-dismiss="modal" id="updateModalClose"
 									aria-label="Close"></button>
 							</div>
@@ -172,7 +172,7 @@
 							</div>
 					    
 							<div class="modal-footer">
-								<input type="submit" class="btn btn-primary" name="updateBtn" id="updateBtn" value="수정">
+								<input type="submit" class="btn btn-primary" name="updateBtn" id="updateBtn" value="수정" data-bs-dismiss="modal">
 								<input type="reset" class="btn btn-secondary" name="reset">
 							</div>
 						</div>
@@ -349,12 +349,42 @@
 	//회원 등록하기
 	
 	document.getElementById('insertBtn').addEventListener('click', function(){
+		sweetConfirm('C', function () {
+		let data = {
+				
+			empId: document.getElementById('insertId').value,
+			empPw: document.getElementById('insertPw').value,
+			empNm: document.getElementById('insertName').value,
+			empDate: document.getElementById('hireDate').value,
+			deptCd: document.getElementById('deptName').value,
+			empRole: document.getElementById('insertRole').value
+		}
+		grid.appendRow(data);
 		
-		let rowData = {empId: "", empPw: "", empPwcr: "", deptNm: "", empRole: ""};
-		grid.appendRow(rowData);
+		// ajax 직원 정보 등록
+		console.log("데이터 가져왔니?");
+		$.ajax({
+			url : "/ajax/insertEmp",
+			type : "post",
+			data: data,
+			dataType: "json",
+			success : function(data){
+				if (data > 0) {
+					// ajax success
+		            toastr.success('정상적으로 등록되었습니다.');
+				} else {
+					// ajax fail
+		            toastr.error('등록에 실패했습니다.');	
+				}
+			},
+			error : function(reject){
+				console.log(reject);
+			}
+		});
 		
 		insertModalClose.click();
-	})
+		});
+	});
 	
 	//회원 수정하기
 	
@@ -422,6 +452,8 @@
 			grid.setValue(data[0].rowKey, 'empRole', updateRole.value);
 			
 			console.log("데이터 가져왔으면 대답해 아오!!!!!");
+			
+			updateModalClose.click(); // 모달창 닫기
 			});
  		});
 	

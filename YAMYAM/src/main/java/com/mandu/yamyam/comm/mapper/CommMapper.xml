@@ -38,18 +38,24 @@
 	
 	<!-- 회원 등록(모달) -->
 	<insert id="inserEmpInfo" parameterType="com.mandu.yamyam.comm.service.EmpVO">
-	<selectKey keyProperty="employeeId" resultType="com.mandu.yamyam.comm.service.EmpVO" order="BEFORE">
-		SELECT MAX(employee_id)+1 FROM EMPLOYEES
+	<selectKey keyProperty="empNo" resultType="Integer" order="BEFORE">
+		SELECT NVL(MAX(emp_no),0)+1 FROM C_EMP
 		</selectKey>
 			
 		INSERT INTO C_EMP
-		(EMP_NO, 
+		(
+		 EMP_NO,
+		 EMP_ID, 
 		 EMP_PW, 
 		 EMP_NM, 
-		 EMP_DATE, 
+		 TO_CHAR(EMP_DATE, 'yyyy-MM-dd') as EMP_DATE, 
 		 DEPT_CD, 
-		 EMP_ROLE)
-		 VALUES(#{empNo},
+		 EMP_ROLE
+		 )
+		 
+		 VALUES(
+		 		#{empNo},
+		 		#{empId},
 		        #{empPw},
 		        #{empNm},
 		        #{empDate},
