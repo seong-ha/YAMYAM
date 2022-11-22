@@ -15,20 +15,24 @@ public class OrdVO {
 	private int odAmt; 		// 주문량
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date deDate; 	// 납기일자
-	private int odSts; 	// 진행상황구분 (0:진행, 1:완료)
+	private String odSts; 	// 진행상황구분 (진행, 완료)
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date pplnDate; 	// 계획등록일자
 	private String planCd; 	// 생산계획코드
 	private String prdCd; 	// 완제품코드
 	private String actCd;	// 거래처코드
 	
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	private Date startDate;	// 시작날짜 (조회용)
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	private Date endDate;	// 종료날짜 (조회용)
 	
 	// 생산요청서 테이블 B_POD
 	private int rqtNo;		// 요청번호
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date rqtDate;	// 요청일자
 	private int rqtAmt;		// 요청수량
-	private int rqtSts; 	// 진행상황구분 (0:미계획, 1:진행, 2:완료)
+	private String rqtSts; 	// 진행상황구분 (0:미계획, 1:진행, 2:완료)
 	
 	
 	// 완제품 재고 테이블 B_IN
@@ -59,4 +63,7 @@ public class OrdVO {
 	private Date reDate;	// 반품일자
 	
 	
+	// Modal 참고 테이블
+	private String prdNm;	// 완제품명
+	private String actNm;	// 거래처명
 }
