@@ -103,9 +103,11 @@
 											<td>
 												<input type="text" id="eqpCd" name="eqpCd" readonly>
 											</td>
-											<th>설비업체명</th>
+											<th>업체코드</th>
 											<td>
-												<input type="text" id="actNm" name="actNm">
+												<select class="form-select form-select-sm" name="actCd" id="actCd" style="width:200px">
+											        <option th:each="act : ${eqpActList}" th:value="${act.actCd}" th:text="${act.actNm}">
+											    </select>
 											</td>
 											<th>가동여부</th>
 											<td>
@@ -194,6 +196,24 @@
 			</div>
 		</div>
 		
+		<!-- 설비목록 modal -->
+		<div class="modal" id="actListModal" tabindex="-1"
+			aria-labelledby="#actListModalLabel" aria-hidden="true">
+			<div class="modal-dialog modal-dialog-centered">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="actListModalLabel">설비 목록</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal"
+							aria-label="Close"></button>
+					</div>
+					<div class="modal-body">
+						<div id="actListModalGrid"></div>
+					</div>
+	
+				</div>
+			</div>
+		</div>
+		
 		<!-- 설비구분 modal -->
 		<div class="modal" id="eqpTypeModal" tabindex="-1"
 			aria-labelledby="#eqpTypeLabel" aria-hidden="true">
@@ -249,36 +269,6 @@
 				let selectEqpGrid = new tui.Grid({
 				      el: document.getElementById('selectEqp'),
 				      bodyHeight: 500, // 스크롤
-				      data: [
-				    	{
-				    		eqpCd: 'eqp-20221104-001',
-				    		eqpNm: '만두소 배합기1',
-				    		mdNm: 'mandu-01',
-				    		actNm: '최고배합상사',
-				    		mkDate: '2022-10-01',
-				    		buyDate: '2022-11-01',
-				    		highTemp: '2022-11-01',
-				    		lowTemp: '2022-11-14',
-				    		chkCycle: 60,
-				    		chkDate: '2022-11-14',
-				    		eqpType: '대기',
-				    		eqpSts: '대기'
-					    },
-					    {
-					    	eqpCd: 'eqp-20221104-002',
-					    	eqpNm: '만두소 배합기2',
-					    	mdNm: 'mandu-01',
-					    	actNm: 'ACT-최고배합상사',
-					    	mkDate: '2022-10-01',
-					    	buyDate: 2000000,
-					    	highTemp: '2022-11-01',
-					    	lowTemp: '2022-11-14',
-					    	chkCycle: 60,
-				    		chkDate: '2022-11-14',
-				    		eqpType: '대기',
-				    		eqpSts: '대기'
-					    }
-					  ],
 				      rowHeaders: ['checkbox'],
 				      scrollX: false,
 				      scrollY: true,
@@ -306,7 +296,7 @@
 				        },
 				        {
 				          header: '설비업체명',
-				          name: 'actNm',
+				          name: 'actCd',
 					      sortable: true,
 					      align: 'left'
 				        },
@@ -364,6 +354,19 @@
 				        }
 				      ]
 				});
+				
+				// 설비 리스트 전제 조회
+				$.ajax({
+					url:'/getEqpList',
+					dataType: 'json',
+					success: function (data) {
+						console.log(data);
+						selectEqpGrid.resetData(data);
+					},
+					error: function (reject) {
+						console.log(reject);
+					}
+				})
 				
 				return selectEqpGrid;
 			}

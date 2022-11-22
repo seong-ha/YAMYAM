@@ -4,17 +4,22 @@ import java.util.Date;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import lombok.Data;
 
 @Data
 public class EqpVO {
-	private String EqpCd;
+	private String eqpCd;
 	private String actCd;
+	private String actNm;
 	private String eqpNm;
 	private String mdNm;
 	@DateTimeFormat(pattern = "yyyy-mm-dd")
+	@JsonFormat(pattern = "yyyy-MM-dd")
 	private Date mkDate;
 	@DateTimeFormat(pattern = "yyyy-mm-dd")
+	@JsonFormat(pattern = "yyyy-MM-dd")
 	private Date buyDate;
 	private int chkCycle;
 	private String eqpSts;
