@@ -1,25 +1,74 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.mandu.yamyam.eqp.mapper.EqpMapper">
+
+	<!-- 설비관리 - 설비전체조회 -->
 	<select id="getEqpList" resultType="com.mandu.yamyam.common.LowerKeyMap"> 
 		SELECT e.eqp_cd,
 		       e.eqp_nm,
 		       e.md_nm,
 		       find_act_name(a.act_cd) as "act_nm",
-		       trunc(e.mk_date) as "mk_date",
-		       trunc(e.buy_date) as "buy_date",
+		       TO_CHAR(e.mk_date, 'yyyy-MM-dd') as "mk_date",
+		       TO_CHAR(e.buy_date, 'yyyy-MM-dd') as "buy_date",
 		       e.high_temp,
 		       e.low_temp,
 		       e.chk_cycle,
-		       e.eqp_type,
-		       e.eqp_sts
+		       find_code_name(e.eqp_type) AS "eqp_type",
+		       find_code_name(e.eqp_sts) AS "eqp_sts"
 		 FROM e_eqp e JOIN c_act a
 		   ON (e.act_cd = a.act_cd)
 	</select>
 	
+	<select id="getEqp" parameterType="com.mandu.yamyam.eqp.service.EqpVO" resultType="com.mandu.yamyam.eqp.service.EqpVO">
+		SELECT eqp_cd,
+		       eqp_nm,
+		       md_nm,
+		       act_cd,
+		       eqp_sts,
+			   TRUNC(mk_date) as "mk_date",
+		       TRUNC(buy_date) as "buy_date",
+			   uph,
+			   high_temp,
+			   low_temp,
+   			   chk_cycle,
+			   eqp_type as "eqp_type_cd",
+			   find_code_name(eqp_type) AS "eqp_type_nm",
+			   img
+		 FROM e_eqp
+		 WHERE eqp_cd = #{eqpCd}
+
+	</select>
+	
+	<!-- 공통 - 설비 거래처만 전체조회  -->
 	<select id="getEqpActList" resultType="com.mandu.yamyam.common.LowerKeyMap">
 		SELECT act_cd, act_nm
 		FROM c_act
 		WHERE act_div = 'ACT-TYPE3'
 	</select>
+	
+	<!-- 공통 - 설비 상태코드 전체조회  -->
+	<select id="getEqpStsList" resultType="com.mandu.yamyam.common.LowerKeyMap">
+		SELECT commd_cd, commd_nm
+		FROM c_commd
+		WHERE comm_cd = 'EQP-STS'
+	</select>
+	
+	<!-- 설비관리 - 설비목록 모달 조회 -->
+	<select id="getEqpListModal" resultType="com.mandu.yamyam.common.LowerKeyMap">
+		SELECT eqp_cd, eqp_nm, find_code_name(eqp_type) AS "eqp_type" 
+		FROM e_eqp
+	</select>
+	
+	<!-- 공통 - 상세공통 설비구분 코드/명 조회 -->
+	<select id="getEqpTypeListModal" resultType="com.mandu.yamyam.common.LowerKeyMap">
+		SELECT commd_cd AS "eqp_type_cd",
+		       commd_nm AS "eqp_type_nm"
+		 FROM c_commd
+		 WHERE comm_cd = 'EQP-TYPE'
+	</select>
+	
+	<delete id="eqpDelete" parameterType="com.mandu.yamyam.eqp.service.EqpVO">
+		DELETE FROM e_eqp
+		WHERE eqp_cd = #{eqpCd}
+	</delete>
 </mapper>
