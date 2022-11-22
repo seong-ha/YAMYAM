@@ -18,5 +18,6 @@ public class EmpVO {
 	private Date empDate; // 입사일
 	private String empId; // 계정 아이디
 	private String empPw; // 계정 비밀번호
+	private String empPwcr; // 계정 비밀번호 확인
 	private String empRole; // 직급 정보
 }
