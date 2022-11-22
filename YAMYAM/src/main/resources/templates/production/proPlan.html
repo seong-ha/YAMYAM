@@ -148,7 +148,6 @@
 
 					</div>
 				</div>
-			<p th:text="${prioNo}"></p> 
 			
 			</div>
 	
@@ -335,37 +334,25 @@
 			}, {
 				header : '진행구분',
 				name : 'pplnSts',
-
 				filter: {
 			        type: 'select'			  
 			      }
 			}]
 		});
-			
+		
+		detailPGrid.hideColumn('pplnSts');
 		// 계획 관리 그리드에서의 수정
-		detailPGrid.on('beforeChange', function(ev) {
+		detailPGrid.on('afterChange', function(ev) {
 
 			 ev.changes.forEach(change =>  {
 				    if (change.nextValue === 'needReplace') {
 				      // 'needReplace' is replaced with empty string
 				      change.nextValue = '';
+				      let rowKey = ev.changes[0].rowKey;
+					 	let pplndAmt = planDGrid.getRow(rowKey).pplndAmt;
+						let poddAmt = parseInt(planDGrid.getRow(rowKey).poddAmt);
 				    }
 				  });
-			  /**
-			    *   이벤트 객체는 아래와 같은 정보를 담고 있다.
-			    *  {
-			    *   // 이벤트 발생 종류(cell 편집, 붙여넣기, 키맵을 통한 삭제)
-			    *   origin: 'cell' | 'paste' | 'delete',
-			    *   // 변경 내용
-			    *   changes: [
-			    *      // beforeChange 인 경우에는 value는 현재 값, nextValue는 변경 예정 값(수정 또는 삭제 수행 후 적용될 값)
-			    *      { rowKey, columnName, value, nextValue }, ...
-			    *
-			    *      // afterChange 인 경우에는 value는 변경이 적용된 후 값, prevValue는 이전 셀의 값(beforeChange 의 value와 동일)
-			    *      { rowKey, columnName, value, prevValue }, ...
-			    *    ]
-			    *  }*/
-
 			}); 
 		
 		return detailPGrid;	
@@ -770,8 +757,6 @@
 	function searchBtnHandler(){
 
 		$('#searchBtn').on('click',function(){
-			//let getStartDay = $("#startpicker-input").val().replace(/-/gi, '/').slice(-8);
-			//let getEndDay = $("#endpicker-input").val().replace(/-/gi, '/').slice(-8);
 			let getStartDay = $("#startpicker-input").val();
 			let getEndDay = $("#endpicker-input").val();
 			console.log(getStartDay);
@@ -860,8 +845,11 @@
 			for(let i=0; i<data.length;i++){
 				let pplndPrio = data[i].pplndPrio;
 				let pplndDays = data[i].pplndDays;
+				let prdCd = data[i].prdCd;				
 				let odCd = data[i].odCd;
-				dataList.push({pplnDate,pplnName,odCd})
+				let odAmt = data[i].odAmt;
+				console.log(odAmt);
+				dataList.push({pplnDate,pplnName,odCd,pplndPrio,pplndDays,prdCd,odAmt})
 				if(pplnName == ''){
 					Swal.fire({
 						icon: 'error',
@@ -879,12 +867,11 @@
 							url : '/planInsert',
 							method: 'POST',
 							contentType : 'application/json',
-							data :  JSON.stringify(dataList),
+							data : JSON.stringify(dataList),
 							dataType : 'json',
 							success : function(data){
 									 Swal.fire('등록이 완료되었습니다');
 									// grid에서 수정
-									  insertGrid.resetData(data);
 									  insertGrid.refreshLayout();
 									},
 							error : function(reject){
