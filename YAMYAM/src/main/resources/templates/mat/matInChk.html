@@ -106,7 +106,7 @@
 			</div>
 		</div>
 	</div>
-	<script>
+	<script th:inline="javascript">
 	let grid = chkMatList();			// 자재전체조회 그디르
 	
 	let modalGrid = matList();			// 자재목록 모달 그리드
@@ -301,7 +301,7 @@
 		let modalGrid3 = new tui.Grid({
 			el: document.getElementById('modalGrid3'),
 			bodyHeight: 400,
-			data: null,
+			data: [[${addChkList}]],
 			rowHeaders: ['rowNum'],
 			scrollX: false,
 			scrollY: true,

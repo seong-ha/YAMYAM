@@ -117,8 +117,8 @@ text-align: center;
 		deleteBtnHandler(); 	 // 필요자재 LOT grid 선택 행 삭제
 		showNOModalHandler(); 	 // 미지시계획 모달 클릭 버튼 이벤트
 		modalGridClickHandler(); // 미지시계획조회 모달창의 그리드 선택시 자료를 상세생산계획 Grid에 넣어주기
-		
-		
+		planDGridChangeHandler() // 계획 관리 그리드에서의 수정
+		planOrderEdit() // 생산지시그리드 editingFinish 이벤트 핸들러 
 		
 		
 		/*------------
@@ -128,46 +128,34 @@ text-align: center;
 		function planDGridInit(){
 			let planDGrid = new tui.Grid({
 				el: document.getElementById('planDGrid'),
-				// 임시 데이터
-				data: [{
-					
-					planCode: '',
-					productName: '',
-					amt: '',
-					productAmt: '',
-					restAmt: ''
-				}],
-				// data 가져오는 법
-				// data: {
-				// 	api: {
-				// 		readData: {
-				// 			url: '/api/readData',
-				// 			method: 'GET'
-				// 		}
-				// 	}
-				// },
 				scrollX: false,
 				scrollY: false,
 				rowHeaders: ['rowNum'],
-				// columnOptions: {
-				// 	minWidth: 180
-				// },
 				columns: [
 					{
 						header: '생산계획코드',
-						name: 'planCode'
+						name: 'pplnCd'
+					},
+					{
+						header: '생산일수',
+						name: 'pplndDays'
+					},
+					{
+						header: '제품코드',
+						name: 'prdCd'
 					},
 					{
 						header: '제품명',
-						name: 'productName'
+						name: 'prdNm'
 					},
 					{
-						header: '수량',
-						name: 'amt'
+						header: '생산계획수량',
+						name: 'pplndAmt'
 					},
 					{
 						header: '생산지시량',
-						name: 'productAmt'
+						name: 'poddAmt',
+						editor : 'text'
 					},
 					{
 						header: '잔량',
@@ -178,57 +166,67 @@ text-align: center;
 			return planDGrid;
 		}
 		
+		planDGrid.hideColumn('prdCd');
+		
+		
+		
 		/*------------
 		// 생산지시 grid 
 		----------------*/
 		function planOrderGridInit(){
 			let planOrder = new tui.Grid({
 				el: document.getElementById('planOrder'),
-				// 임시 데이터
-				data: [{
-					lineCode: 'LIN-BAR-001',
-					dates: '20221202',
-					amt: '200',
-					prio: '1',
-					planAmt: '300'
-				}],
-				// data 가져오는 법
-				// data: {
-				// 	api: {
-				// 		readData: {
-				// 			url: '/api/readData',
-				// 			method: 'GET'
-				// 		}
-				// 	}
-				// },
 				scrollX: false,
 				scrollY: false,
 				rowHeaders: ['rowNum'],
 				columns: [
 					{
 						header: '라인코드',
-						name: 'lineCode',
+						name: 'plineCd',
+					},
+					{
+						header: '제품코드',
+						name: 'prdCd'
 					},
 					{
 						header: '작업일자',
-						name: 'dates'
+						name: 'podDates',
+						editor: {
+				            type: 'datePicker',
+				            options: {
+				              format: 'yyyy-MM-dd',
+				              language : 'ko'
+				            }
+				          }
 					},
 					{
 						header: '작업수량(BOX)',
-						name: 'amt'
+						name: 'poddAmt',
+						editor : {
+							type : 'text'
+						}
 					},
 					{
 						header: '일자별우선순위',
-						name: 'prio'
+						name: 'poddPrio',
+						editor : {
+							type : 'text'
+						}
 					},
 					{
 						header: '비고',
-						name: 'other'
+						name: 'ppodOther',
+						editor : {
+							type : 'text'
+						}
 					}
 				]
 			});
 			return planOrder;
 		}
+		planOrder.hideColumn('prdCd');
+		
+		
 		
 		
 		/*------------
@@ -237,48 +235,9 @@ text-align: center;
 		function matNeedGridInit(){
 			let matNeed = new tui.Grid({
 				el: document.getElementById('matNeed'),
-				// 임시 데이터
-				data: [
-					{
-				
-					prdCd: 'MD-00200',
-					mtrCd: 'RML-10101',
-					name: '얇은 만두피',
-					amt : '200'	},
-					{
-					
-					prdCd: 'MD-00200',
-					mtrCd: 'RML-10201',
-					name: '부추',
-					amt : '300'	},
-					{
-					
-					prdCd: 'MD-00200',
-					mtrCd: 'RML-10301',
-					name: '다진고기',
-					amt : '400'	},
-				{
-					
-					prdCd: 'MD-00200',
-					mtrCd: 'RML-10401',
-					name: '두부',
-					amt : '500'	}
-				],
-				// data 가져오는 법
-				// data: {
-				// 	api: {
-				// 		readData: {
-				// 			url: '/api/readData',
-				// 			method: 'GET'
-				// 		}
-				// 	}
-				// },
 				scrollX: false,
 				scrollY: false,
 				rowHeaders: ['rowNum'],
-				// columnOptions: {
-				// 	minWidth: 180
-				// },
 				columns: [
 					{
 						header: '제품코드',
@@ -290,22 +249,21 @@ text-align: center;
 					},
 					{
 						header: '자재명',
-						name: 'name'
+						name: 'mtrNm'
 					},
 					{
 						header: '소모량',
-						name: 'amt'
+						name: 'bomAmt'
 					}
 				]
 			});
 			
 			matNeed.on('click', function(ev){
-				//console.log(ev.rowKey); 선택한 행의 row번호
 				// 클릭한 행의 자재명, 자재코드 
 	
 				let mName = matNeed.getRow(ev.rowKey).name;
 				let mtrCd = matNeed.getRow(ev.rowKey).mtrCd;
-				console.log(mName,mtrCd)
+
 				$("#matLotModal").modal("show");
 				
 				// 모달이 로드 되는데 시간이 걸리므로 인터벌 걸어주기
@@ -313,11 +271,11 @@ text-align: center;
 					matLotGrid2.refreshLayout()
 					},100);			
 			})
+			
+			return matNeed;
 		}
 		
-
-		
-		
+				
 		
 		/*------------
 		// 필요자재 LOT grid 
@@ -326,69 +284,28 @@ text-align: center;
 		function matLotGridInit(){
 			let matLot = new tui.Grid({
 				el: document.getElementById('matLot'),
-				// 임시 데이터
-				data: [{
-					
-					name: '얇은 만두피',
-					mLot : 'RML-10000-220122001',
-					amt : '200'	,
-					eDate : '2022/11/15',
-					poddCd: 'RML-10101'},
-					{	
-						name: '부추',
-						mLot : 'RML-10000-220122002',
-						amt : '300'	,
-						eDate : '2022/11/17',
-						poddCd: 'RML-10101'},
-					{
-						
-						name: '다진고기',
-						mLot : 'RML-10000-220122003',
-						amt : '400'	,
-						eDate : '2022/11/16',
-						poddCd: 'RML-10101'},
-					{
-						
-						name: '두부',
-						mLot : 'RML-10000-220122004',
-						amt : '500'	,
-						eDate : '2022/11/14',
-						poddCd: 'RML-10101'}
-					],
-				// data 가져오는 법
-				// data: {
-				// 	api: {
-				// 		readData: {
-				// 			url: '/api/readData',
-				// 			method: 'GET'
-				// 		}
-				// 	}
-				// },
 				scrollX: false,
 				scrollY: false,
 				rowHeaders: ['checkbox', 'rowNum'],
-				// columnOptions: {
-				// 	minWidth: 180
-				// },
 				columns: [
 					{
 						header: '자재명',
-						name: 'name',
+						name: 'mtrNm',
 					},
 					{
 						header: '자재LOT번호',
-						name: 'mLot'
+						name: 'mtrLot'
 					},
 					{
 						header: '사용수량',
-						name: 'amt'
+						name: 'matOutAmt'
 					},
 					{
 						header: '유통기한',
-						name: 'eDate'
+						name: 'matEdate'
 					},
 					{
-						header: '지시디테일코드',
+						header: '상세생산지시코드',
 						name: 'poddCd'
 					},
 					
@@ -432,21 +349,9 @@ text-align: center;
 						sAmt : '12582324200',
 						eDate : '2022/11/17',
 						}],
-				// data 가져오는 법
-				// data: {
-				// 	api: {
-				// 		readData: {
-				// 			url: '/api/readData',
-				// 			method: 'GET'
-				// 		}
-				// 	}
-				// },
 				scrollX: false,
 				scrollY: false,
 				rowHeaders: ['checkbox','rowNum'],
-				// columnOptions: {
-				// 	minWidth: 180
-				// },
 				columns: [
 					{
 						header: '자재LOT번호',
@@ -491,47 +396,66 @@ text-align: center;
 		function modalGridInit(){
 			let modalGrid = new tui.Grid({
 				el: document.getElementById('modalGrid'),
-				// 임시 데이터
-				data: [{
-					planCode: 'pro_123456',
-					planName: '얇은피 김치만두 200',
-					planDCode: 'pro_123456',
-					productName: '얇은피 김치만두'
-				}],
-				// data 가져오는 법
-				// data: {
-				// 	api: {
-				// 		readData: {
-				// 			url: '/api/readData',
-				// 			method: 'GET'
-				// 		}
-				// 	}
-				// },
 				scrollX: false,
 				scrollY: false,
+				
 				rowHeaders: ['rowNum'],
 				columns: [
 					{
 						header: '계획코드',
-						name: 'planCode',
+						name: 'pplnCd',
 					},
 					{
 						header: '계획명',
-						name: 'planName', //납기일자명 수정
+						name: 'pplnName',
 					},
 					{
 						header: '상세계획코드',
-						name: 'planDCode'
+						name: 'pplndCd'
 					},
 					{
 						header: '제품명',
-						name: 'productName'
+						name: 'prdNm'
+					},
+					{
+						header: '제품명',
+						name: 'prdCd'
 					}
 				]
 			});
 			
 			return modalGrid;
 		}
+		
+		
+		/*------------
+		// 생산지시그리드 editingFinish 이벤트 핸들러 
+		----------------*/
+		function planOrderEdit(){
+			planOrder.on('afterChange',function(ev){
+				let podDates = planOrder.getValue(ev.rowKey,'podDates');
+				let poddAmt = planOrder.getValue(ev.rowKey,'poddAmt');
+				let poddPrio = planOrder.getValue(ev.rowKey,'poddPrio');
+				let list = planOrder.getData();
+             	for(let i =0; i<list.length; i++){
+             		let dates = list[i].podDates;
+					let amt = list[i].poddAmt;
+					let prio = list[i].poddPrio;
+					let prdCd = list[i].prdCd;
+					if(dates != null && amt != null && prio != null){
+						$.ajax({
+							url : '/getNeed',
+							method: "GET",
+							data : {"prdCd" : prdCd},
+							dataType : 'json',
+							}).then(res=>{
+								matNeed.resetData(res);
+							})
+					}
+				}
+			})
+		}
+		
 		
 		
 		
@@ -566,8 +490,15 @@ text-align: center;
 		function showNOModalHandler(){
 			// 미지시계획 모달 클릭 버튼 이벤트
 			$('#showNOModal').on('click',function(){
-		
+				
 				$('#noOrderModal').modal("show");
+				$.ajax({
+					url : '/getNoOrder',
+					method: "GET",			
+				}).then(res=>{
+					modalGrid.resetData(res);
+				})
+				
 				modalGrid.refreshLayout();
 			});
 		}
@@ -578,27 +509,73 @@ text-align: center;
 		function modalGridClickHandler(){
 		// 미지시계획조회 모달창의 그리드 선택시 자료를 상세생산계획 Grid에 넣어주기
 			modalGrid.on('click',function(ev){
-				let plCode = modalGrid.getRow(ev.rowKey).planCode;
-				let prName  = modalGrid.getRow(ev.rowKey).productName;
-				console.log(plCode+' , '+prName);
-
-				let resetData = [{planCode: plCode, productName: prName,amt: '',productAmt: '',restAmt: ''}];
+				let pplnCd = modalGrid.getRow(ev.rowKey).pplnCd;
+				let prdNm  = modalGrid.getRow(ev.rowKey).prdNm;
+				let pplndAmt = modalGrid.getRow(ev.rowKey).pplndAmt;
+				let pplndDays = modalGrid.getRow(ev.rowKey).pplndDays;
+				let prdCd = modalGrid.getRow(ev.rowKey).prdCd;
+				// P.PPLN_CD, P.PPLN_NAME, D.PPLND_CD, C.PRD_NM, D.pplnd_amt
+				let resetData = [{pplnCd: pplnCd, pplndDays:pplndDays, prdNm: prdNm, pplndAmt: pplndAmt,poddAmt: '',restAmt: '',prdCd:prdCd}];
 				planDGrid.resetData(resetData);
-				
-				/*planDGrid = {planCode: "",productName: "",amt: "",productAmt: "",restAmt: ""} */
-				/*modalGrid = {planCode: "",planName: "",productName: ""} */
-				//
-				/*
-				
-				let checkCellState = false;
-				
-				planDGrid.setValue(val, 'planCode' , plCode, checkCellState);
-				planDGrid.setValue(val, 'productName' , prName, checkCellState); */
+
 				$('#noOrderModal').modal("hide");
-		
+				
+
+				let reset = [{plineCd:'', podDates:'', poddAmt:'', poddPrio:'', ppodOther:''}]
+				planOrder.resetData(reset);
 			});
 		}
 		
+		/*------------
+		// 계획 관리 그리드에서의 수정
+		----------------*/	
+		function planDGridChangeHandler(){
+			planDGrid.on('afterChange', function(ev) {
+			/* 	ev.changes.forEach(change =>  {
+				    if (change.nextValue === 'needReplace') {
+				      // 'needReplace' is replaced with empty string
+				      	change.nextValue = '';
+				    }
+				 	let rowKey = ev.changes[0].rowKey;
+				 	let pplndAmt = planDGrid.getRow(rowKey).pplndAmt;
+					let poddAmt = parseInt(planDGrid.getRow(rowKey).poddAmt);
+					planDGrid.setValue(rowKey, 'restAmt', (pplndAmt-poddAmt));
+					let prdCd = planDGrid.getRow(rowKey).prdCd;
+					let restAmt = planDGrid.getRow(rowKey).restAmt						
+				  }); */
+				 
+			planDGrid.on('editingFinish', function(ev){
+				toastr.options = {
+						  "closeButton": true,
+						  "newestOnTop": true,
+						  "positionClass": "toast-top-center",
+						  "preventDuplicates": true,
+						  "extendedTimeOut" : 0, 
+						  "timeOut" : 0
+				}
+				 let pplndAmt = planDGrid.getRow(ev.rowKey).pplndAmt;
+				 let poddAmt = ev.value;
+				 planDGrid.setValue(ev.rowKey, 'restAmt', pplndAmt-poddAmt);
+				 
+				 if(pplndAmt < poddAmt){
+					 toastr.error(`계획수량보다 지시수량이<br> 많습니다.`);
+				 } else {
+				 let prdCd = planDGrid.getRow(ev.rowKey).prdCd;
+				 let pplndDays = planDGrid.getRow(ev.rowKey).pplndDays;
+				 $.ajax({
+						url : '/proOrderList',
+						method: "GET",
+						data : {"prdCd":prdCd,"pplndDays":pplndDays}
+					}).then(res=>{
+						planOrder.resetData(res);
+					})
+					
+					planOrder.refreshLayout();
+				 	}
+				})
+				
+			});
+		}
 	</script>
 
 	</div>

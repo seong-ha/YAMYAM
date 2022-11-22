@@ -34,16 +34,22 @@ public class MatOdServiceImpl implements MatOdService {
 		return mapper.matOrderList();
 	}
 
-	// 자재 발주 관리 - 발주코드 삭제(일반 탭)
+	// 자재 발주 관리 - 발주코드 단건 삭제(일반 탭)
+	@Override
+	public int delMatOd(MatVO vo) {
+		return mapper.delMatOd(vo);
+	}
+	
+	// 자재 발주 관리 - 발주코드 여러건 삭제(일반 탭)
 	@Override
 	public int delMatOdList(MatVO vo) {
 		return mapper.delMatOdList(vo);
 	}
 	
-	// 자재 발주 관리 - 발주상세코드 삭제(일반 탭)
+	// 자재 발주 관리 - 발주상세코드 등록(일반 탭)
 	@Override
-	public int delMatOddList(MatVO vo) {
-		return mapper.delMatOddList(vo);
+	public int insMatOdList(MatVO vo) {
+		return mapper.insMatOdList(vo);
 	}
 
 	// 신규생산계획조회(생산계획서용 탭)
@@ -86,6 +92,12 @@ public class MatOdServiceImpl implements MatOdService {
 	@Override
 	public List<Map<String, Object>> odListSearch(MatVO vo) {
 		return mapper.odListSearch(vo);
+	}
+
+	// 자재 입고 검수 관리 - 추가 모달창
+	@Override
+	public List<Map<String, Object>> addChkModal() {
+		return mapper.addChkModal();
 	}
 
 }

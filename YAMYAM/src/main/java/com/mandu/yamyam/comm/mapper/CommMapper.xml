@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mandu.yamyam.comm.mapper.CommMapper">
+
+	<!-- ajax 데이터 불러오기 -->
+	
+	<select id="ajaxSelectAllEmp" resultType="com.mandu.yamyam.common.LowerKeyMap">
+	
+	SELECT EMP_NO,
+	       EMP_NM,
+	       TO_CHAR(EMP_DATE, 'yyyy-MM-dd') as EMP_DATE,
+	       EMP_ID,
+	       DEPT_NM,
+	       EMP_ROLE
+	FROM C_EMP E, C_DEPT D
+	WHERE E.DEPT_CD  = D.DEPT_CD
+	
+	</select>
+	
+	<!-- 부서 조회(modal) -->
+	<select id="selectDept" resultType="com.mandu.yamyam.comm.service.DeptVO">
+	
+	SELECT * 
+	FROM C_DEPT
+	
+	</select>
+	
+	<!-- 상세 공통조회(modaL) -->
+	
+	<select id="selectCommCode" resultType="com.mandu.yamyam.comm.service.CommdVO">
+	
+	SELECT *
+	FROM C_COMMD
+	WHERE COMM_CD = #{value}
+	
+	</select>
+	
+	
+	<!-- 회원 등록(모달) -->
+	<insert id="inserEmpInfo" parameterType="com.mandu.yamyam.comm.service.EmpVO">
+		
+	
+	</insert>
+	
+	<!-- 회원 수정(모달) -->
+	<update id="updateEmpInfo" parameterType="com.mandu.yamyam.comm.service.EmpVO">
+		UPDATE C_EMP
+			<set>
+				<if test ="empId != null and !empId.equals('')">
+					emp_id = #{empId},
+				</if>
+				
+				<if test ="empPw != null and !empPw.equals('') and empPw == empPwcr">
+					emp_pw = #{empPw},
+				</if>
+				
+				<if test ="empNm != null and !empNm.equals('')">
+					emp_nm = #{empNm},
+				</if>
+				
+				<if test ="empRole != null and !empRole.equals('')">
+					emp_role = #{empRole}
+				</if>
+			</set>
+		WHERE EMP_NO = #{empNo}
+	
+	</update>
+	
+	
+	<!-- 회원 삭제(모달) -->
+	<delete id="deleteEmpInfo" parameterType="com.mandu.yamyam.comm.service.EmpVO">
+	
+	DELETE FROM C_EMP 
+	WHERE EMP_NO = #{empNo}
+	
+	</delete>
+
+	
+</mapper>

@@ -39,10 +39,10 @@ width:80%;	display: inline;
 				<div id="input-group">
 					<ul class="ul-style">
 						<li><label for="matCode">자재코드</label>
-						<input id="matCode" name="MTR_CD">
+						<input id="matCode" name="mtrCd">
 						&nbsp;&nbsp;&nbsp;
 						<label for="matCode" style="width:80px">자재명</label>
-						<input id="matCode" name="MTR_NM">
+						<input id="matName" name="mtrNm">
 						</li>
 					</ul>
 					
@@ -61,7 +61,7 @@ width:80%;	display: inline;
 				<hr>
 				
 				<ul class="ul-style">
-					<li><label for="matNm">자재명</label><input id="matNm" name="MTR_NM" readonly>
+					<li><label for="matNm">자재명</label><input id="matName" name="mtrNm" readonly>
 						<img id="matNm" class="Magnifying-Glass-img" alt="image"
 							 data-bs-toggle="modal" data-bs-target="#exampleModal"
 							 src="../images/Magnifying_Glass.png" >
@@ -80,14 +80,11 @@ width:80%;	display: inline;
 			                     aria-label="Close"></button>
 			               </div>
 			               <div class="modal-body">
+			               <div id="actModalGrid"></div>
 			               <br>
 			               		<h4 align="center"><b>거래처 검색</b></h4>
 			               		<br>
 			               		
-			               		설비명&nbsp;<input type="text">
-			               		<button type="button" class="btn btn-dark btn-sm"
-			                     data-bs-dismiss="modal">조회</button>
-			                  	<button type="button" class="btn btn-dark btn-sm">초기화</button>
 			               		<div id="modalGrid1"></div>
 			               		
 			               		<br>
@@ -103,22 +100,11 @@ width:80%;	display: inline;
 
 				<div class="mb-3 row">
 					<label class="col-sm-2" style="width:100px">&nbsp;안전재고</label>&nbsp;
-					<span class="col-sm-4" style="width: 190px;"><input type="text" name="MTR_SFAMT"></span>
+					<span class="col-sm-4" style="width: 190px;"><input type="text" name="mtrSfamt"></span>
 				</div>
 				
 				<hr>
-				
-				사용 유무&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-					<div class="form-check form-check-inline">
-					  <input class="form-check-input" type="radio" name="MTR_USE" id="inlineRadio1" value="option1">
-					  <label class="form-check-label" for="inlineRadio1">YES</label>
-					</div>
-					<div class="form-check form-check-inline">
-					  <input class="form-check-input" type="radio" name="MTR_USE" id="inlineRadio2" value="option2">
-					  <label class="form-check-label" for="inlineRadio2">NO</label>
-					</div>
 					
-				<hr>
 					<div align="right">
 					<button type="button" class="btn btn-dark btn-sm">저장</button>&nbsp;
 					<input type="reset" class="btn btn-dark btn-sm" id="reset" name="reset">
@@ -313,10 +299,46 @@ width:80%;	display: inline;
 		  }) 
 		
 		
-		//모달창 리프레시(모달창에 그리드 화면 띄울때 써야함!)
+		// 모달창 리프레시(모달창에 그리드 화면 띄울때 써야함!)
 	     exampleModal.addEventListener('shown.bs.modal', () => {
 	            grid2.refreshLayout(); //모달창 새로고침
-	       })
+	     })
+	     
+	     
+	     // 자재 코드 1줄 클릭시 데이터 가져오기
+	    
+	     grid2.addEventListener('click', function(){
+	     rowData = [{mtrCd: "", mtrNm: "", mtrStd: "", mtrUn: "", mtrSfamt: "", mtrSts: ""}];
+	     })
+	    	 
+		
+	     
+	     
+	     // 자재명 돋보기 클릭시 데이터 가져오기(미구현)
+	     
+	     grid2.addEventListener('click', function(e){
+	    	 let rowData = grid2.getRow(e.rowKey);
+	    	 
+	    	 let actCd = rowData['actCd'];
+	    	 let actNm = rowData['actNm'];
+	    	 let actNum = rowData['actNum'];
+	    	 let actTel = rowData['actTel'];
+	    	 
+	    	 $('#ACT_CD').val(actCd);
+	    	 $('#ACT_NM').val(actNm);
+	    	 $('#ACT_NUM').val(actNum);
+	    	 $('#ACT_TEL').val(actTel);
+	    	 
+	    	 $('grid2').modal("hide");
+	     })
+	     
+	     // 거래처 검색에서 데이터 가져오기
+	     
+	     
+	     
+	     
+	     
+ 
 	</script>
 
 </div>

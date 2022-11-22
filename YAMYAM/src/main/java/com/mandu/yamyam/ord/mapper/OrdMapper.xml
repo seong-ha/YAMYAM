@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mandu.yamyam.ord.mapper.OrdMapper">
+	
+	<!-- 공용 - 업체목록 모달 -->
+	<select id="actList" resultType="com.mandu.yamyam.common.LowerKeyMap">
+		SELECT ACT_CD, ACT_NM, ACT_NUM, ACT_TEL
+		  FROM C_ACT
+	</select>
+	
+	
+	<!-- 공용 - 제품목록 모달 -->
+	<select id="prdList" resultType="com.mandu.yamyam.common.LowerKeyMap">
+		SELECT PRD_CD, PRD_NM
+		FROM C_PRD
+	</select>
+	
+	
+	<!-- 공용 - 완제품LOT 모달 -->
+	<select id="lotList" resultType="com.mandu.yamyam.common.LowerKeyMap">
+		SELECT IN.PRD_LOT, PRD.PRD_NM, IN.EDATE
+		FROM C_PRD PRD JOIN B_IN IN
+						ON PRD.PRD_CD = IN.PRD_CD
+	</select>
+	
+	
+	<!-- 주문서 조회 -->
+	<select id="getOrdList" resultType="com.mandu.yamyam.common.LowerKeyMap">
+		SELECT TO_CHAR(OD.OD_DATE,'yyyy-MM-dd') AS OD_DATE, OD.OD_CD, PRD.PRD_CD, PRD.PRD_NM, OD.OD_AMT, ACT.ACT_CD, ACT.ACT_NM, TO_CHAR(OD.DE_DATE,'yyyy-MM-dd') AS DE_DATE, OD.OD_STS
+		FROM B_OD OD  JOIN C_PRD PRD
+             		 ON PRD.PRD_CD = OD.PRD_CD
+             		 JOIN  C_ACT ACT
+             		 ON ACT.ACT_CD = OD.ACT_CD
+	</select>
+	
+	<!-- 주문서 조건 조회 -->
+	<select id="getList" resultType="com.mandu.yamyam.common.LowerKeyMap">
+		SELECT TO_CHAR(OD.OD_DATE,'yyyy-MM-dd') AS OD_DATE, OD.OD_CD, PRD.PRD_CD, PRD.PRD_NM, OD.OD_AMT, ACT.ACT_CD, ACT.ACT_NM, TO_CHAR(OD.DE_DATE,'yyyy-MM-dd') AS DE_DATE, OD.OD_STS
+		FROM B_OD OD  JOIN C_PRD PRD
+             		 ON PRD.PRD_CD = OD.PRD_CD
+             		 JOIN  C_ACT ACT
+             		 ON ACT.ACT_CD = OD.ACT_CD
+        WHERE OD.OD_STS = #{odSts}
+        
+        <if test='startDate != null and endDate != null'>
+        	and TRUNC(OD_DATE) BETWEEN #{startDate} AND #{endDate}
+        </if>
+        <if test="prdCd != null and !prdCd.equals('')">
+        	and PRD.PRD_CD = #{prdCd}
+        </if>
+        <if test="actCd != null and !actCd.equals('')">
+        	and ACT.ACT_CD = #{actCd}
+        </if>
+
+	</select>
+	
+	<!-- 주문서 등록 -->
+	<insert id="insertOrd" parameterType="com.mandu.yamyam.ord.service.OrdVO">
+		INSERT INTO B_OD
+		(
+		 OD_DATE,
+		 OD_CD,
+		 PRD_CD,
+		 OD_AMT,
+		 ACT_CD,
+		 DE_DATE,
+		 OD_STS
+		 )
+		VALUES 
+		(
+		 sysdate,
+		 'OUTPRD-'|| TO_CHAR(SYSDATE, 'yyyyMMdd-') || LPAD(BOD_SEQ.NEXTVAL, 3, 0),
+		 #{prdCd},
+		 #{odAmt},
+		 #{actCd},
+		 #{deDate},
+		 '진행'
+		)
+	</insert>
+	
+	<!-- 주문서 수정 -->
+	<update id="updateOrd" parameterType="com.mandu.yamyam.ord.service.OrdVO">
+		UPDATE B_OD
+		<set>
+		PRD_CD = #{prdCd}, OD_AMT = #{odAmt}, ACT_CD = #{actCd}, DE_DATE = #{deDate}, OD_STS = #{odSts}
+		</set>
+		WHERE OD_CD = #{odCd}
+	</update>
+	
+	<!-- 주문서 삭제 -->
+	<delete id="deleteOrd" parameterType="com.mandu.yamyam.ord.service.OrdVO">
+		DELETE FROM B_OD
+		WHERE OD_CD = #{odCd}
+	</delete>
+	
+</mapper>
