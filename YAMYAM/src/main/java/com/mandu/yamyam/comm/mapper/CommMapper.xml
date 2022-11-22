@@ -38,7 +38,25 @@
 	
 	<!-- 회원 등록(모달) -->
 	<insert id="inserEmpInfo" parameterType="com.mandu.yamyam.comm.service.EmpVO">
-		
+	<selectKey keyProperty="employeeId" resultType="com.mandu.yamyam.comm.service.EmpVO" order="BEFORE">
+		SELECT MAX(employee_id)+1 FROM EMPLOYEES
+		</selectKey>
+			
+		INSERT INTO C_EMP
+		(EMP_NO, 
+		 EMP_PW, 
+		 EMP_NM, 
+		 EMP_DATE, 
+		 DEPT_CD, 
+		 EMP_ROLE)
+		 VALUES(#{empNo},
+		        #{empPw},
+		        #{empNm},
+		        #{empDate},
+		        #{deptCd},
+		        #{empRole}
+		 )
+		 
 	
 	</insert>
 	
