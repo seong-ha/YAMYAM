@@ -249,13 +249,6 @@
 	function tab1GridInit(){
 			let manageGrid = new tui.Grid({
 			el : document.getElementById('manageGrid'),
-			// data 가져오는 법
-			  /*updateData: {url: '/planUpdate', method: 'POST'}
-			  createData: { url: '/api/create', method: 'POST' },
-		      updateData: { url: '/api/update', method: 'PUT' },
-		      deleteData: { url: '/api/delete', method: 'DELETE' },
-		      modifyData: { url: '/api/modify', method: 'POST' } */
-			// { "result": true, "data": { "contents": [], "pagination": { "page": 1, "totalCount": 100 } } }	
 			scrollX : false,
 			scrollY : false,
 			rowHeaders: ['rowNum'],
@@ -276,7 +269,6 @@
 			, {
 				header : '진행구분',
 				name : 'pplnSts',
-
 				filter: {
 			        type: 'select'			  
 			      }
@@ -475,44 +467,7 @@
 					})
 				}
 			}
-			
-			/* let row = manageGrid.getCheckedRows();
-			let list2 = [];
-			for(let i=0; i<row.length;i++){
-				let pplndCd = row[i].pplnCd;
-				let pplnSts = row[i].pplnSts;
-				list.push(pplnCd);
-				console.log(list2);
-				if(pplnSts == '지시완료'){
-					let messeage = `지시완료된 상태는<br> 삭제할 수 없습니다.`
-					Swal.fire({icon: 'error',title:messeage});
-				}else{
-				sweetConfirm('D', function(){
-				// DB delete
-				//ajax 
-				// 성공
-					$.ajax({
-					url : '/deleteDetail',
-					method: 'POST',
-					contentType : 'application/json',
-					data :  JSON.stringify(list),
-					dataType : 'json',
-					success : function(data){
-							  Swal.fire('삭제가 완료되었습니다');
-							// grid에서 수정
-							  detailPGrid.removeCheckedRows();
-							  detailPGrid.refreshLayout();
-							},
-					error : function(reject){
-							console.log(reject);
-							// 실패
-							Swal.fire('삭제에 실패했습니다.');	
-							}			 		  
-							});	// ajax
-					})
-				}
-			} */
-			
+		
 		})
 	};
 			
@@ -543,16 +498,6 @@
 		// 생산계획 등록 그리드
 		let insertGrid = new tui.Grid({
 			el : document.getElementById('insertGrid'),
-			// 임시 데이터
-			// data 가져오는 법
-			// data: {
-			// 	api: {
-			// 		readData: {
-			// 			url: '/api/readData',
-			// 			method: 'GET'
-			// 		}
-			// 	}
-			// },
 			scrollX : false,
 			scrollY : false,
 			rowHeaders: ['checkbox','rowNum'],

@@ -29,13 +29,13 @@
 			<tr>
 				<td style="width: 140px;">불량분류 &nbsp;</td>
 				<td>
-					<select id="eList" name="eList">
+					<select id="errPro" name="errPro">
 					    <option value="ERR-PRO-001" selected>불량없음</option>
 					    <option value="ERR-PRO-002">이물질 혼입</option>
 					    <option value="ERR-PRO-003">자재초과</option>	
 					    <option value="ERR-PRO-004">자재부족</option>	
 					    <option value="ERR-PRO-005">증숙불량</option>	
-					    <option value="ERR-PRO-006">동결불량</option>	
+					    <option value="ERR-PRO-006">냉동불량</option>	
 					    <option value="ERR-PRO-007">포장불량</option>	
 					    <option value="ERR-PRO-008">제품모양불량</option>										
 					</select>
@@ -122,12 +122,13 @@
 						<tr>
 							<td style="width: 80px">공정 분류 &nbsp;</td>
 							<td>
-								<select id="pList" name="pList">
-							    <option value="blen" selected>혼합 공정</option>
-							    <option value="shap">성형 공정</option>
-							    <option value="frez">냉동 공정</option>	
-							    <option value="unit">포장 공정</option>		
-							    <option value="boxs">박스 공정</option>							
+								<select id="eqpType" name="eqpType">
+							    <option value="eqpType1" selected>혼합</option>
+							    <option value="eqpType2">성형</option>
+							    <option value="eqpType3">증숙</option>
+							    <option value="eqpType4">냉동</option>	
+							    <option value="eqpType5">포장</option>		
+							    <option value="eqpType6">박스</option>							
 								</select>
 							</td>
 							<td><button type="button" id="pSBtn" class="btn btn-dark btn-sm">검색</button></td>
@@ -450,7 +451,7 @@
 			// 공정명
 			let prName = $('#prName').val();
 			// 불량분류
-			let eName = $('select[name=eList] option:selected').val();
+			let eName = $('select[name=errPro] option:selected').val();
 			// 계획일자
 			let getStartDay = $("#startpicker-input").val();
 			let getEndDay = $("#endpicker-input").val();
@@ -470,7 +471,7 @@
 	function pSBtnHandler(){
 
 		$('#pSBtn').on('click',function(){
-			let pName = $('select[name=pList] option:selected').val(); // 공정분류 선택값
+			let pName = $('select[name=eqpType] option:selected').val(); // 공정분류 선택값
 
 			console.log('공정분류 : ' + pName);
 			
