@@ -15,9 +15,10 @@
 	<select id="actList" resultType="com.mandu.yamyam.common.LowerKeyMap">
 		SELECT ACT_CD, 
 			   ACT_NM
-		  FROM C_ACTCD
+		  FROM C_ACT
 	</select>
 	
+	<!-- 1) 자재 발주 관리 -->
 	<!-- 자재 발주 관리(일반 탭) - 전체 조회 -->
 	<select id="matOrderList" resultType="com.mandu.yamyam.common.LowerKeyMap">
 		SELECT O.MAT_OD_CD,
@@ -38,10 +39,10 @@
 		 JOIN  C_MTR C 
 		   ON D.MTR_CD = C.MTR_CD
 		 
-		 JOIN  C_ACTCD A 
+		 JOIN  C_ACT A 
 		   ON D.ACT_CD = A.ACT_CD
 		  
-		 ORDER BY O.MAT_OD_CD
+		 ORDER BY O.MAT_OD_DD
 	</select>
 	
 	<!-- 자재 발주 관리(일반 탭) - 삭제버튼 -->
@@ -50,22 +51,29 @@
 	</delete>
 	
 	<!-- 자재 발주 관리(일반 탭) - 여러 건 삭제버튼 -->
-	<delete id="delMatOdList" parameterType="com.mandu.yamyam.mat.service.MatVO" statementType="CALLABLE">
-		CALL MT_DEL_PROC(#{matOdCd})
+	<delete id="delMatOdList" parameterType="com.mandu.yamyam.mat.service.MatVO">
+		DELETE FROM M_OD
+		WHERE MAT_OD_CD = #{matOdCd}
+	</delete>
+	
+	<!-- 자재 발주 관리(일반 탭) - 여러 건 삭제버튼 -->
+	<delete id="delMatOddList" parameterType="com.mandu.yamyam.mat.service.MatVO">
+		DELETE FROM M_ODD
+		WHERE MAT_OD_CD = #{matOdCd}
 	</delete>
 	
 	<!-- 자재 발주 관리(일반 탭) - 저장버튼 -->
 	<insert id="insMatOdList" parameterType="com.mandu.yamyam.mat.service.MatVO">
 		INSERT ALL
 		 INTO M_OD (MAT_OD_CD, MAT_OD_DD, MAT_OD_STS, MAT_SUM)
-		 VALUES('OMAT-' || TO_CHAR(SYSDATE,'YYYYMMDD-') || LPAD(MAT_CD_SEQ.NEXTVAL,3,0)
+		 VALUES('OMAT-' || TO_CHAR(SYSDATE,'YYYYMMDD-') || LPAD(MAT_OD_SEQ.NEXTVAL,3,0)
 		        ,SYSDATE
 		        ,'N'<!-- 처음 등록하면 검수NO -->
 		        ,#{matSum})<!-- 총액 -->
 		 
 		 INTO M_ODD (MAT_ODD_CD, MAT_OD_CD, MTR_CD, ACT_CD, MAT_ODD_MN, MAT_ODD_AMT, MAT_ODD_DATE)
-		 VALUES('DMAT-' || LPAD(MAT_CDD_SEQ.NEXTVAL,5,0)
-		        ,'OMAT-' || TO_CHAR(SYSDATE,'YYYYMMDD-') || LPAD(MAT_CD_SEQ.NEXTVAL,3,0)
+		 VALUES('DMAT-' || LPAD(MAT_ODD_SEQ.NEXTVAL,3,0)
+		        ,'OMAT-' || TO_CHAR(SYSDATE,'YYYYMMDD-') || LPAD(MAT_OD_SEQ.NEXTVAL,3,0)
 		        ,#{mtrCd}<!-- 선택한 자재코드 -->
 		        ,#{actCd}<!-- 선택한 업체코드 -->
 		        ,#{matOddMn}<!-- 입력받은 단가 -->
@@ -92,17 +100,21 @@
 	
 	<!-- 자재 발주 관리(생산계획서용 탭) - 신규 생산 계획서 모델 선택 모달창 -->
 	<select id="addNewPlan" resultType="com.mandu.yamyam.common.LowerKeyMap">
-		SELECT D.PPLN_CD, 
-			   P.PPLN_NAME, 
-			   TO_CHAR(P.PPLN_DATE, 'yyyy-MM-dd') AS "PPLN_DAYS",
-			   TO_CHAR(B.DE_DATE, 'yyyy-MM-dd') AS "DE_DATE"
-		   FROM P_PLND D
-		   
-		   JOIN P_PLN P 
-		   	ON D.PPLN_CD = P.PPLN_CD
-		   	
-		   JOIN B_OD B 
-		  	ON B.OD_CD = P.OD_CD
+		SELECT PPLN_CD,
+        	   PPLN_NAME,
+        	   TO_CHAR(PPLN_DATE, 'yyyy-MM-dd') AS "PPLN_DATE"
+		FROM P_PLN
+	</select>
+	
+	<!-- 자재 발주 관리(생산계획서용 탭) - 신규 생산 계획서 모델 선택 모달창 검색조건 추가 -->
+	<select id="newPlanLookUpBtn" parameterType="com.mandu.yamyam.mat.service.MatVO" 
+							resultType="com.mandu.yamyam.common.LowerKeyMap">
+		SELECT PPLN_CD,
+        	   PPLN_NAME,
+        	   TO_CHAR(PPLN_DATE, 'yyyy-MM-dd') AS "PPLN_DATE"
+		FROM P_PLN
+		 WHERE PPLN_DATE <![CDATA[>=]]> #{matOddDate}
+		  AND PPLN_DATE <![CDATA[<=]]> #{matOdDd}
 	</select>
 	
 	<!-- 자재 발주 관리(생산계획서용 탭) - 신규생산계획서에서 추가한 생산계획을 조회 -->
@@ -148,7 +160,8 @@
 			   M.MTR_NM, 
 			   D.MAT_ODD_MN, 
 			   D.MAT_ODD_AMT, 
-			   (D.MAT_ODD_MN * D.MAT_ODD_AMT) AS "SUM_PRICE",
+			   (D.MAT_ODD_MN * D.MAT_ODD_AMT) AS "MAT_SUM",
+			   A.ACT_CD,
 	           A.ACT_NM,
 	           TO_CHAR(O.MAT_OD_DD,'YYYY-MM-DD') AS "MAT_OD_DD",
 	           TO_CHAR(D.MAT_ODD_DATE,'YYYY-MM-DD') AS "MAT_ODD_DATE"
@@ -160,20 +173,39 @@
 		    JOIN M_OD O
 		       ON (D.MAT_OD_CD = O.MAT_OD_CD)
 		       
-		    JOIN C_ACTCD A
+		    JOIN C_ACT A
 		       ON (D.ACT_CD = A.ACT_CD)
             
             WHERE M.MTR_CD = #{value}
 	</select>
 	
-	<!-- 자재 발주 조회(조건 조회 탭) - 발주 신청일 검색 조회 -->
+	
+	<!-- 2) 자재 발주 조회 -->
+	<!-- 발주 신청일 검색 조회 -->
 	<select id="odListSearch" parameterType="com.mandu.yamyam.mat.service.MatVO"
 							  resultType="com.mandu.yamyam.common.LowerKeyMap">
 		SELECT MAT_OD_CD, TO_CHAR(MAT_OD_DD,'YYYY-MM-DD') AS "MAT_OD_DD"
-		FROM M_OD
-		WHERE MAT_OD_DD <![CDATA[<=]]> #{matOdDd}<!-- null -->
+		 FROM M_OD
+		 WHERE MAT_OD_DD <![CDATA[>=]]> #{matEdate}
+		  AND MAT_OD_DD <![CDATA[<=]]> #{matOdDd}
 	</select>
 	
+	<!-- 자재/업체명 검색 조회 그리드 -->
+	<select id="clickOdDate" resultType="com.mandu.yamyam.common.LowerKeyMap">
+		SELECT O.MAT_OD_CD, M.MTR_NM, D.MAT_ODD_MN,
+	       D.MAT_ODD_AMT, O.MAT_SUM, A.ACT_NM, TO_CHAR(D.MAT_ODD_DATE,'yyyy-MM-dd') AS "MAT_ODD_DATE"
+		  FROM M_OD O
+		   JOIN M_ODD D
+		    ON O.MAT_OD_CD = D.MAT_OD_CD
+		   JOIN C_MTR M
+		    ON M.ACT_CD  = D.ACT_CD
+		   JOIN C_ACT A
+		    ON A.ACT_CD = M.ACT_CD
+		    
+		   WHERE O.MAT_OD_CD = #{matOdCd}
+	</select>
+	
+	<!-- 3) 자재 입고 검수 관리 -->
 	<!-- 자재 입고 검수 관리 - 추가 모달창 -->
 	<select id="addChkModal" resultType="com.mandu.yamyam.common.LowerKeyMap">
 		SELECT O.MAT_OD_CD, D.MTR_CD, D.MAT_ODD_AMT,C.MTR_NM
