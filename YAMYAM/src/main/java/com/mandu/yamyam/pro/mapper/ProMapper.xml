@@ -41,6 +41,9 @@
 	
 	<!-- 생산계획 등록 -->
 	<insert id="insertPlan" parameterType="com.mandu.yamyam.pro.service.ProVO">
+		<selectKey keyProperty="pplnCd" resultType="String" order="BEFORE">
+			select 'PLN-'|| TO_CHAR(SYSDATE, 'yyyyMMdd-') || LPAD(ppln_seq.NEXTVAL, 3, 0) from dual
+		</selectKey>
 		insert into p_pln(
 							<if test="pplnDate != null">
 							ppln_date,
@@ -54,7 +57,7 @@
 							<if test="pplnDate != null">
 							#{pplnDate},
 					 		</if>
-							'PLN-'|| TO_CHAR(SYSDATE, 'yyyyMMdd-') || LPAD(ppln_seq.NEXTVAL, 3, 0),
+							#{pplnCd},
 							#{odCd},
 							#{pplnName}
 						   )
@@ -62,9 +65,28 @@
 	
 	
 	<!-- 상세생산계획 등록 -->
-	<select id="insertPlanDetail">
+	<insert id="insertPlanDetail" parameterType="com.mandu.yamyam.pro.service.ProVO">
+		insert into p_plnd(
+							pplnd_cd,
+							ppln_cd,
+							ppln_date,
+							pplnd_prio,
+							pplnd_days,
+							prd_cd,
+							pplnd_amt
+
+							)
 		
-	</select>
+					values(
+							'PLND-'|| TO_CHAR(SYSDATE, 'yyyyMMdd-') || LPAD(ppln_seq.NEXTVAL, 3, 0),
+							#{pplnCd},
+							#{pplnDate},
+							#{pplndPrio},
+							#{pplndDays},
+							#{prdCd},
+							#{pplndAmt}
+						   )
+	</insert>
 	
 	
 	
@@ -117,4 +139,26 @@
 		FROM C_PRD
 	</select>
 	
+	<!-- 미지시계획 조회 -->
+	<select id="noOrderList" resultType="com.mandu.yamyam.common.LowerKeyMap">
+		SELECT P.PPLN_CD, P.PPLN_NAME, D.PPLND_CD, C.PRD_NM, D.pplnd_amt,D.PPLND_DAYS, C.PRD_CD
+		FROM P_PLN P JOIN P_PLND D
+             		 ON P.PPLN_CD = D.PPLN_CD
+                     JOIN C_PRD C
+             		 ON C.PRD_CD = D.PRD_CD
+		WHERE p.ppln_sts='미지시'
+	</select>
+	
+	<!-- 생산라인 조회 -->
+	<select id="lineList" resultType="com.mandu.yamyam.common.LowerKeyMap">
+		select pline_cd, prd_cd from p_line where prd_cd = #{prdCd} and ROWNUM &lt;= #{pplndDays}
+	</select>
+	
+	<!-- 필요자재 조회 -->
+	<select id="needM" resultType="com.mandu.yamyam.common.LowerKeyMap">
+		SELECT B.PRD_CD, M.MTR_CD, M.MTR_NM, B.BOM_AMT
+		FROM C_BOM B JOIN C_MTR M ON M.MTR_CD = B.MTR_CD
+		WHERE B.PRD_CD = #{prdCd}
+		ORDER BY M.MTR_CD
+	</select>
 </mapper>

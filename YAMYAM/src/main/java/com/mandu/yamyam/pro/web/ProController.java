@@ -93,6 +93,30 @@ public class ProController {
 	
 	
 	/*---------------
+	// 생산지시관리
+	----------------*/
+	// 미지시계획목록 조회
+	@RequestMapping("/getNoOrder")
+	@ResponseBody
+	public List<ProVO> getNoOrderList(){
+		return service.noOrderList();
+	}
+	
+	// 생산지시 조회
+	@RequestMapping("/proOrderList")
+	@ResponseBody
+	public List<Map<String,Object>> getProOrder(ProVO vo){
+		return service.lineList(vo);
+	}
+	
+	// 필요자재 조회
+	@RequestMapping("/getNeed")
+	@ResponseBody
+	public List<ProVO> getNeedM(ProVO vo){
+		return service.needM(vo);
+	}
+	
+	/*---------------
 	// 생산지시조회
 	----------------*/
 	@RequestMapping("/planOrdCheck")

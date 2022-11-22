@@ -35,4 +35,17 @@ public interface ProService {
 	
 	// 제품목록 조회
 	public List<Map<String,Object>> materialList();
+	
+	
+	/*---------------
+	// 생산 지시 관리
+	----------------*/
+	// 미지시 계획 조회
+	public List<ProVO> noOrderList();
+	
+	// 생산라인 조회
+	public List<Map<String,Object>> lineList(ProVO vo);
+	
+	// 필요자재 조회
+	public List<ProVO> needM(ProVO vo);
 }

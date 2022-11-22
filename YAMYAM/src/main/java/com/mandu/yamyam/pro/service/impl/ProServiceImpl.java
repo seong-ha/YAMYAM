@@ -32,8 +32,11 @@ public class ProServiceImpl implements ProService {
 	@Override
 	public int insertPlan(List<ProVO> vo) {
 		int result = 0;
+		mapper.insertPlan(vo.get(0));
+		String code = vo.get(0).getPplnCd();
 		for(int i=0; i<vo.size(); i++) {
-			result += mapper.insertPlan(vo.get(i));
+			vo.get(i).setPplnCd(code);
+			result += mapper.insertPlanDetail(vo.get(i));
 		}
 		return result;
 	}
@@ -82,6 +85,29 @@ public class ProServiceImpl implements ProService {
 	public int getPrioNo() {
 		return mapper.getPrioNo();
 	}
+	
+	/*---------------
+	// 생산 지시 관리
+	----------------*/
+	// 미지시 계획 조회
+	@Override
+	public List<ProVO> noOrderList() {
+		return mapper.noOrderList();
+	}
+	
+	// 생산라인 조회
+	@Override
+	public List<Map<String, Object>> lineList(ProVO vo) {
+		return mapper.lineList(vo);
+	}
+	
+	// 필요자재 조회
+	@Override
+	public List<ProVO> needM(ProVO vo) {
+		return mapper.needM(vo);
+	}
+	
+
 	
 
 }

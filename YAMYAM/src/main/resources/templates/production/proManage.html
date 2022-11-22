@@ -82,33 +82,6 @@
 		function gridInit(){
 			let grid = new tui.Grid({
 				el : document.getElementById('grid'),
-				// 임시 데이터
-				data : [{
-					pproCd : 'PRO-BLEN-001',
-					pproSts: '혼합 공정', // '식비' -> '1' 변경
-					pproName : '혼합 공정001',
-					eqpNm : '믹싱탱크',
-					eqpCd : 'EQM-001',
-					mdNm : 'flowtam-THG',
-					pproEmpName : 'BIBIGO'},
-					{
-						pproCd : 'PRO-FREZ-001',
-						pproSts: '냉동 공정', // '식비' -> '1' 변경
-						pproName : '냉동 공정001',
-						eqpNm : '냉동탱크',
-						eqpCd : 'EQM-001',
-						mdNm : 'flowtam-THG',
-						pproEmpName : 'BIBIGO'}
-						],
-				// data 가져오는 법
-				// data: {
-				// 	api: {
-				// 		readData: {
-				// 			url: '/api/readData',
-				// 			method: 'GET'
-				// 		}
-				// 	}
-				// },
 				scrollX : false,
 				scrollY : false,
 				rowHeaders: ['checkbox','rowNum'],				
