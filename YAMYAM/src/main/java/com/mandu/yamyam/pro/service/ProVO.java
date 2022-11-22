@@ -74,5 +74,6 @@ public class ProVO {
 	@JsonFormat(pattern="yyyy-MM-dd")
 	private Date deDate;	// 납기일자
 	private int odAmt;		// 생산요청 수량
+	private int matOutAmt;	// 자재 출고 수량
 	
 }

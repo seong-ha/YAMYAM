@@ -141,7 +141,7 @@
 	
 	<!-- 미지시계획 조회 -->
 	<select id="noOrderList" resultType="com.mandu.yamyam.common.LowerKeyMap">
-		SELECT P.PPLN_CD, P.PPLN_NAME, D.PPLND_CD, C.PRD_NM, D.pplnd_amt,D.PPLND_DAYS, C.PRD_CD
+		SELECT D.pplnd_cd,P.PPLN_CD, P.PPLN_NAME, D.PPLND_CD, C.PRD_NM, D.pplnd_amt,D.PPLND_DAYS, C.PRD_CD
 		FROM P_PLN P JOIN P_PLND D
              		 ON P.PPLN_CD = D.PPLN_CD
                      JOIN C_PRD C
@@ -151,14 +151,17 @@
 	
 	<!-- 생산라인 조회 -->
 	<select id="lineList" resultType="com.mandu.yamyam.common.LowerKeyMap">
-		select pline_cd, prd_cd from p_line where prd_cd = #{prdCd} and ROWNUM &lt;= #{pplndDays}
+		select p.pplnd_cd, l.pline_cd, p.prd_cd from p_plnd p join p_line l on p.prd_cd = l.prd_cd where p.PPLND_CD = #{pplndCd} and ROWNUM &lt;= #{pplndDays}
 	</select>
 	
 	<!-- 필요자재 조회 -->
 	<select id="needM" resultType="com.mandu.yamyam.common.LowerKeyMap">
-		SELECT B.PRD_CD, M.MTR_CD, M.MTR_NM, B.BOM_AMT
-		FROM C_BOM B JOIN C_MTR M ON M.MTR_CD = B.MTR_CD
-		WHERE B.PRD_CD = #{prdCd}
-		ORDER BY M.MTR_CD
+		select (b.bom_amt*p.pplnd_amt) as mat_out_amt, b.MTR_CD, M.MTR_NM, b.prd_cd, b.bom_amt, p.PPLND_AMT
+		from c_bom b join p_PLND p
+             on p.prd_cd = b.prd_cd
+             JOIN C_MTR M
+             ON M.MTR_CD = B.MTR_CD
+      where  P.PPLND_CD = #{pplndCd}
+      and 	 p.prd_cd = #{prdCd}
 	</select>
 </mapper>
