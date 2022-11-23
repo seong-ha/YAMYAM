@@ -10,11 +10,11 @@
 	</div>
 	<hr>
 	<ul class="ul-style">
-		<li><label for="matNm">자재명</label><input id="matNm" readonly><img
+		<li><label for="matNm">자재명</label><input id="matNm" readonly> <img
 			class="Magnifying-Glass-img" alt="image" data-bs-toggle="modal"
 			data-bs-target="#matModal" src="../images/Magnifying_Glass.png">
 			<input type="text" readonly></li>
-		<li><label for="actNm">업체명</label><input id="actNm" readonly><img
+		<li><label for="actNm">업체명</label><input id="actNm" readonly> <img
 			class="Magnifying-Glass-img" alt="image" data-bs-toggle="modal"
 			data-bs-target="#actModal" src="../images/Magnifying_Glass.png">
 			<input type="text" readonly></li>
@@ -40,7 +40,7 @@
 	<!-- 자재 목록 모달 -->
 	<div class="modal" id="matModal" tabindex="-1"
 		aria-labelledby="matModalLabel" aria-hidden="true">
-		<div class="modal-dialog modal-xl">
+		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header">
 					<h5 class="modal-title" id="matModalLabel">자재 목록</h5>
@@ -51,10 +51,6 @@
 					<div>
 						<div id="modalGrid"></div>
 					</div>
-					<div align="center">
-						<button class="btn btn-dark btn-sm" data-bs-dismiss="modal">추가</button>
-						<button class="btn btn-dark btn-sm" data-bs-dismiss="modal">취소</button>
-					</div>
 				</div>
 
 			</div>
@@ -63,7 +59,7 @@
 	<!-- 업체 목록 모달 -->
 	<div class="modal" id="actModal" tabindex="-1"
 		aria-labelledby="actModalLabel" aria-hidden="true">
-		<div class="modal-dialog modal-xl">
+		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header">
 					<h5 class="modal-title" id="actModalLabel">업체 목록</h5>
@@ -73,10 +69,6 @@
 				<div class="modal-body">
 					<div>
 						<div id="modalGrid2"></div>
-					</div>
-					<div align="center">
-						<button class="btn btn-dark btn-sm" data-bs-dismiss="modal">추가</button>
-						<button class="btn btn-dark btn-sm" data-bs-dismiss="modal">취소</button>
 					</div>
 				</div>
 
@@ -168,17 +160,6 @@
 	      ]
 	    });
 	
-	    grid.on('check', ev => {
-	      console.log('check!', ev);
-	    });
-	
-	    grid.on('uncheck', ev => {
-	      console.log('uncheck!', ev);
-	    });
-	
-	    grid.on('focusChange', ev => {
-	      console.log('change focused cell!', ev);
-	    });
 	    return grid;
 	}
 	
@@ -200,7 +181,7 @@
 		}]
 		let modalGrid = new tui.Grid({
 			el: document.getElementById('modalGrid'),
-			bodyHeight: 150,
+			bodyHeight: 250,
 			data: dataList,
 			rowHeaders: ['checkbox'],
 			scrollX: false,
@@ -212,15 +193,7 @@
 		        {
 		          header: '자재명',
 		          name: 'name'
-		        },
-		        {
-		          header: '규격',
-		          name: 'size'
-		        },
-		        {
-			      header: '수량',
-			      name: 'count'
-			    }
+		        }
 	      ] 
 		});
 		return modalGrid;
@@ -236,7 +209,7 @@
 		}]
 		let modalGrid2 = new tui.Grid({
 			el: document.getElementById('modalGrid2'),
-			bodyHeight: 150,
+			bodyHeight: 250,
 			data: dataList,
 			rowHeaders: ['checkbox'],
 			scrollX: false,

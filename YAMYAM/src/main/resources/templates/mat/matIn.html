@@ -229,10 +229,16 @@
 				{
 					header: '이름',
 					name: 'empNm',
+					filter: {
+					        type: 'select'			  
+					      }
 				},
 				{
 					header: '아이디',
 					name: 'empId',
+					filter: {
+					        type: 'select'			  
+					      }
 				}
 			]
 		});
@@ -252,11 +258,17 @@
 			scrollY: true,
 			columns: [{
 		          header: '자재코드',
-		          name: 'mtrCd'
+		          name: 'mtrCd',
+				  filter: {
+				        type: 'select'			  
+				      }
 		        },
 		        {
 		          header: '자재명',
-		          name: 'mtrNm'
+		          name: 'mtrNm',
+				  filter: {
+				        type: 'select'			  
+				      }
 		        }
 	     	] 
 		});

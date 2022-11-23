@@ -221,10 +221,19 @@ public class MatOdServiceImpl implements MatOdService {
 		}
 		return result;
 	}
-
+	
+	//===============================================
+	// 5) 자재 출고 관리
+	//===============================================
+	// 자재 출고 관리
 	@Override
 	public List<Map<String, Object>> matOutAllList() {
 		return mapper.matOutAllList();
+	}
+	// 현 재고 목록
+	@Override
+	public List<Map<String, Object>> nowSamtList() {
+		return mapper.nowSamtList();
 	}
 	
 }
