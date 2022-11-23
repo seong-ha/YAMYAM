@@ -341,8 +341,8 @@
 				      // 'needReplace' is replaced with empty string
 				      change.nextValue = '';
 				      let rowKey = ev.changes[0].rowKey;
-					 	let pplndAmt = planDGrid.getRow(rowKey).pplndAmt;
-						let poddAmt = parseInt(planDGrid.getRow(rowKey).poddAmt);
+					  let pplndAmt = planDGrid.getRow(rowKey).pplndAmt;
+					  let poddAmt = parseInt(planDGrid.getRow(rowKey).poddAmt);
 				    }
 				  });
 			}); 
@@ -512,7 +512,7 @@
 				name : 'prdNm'
 			}, {
 				header : '계획량',
-				name : 'odAmt',
+				name : 'rqtAmt',
 				editor : 'text'
 			}, {
 				header : '생산일수',
@@ -577,7 +577,7 @@
 				name : 'prdNm'
 			}, {
 				header : '요청수량',
-				name : 'odAmt',
+				name : 'rqtAmt',
 			}]
 		});
 			
@@ -596,9 +596,8 @@
 			// 클릭한 행의 자재명, 자재코드 
 			let val = requestModalGrid.getRow(ev.rowKey);
 			let RMCode = val.odCd;
-			console.log('모달그리드 : ' + RMCode);
 			let iGDataList = insertGrid.getData();
-			console.log(iGDataList);
+			let pplndAmt = requestModalGrid.getRow(ev.rowKey).rqtAmt;
 			if(iGDataList != ''){
 				for(let i =0; i<iGDataList; i++){
 					let code = el.odCd; 
@@ -608,7 +607,9 @@
 					}
 				}
 			}
+				 
 				insertGrid.appendRow(val);
+				insertGrid.setValue(ev.rowKey,'pplndAmt',pplndAmt)
 				$('#requestModal').modal("hide");	
 		})
 	}
@@ -792,8 +793,7 @@
 				let pplndDays = data[i].pplndDays;
 				let prdCd = data[i].prdCd;				
 				let odCd = data[i].odCd;
-				let odAmt = data[i].odAmt;
-				console.log(odAmt);
+				let odAmt = data[i].rqtAmt;
 				dataList.push({pplnDate,pplnName,odCd,pplndPrio,pplndDays,prdCd,odAmt})
 				if(pplnName == ''){
 					Swal.fire({

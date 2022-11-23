@@ -76,4 +76,8 @@ public class ProVO {
 	private int odAmt;		// 생산요청 수량
 	private int matOutAmt;	// 자재 출고 수량
 	
+	// 필요자재LOT그리드
+	private String mtrCd;	// 자재코드
+	private String mtrNm;	// 자재이름
+	
 }

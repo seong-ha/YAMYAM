@@ -116,6 +116,22 @@ public class ProController {
 		return service.needM(vo);
 	}
 	
+	// 필요자재LOT목록 조회
+	// 필요자재 조회
+	@RequestMapping("/getMLOTList")
+	@ResponseBody
+	public List<ProVO> getLotList(ProVO vo){
+		return service.mLotList(vo);
+	}
+	
+	// 생산지시 추가
+	@PostMapping("/orderInsert")
+	@ResponseBody
+	public int orderInsert(@RequestBody List<ProVO> vo) {
+		return 0;
+	}
+	
+	
 	/*---------------
 	// 생산지시조회
 	----------------*/

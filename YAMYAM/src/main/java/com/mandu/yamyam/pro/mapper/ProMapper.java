@@ -47,6 +47,9 @@ public interface ProMapper {
 	// 제품목록 조회
 	public List<Map<String,Object>> materialList();
 	
+	// 생산 요청서 업데이트(진행상황 : 진행)
+	public int updateBpod(ProVO vo);
+	
 	/*---------------
 	// 생산 지시 관리
 	----------------*/
@@ -58,4 +61,13 @@ public interface ProMapper {
 	
 	// 필요자재 조회
 	public List<ProVO> needM(ProVO vo);
+	
+	// 필요자재 lot 목록 조회
+	public List<ProVO> mLotList(ProVO vo);
+	
+	// 생산지시 등록
+	public int insertOrder(ProVO vo);
+	
+	// 상세생산지시 등록
+	public int insertOrderDetail(ProVO vo);
 }
