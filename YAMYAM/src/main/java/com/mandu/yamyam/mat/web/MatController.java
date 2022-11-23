@@ -193,17 +193,33 @@ public class MatController {
 	//======================
 	@RequestMapping("/matOut")
 	public String matOut(Model model) {
-		model.addAttribute("outOdList", service.matOutAllList());
+		model.addAttribute("outOdList", service.matOutAllList());	// 전체조회
+		model.addAttribute("nowSamtList", service.nowSamtList());	// 현재고목록
+		model.addAttribute("matList", service.matList());			// 자재목록
+		model.addAttribute("actList", service.actList());			// 업체목록
 		return "mat/matOut";
 	}
 	
+	//======================
+	// 6) 자재 입출고 조회
+	//======================
 	@RequestMapping("/matInOut")
 	public String matInOut(Model model) {
+		model.addAttribute("matInList", service.matInAllList());	// 입고 전체 조회
+		model.addAttribute("outOdList", service.matOutAllList());	// 출고전체조회
+		model.addAttribute("matList", service.matList());			// 자재목록
+		model.addAttribute("actList", service.actList());			// 업체목록
+		model.addAttribute("empList", service.empLookUp());			// 직원목록
 		return "mat/matInOut";
 	}
 	
+	//======================
+	// 7) 자재 재고 조회
+	//======================
 	@RequestMapping("/matStockLookup")
 	public String matStockLookup(Model model) {
+		model.addAttribute("matList", service.matList());			// 자재목록
+		model.addAttribute("actList", service.actList());			// 업체목록
 		return "mat/matStockLookup";
 	}
 	

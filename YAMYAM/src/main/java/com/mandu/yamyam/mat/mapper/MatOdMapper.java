@@ -108,4 +108,7 @@ public interface MatOdMapper {
 	//===============================================
 	// 자재 출고 관리
 	public List<Map<String, Object>> matOutAllList();
+	
+	// 현 재고 목록
+	public List<Map<String, Object>> nowSamtList();
 }

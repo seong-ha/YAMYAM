@@ -18,6 +18,7 @@
 		  FROM C_ACT
 	</select>
 	
+	<!-- 공통 - 직원목록 모달 -->
 	<select id="empLookUp" resultType="com.mandu.yamyam.common.LowerKeyMap">
 		SELECT EMP_NM, EMP_ID
 		FROM C_EMP
@@ -134,11 +135,13 @@
 	
 	<!-- 자재 발주 관리(생산계획서용 탭) - 신규 생산 계획서 선택 모달창 -->
 	<select id="addNewPlan" resultType="com.mandu.yamyam.common.LowerKeyMap">
-		SELECT PPLN_CD,
-        	   PPLN_NAME,
-        	   TO_CHAR(PPLN_DATE, 'yyyy-MM-dd') AS "PPLN_DATE"
-		FROM P_PLN
-		WHERE PPLN_STS = '자재팀확인'
+		SELECT P.PPLN_CD,
+        	   P.PPLN_NAME,
+        	   TO_CHAR(P.PPLN_DATE, 'yyyy-MM-dd') AS "PPLN_DATE"
+		FROM P_PLN P
+		 JOIN P_PLND D
+		  ON P.PPLN_CD = D.PPLN_CD
+		WHERE D.PPLND_STS = '자재팀확인'
 	</select>
 	
 	<!-- 자재 발주 관리(생산계획서용 탭) - 신규 생산 계획서 모델 선택 모달창 검색조건 추가 -->
@@ -331,7 +334,8 @@
                I.MAT_IN_AMT,
                TO_CHAR(I.MAT_IN_DATE,'yyyy-MM-dd') AS "MAT_IN_DATE",
 		       I.MAT_LOT,
-			   TO_CHAR(I.MAT_EDATE,'yyyy-MM-dd') AS "MAT_EDATE"
+			   TO_CHAR(I.MAT_EDATE,'yyyy-MM-dd') AS "MAT_EDATE",
+			   A.ACT_NM
 		 FROM  M_OD O 
 		 
 		 JOIN  M_ODD D 
@@ -408,36 +412,48 @@
 	</delete>
 	
 	<!-- 5) 자재 출고 관리 -->
-	<select id="matOutAllList" resultType="com.mandu.yamyam.mat.service.MatVO">
-		SELECT I.MAT_LOT,
-		       D.MTR_CD,
-		       C.MTR_NM,
-               A.ACT_NM,
-               T.MAT_OUT_AMT,
-               T.MAT_OUT_DATE,
-               I.MAT_EDATE,
-               T.MAT_OUT_STS
-		 FROM  M_OD O 
-		 
-		  JOIN  M_ODD D 
-		   ON O.MAT_OD_CD = D.MAT_OD_CD
-		 
-		  JOIN  C_MTR C 
-		   ON D.MTR_CD = C.MTR_CD
-		 
-		  JOIN  C_ACT A 
-		   ON D.ACT_CD = A.ACT_CD
-           
-          JOIN M_IN I
-           ON I.MTR_CD = C.MTR_CD
-           
-          JOIN M_CHK K
-           ON K.MAT_OD_CD = O.MAT_OD_CD
-           
-          JOIN M_OUT T
-           ON T.MTR_CD = I.MTR_CD
+	<!-- 전체 조회 -->
+	<select id="matOutAllList" resultType="com.mandu.yamyam.common.LowerKeyMap">
+		SELECT T.MAT_LOT,
+		       T.MTR_CD,
+		       M.MTR_NM,
+		       A.ACT_NM,
+		       T.MAT_OUT_AMT,
+		       TO_CHAR(T.MAT_OUT_DATE,'yyyy-MM-dd') AS "MAT_OUT_DATE",
+		       I.MAT_EDATE,
+		       T.MAT_OUT_STS
+		       
+		FROM M_OUT T
+		
+		 JOIN C_MTR M
+		   ON  M.MTR_CD = T.MTR_CD
+		   
+		 JOIN C_ACT A
+		   ON M.ACT_CD = A.ACT_CD
+		   
+		 JOIN M_IN I
+		   ON I.ACT_CD = A.ACT_CD
 	</select>
 	
-	
+	<!-- 추가 모달창 -->
+	<select id="nowSamtList" resultType="com.mandu.yamyam.common.LowerKeyMap">
+		SELECT T.MAT_LOT,
+		       T.MTR_CD,
+		       M.MTR_NM,
+		       A.ACT_NM,
+		       I.MAT_SAMT,
+		       TO_CHAR(I.MAT_EDATE,'yyyy-MM-dd') AS "MAT_EDATE"
+		
+		 FROM M_OUT T
+		
+		  JOIN C_MTR M
+		    ON  M.MTR_CD = T.MTR_CD
+		    
+		  JOIN C_ACT A
+		    ON M.ACT_CD = A.ACT_CD
+		    
+		  JOIN M_IN I
+		    ON I.ACT_CD = A.ACT_CD
+	</select>
 	
 </mapper>

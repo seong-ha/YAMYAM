@@ -10,11 +10,11 @@
 	</div>
 	<hr>
 	<ul class="ul-style">
-		<li><label for="matNm">자재명</label><input id="matNm" readonly><img
+		<li><label for="matNm">자재명</label><input id="matNm" readonly> <img
 			class="Magnifying-Glass-img" alt="image" data-bs-toggle="modal"
 			data-bs-target="#matModal" src="../images/Magnifying_Glass.png">
 			<input type="text" readonly></li>
-		<li><label for="actNm">업체명</label><input id="actNm" readonly><img
+		<li><label for="actNm">업체명</label><input id="actNm" readonly> <img
 			class="Magnifying-Glass-img" alt="image" data-bs-toggle="modal"
 			data-bs-target="#actModal" src="../images/Magnifying_Glass.png">
 			<input type="text" readonly></li>
@@ -41,7 +41,7 @@
 	<!-- 자재 목록 모달 -->
 	<div class="modal" id="matModal" tabindex="-1"
 		aria-labelledby="matModalLabel" aria-hidden="true">
-		<div class="modal-dialog modal-xl">
+		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header">
 					<h5 class="modal-title" id="matModalLabel">자재 목록</h5>
@@ -52,10 +52,6 @@
 					<div>
 						<div id="modalGrid"></div>
 					</div>
-					<div align="center">
-						<button class="btn btn-dark btn-sm" data-bs-dismiss="modal">추가</button>
-						<button class="btn btn-dark btn-sm" data-bs-dismiss="modal">취소</button>
-					</div>
 				</div>
 
 			</div>
@@ -64,7 +60,7 @@
 	<!-- 업체 목록 모달 -->
 	<div class="modal" id="actModal" tabindex="-1"
 		aria-labelledby="actModalLabel" aria-hidden="true">
-		<div class="modal-dialog modal-xl">
+		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header">
 					<h5 class="modal-title" id="actModalLabel">업체 목록</h5>
@@ -75,17 +71,13 @@
 					<div>
 						<div id="modalGrid2"></div>
 					</div>
-					<div align="center">
-						<button class="btn btn-dark btn-sm" data-bs-dismiss="modal">추가</button>
-						<button class="btn btn-dark btn-sm" data-bs-dismiss="modal">취소</button>
-					</div>
 				</div>
 
 			</div>
 		</div>
 	</div>
 
-	<script>
+	<script th:inline="javascript">
 	let grid = matStList(); 	// 자재재고조회 그리드
 	let modalGrid = matList();	// 자재목록 모달
 	let modalGrid2 = actList();	// 업체목록 모달
@@ -98,31 +90,11 @@
 	// 자재재고조회
 	----------------*/
 	function matStList(){
-		let dataList = [
-		    {
-		        maLot: 'OAF-20221104-011',
-		        mtCode: 'RML-10101',
-		        maNm: '얇은 만두피',
-		        actNm: 'YD 만두피',
-		        count: 999,
-		        hCount: 300,
-		        eDate: '2023-11-30'
-		    },
-		    {
-		        maLot: 'OAF-20221104-012',
-		        mtCode: 'RML-10101',
-		        maNm: '얇은 만두피',
-		        actNm: 'SJ 만두피',
-		        count: 1000,
-		        hCount: 100,
-		        eDate: '2023-11-30'
-		    }
-		  ]
 		let grid = new tui.Grid({
 		      el: document.getElementById('grid'),
 		      bodyHeight: 500,
-		      data: dataList,
-		      rowHeaders: ['checkbox', 'rowNum'],
+		      data: null,
+		      rowHeaders: ['rowNum'],
 		      scrollX: false,
 		      scrollY: true,
 		      columns: [
@@ -157,17 +129,6 @@
 		      ]
 		    });
 		
-		    grid.on('check', ev => {
-		      console.log('check!', ev);
-		    });
-		
-		    grid.on('uncheck', ev => {
-		      console.log('uncheck!', ev);
-		    });
-		
-		    grid.on('focusChange', ev => {
-		      console.log('change focused cell!', ev);
-		    });
     	return grid;
 	}
 	
@@ -175,42 +136,28 @@
 	// 자재 목록 모달
 	--------------------------------*/
 	function matList(){
-		let dataList = [{
-			code: 'RML-10101',
-			name: '얇은 만두피',
-			size: 100,
-			count: 200
-		},
-		{
-			code: 'RML-10102',
-			name: '굵은 만두피',
-			size: 100,
-			count: 200
-		}]
 		let modalGrid = new tui.Grid({
 			el: document.getElementById('modalGrid'),
-			bodyHeight: 150,
-			data: dataList,
-			rowHeaders: ['checkbox'],
+			bodyHeight: 250,
+			data: [[${matList}]],
+			rowHeaders: ['rowNum'],
 			scrollX: false,
 			scrollY: true,
 			columns: [{
 		          header: '자재코드',
-		          name: 'code'
+		          name: 'mtrCd',
+				  filter: {
+						 type: 'select'			  
+						 }
 		        },
 		        {
 		          header: '자재명',
-		          name: 'name'
-		        },
-		        {
-		          header: '규격',
-		          name: 'size'
-		        },
-		        {
-			      header: '수량',
-			      name: 'count'
-			    }
-	      ] 
+		          name: 'mtrNm',
+				  filter: {
+						 type: 'select'			  
+						 }
+		        }
+	      	] 
 		});
 			return modalGrid;
 	}
@@ -219,25 +166,27 @@
 	// 자재 목록 모달
 	--------------------------------*/
 	function actList(){
-		let dataList = [{
-			actCode: 'VDR-1101',
-			actName: 'YD 만두피'
-		}]
 		let modalGrid2 = new tui.Grid({
 			el: document.getElementById('modalGrid2'),
-			bodyHeight: 150,
-			data: dataList,
-			rowHeaders: ['checkbox'],
+			bodyHeight: 250,
+			data: [[${actList}]],
+			rowHeaders: ['rowNum'],
 			scrollX: false,
 			scrollY: true,
 			columns: [
 				{
 					header: '업체 코드',
-					name: 'actCode',
+					name: 'actCd',
+					  filter: {
+							 type: 'select'			  
+							 }
 				},
 				{
 					header: '업체명',
-					name: 'actName',
+					name: 'actNm',
+					  filter: {
+							 type: 'select'			  
+							 }
 				}
 			]
 		});

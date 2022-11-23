@@ -27,11 +27,11 @@
 		<div class="tab-pane show active" id="matIn" role="tabpanel"
 			aria-labelledby="matIn-tab">
 			<ul class="ul-style">
-				<li><label for="matNm">자재명</label><input id="matNm" readonly><img
+				<li><label for="matNm">자재명</label><input id="matNm" readonly> <img
 					class="Magnifying-Glass-img" alt="image" data-bs-toggle="modal"
 					data-bs-target="#matModal" src="../images/Magnifying_Glass.png">
 					<input type="text" readonly></li>
-				<li><label for="empNm">담당자</label><input id="empNm" readonly><img
+				<li><label for="empNm">담당자</label><input id="empNm" readonly> <img
 					class="Magnifying-Glass-img" alt="image" data-bs-toggle="modal"
 					data-bs-target="#empModal" src="../images/Magnifying_Glass.png">
 					<input type="text" readonly></li>
@@ -59,11 +59,11 @@
 		<div class="tab-pane" id="matOut" role="tabpanel"
 			aria-labelledby="matOut-tab">
 			<ul class="ul-style">
-				<li><label for="matNm">자재명</label><input id="matNm" readonly><img
+				<li><label for="matNm">자재명</label><input id="matNm" readonly> <img
 					class="Magnifying-Glass-img" alt="image" data-bs-toggle="modal"
 					data-bs-target="#matModal" src="../images/Magnifying_Glass.png">
 					<input type="text" readonly></li>
-				<li><label for="actNm">업체명</label><input id="actNm" readonly><img
+				<li><label for="actNm">업체명</label><input id="actNm" readonly> <img
 					class="Magnifying-Glass-img" alt="image" data-bs-toggle="modal"
 					data-bs-target="#actModal" src="../images/Magnifying_Glass.png">
 					<input type="text" readonly></li>
@@ -91,7 +91,7 @@
 	<!-- 자재 목록 모달 -->
 	<div class="modal" id="matModal" tabindex="-1"
 		aria-labelledby="matModalLabel" aria-hidden="true">
-		<div class="modal-dialog modal-xl">
+		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header">
 					<h5 class="modal-title" id="matModalLabel">자재 목록</h5>
@@ -102,10 +102,6 @@
 					<div>
 						<div id="modalGrid"></div>
 					</div>
-					<div align="center">
-						<button class="btn btn-dark btn-sm" data-bs-dismiss="modal">추가</button>
-						<button class="btn btn-dark btn-sm" data-bs-dismiss="modal">취소</button>
-					</div>
 				</div>
 
 			</div>
@@ -114,7 +110,7 @@
 	<!-- 업체 목록 모달 -->
 	<div class="modal" id="actModal" tabindex="-1"
 		aria-labelledby="actModalLabel" aria-hidden="true">
-		<div class="modal-dialog modal-xl">
+		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header">
 					<h5 class="modal-title" id="actModalLabel">업체 목록</h5>
@@ -125,10 +121,6 @@
 					<div>
 						<div id="modalGrid2"></div>
 					</div>
-					<div align="center">
-						<button class="btn btn-dark btn-sm" data-bs-dismiss="modal">추가</button>
-						<button class="btn btn-dark btn-sm" data-bs-dismiss="modal">취소</button>
-					</div>
 				</div>
 
 			</div>
@@ -138,7 +130,7 @@
 	<!-- 담당자 목록 모달 -->
 	<div class="modal" id="empModal" tabindex="-1"
 		aria-labelledby="empModalLabel" aria-hidden="true">
-		<div class="modal-dialog modal-xl">
+		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header">
 					<h5 class="modal-title" id="empModalLabel">사원 목록</h5>
@@ -149,17 +141,13 @@
 					<div>
 						<div id="modalGrid3"></div>
 					</div>
-					<div align="center">
-						<button class="btn btn-dark btn-sm" data-bs-dismiss="modal">추가</button>
-						<button class="btn btn-dark btn-sm" data-bs-dismiss="modal">취소</button>
-					</div>
 				</div>
 
 			</div>
 		</div>
 	</div>
 
-	<script>
+	<script th:inline="javascript">
 	let grid = matInList();		// 입고전체조회 그리드
 	let grid2 = matOutList();	// 출고전체조회	그리드
 	
@@ -178,47 +166,25 @@
 	// 입고전체조회 그리드
 	--------------------------------*/
 	function matInList(){
-		let dataList = [
-		    {
-		        maCode: 'OAF-20221104-011',
-		        mtCode: 'RML-10101',
-		        maNm: '얇은 만두피',
-		        actNm: 'YD 만두피',
-		        count: 999,
-		        inDate: '2022-11-12',
-		        maLot: 'OAF-20221104-011',
-		        eDate: '2023-11-30'
-		    },
-		    {
-		        maCode: 'OAF-20221105-011',
-		        mtCode: 'RML-10101',
-		        maNm: '두꺼운 만두피',
-		        actNm: 'SJ 만두피',
-		        count: 1000,
-		        inDate: '2022-11-12',
-		        maLot: 'OAF-20221104-012',
-		        eDate: '2023-11-30'
-		    }
-		  ]
 		let grid = new tui.Grid({
 		      el: document.getElementById('grid'),
 		      bodyHeight: 500,
-		      data: dataList,
-		      rowHeaders: ['checkbox', 'rowNum'],
+		      data: [[${matInList}]],
+		      rowHeaders: ['rowNum'],
 		      scrollX: false,
 		      scrollY: true,
 		      columns: [
 		        {
 		          header: '발주코드',
-		          name: 'maCode'
+		          name: 'matOdCd'
 		        },
 		        {
 		          header: '자재코드',
-		          name: 'mtCode'
+		          name: 'mtrCd'
 		        },
 		        {
 		          header: '자재명',
-		          name: 'maNm'
+		          name: 'mtrNm'
 		        },
 		        {
 		          header: '업체명',
@@ -226,33 +192,21 @@
 		        },
 		        {
 		          header: '입고량',
-		          name: 'count'
+		          name: 'matInAmt'
 		        },
 		        {
 		          header: '입고일',
-		          name: 'inDate'
+		          name: 'matInDate'
 		        },
 		        {
 		          header: '자재LOT번호',
-		          name: 'maLot'
+		          name: 'matLot'
 		        },
 		        {
 		          header: '유통기한',
-		          name: 'eDate'
+		          name: 'matEdate'
 		        }
 		      ]
-		    });
-		
-		    grid.on('check', ev => {
-		      console.log('check!', ev);
-		    });
-		
-		    grid.on('uncheck', ev => {
-		      console.log('uncheck!', ev);
-		    });
-		
-		    grid.on('focusChange', ev => {
-		      console.log('change focused cell!', ev);
 		    });
 	    return grid;
 	 }
@@ -261,82 +215,45 @@
 	// 출고전체조회 그리드
 	--------------------------------*/
 	function matOutList(){
-		let dataList = [
-		    {
-		    	maLot: 'RML-10000-20221112001',
-		    	mtCode: 'RML-10101',
-		        maNm: '얇은 만두피',
-		        actNm: 'YD 만두피',
-		        outCount: 999,
-		        outDate: '2022-11-12',
-		        eDate: '2023-11-30',
-		        outD: '출고'
-		    },
-		    {
-		    	maLot: 'RML-10000-20221112002',
-		    	mtCode: 'RML-10101',
-		        maNm: '두꺼운 만두피',
-		        actNm: 'YD 만두피',
-		        outCount: 1200,
-		        outDate: '2022-11-12',
-		        eDate: '2023-11-30',
-		        outD: '출고'
-		    }
-		  ]
 		let grid2 = new tui.Grid({
 		      el: document.getElementById('grid2'),
 		      bodyHeight: 500,
-		      data: dataList,
-		      rowHeaders: ['checkbox', 'rowNum'],
+		      data: [[${outOdList}]],
+		      rowHeaders: ['rowNum'],
 		      scrollX: false,
 		      scrollY: true,
 		      columns: [
-		        {
-		          header: '자재LOT번호',
-		          name: 'maLot'
-		        },
-		        {
-		          header: '자재코드',
-		          name: 'mtCode'
-		        },
-		        {
-		          header: '자재명',
-		          name: 'maNm'
-		        },
-		        {
-		          header: '업체명',
-		          name: 'actNm'
-		        },
-		        {
-		          header: '출고량',
-		          name: 'outCount'
-		        },
-		        {
-		          header: '출고일',
-		          name: 'outDate'
-		        },
-		        {
-		          header: '유통기한',
-		          name: 'eDate'
-		        },
-		        {
-		            header: '출고구분',
-		            name: 'outD'
-		          }
-		      ]
+			        {
+				          header: '자재LOT번호',
+				          name: 'matLot'
+				        },
+				        {
+				          header: '자재코드',
+				          name: 'mtrCd'
+				        },
+				        {
+				          header: '자재명',
+				          name: 'mtrNm'
+				        },
+				        {
+				          header: '업체명',
+				          name: 'actNm'
+				        },
+				        {
+				          header: '출고량',
+				          name: 'matOutAmt'
+				        },
+				        {
+				          header: '출고일',
+				          name: 'matOutDate'
+				        },
+				        {
+				            header: '출고구분',
+				            name: 'matOutSts'
+				          }
+				      ]
 		    });
 		
-		    grid2.on('check', ev => {
-		      console.log('check!', ev);
-		    });
-		
-		    grid2.on('uncheck', ev => {
-		      console.log('uncheck!', ev);
-		    });
-		
-		    grid2.on('focusChange', ev => {
-		      console.log('change focused cell!', ev);
-		    });
 	    return grid2;
 	}
 	
@@ -359,41 +276,21 @@
 		// 자재명 목록 모달
 		--------------------------------*/
 		function matList(){
-			let dataList = [{
-				code: 'RML-10101',
-				name: '얇은 만두피',
-				size: 100,
-				count: 200
-			},
-			{
-				code: 'RML-10102',
-				name: '굵은 만두피',
-				size: 100,
-				count: 200
-			}]
 			let modalGrid = new tui.Grid({
 				el: document.getElementById('modalGrid'),
-				bodyHeight: 150,
-				data: dataList,
-				rowHeaders: ['checkbox'],
+				bodyHeight: 250,
+				data: [[${matList}]],
+				rowHeaders: ['rowNum'],
 				scrollX: false,
 				scrollY: true,
 				columns: [{
 			          header: '자재코드',
-			          name: 'code'
+			          name: 'mtrCd'
 			        },
 			        {
 			          header: '자재명',
-			          name: 'name'
-			        },
-			        {
-			          header: '규격',
-			          name: 'size'
-			        },
-			        {
-				      header: '수량',
-				      name: 'count'
-				    }
+			          name: 'mtrNm'
+			        }
 		      ] 
 			});
 			return modalGrid;
@@ -403,25 +300,21 @@
 		// 업체목록 모달
 		--------------------------------*/
 		function actList() {
-			let dataList = [{
-				actCode: 'VDR-1101',
-				actName: 'YD 만두피'
-			}]
 			let modalGrid2 = new tui.Grid({
 				el: document.getElementById('modalGrid2'),
-				bodyHeight: 150,
-				data: dataList,
-				rowHeaders: ['checkbox'],
+				bodyHeight: 250,
+				data: [[${actList}]],
+				rowHeaders: ['rowNum'],
 				scrollX: false,
 				scrollY: true,
 				columns: [
 					{
 						header: '업체 코드',
-						name: 'actCode',
+						name: 'actCd',
 					},
 					{
 						header: '업체명',
-						name: 'actName',
+						name: 'actNm',
 					}
 				]
 			});
@@ -432,20 +325,11 @@
 		// 직원목록 모달
 		--------------------------------*/
 		function empList() {
-			let dataList = [{
-				empNm: '김검수',
-				empId: 'wantToGoHome'
-			},
-			{
-				empNm: '이검수',
-				empId: 'meToo'
-			}
-			]
 			let modalGrid3 = new tui.Grid({
 				el: document.getElementById('modalGrid3'),
 				bodyHeight: 150,
-				data: dataList,
-				rowHeaders: ['checkbox'],
+				data: [[${empList}]],
+				rowHeaders: ['rowNum'],
 				scrollX: false,
 				scrollY: true,
 				columns: [
@@ -483,44 +367,14 @@
 		// Date Picker
 		--------------------------------*/
 		 function datePicker() {
-		   var today = new Date();
-		    var picker = tui.DatePicker.createRangePicker({
-		        startpicker: {
-		            date: today,
-		            input: '#startpicker-input',
-		            container: '#startpicker-container'
-		        },
-		        endpicker: {
-		            date: today,
-		            input: '#endpicker-input',
-		            container: '#endpicker-container'
-		        },
-		        selectableRanges: [
-		            [today, new Date(today.getFullYear() + 1, today.getMonth(), today.getDate())]
-		        ]
-		    });
+			 rangeDatepickerInit('#startpicker-input', '#startpicker-container','#endpicker-input','#endpicker-container')
 		   }
 		    
 		/*------------------------------
 		// Date Picker2
 		--------------------------------*/
 		 function datePicker2() {
-		   var today = new Date();
-		    var picker = tui.DatePicker.createRangePicker({
-		        startpicker: {
-		            date: today,
-		            input: '#startpicker-input2',
-		            container: '#startpicker-container2'
-		        },
-		        endpicker: {
-		            date: today,
-		            input: '#endpicker-input2',
-		            container: '#endpicker-container2'
-		        },
-		        selectableRanges: [
-		            [today, new Date(today.getFullYear() + 1, today.getMonth(), today.getDate())]
-		        ]
-		    });
+			 rangeDatepickerInit('#startpicker-input2', '#startpicker-container2','#endpicker-input2','#endpicker-container2')
 			}
 	</script>
 </div>

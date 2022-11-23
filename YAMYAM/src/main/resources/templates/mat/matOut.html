@@ -38,7 +38,7 @@
 	<div style="text-align: right;">
 		<button class="btn btn-dark btn-sm" data-bs-toggle="modal"
 			data-bs-target="#addModal">추가</button>
-		<button class="btn btn-dark btn-sm">선택삭제</button>
+		<button class="btn btn-dark btn-sm">삭제</button>
 		<button class="btn btn-dark btn-sm">저장</button>
 	</div>
 
@@ -47,7 +47,7 @@
 	<!-- 자재 목록 모달 -->
 	<div class="modal" id="matModal" tabindex="-1"
 		aria-labelledby="matModalLabel" aria-hidden="true">
-		<div class="modal-dialog modal-xl">
+		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header">
 					<h5 class="modal-title" id="matModalLabel">자재 목록</h5>
@@ -58,10 +58,6 @@
 					<div>
 						<div id="modalGrid"></div>
 					</div>
-					<div align="center">
-						<button class="btn btn-dark btn-sm" data-bs-dismiss="modal">추가</button>
-						<button class="btn btn-dark btn-sm" data-bs-dismiss="modal">취소</button>
-					</div>
 				</div>
 
 			</div>
@@ -70,7 +66,7 @@
 	<!-- 업체 목록 모달 -->
 	<div class="modal" id="actModal" tabindex="-1"
 		aria-labelledby="actModalLabel" aria-hidden="true">
-		<div class="modal-dialog modal-xl">
+		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header">
 					<h5 class="modal-title" id="actModalLabel">업체 목록</h5>
@@ -80,10 +76,6 @@
 				<div class="modal-body">
 					<div>
 						<div id="modalGrid2"></div>
-					</div>
-					<div align="center">
-						<button class="btn btn-dark btn-sm" data-bs-dismiss="modal">추가</button>
-						<button class="btn btn-dark btn-sm" data-bs-dismiss="modal">취소</button>
 					</div>
 				</div>
 
@@ -105,15 +97,12 @@
 					<div>
 						<div id="modalGrid3" style="width: 100%;"></div>
 					</div>
-					<div align="center">
-						<button class="btn btn-dark btn-sm" data-bs-dismiss="modal">추가</button>
-						<button class="btn btn-dark btn-sm" data-bs-dismiss="modal">취소</button>
-					</div>
 				</div>
 
 			</div>
 		</div>
 	</div>
+	
 	<script th:inline="javascript">
 	let grid = outMatList();		// 출고전체목록 그리드
 	
@@ -140,15 +129,15 @@
 		      columns: [
 		        {
 		          header: '자재LOT번호',
-		          name: 'maLot'
+		          name: 'matLot'
 		        },
 		        {
 		          header: '자재코드',
-		          name: 'mtCode'
+		          name: 'mtrCd'
 		        },
 		        {
 		          header: '자재명',
-		          name: 'maNm'
+		          name: 'mtrNm'
 		        },
 		        {
 		          header: '업체명',
@@ -156,19 +145,15 @@
 		        },
 		        {
 		          header: '출고량',
-		          name: 'outCount'
+		          name: 'matOutAmt'
 		        },
 		        {
 		          header: '출고일',
-		          name: 'outDate'
-		        },
-		        {
-		          header: '유통기한',
-		          name: 'eDate'
+		          name: 'matOutDate'
 		        },
 		        {
 		            header: '출고구분',
-		            name: 'outD'
+		            name: 'matOutSts'
 		          }
 		      ]
 		    });
@@ -183,26 +168,24 @@
 		let modalGrid = new tui.Grid({
 			el: document.getElementById('modalGrid'),
 			bodyHeight: 250,
-			data: null,
-			rowHeaders: ['checkbox'],
+			data: [[${matList}]],
+			rowHeaders: ['rowNum'],
 			scrollX: false,
 			scrollY: true,
 			columns: [{
 		          header: '자재코드',
-		          name: 'code'
+		          name: 'mtrCd',
+				  filter: {
+				        type: 'select'			  
+				      }
 		        },
 		        {
 		          header: '자재명',
-		          name: 'name'
-		        },
-		        {
-		          header: '규격',
-		          name: 'size'
-		        },
-		        {
-			      header: '수량',
-			      name: 'count'
-			    }
+		          name: 'mtrNm',
+				  filter: {
+				        type: 'select'			  
+				      }
+		        }
 	      ] 
 		});
 		return modalGrid;
@@ -215,18 +198,24 @@
 		var modalGrid2 = new tui.Grid({
 			el: document.getElementById('modalGrid2'),
 			bodyHeight: 250,
-			data: null,
-			rowHeaders: ['checkbox'],
+			data: [[${actList}]],
+			rowHeaders: ['rowNum'],
 			scrollX: false,
 			scrollY: true,
 			columns: [
 				{
 					header: '업체 코드',
-					name: 'actCode',
+					name: 'actCd',
+					  filter: {
+					        type: 'select'			  
+					      }
 				},
 				{
 					header: '업체명',
-					name: 'actName',
+					name: 'actNm',
+					  filter: {
+					        type: 'select'			  
+					      }
 				}
 			]
 		});
@@ -240,21 +229,21 @@
 		let modalGrid3 = new tui.Grid({
 			el: document.getElementById('modalGrid3'),
 			bodyHeight: 400,
-			data: null,
-			rowHeaders: ['checkbox'],
+			data: [[${nowSamtList}]],
+			rowHeaders: ['rowNum'],
 			scrollX: false,
 			scrollY: true,
 			columns: [{
 		          header: '자재LOT번호',
-		          name: 'maLot'
+		          name: 'matLot'
 		        },
 		        {
 		          header: '자재코드',
-		          name: 'maCode'
+		          name: 'mtrCd'
 		        },
 		        {
 		          header: '자재명',
-		          name: 'maNm'
+		          name: 'mtrNm'
 		        },
 		        {
 			      header: '업체명',
@@ -262,11 +251,11 @@
 			    },
 		        {
 				  header: '수량',
-				  name: 'count'
+				  name: 'matSamt'
 				},
 			    {
 				  header: '유통기한',
-				  name: 'date'
+				  name: 'matEdate'
 				}
 	      ] 
 		});
