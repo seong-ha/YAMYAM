@@ -34,29 +34,24 @@ text-align: center;
 						data-bs-target="#noOrderModal">미지시 계획 조회</button>
 					</td>
 				</tr>
-				<tr>
-					<td style="text-align: right;">
-						<button type="button" id="orderBtn" style="display:none;width: 140px; height: 50px; font-size:1.2em; color:yellow;" class="btn btn-dark btn-sm">생산 지시</button>
-					</td>
-				</tr>
 			</table>
 			
 			
 			 &nbsp;&nbsp;	
 		</div>
 		<div class="row">
-			<div class="col-6">
+			<div class="col-7">
 				<h4>상세생산계획</h4>
 				<div id="planDGrid"></div>
 			</div>
-			<div class="col-6">
+			<div class="col-5">
 				<h4>생산지시</h4>
 				<div id="planOrder"></div>
 			</div>
 		</div>
 		 &nbsp;&nbsp;
 		<div class="row">
-			<div class="col-6" style="margin-bottom : 200px;">
+			<div class="col-6" style="margin-bottom : 100px;">
 				<h4>필요자재</h4>
 				<!-- 필요자재 모달버튼 -->
 				<button type="button" id="mLModalBtn" hidden class="btn btn-dark btn-sm"
@@ -69,9 +64,11 @@ text-align: center;
 				<h4>필요자재LOT</h4>
 
 				<div id="matLot"></div>
-				<button type="button" id="deleteBtn"
-				class="btn btn-dark btn-sm" >행 삭제</button>
-				
+				<div style="float:right">
+					<button type="button" id="deleteBtn"
+					class="btn btn-dark btn-sm" >행 삭제</button>
+					<button type="button" id="orderBtn" style="color:yellow;" class="btn btn-dark btn-sm">생산 지시</button>
+				</div>
 			</div>
 		</div>
 
@@ -89,23 +86,15 @@ text-align: center;
 						<div>
 							<div>
 								<label for="mtrNm">자재명: </label>
-								<select name="mtrNm" id="mtrNm" style="width: 120px">
-								    <option value="">부추</option>
-								    <option value="">다짐육</option>
-								    <option value="">자재1</option>
-								    <option value="">자재1</option>
-								    <option value="">자재1</option>
-								    <option value="">자재1</option>
-								    <option value="">자재1</option>
-								</select>
+								<input type="text" id="mtrNm" name="mtrNm" style="width: 120px" readonly="readonly">
 								
 								<label for="amt">필요수량: </label>
-								<input type="number" id="amt" name="amt" style="width: 120px" value="200">
-								<button type="button" class="btn btn-dark btn-sm">조회</button>
+								<input type="number" id="amt" name="amt" style="width: 120px" readonly="readonly">
+								<button type="button" id ="sBtn" class="btn btn-dark btn-sm">조회</button>
 							</div>
 
 							<div id="matLotGrid2"></div>
-
+							<div><button type="button" id ="okBtn" class="btn btn-dark btn-sm" style="float:right;">입력</button></div>
 						</div>
 					</div>
 
@@ -148,8 +137,10 @@ text-align: center;
 		showNOModalHandler(); 	 // 미지시계획 모달 클릭 버튼 이벤트
 		modalGridClickHandler(); // 미지시계획조회 모달창의 그리드 선택시 자료를 상세생산계획 Grid에 넣어주기
 		planDGridChangeHandler() // 계획 관리 그리드에서의 수정
-		planOrderEdit() // 생산지시그리드 editingFinish 이벤트 핸들러 
-		
+		planOrderEdit(); 		 // 생산지시그리드 editingFinish 이벤트 핸들러 
+		okBtnHandler(); 	 	 // 필요자재 LOT 모달 입력 핸들러
+		sBtnHandler();  		 // sBtn 조회 버튼 이벤트 핸들러 		
+		orderBtnHandler(); 		 // 생산 지시 버튼 이벤트 핸들러
 		
 		/*------------
 		// 상세계획 조회 grid
@@ -163,6 +154,10 @@ text-align: center;
 				rowHeaders: ['rowNum'],
 				columns: [
 					{
+						header: '상세계획코드',
+						name: 'pplndCd'
+					},
+					{
 						header: '생산계획코드',
 						name: 'pplnCd'
 					},
@@ -174,10 +169,6 @@ text-align: center;
 					{
 						header: '제품코드',
 						name: 'prdCd'
-					},
-					{
-						header: '상세계획코드',
-						name: 'pplndCd'
 					},
 					{
 						header: '생산계획수량',
@@ -203,8 +194,7 @@ text-align: center;
 			return planDGrid;
 		}
 		
-		planDGrid.hideColumn('pplndCd');
-		planDGrid.hideColumn('prdCd');
+		planDGrid.hideColumn('pplnCd');
 		
 		
 		/*------------
@@ -222,7 +212,7 @@ text-align: center;
 						name: 'plineCd',
 					},
 					{
-						header: '상세생산코드',
+						header: '상세계획코드',
 						name: 'pplndCd'
 					},
 					{
@@ -278,7 +268,7 @@ text-align: center;
 			return planOrder;
 		}
 		planOrder.hideColumn('pplndCd');
-		
+		planOrder.hideColumn('prdCd');
 		
 		
 		
@@ -289,7 +279,8 @@ text-align: center;
 			let matNeed = new tui.Grid({
 				el: document.getElementById('matNeed'),
 				scrollX: false,
-				scrollY: false,
+				scrollY: true,
+				bodyHeight: 250,
 				rowHeaders: ['rowNum'],
 				columns: [
 					{
@@ -310,12 +301,34 @@ text-align: center;
 					}
 				]
 			});
+			
+			matNeed.on('click', function(ev){
+				// 클릭한 행의 자재명, 자재코드 
+				
+				matLotGrid2.clear();
+				
+				let mtrNm = matNeed.getRow(ev.rowKey).mtrNm;
+				let amt = matNeed.getRow(ev.rowKey).matOutAmt;
+				let prdCd = matNeed.getRow(ev.rowKey).prdCd;
+				$('#mtrNm').attr("value",mtrNm);
+				$('#amt').attr("value",amt);
+				
+				
+
+				$("#matLotModal").modal("show");
+				
+				// 모달이 로드 되는데 시간이 걸리므로 인터벌 걸어주기
+				setInterval(function(){
+					matLotGrid2.refreshLayout()
+					},100);	
+				
+				
+			})
 
 			return matNeed;
 		}
 		
-				
-		
+
 		/*------------
 		// 필요자재 LOT grid 
 		----------------*/
@@ -324,7 +337,8 @@ text-align: center;
 			let matLot = new tui.Grid({
 				el: document.getElementById('matLot'),
 				scrollX: false,
-				scrollY: false,
+				scrollY: true,
+				bodyHeight: 250,
 				rowHeaders: ['checkbox', 'rowNum'],
 				columns: [
 					{
@@ -333,44 +347,26 @@ text-align: center;
 					},
 					{
 						header: '자재LOT번호',
-						name: 'mtrLot'
+						name: 'matLot'
 					},
 					{
 						header: '사용수량',
-						name: 'matOutAmt'
+						name: 'amt'
 					},
 					{
 						header: '유통기한',
 						name: 'matEdate'
-					},
-					{
-						header: '상세생산지시코드',
-						name: 'poddCd'
-					},
+					}
 					
 				]
 			});
-			
-			matLot.on('click', function(ev){
-				// 클릭한 행의 자재명, 자재코드 
-	
-				//let mtrNm = matLot.getRow(ev.rowKey).mtrNm;
-				//let mtrLot = matLot.getRow(ev.rowKey).mtrLot;
-
-				$("#matLotModal").modal("show");
-				
-				// 모달이 로드 되는데 시간이 걸리므로 인터벌 걸어주기
-				setInterval(function(){
-					matLotGrid2.refreshLayout()
-					},100);			
-			})
 			
 			return matLot;
 		}
 			
 		
 		
-		
+
 		/*------------
 		// 모달에 뜨는 필요자재 LOT grid 
 		----------------*/	
@@ -383,11 +379,15 @@ text-align: center;
 				columns: [
 					{
 						header: '자재LOT번호',
-						name: 'mLot'
+						name: 'matLot'
+					},
+					{
+						header: '자재이름',
+						name: 'mtrNm'
 					},
 					{
 						header: '현재고',
-						name: 'sAmt'
+						name: 'matSamt'
 					},
 					{
 						header: '사용수량',
@@ -396,7 +396,7 @@ text-align: center;
 					},
 					{
 						header: '유통기한',
-						name: 'eDate'
+						name: 'matEdate'
 					},
 				],
 				summary: {
@@ -414,6 +414,7 @@ text-align: center;
 			return matLotGrid2; 
 		}
 		
+		matLotGrid2.hideColumn('mtrNm');
 		
 		
 		
@@ -457,7 +458,7 @@ text-align: center;
 		
 		
 		/*------------
-		// 생산지시그리드 editingFinish 이벤트 핸들러 
+		// 생산지시그리드 afterChange 이벤트 핸들러 
 		----------------*/
 		function planOrderEdit(){
 			planOrder.on('afterChange',function(ev){
@@ -469,7 +470,7 @@ text-align: center;
 				
 				// 마지막 값이 채워지면 matNeed 그리드 호출
 				let a = list.length-1;
-				console.log(b[a]);
+				//console.log(b[a]);
 				if(b[a] != null){
 					
 	             	for(let i =0; i<list.length; i++){
@@ -478,6 +479,7 @@ text-align: center;
 						let prio = list[i].poddPrio;
 						let pplndCd = list[i].pplndCd;
 						let prdCd = list[i].prdCd;
+						
 						/* let a = list.length;
 						console.log(a); */
 						$.ajax({
@@ -492,9 +494,6 @@ text-align: center;
 						
 					}
 				}
-				
-				/*
-				 // end of if */
 			})
 		}
 		
@@ -592,11 +591,11 @@ text-align: center;
 				 } else {
 				 let pplndCd = planDGrid.getRow(ev.rowKey).pplndCd;
 				 let pplndDays = planDGrid.getRow(ev.rowKey).pplndDays;
-				 
+				 let prdCd = planDGrid.getRow(ev.rowKey).prdCd;
 				 $.ajax({
 						url : '/proOrderList',
 						method: "GET",
-						data : {"pplndCd":pplndCd,"pplndDays":pplndDays}
+						data : {"prdCd":prdCd,"pplndDays":pplndDays}
 					}).then(res=>{
 						planOrder.resetData(res);
 					})
@@ -607,6 +606,103 @@ text-align: center;
 				
 			});
 		}
+		
+		/*------------
+		// okBtn 이벤트 핸들러 
+		----------------*/	
+		function okBtnHandler(){
+		// 필요자재 LOT grid 선택 행 삭제
+			$('#okBtn').on('click',function(ev){
+				let sum = matLotGrid2.getSummaryValues('amt').sum; // 사용수량
+				let amt = $('#amt').val(); // 필요수량
+				
+				//matLotGrid2
+				if(sum < amt){
+					let messeage = `사용수량이 필요수량보다<br> 부족합니다.`
+					Swal.fire({icon: 'error',title:messeage});
+				}else if (sum > amt){
+					let messeage = `사용수량이 필요수량을<br> 초과합니다.`
+					Swal.fire({icon: 'error',title:messeage});
+				}else {
+					let list = matLot.getData();
+					let rows = matLotGrid2.getCheckedRows();
+
+					if(list.length == 0){
+						matLot.appendRow(rows[0]);
+						$('#matLotModal').modal("hide");	
+					}else {
+						let rows = matLotGrid2.getCheckedRows();
+						let length = rows.length
+						$(rows).each(function(idx,el){
+							console.log(el);
+							matLot.appendRows([el]);
+						})
+						$('#matLotModal').modal("hide");
+					}
+					
+				 }
+				
+									
+			
+			});
+		}
+		
+		
+		
+		
+		/*------------
+		// sBtn 조회 버튼 이벤트 핸들러 
+		----------------*/	
+		function sBtnHandler(){
+		 $('#sBtn').on('click',function(){
+			 let mtrNm = $("input[type=text][name=mtrNm]").val();
+		 
+				 $.ajax({
+					url : '/getMLOTList',
+					data : {"mtrNm" : mtrNm},
+					contentType: 'application/json',
+					dataType : 'json',
+					method: "GET",
+					success : function(data){matLotGrid2.resetData(data);},
+					error : function(reject){console.log(reject);}				
+				})
+			})
+		}
+		
+	
+		/*------------
+		// 생산 지시 버튼 이벤트 핸들러 
+		----------------*/	
+		function orderBtnHandler(){
+		 $('#orderBtn').on('click',function(){
+			 let x = matNeed.getData().length;
+			 let y = matLot.getData().length;
+			 if(x == y){
+				 let yy = planDGrid.getData();
+				 console.log(yy);
+				 /* $.ajax({
+					url : '/getMLOTList',
+					data : {"mtrNm" : mtrNm},
+					contentType: 'application/json',
+					dataType : 'json',
+					method: "GET",
+					success : function(data){matLotGrid2.resetData(data);},
+					error : function(reject){console.log(reject);}				
+				}) */ 
+			 }else {
+				 
+				 let yy = planDGrid.getData();
+				 console.log(yy);
+				/*  Swal.fire({
+						icon: 'error',
+						title :'필요자재가 부족합니다.'}); */
+			 }
+				
+			})
+		}
+		
+
+
 	</script>
 
 	</div>

@@ -33,6 +33,7 @@ public class ProServiceImpl implements ProService {
 	public int insertPlan(List<ProVO> vo) {
 		int result = 0;
 		mapper.insertPlan(vo.get(0));
+		mapper.updateBpod(vo.get(0));
 		String code = vo.get(0).getPplnCd();
 		for(int i=0; i<vo.size(); i++) {
 			vo.get(i).setPplnCd(code);
@@ -105,6 +106,18 @@ public class ProServiceImpl implements ProService {
 	@Override
 	public List<ProVO> needM(ProVO vo) {
 		return mapper.needM(vo);
+	}
+
+	// 필요자재LOT목록 조회
+	@Override
+	public List<ProVO> mLotList(ProVO vo) {
+		return mapper.mLotList(vo);
+	}
+
+	// 생산지시 등록
+	@Override
+	public int insertOrder(List<ProVO> vo) {
+		return 0;
 	}
 	
 

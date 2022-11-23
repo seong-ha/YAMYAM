@@ -42,7 +42,7 @@
 	<!-- 생산계획 등록 -->
 	<insert id="insertPlan" parameterType="com.mandu.yamyam.pro.service.ProVO">
 		<selectKey keyProperty="pplnCd" resultType="String" order="BEFORE">
-			select 'PLN-'|| TO_CHAR(SYSDATE, 'yyyyMMdd-') || LPAD(ppln_seq.NEXTVAL, 3, 0) from dual
+			select mk_ppln_cd from dual
 		</selectKey>
 		insert into p_pln(
 							<if test="pplnDate != null">
@@ -66,6 +66,9 @@
 	
 	<!-- 상세생산계획 등록 -->
 	<insert id="insertPlanDetail" parameterType="com.mandu.yamyam.pro.service.ProVO">
+		<selectKey keyProperty="pplndCd" resultType="String" order="BEFORE">
+			select mk_pplnd_cd from dual
+		</selectKey>
 		insert into p_plnd(
 							pplnd_cd,
 							ppln_cd,
@@ -78,7 +81,7 @@
 							)
 		
 					values(
-							'PLND-'|| TO_CHAR(SYSDATE, 'yyyyMMdd-') || LPAD(ppln_seq.NEXTVAL, 3, 0),
+							#{pplndCd},
 							#{pplnCd},
 							#{pplnDate},
 							#{pplndPrio},
@@ -88,7 +91,11 @@
 						   )
 	</insert>
 	
-	
+	<!-- 생산요청서 진행사항 수정 -->
+	<update id="updateBpod" parameterType="com.mandu.yamyam.pro.service.ProVO">
+		update b_pod set rqt_sts = '진행'
+		where od_cd = #{odCd}
+	</update>
 	
 	<!-- 생산계획 우선순위, 생산일자 수정 -->
 	<update id="updatePlanDetail" parameterType="com.mandu.yamyam.pro.service.ProVO">
@@ -124,13 +131,10 @@
 	 
 	<!-- 생산요청서 -->
 	<select id="orderList" resultType="com.mandu.yamyam.common.LowerKeyMap">
-		SELECT B.OD_CD, 
-		       TO_CHAR(B.DE_DATE,'yyyy-MM-dd') AS DE_DATE, 
-		       B.PRD_CD, 
-		       C.PRD_NM, 
-		       B.OD_AMT
-		FROM B_OD B JOIN C_PRD C
-              		ON B.PRD_CD = C.PRD_CD
+		select p.od_cd, p.prd_cd, c.prd_nm ,p.rqt_amt, TO_CHAR(b.de_date,'yyyy-MM-dd') as de_date
+		from b_pod p join b_od b on p.od_cd = b.od_cd
+             join c_prd c on  c.prd_cd = b.prd_cd
+		where p.rqt_sts = '미계획'
 	</select>
 	
 	<!-- 제품목록 조회 -->
@@ -151,7 +155,7 @@
 	
 	<!-- 생산라인 조회 -->
 	<select id="lineList" resultType="com.mandu.yamyam.common.LowerKeyMap">
-		select p.pplnd_cd, l.pline_cd, p.prd_cd from p_plnd p join p_line l on p.prd_cd = l.prd_cd where p.PPLND_CD = #{pplndCd} and ROWNUM &lt;= #{pplndDays}
+		select p.pplnd_cd, l.pline_cd, p.prd_cd from p_plnd p join p_line l on p.prd_cd = l.prd_cd where p.PRD_CD = #{prdCd} and ROWNUM &lt;= #{pplndDays}
 	</select>
 	
 	<!-- 필요자재 조회 -->
@@ -163,5 +167,56 @@
              ON M.MTR_CD = B.MTR_CD
       where  P.PPLND_CD = #{pplndCd}
       and 	 p.prd_cd = #{prdCd}
+      order by b.mtr_cd
 	</select>
+	
+	<!-- 필요자재 LOT 목록 조회 -->
+	<select id="mLotList" resultType="com.mandu.yamyam.common.LowerKeyMap">
+		SELECT c.mtr_nm, i.mat_lot, TO_CHAR(i.mat_edate,'yyyy-MM-dd') AS mat_edate, c.mtr_cd, i.mat_samt
+		FROM c_mtr c join m_in i on c.mtr_cd = i.mtr_cd
+		WHERE c.mtr_nm = #{mtrNm}
+	</select>
+	
+	
+	<!-- 생산지시 등록 -->
+	<insert id="insertOrder" parameterType="com.mandu.yamyam.pro.service.ProVO">
+		<selectKey keyProperty="podCd" resultType="String" order="BEFORE">
+			SELECT mk_pod_cd FROM DUAL
+		</selectKey>
+		INSERT INTO p_od (
+						  pod_cd,
+						  pplnd_cd,
+						  prd_cd,
+						  pline_cd
+						  )
+			   VALUES(
+			   		   #{podCd},
+			   		   #{pplndCd},
+			   		   #{prdCd},
+			   		   (SELECT PLINE_CD FROM P_LINE WHERE PRD_CD = #{prdCd}))
+		
+	</insert>
+	
+	
+	<!-- 상세 생산지시 등록 -->
+	<insert id="insertOrderDetail" parameterType="com.mandu.yamyam.pro.service.ProVO">
+		<selectKey keyProperty="poddCd" resultType="String" order="BEFORE">
+			SELECT mk_podd_cd FROM DUAL
+		</selectKey>
+		INSERT INTO P_ODD(
+							PODD_CD,
+							POD_CD,
+							PODD_AMT,
+							PODD_DATES,
+							PODD_PRIO
+						  )
+				VALUES(#{poddCd},
+					   #{podCd},
+					   #{poddAmt},
+					   #{poddDates},
+					   #{poddPrio})
+	</insert>
+	
+	
+	
 </mapper>
