@@ -14,7 +14,7 @@
 		height: 230px;
 	}
 	
-	#eqpTable th {
+	#eqpTable .th {
 		width: 90px;
 	}
 	
@@ -36,6 +36,7 @@
 	select option[value=""][disabled] {
 		display: none;
 	}
+	
 </style>
 </head>
 
@@ -103,18 +104,18 @@
 								<div class="col-9">
 									<table id="eqpTable">
 										<tr>
-											<th>설비코드</th>
+											<th class="th">설비코드</th>
 											<td>
 												<input type="text" id="eqpCd" name="eqpCd" readonly>
 											</td>
-											<th>설비업체</th>
+											<th class="th">설비업체</th>
 											<td>
 												<select class="form-select form-select-sm" name="actCd" id="actCd" style="width:200px">
 													<option value="" disabled selected>설비업체선택</option>
 											        <option th:each="act : ${eqpActList}" th:value="${act.actCd}" th:text="${act.actNm}">
 											    </select>
 											</td>
-											<th>가동여부</th>
+											<th class="th">가동여부</th>
 											<td>
 								  			    <select class="form-select form-select-sm" name="eqpSts" id="eqpSts">
 								  			    	<option value="" disabled selected>가동여부선택</option>
@@ -123,43 +124,51 @@
 											</td>
 										</tr>
 										<tr>
-											<th>설비명</th>
+											<th class="th">설비명</th>
 											<td>
 												<input type="text" id="eqpNm" name="eqpNm">
 											</td>
-											<th>제작일자</th>
+											<th class="th">제작일자</th>
 											<td>
-												<input type="text" id="mkDate" name="mkDate">
+												<div class="tui-datepicker-input tui-datetime-input tui-has-focus">
+													<input type="text" id="datepicker-input1" name="mkDate" aria-label="Date-Time">
+													<span class="tui-ico-date"></span>
+												</div>
+												<div id="wrapper1"></div>
 											</td>
-											<th>UPH</th>
+											<th class="th">UPH</th>
 											<td>
-												<input type="text" id="uph" name="uph">
+												<input type="number" id="uph" name="uph">
 											</td>
 										</tr>
 										<tr>
-											<th>모델명</th>
+											<th class="th">모델명</th>
 											<td>
 												<input type="text" id="mdNm" name="mdNm">
 											</td>
-											<th>구매일자</th>
+											<th class="th">구매일자</th>
 											<td>
-												<input type="text" id="buyDate" name="buyDate">
+												<div class="tui-datepicker-input tui-datetime-input tui-has-focus">
+													<input type="text" id="datepicker-input2" name="buyDate" aria-label="Date-Time">
+													<span class="tui-ico-date"></span>
+												</div>
+												<div id="wrapper2"></div>
 											</td>
-											<th>온도</th>
+											<th class="th">온도</th>
 											<td>
-												<input type="text" id="highTemp" name="highTemp" style="margin-right: 0; width: 90px;"> - 
-												<input type="text" id="lowTemp" name="lowTemp" style="width: 90px; margin-right: 0;"> ℃
+												<input type="number" id="lowTemp" name="lowTemp" style="width: 90px; margin-right: 0;"> -
+												<input type="number" id="highTemp" name="highTemp" style="margin-right: 0; width: 90px;"> ℃ 
 											</td>
 										</tr>
 										<tr>
-											<th>점검주기</th>
+											<th class="th">점검주기</th>
 											<td>
-												<input type="text" id="chkCycle" name="chkCycle">
+												<input type="number" id="chkCycle" name="chkCycle">
 											</td>
-											<th>설비구분</th>
+											<th class="th">설비구분</th>
 											<td colspan="1">
 												<!-- 설비구분 공통상세코드 및 코드명을 name과 id에 넣어주기 -->
-												<input type="text" id="eqpTypeCd" name="eqpTypeCd" style="margin-right: 0;" readonly>
+												<input type="text" id="eqpTypeCd" name="eqpType" style="margin-right: 0;" readonly>
 												<img class="Magnifying-Glass-img" alt="image" data-bs-toggle="modal"
 													data-bs-target="#eqpTypeModal" src="../images/Magnifying_Glass.png">
 												<input type="text" id="eqpTypeNm" name="eqpTypeNm" readonly>
@@ -248,9 +257,11 @@
 			eqpTypeSelect();							// 관리탭 설비구분 선택 모달창 refresh
 			eqpListSelect();							// 관리탭 설비목록 모달 시 refresh 
 			insertUpdateBtn();							// 관리탭 form태그 내용으로 insert OR update 하는 버튼
-			inputImgInteract();							// 관리탭 input#IMG에 값 들어오면 img태그 만들어서 사진 나오는 이벤트
 			imgTagReset();								// 관리탭 초기화 버튼 눌렀을때 img태그 src도 같이 초기화
-			
+			previewFile();								// input file change 이벤트 시 사진미리보기
+			pickerInit('#wrapper1', '#datepicker-input1');	// 구매날짜 datepicker
+			pickerInit('#wrapper2', '#datepicker-input2');  // 제작날짜 datepicker
+			reset.click();									// 등록폼 지우기
 			
 			
 			// toastr
@@ -262,9 +273,6 @@
 				    "extendedTimeOut" : 1500, 
 				    "timeOut" : 2500
 			}
-			
-			
-			
 			
 			/* ---------------
 			조회탭 그리드
@@ -430,15 +438,15 @@
 							document.getElementById('mdNm').value = data.mdNm;
 							document.getElementById('chkCycle').value = data.chkCycle;
 							document.getElementById('actCd').value = data.actCd;
-							document.getElementById('mkDate').value = data.mkDate;
-							document.getElementById('buyDate').value = data.buyDate;
+							document.getElementById('datepicker-input1').value = data.mkDate;
+							document.getElementById('datepicker-input2').value = data.buyDate;
 							document.getElementById('eqpTypeCd').value = data.eqpTypeCd;
 							document.getElementById('eqpTypeNm').value = data.eqpTypeNm;
 							document.getElementById('eqpSts').value = data.eqpSts;
 							document.getElementById('uph').value = data.uph;
 							document.getElementById('highTemp').value = data.highTemp;
 							document.getElementById('lowTemp').value = data.lowTemp;
-							document.getElementById('imgTag').src = '/images/' + data.img;
+							document.getElementById('imgTag').src = '/download?fileNm=' + data.img;
 							
 							document.querySelector('#eqpListModal button.btn-close').click();
 						},
@@ -460,32 +468,6 @@
 				let eqpTypeModalGrid = new tui.Grid({
 					el: document.getElementById('eqpTypeModalGrid'),
 					bodyHeight: 250,
-					data: [
-						{
-							code: 'eqptype-01',
-							name: '만두 배합'
-						},
-						{
-							code: 'eqptype-02',
-							name: '만두 성형',
-						},
-						{
-							code: 'eqptype-01',
-							name: '만두 배합'
-						},
-						{
-							code: 'eqptype-02',
-							name: '만두 성형',
-						},
-						{
-							code: 'eqptype-02',
-							name: '만두 성형',
-						},
-						{
-							code: 'eqptype-02',
-							name: '만두 성형',
-						}
-					],
 					rowHeaders: ['rowNum'],
 					scrollX: false,
 					scrollY: true,
@@ -647,14 +629,44 @@
 			function insertUpdateBtn() {
 				
 				document.getElementById('insertUpdateBtn').addEventListener('click', function () {
+					// <유효성 체크>
+					// 유효성 체크1: 값 입력했는지, 숫자자리에 숫자입력했는지 확인
+					let eqpNm = document.getElementById('eqpNm');
+					let mdNm = document.getElementById('mdNm');
+					let chkCycle = document.getElementById('chkCycle');
+					let actCd = document.getElementById('actCd');
+					let mkDate = document.getElementById('datepicker-input1');
+					let buyDate = document.getElementById('datepicker-input2');
+					let eqpType = document.getElementById('eqpTypeCd');
+					let eqpSts = document.getElementById('eqpSts');
+					let uph = document.getElementById('uph');
+					let highTemp = document.getElementById('highTemp');
+					let lowTemp = document.getElementById('lowTemp');
 					
-					// 설비코드 값이 없으면 insert. 있으면 update
+					let inputChk = [eqpNm, mdNm, chkCycle, actCd, mkDate, buyDate, eqpType, eqpSts, uph, highTemp, lowTemp];
+					
+					for (let i = 0; i < inputChk.length; i++) {
+						if (inputChk[i].value == '') {
+							toastr.warning('값을 입력하지 않았거나 숫자로 입력하지 않았습니다.');
+							inputChk[i].focus();
+							return false;
+						}
+					}
+					
+					// 유효성 체크2: 최저 최고 온도 적합성 체크
+					if (parseInt(lowTemp.value) >= parseInt(highTemp.value)) {
+						toastr.warning('최저/최고 온도가 맞지 않습니다.');
+						highTemp.focus();
+						return false;
+					}
+					
+					
+					// 설비코드 값이 없으면 'empty' 주고 서버가서 insert. 있으면 그대로 서버가서 update
 					if (document.getElementById('eqpCd').value == '') {
-						// insert할 데이터
-						
-						
+						document.getElementById('eqpCd').value = 'empty';
+														
 						// 업로드할 파일 데이터
-						let form = document.getElementById('form')
+						let form = document.getElementById('form');
 						let formData = new FormData(form);
 				        
 				        for (let [key, value] of formData) {
@@ -663,96 +675,59 @@
 				        
 						sweetConfirm('C', function () {
 							$.ajax({
-					             url : "/eqpInsert",
+					             url : "/eqpInsertUpdate",
 					             type : "post",
 					             processData : false,
 					             contentType : false,
 					             data : formData,
 					             success:function(data) {
 					                 console.log(data);
-									// ajax success
-									toastr.success('정상적으로 저장되었습니다.');
-									// document.getElementById('reset').click();
+									 // ajax success
+									 if (data.result == 'success') {
+									 	 toastr.success('정상적으로 저장되었습니다.');
+										 document.getElementById('reset').click();
+					            	 } else if (data.result == '예외발생') {
+					            		 toastr.error('예외가 발생하여 저장에 실패했습니다.');
+					            	 } else {
+					            		 toastr.error('저장에 실패했습니다.');
+					            	 }
 					             },
-					             error: function (reject) { 
-					                 alert(reject); 
+					             error: function (reject) {
+					            	 console.log(reject);
 					             }
 					        });
-							
-							
-							
-							// ajax fail
-							toastr.error('저장에 실패했습니다.');  
 						});
 						
 						
 					} else {
 						sweetConfirm('U', function () {
-							// ajax success
-							toastr.success('정상적으로 수정되었습니다.');
-							// document.getElementById('reset').click();
+							$.ajax({
+					             url : "/eqpInsertUpdate",
+					             type : "post",
+					             processData : false,
+					             contentType : false,
+					             data : formData,
+					             success:function(data) {
+					            	 console.log(data);
+									 // ajax success
+									 if (data.result == 'success') {
+									 	 toastr.success('정상적으로 수정되었습니다.');
+										 document.getElementById('reset').click();
+					            	  } else if (data.result == '예외발생') {
+					            		 toastr.error('예외가 발생하여 수정에 실패했습니다.');
+					            	  } else {
+					            		 toastr.error('수정에 실패했습니다.');
+					            	  }
+					             },
+					             error: function (reject) {
+					            	 console.log(reject);
+					             }
+					        });
 							
-							
-							// ajax fail
-							toastr.error('수정에 실패했습니다.');  
 						});
 						
 					}
 					
-				});
-				/* 
-		
-					insert든 update든 완료되면 알림 띄워주고
-					화면단에 적힌거 reset버튼 타겟팅 후 click으로 지워준다.
-					
-					설비코드가 비워져있으면 insert => sweetConfirm('C', function() {})
-					설비코드가 비워져있으면 update => sweetConfirm('U', function() {})
-					
-					sweetConfirm('', function () {
-						// ajax success
-						toastr.success('정상적으로 저장되었습니다.');
-						toastr.success('정상적으로 수정되었습니다.');
-						selectEqpGrid.removeCheckedRows();
-						// ajax fail
-						toastr.error('저장에 실패했습니다.');  
-						toastr.error('수정에 실패했습니다.');  
-					});
-				*/
-			}
-			
-			
-			
-			/* ---------------
-			input#IMG에 값 들어오면 img태그 만들어서 사진 나오는 이벤트
-			--------------- */
-			function inputImgInteract() {
-				img.addEventListener('change', function (event) {
-					// 파일명 가져오기
-					let index = document.getElementById('img').value.lastIndexOf('\\');
-					let fileStr = document.getElementById('img').value.substring(index + 1);
-					
-					// img태그 생성
-					let newImgTag = document.createElement('img');
-					newImgTag.setAttribute('id', 'imgTag');
-					newImgTag.setAttribute('name', 'imgTag');
-					newImgTag.setAttribute('alt', '설비사진');
-					newImgTag.setAttribute('width', '300px');
-					newImgTag.setAttribute('height', '300px');
-					
-					// 이미 document에 img태그 존재시 삭제. 미존재시 src 속성 만들어 넣기
-					if (document.getElementById('imgTag') != null) {
-						document.getElementById('imgTag').remove();
-						
-						// 새 파일을 고른 경우
-						if (fileStr != '') {
-							newImgTag.setAttribute('src', 'images/' + fileStr);
-						}
-					} else {
-						newImgTag.setAttribute('src', 'images/' + fileStr);
-					}
-					
-					// document에 삽입
-					imgDiv.prepend(newImgTag);
 				});
 				
 			}
@@ -766,6 +741,26 @@
 				reset.addEventListener('click', function () {
 					document.getElementById('imgTag').src = '';
 				});
+			}
+			
+
+			/* ---------------
+			input file change 이벤트 시 사진미리보기 
+			--------------- */
+			function previewFile() {
+				document.getElementById('img').addEventListener('change', function (ev) {
+					if (ev.target.files && ev.target.files[0]) {
+					    let reader = new FileReader();
+					    
+					    reader.onload = function(e) {
+					        document.getElementById('imgTag').src = e.target.result;
+					    };
+					    
+					    reader.readAsDataURL(ev.target.files[0]);
+					} else {
+					      document.getElementById('imgTag').src = "";
+					}	
+				})
 			}
 			
 			

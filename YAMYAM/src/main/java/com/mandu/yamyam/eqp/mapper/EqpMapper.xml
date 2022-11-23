@@ -19,6 +19,7 @@
 		   ON (e.act_cd = a.act_cd)
 	</select>
 	
+	<!-- 설비단건 조회 -->
 	<select id="getEqp" parameterType="com.mandu.yamyam.eqp.service.EqpVO" resultType="com.mandu.yamyam.eqp.service.EqpVO">
 		SELECT eqp_cd,
 		       eqp_nm,
@@ -36,8 +37,71 @@
 			   img
 		 FROM e_eqp
 		 WHERE eqp_cd = #{eqpCd}
-
 	</select>
+	
+	<!-- 설비관리 - 설비등록 -->
+	<insert id="insertEqp" parameterType="com.mandu.yamyam.eqp.service.EqpVO">
+		<selectKey keyProperty="eqpCd" resultType="String" order="BEFORE">
+			select mk_eqp_cd from dual
+		</selectKey>
+		INSERT INTO e_eqp(
+						  eqp_cd,
+						  act_cd,
+						  eqp_nm,
+						  md_nm,
+						  mk_date,
+						  buy_date,
+						  chk_cycle,
+						  eqp_sts,
+						  uph,
+						  <if test="img != null">
+						      img,
+						  </if>
+						  eqp_type,
+						  high_temp,
+						  low_temp
+						  )
+				  VALUES (
+				          #{eqpCd},
+				          #{actCd},
+				          #{eqpNm},
+				          #{mdNm},
+				          #{mkDate},
+				          #{buyDate},
+				          #{chkCycle},
+				          #{eqpSts},
+				          #{uph},
+				          <if test="img != null">
+				              #{img},
+				          </if>
+				          #{eqpType},
+				          #{highTemp},
+				          #{lowTemp}
+				          )
+	</insert>
+	
+	<!-- 설비관리 - 설비 수정 -->
+	<update id="updateEqp" parameterType="com.mandu.yamyam.eqp.service.EqpVO">
+		UPDATE e_eqp
+		<set>
+			act_cd = #{actCd},
+            eqp_nm = #{eqpNm},
+            md_nm = #{mdNm},
+            mk_date = #{mkDate},
+            buy_date = #{buyDate},
+            chk_cycle = #{chkCycle},
+            eqp_sts = #{eqpSts},
+            uph = #{uph},
+            <if test="img != null || !img.equals('')">
+            	img = #{img},
+            </if>
+            eqp_type = #{eqpType},
+            high_temp = #{highTemp},
+            low_temp = #{lowTemp}
+		</set>
+		
+		WHERE eqp_cd = #{eqpCd}
+	</update>
 	
 	<!-- 공통 - 설비 거래처만 전체조회  -->
 	<select id="getEqpActList" resultType="com.mandu.yamyam.common.LowerKeyMap">

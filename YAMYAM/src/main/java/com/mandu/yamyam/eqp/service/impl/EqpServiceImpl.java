@@ -29,7 +29,17 @@ public class EqpServiceImpl implements EqpService {
 	// 설비 등록 및 수정
 	@Override
 	public int regAndUpdateEqp(EqpVO eqpVO) {
-		return 0;
+		int result = 0;
+		
+		// eqpCd 'empty'여부에 따라서 등록/수정 
+		if (eqpVO.getEqpCd().equals("empty")) {
+			// 등록
+			result = eqpMapper.insertEqp(eqpVO);
+		} else {
+			result = eqpMapper.updateEqp(eqpVO);
+		}
+		
+		return result;
 	}
 
 	// 설비업체 전체 조회

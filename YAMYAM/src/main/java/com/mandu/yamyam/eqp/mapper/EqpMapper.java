@@ -14,6 +14,9 @@ public interface EqpMapper {
 	// 설비등록
 	int insertEqp(EqpVO eqpVO);
 	
+	// 설비 수정
+	int updateEqp(EqpVO eqpVO);
+	
 	// 설비업체 전체 조회
 	List<EqpVO> getEqpActList();
 	
