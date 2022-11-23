@@ -7,7 +7,11 @@ import com.mandu.yamyam.comm.service.CommdVO;
 import com.mandu.yamyam.comm.service.DeptVO;
 import com.mandu.yamyam.comm.service.EmpVO;
 
-public interface CommMapper {
+public interface EmpMapper {
+	
+	/*
+	 * employeeAD 서비스
+	 */
 	
 	// ajax 데이터 불러오기
 	public List<EmpVO> ajaxSelectAllEmp();

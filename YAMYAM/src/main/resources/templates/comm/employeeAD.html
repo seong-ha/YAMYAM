@@ -321,6 +321,7 @@
 			
 		});
 	
+		
 		// ajax 직원 정보 불러오기
 		$.ajax({
 			url : "ajax/selectEmp",
@@ -336,93 +337,95 @@
 		})
 		
 	
-	// 체크박스
-	 grid.on('check', function(ev) {
-	      console.log('check', ev);
-	    });
+		// 체크박스
+		 grid.on('check', function(ev) {
+		      console.log('check', ev);
+		    });
 
 	    grid.on('uncheck', function(ev) {
 	      console.log('uncheck', ev);
 	    });
 	
 	
-	//회원 등록하기
-	
-	document.getElementById('insertBtn').addEventListener('click', function(){
-		sweetConfirm('C', function () {
-		let data = {
-				
-			empId: document.getElementById('insertId').value,
-			empPw: document.getElementById('insertPw').value,
-			empNm: document.getElementById('insertName').value,
-			empDate: document.getElementById('hireDate').value,
-			deptCd: document.getElementById('deptName').value,
-			empRole: document.getElementById('insertRole').value
-		}
-		grid.appendRow(data);
+		//회원 등록하기
 		
-		// ajax 직원 정보 등록
-		console.log("데이터 가져왔니?");
-		$.ajax({
-			url : "/ajax/insertEmp",
-			type : "post",
-			data: data,
-			dataType: "json",
-			success : function(data){
-				if (data > 0) {
-					// ajax success
-		            toastr.success('정상적으로 등록되었습니다.');
-				} else {
-					// ajax fail
-		            toastr.error('등록에 실패했습니다.');	
-				}
-			},
-			error : function(reject){
-				console.log(reject);
-			}
-		});
-		
-		insertModalClose.click();
-		});
-	});
-	
-	//회원 수정하기
-	
-	$("#mainUpdateBtn").click(function(e){  //메인 화면 수정버튼
-		let rowData = grid.getCheckedRows();
-		
-		console.log(rowData[0].empId);
-		
-		if (rowData.length > 1) {
-			alert('하나의 열만 선택하세요.');
-			updateModalClose.click()
-			return;
-		}
-		 
-	 /*
-	 rowData의 각각 정보를 각각 변수에 담는다.
-	 모달의 input태그들의 value값에 변수들을 담아준다.
-	 */
-	 
-	 updateId.value = rowData[0].empId;
-	 updatePw.value = rowData[0].empPw;
-	 updatePwcr.value = rowData[0].empPwcr;
-	 document.getElementById('updateEmpName').value = rowData[0].empNm;
-	 updateRole.value = rowData[0].empRole;
-	 });
-	
-	// 모달창 수정버튼 이벤트
-	
-	document.getElementById('updateBtn').addEventListener('click', function(){ //모달창에 수정 버튼
- 		console.log();
-		sweetConfirm('U', function () {
+		document.getElementById('insertBtn').addEventListener('click', function(){
+			sweetConfirm('C', function () {
 			let data = {
+					
+				empId: document.getElementById('insertId').value,
+				empPw: document.getElementById('insertPw').value,
+				empNm: document.getElementById('insertName').value,
+				empDate: document.getElementById('hireDate').value,
+				deptCd: document.getElementById('deptName').value,
+				empRole: document.getElementById('insertRole').value
+			}
+			
+			grid.appendRow(data);
+			
+			// ajax 직원 정보 등록
+			console.log("데이터 가져왔니?");
+			$.ajax({
+				url : "/ajax/insertEmp",
+				type : "post",
+				data: data,
+				dataType: "json",
+				success : function(data){
+					if (data > 0) {
+						// ajax success
+			            toastr.success('정상적으로 등록되었습니다.');
+			            //setTimeout(() => {location.reload(), 3000});
+					} else {
+						// ajax fail
+			            toastr.error('등록에 실패했습니다.');	
+					}
+				},
+				error : function(reject){
+					console.log(reject);
+				}
+			});
+			location.reload();
+			insertModalClose.click();
+			});
+		});
+		
+		//회원 수정하기
+		
+		$("#mainUpdateBtn").click(function(e){  //메인 화면 수정버튼
+			let rowData = grid.getCheckedRows();
+			
+			console.log(rowData[0].empId);
+			
+			if (rowData.length > 1) {
+				alert('하나의 열만 선택하세요.');
+				updateModalClose.click()
+				return;
+			}
+			 
+		 /*
+		 rowData의 각각 정보를 각각 변수에 담는다.
+		 모달의 input태그들의 value값에 변수들을 담아준다.
+		 */
+		 
+		 updateId.value = rowData[0].empId;
+		 updatePw.value = rowData[0].empPw;
+		 updatePwcr.value = rowData[0].empPwcr;
+		 document.getElementById('updateEmpName').value = rowData[0].empNm;
+		 updateRole.value = rowData[0].empRole;
+		 });
+	
+		// 모달창 수정버튼 이벤트
+		
+		document.getElementById('updateBtn').addEventListener('click', function(){ //모달창에 수정 버튼
+	 		console.log();
+			sweetConfirm('U', function () {
+				let data = {
 					empNo: grid.getCheckedRows()[0]['empNo'],
 					empId: document.getElementById('updateId').value,
 					empPw: document.getElementById('updatePw').value,
 					empNm: document.getElementById('updateEmpName').value,
 					empRole: document.getElementById('updateRole').value
-			};
+		};
 			
 			// ajax 직원 정보 수정
 			console.log("데이터 가져왔니?");
@@ -435,6 +438,7 @@
 					if (data > 0) {
 						// ajax success
 			            toastr.success('정상적으로 수정되었습니다.');
+			            location.reload();
 					} else {
 						// ajax fail
 			            toastr.error('수정에 실패했습니다.');	
@@ -454,65 +458,67 @@
 			console.log("데이터 가져왔으면 대답해 아오!!!!!");
 			
 			updateModalClose.click(); // 모달창 닫기
+			
+			
 			});
  		});
 	
-	//회원 삭제하기
+		//회원 삭제하기
 	
-	document.getElementById('deleteBtn').addEventListener('click',function(){
-		
-		sweetConfirm('D', function () {
-			let data = grid.getCheckedRows(); 
-			// ajax 직원 정보 삭제
+		document.getElementById('deleteBtn').addEventListener('click',function(){
 			
-			console.log(data);
-			
-			$.ajax({
-				url : "ajax/delEmp",
-				type : "post",
-				data: JSON.stringify(data),
-				contentType: "application/json",
-				dataType: "json",
-				success : function(data){
-					if (data > 0) {
-						// ajax success
-			            toastr.success('정상적으로 삭제되었습니다.');
-			            grid.removeCheckedRows();
-					} else {
-						// ajax fail
-			            toastr.error('삭제에 실패했습니다.');	
-					}
-				},
-				error : function(reject){
-					console.log(reject);
-				}
+			sweetConfirm('D', function () {
+				let data = grid.getCheckedRows(); 
+				// ajax 직원 정보 삭제
+				
+				console.log(data);
+				
+				$.ajax({
+					url : "/ajax/delEmp",
+					type : "post",
+					data: JSON.stringify(data),
+					contentType: "application/json",
+					dataType: "json",
+					success : function(data){
+						if (data > 0) {
+							// ajax success
+				            toastr.success('정상적으로 삭제되었습니다.');
+				            grid.removeCheckedRows();
+						} else {
+							// ajax fail
+				            toastr.error('삭제에 실패했습니다.');	
+						}
+					},
+						error : function(reject){
+							console.log(reject);
+						}
+					
+					});
+		            
+		         });
+					
 			});
-            
-            
-         });
-			
-	});
-	
-	//직원 이름 검색 기능     
-	
-     document.getElementById('searchBtn').addEventListener('click', function(){
-    	grid.filter('empNm', [{code: 'eq', value: searchEmpName.value}]);
-     
-     });
-     
-     document.getElementById('searchEmpName').addEventListener("keydown", function(){
-         if(event.keyCode == 13){
-        	 grid.filter('empNm', [{code: 'eq', value: searchEmpName.value}]);
-        	 searchEmpName.value = '';
-        	 
-         }
-     })
-     
-     //초기화 버튼 누를시 다시 데이터 원상복구
-     
-     document.getElementById("searchReset").addEventListener('click', function(){
-    	grid.unfilter('empNm', [{code: 'eq', value: searchEmpName.value}]);
-     });
+		
+		//직원 이름 검색 기능     
+		
+	     document.getElementById('searchBtn').addEventListener('click', function(){
+	    	grid.filter('empNm', [{code: 'eq', value: searchEmpName.value}]);
+	     
+	     });
+	     
+	     document.getElementById('searchEmpName').addEventListener("keydown", function(){
+	         if(event.keyCode == 13){
+	        	 grid.filter('empNm', [{code: 'eq', value: searchEmpName.value}]);
+	        	 searchEmpName.value = '';
+	        	 
+	         }
+	     })
+	     
+	     //초기화 버튼 누를시 다시 데이터 원상복구
+	     
+	     document.getElementById("searchReset").addEventListener('click', function(){
+	    	grid.unfilter('empNm', [{code: 'eq', value: searchEmpName.value}]);
+	     });
      
 	</script>
 

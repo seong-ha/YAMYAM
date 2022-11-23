@@ -12,14 +12,22 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.mandu.yamyam.comm.service.CommService;
+import com.mandu.yamyam.comm.service.CommVO;
+import com.mandu.yamyam.comm.service.CommdService;
+import com.mandu.yamyam.comm.service.CommdVO;
+import com.mandu.yamyam.comm.service.EmpService;
 import com.mandu.yamyam.comm.service.EmpVO;
 
 
 @Controller
-public class CommController {
+public class EmpController {
 
 	@Autowired
-	CommService commservice;
+	EmpService empService;
+	@Autowired
+	CommService commService;
+	@Autowired
+	CommdService commdService;
 	
 	/*
 	 *  employeeAD.html에 관한 컨트롤러
@@ -28,40 +36,39 @@ public class CommController {
 	
 	 // ajax 전체 조회(직원관리 데이터 불러오기)
 	 @GetMapping("ajax/selectEmp")
-	 @ResponseBody public List<EmpVO> ajaxSelectAllEmp() {
-		 return commservice.ajaxSelectAllEmp();
+	 @ResponseBody 
+	 public List<EmpVO> ajaxSelectAllEmp() {
+		 return empService.ajaxSelectAllEmp();
 	 }
 	 
 	
 	// (직원관리-회원등록 select탭(부서명, 직급정보))
 	@RequestMapping("/employeeAD")
 	public String employeeAD(Model model) {
-		model.addAttribute("depts", commservice.selectDept());
-		model.addAttribute("jobs", commservice.selectCommCode("JOB-GRD"));
+		model.addAttribute("depts", empService.selectDept());
+		model.addAttribute("jobs", empService.selectCommCode("JOB-GRD"));
 		return "comm/employeeAD";
 	}
 	
 	// (직원관리-회원등록)
-	// test
+	
 	@PostMapping("/ajax/insertEmp")
 	@ResponseBody
 	public int employeeInsert(EmpVO empVO, Model model) {
 		System.out.println(empVO.getEmpId());
-		int result = commservice.inserEmpInfo(empVO);
+		int result = empService.inserEmpInfo(empVO);
 		System.out.println("result = " + result);
 		return result;
 		
 	}
 	
 	
-	
 	// (직원관리-회원수정)
-	
 	@PostMapping("/ajax/updateEmp")
 	@ResponseBody
 	public int employeeUpdate(EmpVO empVO, Model model) {
 		System.out.println(empVO.getEmpNo());
-		int result = commservice.updateEmpInfo(empVO);
+		int result = empService.updateEmpInfo(empVO);
 		System.out.println("result = " + result);
 		return result;
 	}
@@ -72,7 +79,7 @@ public class CommController {
 	@ResponseBody
 	public int employeeDel(@RequestBody List<EmpVO> empVO, Model model) {
 		System.out.println(empVO.get(0).getEmpId());
-		int result = commservice.deleteEmpInfo(empVO);
+		int result = empService.deleteEmpInfo(empVO);
 		return result;
 	}
 	
@@ -81,12 +88,31 @@ public class CommController {
 	 *  commCodeAD.html에 관한 컨트롤러
 	 */
 	
-	
-	@RequestMapping("/commonCodeAD")
-	public String commonCodeAD() {
+	// commCodeAd 페이지 불러오기
+	@RequestMapping("commonCodeAD")
+	public String commonCodeAd() {
 		
-		return "comm/commCodeAD";
+		return "comm/commCodeAd";
 	}
+	
+	
+	// ajax 공통 코드 불러오기 
+	@GetMapping("ajax/selectComm")
+	@ResponseBody
+	public List<CommVO> ajaxSelectComm() {
+		return commService.ajaxSelectComm();
+	}
+	
+	
+	// ajax 상세 공통 코드 불러오기
+	@GetMapping("ajax/selectCommd")
+	@ResponseBody
+	public List<CommdVO> ajaxSelectCommd(){
+		return commdService.ajaxSelectDetailComm();
+	}
+	
+	
+	
 	
 	/*
 	 *  matCodeAD.html에 관한 컨트롤러

@@ -2,8 +2,9 @@ package com.mandu.yamyam.comm.service;
 
 import java.util.List;
 
-public interface CommService {
+public interface EmpService {
 	
+
 	// ajax 데이터 불러오기
 	public List<EmpVO> ajaxSelectAllEmp();
 	
