@@ -14,6 +14,10 @@ public class OrdServiceImpl implements OrdService {
 	@Autowired
 	OrdMapper map;
 	
+	/*------------
+	// 	 Modal
+	---------------*/
+	
 	// 거래처 Modal 조회
 	@Override
 	public List<OrdVO> actList() {
@@ -32,7 +36,10 @@ public class OrdServiceImpl implements OrdService {
 		return map.lotList();
 	}
 	
+	
+	/*------------
 	// 주문 관리 Tab
+	---------------*/
 	
 	// 주문서관리 리스트 조회
 	@Override
@@ -68,10 +75,44 @@ public class OrdServiceImpl implements OrdService {
 	
 	// 주문서 관리 삭제
 	@Override
-	public int deleteOrd(OrdVO vo) {
-		return map.deleteOrd(vo);
+	public int deleteOrd(List<OrdVO> vo) {
+		int result = 0;
+		for(int i=0; i<vo.size(); i++) {
+			result += map.updateOrd(vo.get(i));
+		}
+		return result;
 	}
 
+	
+	/*-----------------
+	// 완제품 출고 조회 Tab
+	-------------------*/
+	
+	// 출고 내역 리스트 조회
+	@Override
+	public List<OrdVO> getOrdOutList() {
+		return map.getOrdOutList();
+	}
+	
+	// 출고 내역 리스트 조건조회
+	@Override
+	public List<OrdVO> getDetailOutList(OrdVO vo) {
+		return map.getDetailOutList(vo);
+	}
+	
+	// 출고중인 주문서 출고완료로 수정
+	@Override
+	public int updateOutOrd(List<OrdVO> vo) {
+		int result = 0;
+		for(int i=0; i<vo.size(); i++) {
+			result += map.updateOutOrd(vo.get(i));
+		}
+		return result;
+	}
 
-
+	@Override
+	public List<OrdVO> getIngOrdList() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

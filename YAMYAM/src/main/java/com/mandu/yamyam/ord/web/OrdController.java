@@ -21,6 +21,10 @@ public class OrdController {
 	@Autowired
 	OrdService service;
 	
+	/*-----------------
+	//     Modal
+	-------------------*/
+	
 	// 거래처 Modal 조회
 	@GetMapping("actListModal")
 	@ResponseBody
@@ -42,6 +46,9 @@ public class OrdController {
 		return service.lotList();
 	}
 	
+	/*-----------------
+	//   주문 관리 Tab
+	-------------------*/
 	
 	// 주문서 조회
 	@GetMapping("ordList")
@@ -76,10 +83,41 @@ public class OrdController {
 	// 주문서 선택삭제
 	@DeleteMapping("deleteOrd")
 	@ResponseBody
-	public int deleteOrd(@RequestBody OrdVO vo) {
+	public int deleteOrd(@RequestBody List<OrdVO> vo) {
 		int result = service.deleteOrd(vo);
 		return result;
 	}
+	
+	
+	/*-----------------
+	// 완제품 출고 조회 Tab
+	-------------------*/
+	
+	// 출고 내역 리스트 조회
+	@GetMapping("ordOutList")
+	@ResponseBody
+	public List<OrdVO> getOrdOutList() {
+		return service.getOrdOutList();
+	}
+	
+	// 출고 내역 리스트 조건조회
+	@GetMapping("detailOutList")
+	@ResponseBody
+	public List<OrdVO> getDetailOutList(OrdVO vo) {
+		return service.getDetailOutList(vo);
+	}
+	
+	// 출고중인 주문서 출고완료로 수정
+	@PostMapping("updateOutOrd")
+	@ResponseBody
+	public int updateOutOrd(@RequestBody List<OrdVO> vo) {
+		int result =  service.updateOutOrd(vo);
+		return result;
+	}
+	
+	/*-----------------
+	// 영업 관리 layout
+	-------------------*/
 	
 	// 주문 관리
 	@RequestMapping("/odAd") 
