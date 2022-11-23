@@ -6,11 +6,13 @@
 <head>
 <meta charset="UTF-8">
 <title>YAMYAM</title>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
 
 <style>
 #od-btn {
 	display: inline-block; margin: 0 5px; float: right;
+}
+#actCd, #actCd2, #startpicker-input, #endpicker-input {
+text-align: center;
 }
 </style>
 </head>
@@ -23,10 +25,6 @@
 	<div id="prdOutAd-content">
 		<div id="input-group">
 			<ul class="ul-style">
-		    <li><label for="actCd">거래처</label><input type="text" 
-		    data-bs-toggle="modal" data-bs-target="#actModal" id="actCd">
-		    <img class="Magnifying-Glass-img" alt="image" src="../images/Magnifying_Glass.png">
-		    <input type="text" class="back" id="actCd2" readonly><br></li>
     
      		<li><label>주문일자</label>
 			    <div class="tui-datepicker-input tui-datetime-input tui-has-focus">
@@ -40,26 +38,27 @@
 			        <span class="tui-ico-date"></span>
 			        <div id="endpicker-container" style="margin-left: -1px;"></div>
 			    </div>
+			    
 	    <!-- 버튼 -->
 		<button class="btn btn-dark btn-sm" id="searchBtn">조회</button>
 		<button  class="btn btn-dark btn-sm" id="cancelBtn">초기화</button></li>
           </ul>
 	    </div>
 	    
-	     <!-- 거래처 Modal -->
-	      <div class="modal" id="actModal" tabindex="-1"
-	         aria-labelledby="exampleModalLabel" aria-hidden="true">
-	         <div class="modal-dialog">
-	            <div class="modal-content">
-	               <div class="modal-header">
-	                  <h5 class="modal-title" id="exampleModalLabel">거래처 목록</h5>
-	                  <button type="button" class="btn-close" data-bs-dismiss="modal"
-	                     aria-label="Close"></button>
-	               </div>
-	               <div class="modal-body">
-	               <div id="actModalGrid"></div>
-	               </div>
-	            </div>
+	          <!-- 완제품 재고 현황 Modal -->
+      <div class="modal" id="sAmtModal" tabindex="-1"
+         aria-labelledby="exampleModalLabel" aria-hidden="true">
+         <div class="modal-dialog">
+            <div class="modal-content">
+               <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLabel">완제품 재고 현황</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal"
+                     aria-label="Close"></button>
+               </div>
+               <div class="modal-body">
+               <div id="sAmtModallGrid"></div>
+               </div>
+            </div>
          </div>
       </div>
 	</div>	
@@ -88,13 +87,13 @@
 	/*------------
 	// function
 	----------------*/
-	searchBtnHandler();
-	deleteBtnHandler();
-	cancelBtnHandler();
+	searchBtnHandler();		// 조회 버튼 핸들러
+	cancelBtnHandler();		// 데이트피커 값 초기화 버튼
+	deleteBtnHandler();		// 삭제 버튼 이벤트 핸들러
+	//sAmtGridInit(); 		// 완제품LOT 재고 현황 모달
 	
-	let orderGird = orderGridInit();
-	let insertOutGrid = insertGridInit();
-	let actModalGrid = actGridInit();
+	let orderGird = orderGridInit();		// 진행중인 주문서 Grid
+	let insertOutGrid = insertGridInit();	// 출고등록 Grid
 	
 	
 	/*------------
@@ -104,13 +103,28 @@ rangeDatepickerInit('#startpicker-input', '#startpicker-container','#endpicker-i
 
 	
 	/*------------
-	// 검색버튼 이벤트 핸들러
+	// 조회버튼 이벤트 핸들러
 	----------------*/
 	function searchBtnHandler(){
 		$('#searchBtn').on('click',function(){
-			let getactCode = $("actCd").val();
-			let getStartDay = $("startpicker-input").val();
-			let getEndDay = $("#endpicker-input").val();
+			let getStartDate = $("#startpicker-input").val();
+			let getEndDate = $("#endpicker-input").val();
+			$.ajax({
+				   url:'/detailIngOutList',
+				   contentType: 'application/json',
+				   dataType: "json",
+				   method: "GET",
+				   data : {
+					   "startDate" : getStartDate, "endDate" : getEndDate
+				   },
+				   success : function(data) {
+					   orderGird.resetData(data);
+					   console.log(getLot);
+				   },
+				   error : function(reject) {
+					   console.log(reject);
+				   }
+			   })
 		});
 	}
 	
@@ -122,8 +136,6 @@ rangeDatepickerInit('#startpicker-input', '#startpicker-container','#endpicker-i
 		$('#cancelBtn').on('click',function(){
 			$("#startpicker-input").val(today);
 			$("#endpicker-input").val(today);
-			$("#actCd").val("");
-			$("#actCd2").val("");
 		});	
 	}
 	
@@ -150,26 +162,33 @@ rangeDatepickerInit('#startpicker-input', '#startpicker-container','#endpicker-i
 	    columns: [
 	      {
 	        header: '주문 일자',
+	        align : 'center',
 	        name: 'odDate'
 	      },
 	      {
 	        header: '주문 코드',
+	        align : 'center',
 	        name: 'odCd'
 	      },
 	      {
 	        header: '제품 코드',
+	        align : 'center',
 	        name: 'prdCd'
 	      },
 	      {
 	        header: '제품명',
+	        align : 'center',
 	        name: 'prdNm'
 	      },
 	      {
 	        header: '거래처명',
-	        name: 'actNm'
+	        align : 'center',
+	        name: 'actNm',
+	        filter: {type: 'select'}
 	      },
 	      {
 	        header: '주문량',
+	        align : 'center',
 	        name: 'odAmt'
 	      }
 	    ]
@@ -178,6 +197,69 @@ rangeDatepickerInit('#startpicker-input', '#startpicker-container','#endpicker-i
     }
     
     
+  
+	/*------------
+	// 완제품 재고 현황 Modal
+	----------------*/
+	function sAmtGridInit() {
+		let sAmtModalGrid = new tui.Grid({
+		    el: document.getElementById('sAmtModalGrid'),
+		    bodyHeight: 500,
+		    rowHeaders: ['rowNum'],
+		    scrollX: false,
+		    scrollY: true,
+		    columns: [
+		      {
+		        header: '완제품LOT',
+		        align : 'center',
+		        name  : 'prdLot'
+		      },
+		      {
+		        header: '생산량',
+		        align : 'center',
+		        name  : 'binAmt'
+		      },
+		      {
+		        header: '출고량',
+		        align : 'center',
+		        name  : 'bAmt'
+		      },
+		      {
+		        header: '제조일자',
+		        align : 'center',
+		        name  : 'podDate'
+		      },
+		      {
+		        header: '유통기한',
+		        align : 'center',
+		        name  : 'edate'
+		      },
+		    ]
+		  });
+			return sAmtModalGrid;
+	}
+    
+	
+	/*------------
+	// 완제품 재고 현황 Modal (DB에서 데이터 가져오기)
+	----------------*/
+	function getsAmtList(){
+		sAmtModalGrid.on('click',function(ev){
+			   $.ajax({
+				   url:'/sAmtModal',
+				   dataType: "json",
+				   success : function(data) {
+					  sAmtModalGrid.resetData(data);
+				   },
+				   error : function(reject) {
+					   console.log(reject);
+				   }
+			   })
+			   sAmtModalGrid.refreshLayout();
+		 });
+	}
+	
+	
     /*------------
 	// 출고 등록 그리드
 	----------------*/
@@ -201,31 +283,43 @@ rangeDatepickerInit('#startpicker-input', '#startpicker-container','#endpicker-i
 	    columns: [
 	      {
 	        header: '주문 코드',
+	        align : 'center',
 	        name: 'odCd'
 	      },
 	      {
 	        header: '제품 코드',
+	        align : 'center',
 	        name: 'prdCd'
 	      },
 	      {
 	        header: '완제품LOT',
+	        align : 'center',
 	        name: 'lot'
 	      },
 	      {
 	        header: '출고량',
+	        align : 'center',
 	        name: 'outAmt'
 	      },
 	      {
 	        header: '출고 일자',
+	        align : 'center',
 	        name: 'outDate'
 	      },
 	      {
 	        header: '제조 일자',
+	        align : 'center',
 	        name: 'podDate'
 	      },
 	      {
 	        header: '유통기한',
+	        align : 'center',
 	        name: 'eDate'
+	      },
+	      {
+	        header: '비고',
+	        align : 'center',
+	        name: 'outEtc'
 	      }
 	    ]
 	  });
@@ -273,68 +367,7 @@ rangeDatepickerInit('#startpicker-input', '#startpicker-container','#endpicker-i
 	}
 
 	
-	/*------------
-	// 거래처 Modal
-	----------------*/
-	function actGridInit() {
-	let actModalGrid = new tui.Grid({
-	    el: document.getElementById('actModalGrid'),
-	    data: [
-	        {
-	        	actCd : 'VDR-1001',
-	        	actNm : 'AA 마트',
-	        	actNum : '791-10-000',
-	        	tel : '053-514-4512'
-	        }
-	        ],
-	    rowHeaders: ['rowNum'],
-	    scrollX: false,
-	    scrollY: false,
-	    columns: [
-	      {
-	        header: '거래처 코드',
-	        name: 'actCd'
-	      },
-	      {
-	        header: '거래처명',
-	        name: 'actNm'
-	      },
-	      {
-	        header: '사업자 등록번호',
-	        name: 'actNum'
-	      },
-	      {
-	        header: '전화번호',
-	        name: 'tel'
-	      }
-	    ]
-	  });
-		return actModalGrid;
-	}
 	
-	
-	/*------------
-	// 거래처 모달 클릭
-	----------------*/
-	$('#actCd').on('click',function(){
-		actModalGrid.refreshLayout();
-	});
-	
-	
-	/*------------
-	// 거래처 모달 데이터 가져오기
-	----------------*/
-	   actModalGrid.on('click', ev => {
-	   let rowData = actModalGrid.getRow(ev.rowKey);
-	   
-	   let cdVal = rowData['actCd'];
-	   let nmVal = rowData['actNm'];
-	   
-	   $('#actCd').val(cdVal);
-	   $('#actCd2').val(nmVal);
-	   
-	   $('#actModal').modal("hide");
-   })
 	
 </script>
 </div>

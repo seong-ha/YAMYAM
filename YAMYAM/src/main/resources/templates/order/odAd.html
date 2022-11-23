@@ -170,6 +170,9 @@ text-align: center;
 	searchBtnHandler();		// 조회 버튼 핸들러
 	deleteBtnHandler();		// 삭제 버튼 핸들러
 	SaveBtnHandler();		// 저장 버튼 핸들러
+	exportBtnHandler(); 	// 엑셀출력 버튼 핸들러
+	
+	let grid = MainGridInit(); // 주문서 출력 Grid
 	
 	let actModalGrid = actGridInit();
 	let actModalGrid2 = actGridInit2();
@@ -247,71 +250,74 @@ text-align: center;
     /*------------
 	// 주문서 리스트 그리드
 	----------------*/
-	let grid = new tui.Grid({
-	    el: document.getElementById('grid'),
-	    rowHeaders: ['checkbox','rowNum'],
-	    scrollX: false,
-	    scrollY: false,
-	    columns: [
-	      {
-	        header: '주문 일자',
-	        align : 'center',
-	        name: 'odDate'
-	      },
-	      {
-	        header: '주문 코드',
-	        align : 'center',
-	        name: 'odCd'
-	      },
-	      {
-	        header: '제품 코드',
-	        align : 'center',
-	        name: 'prdCd'
-	      },
-	      {
-	        header: '제품명',
-	        align : 'center',
-	        name: 'prdNm'
-	      },
-	      {
-	        header: '주문량',
-	        align : 'center',
-	        name: 'odAmt',
-	        editor: 'text',
-			// 필수 입력 값
-			validation: {
-			     dataType: 'text',
-			     required: true
-			      }
-	      },
-	      {
-	        header: '거래처 코드',
-	        align : 'center',
-	        name: 'actCd'
-	      },
-	      {
-	        header: '거래처명',
-	        align : 'center',
-	        name: 'actNm'
-	      },
-	      {
-	        header: '납기 일자',
-	        align : 'center',
-	        name: 'deDate',
-	        editor: 'datePicker',
-	        validation: {
-			     dataType: 'datePicker',
-			     required: true
-			      }
-	      },
-	      {
-	        header: '진행 상황',
-	        align : 'center',
-	        name: 'odSts',
-	        editor: 'text'
-	      },
-	    ]
-	  });
+	function MainGridInit() {
+		let grid = new tui.Grid({
+		    el: document.getElementById('grid'),
+		    rowHeaders: ['checkbox','rowNum'],
+		    scrollX: false,
+		    scrollY: false,
+		    columns: [
+		      {
+		        header: '주문 일자',
+		        align : 'center',
+		        name: 'odDate'
+		      },
+		      {
+		        header: '주문 코드',
+		        align : 'center',
+		        name: 'odCd'
+		      },
+		      {
+		        header: '제품 코드',
+		        align : 'center',
+		        name: 'prdCd'
+		      },
+		      {
+		        header: '제품명',
+		        align : 'center',
+		        name: 'prdNm'
+		      },
+		      {
+		        header: '주문량',
+		        align : 'center',
+		        name: 'odAmt',
+		        editor: 'text',
+				// 필수 입력 값
+				validation: {
+				     dataType: 'text',
+				     required: true
+				      }
+		      },
+		      {
+		        header: '거래처 코드',
+		        align : 'center',
+		        name: 'actCd'
+		      },
+		      {
+		        header: '거래처명',
+		        align : 'center',
+		        name: 'actNm'
+		      },
+		      {
+		        header: '납기 일자',
+		        align : 'center',
+		        name: 'deDate',
+		        editor: 'datePicker',
+		        validation: {
+				     dataType: 'datePicker',
+				     required: true
+				      }
+		      },
+		      {
+		        header: '진행 상황',
+		        align : 'center',
+		        name: 'odSts',
+		        editor: 'text'
+		      }
+		    ]
+		  });
+			return grid;
+    	}
 
     
 	/*------------
@@ -407,7 +413,7 @@ text-align: center;
 					                 if(result > 0){
 					                	 Swal.fire(
 					       			          '등록이 완료되었습니다.'	);
-					                	 grid.refreshLayout();
+					                	 getOrdList();
 					                 }else {
 					                	 Swal.fire(
 					                			 '등록이 실패하였습니다.');
@@ -430,7 +436,7 @@ text-align: center;
 			                 if(result > 0){
 			                	 Swal.fire(
 			       			          '수정이 완료되었습니다.'	);
-			                	 grid.refreshLayout();
+			                	 getOrdList();
 			                 }else {
 			                	 Swal.fire(
 			                			 '수정이 실패하였습니다.');
@@ -456,16 +462,21 @@ text-align: center;
 		// grid 선택 행 삭제
 		$('#deleteBtn').on('click',function(){
 			let rowData = grid.getCheckedRows();
+			let list = [];
+			for (let i=0; i<rowData.length; i++) {
+				let odCd = rowData[i].odCd;
+				list.push({odCd})
 			sweetConfirm('D', function(){
 				    	  $.ajax({
 				              url : '/deleteOrd',
 				              type: 'delete',
 				              contentType: 'application/json',
-								data: JSON.stringify(rowData[0]),
+								data: JSON.stringify(list),
 				              success : function(result) {
-				                 if(result == 1){
+				                 if(result > 0){
 				                	 Swal.fire(
 				       			          '삭제가 완료되었습니다.'	);
+				                	 getOrdList();
 				                 }else {
 				                	 Swal.fire(
 				                			 '삭제에 실패하였습니다.');
@@ -478,6 +489,7 @@ text-align: center;
 				        grid.removeCheckedRows();
 				      
 			})
+			}
 		});	
 	}
    
@@ -619,9 +631,10 @@ text-align: center;
 	function prdGridInit() {
 	const prdModalGrid = new tui.Grid({
 	    el: document.getElementById('prdModalGrid'),
+	    bodyHeight: 500,
 	    rowHeaders: ['rowNum'],
 	    scrollX: false,
-	    scrollY: false,
+	    scrollY: true,
 	    columns: [
 	      {
 	        header: '제품 코드',
@@ -647,9 +660,10 @@ text-align: center;
 	function prdGridInit2() {
 	const prdModalGrid2 = new tui.Grid({
 	    el: document.getElementById('prdModalGrid2'),
+	    bodyHeight: 500,
 	    rowHeaders: ['rowNum'],
 	    scrollX: false,
-	    scrollY: false,
+	    scrollY: true,
 	    columns: [
 	      {
 	        header: '제품 코드',
@@ -728,15 +742,17 @@ text-align: center;
 	/*------------
 	// 엑셀 내보내기
 	----------------*/
-   $('#exportBtn').on('click',function(){
-	   let options = {
-			     includeHeader : true,
-			     includeHiddenColumns : true,
-			     onlySelected : true,
-			     fileName: 'Order List'
-			   };
-   grid.export('xlsx', options);
-   });
+	function exportBtnHandler() {
+	   $('#exportBtn').on('click',function(){
+		   let options = {
+				     includeHeader : true,
+				     includeHiddenColumns : true,
+				     onlySelected : true,
+				     fileName: 'Order List'
+				   };
+	   grid.export('xlsx', options);
+	   });
+	 }
    
 </script>
 </div>

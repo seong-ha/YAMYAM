@@ -32,7 +32,7 @@ public class OrdVO {
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date rqtDate;	// 요청일자
 	private int rqtAmt;		// 요청수량
-	private String rqtSts; 	// 진행상황구분 (0:미계획, 1:진행, 2:완료)
+	private String rqtSts; 	// 진행상황구분 (미계획, 진행, 완료)
 	
 	
 	// 완제품 재고 테이블 B_IN
@@ -44,16 +44,17 @@ public class OrdVO {
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date edate;		// 유통기한
 	private int agAmt;		// 폐기량
-	private int binSts;		// 진행상황구분 (0:소진된 재고, 1:출고 가능한 재고)
+	private String binSts;	// 진행상황구분 (소진된 재고, 출고 가능한 재고)
 	private String podCd;	// 생산지시코드
 	
 	
 	// 완제품 출고 테이블 B_OUT
-	private int outNo;		// 출고번호
+	private String outNo;	// 출고번호
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date bdates;	// 출고일자
 	private int bamt;		// 출고수량
-	private int outSts;		// 진행상황구분 (0:출고중, 1:출고 완료)
+	private String outSts;	// 진행상황구분 (출고중, 출고 완료)
+	private String outEtc;  // 비고
 	
 	
 	// 완제품 반품 테이블 B_RT
