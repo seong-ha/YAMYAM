@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import com.mandu.yamyam.comm.mapper.CommMapper;
 import com.mandu.yamyam.comm.service.CommService;
 import com.mandu.yamyam.comm.service.CommVO;
+import com.mandu.yamyam.comm.service.CommdVO;
 
 @Service
 public class CommServiceImpl implements CommService {
@@ -19,6 +20,11 @@ public class CommServiceImpl implements CommService {
 	@Override
 	public List<CommVO> ajaxSelectComm() {
 		return commMapper.ajaxSelectComm();
+	}
+
+	@Override
+	public List<CommdVO> ajaxSelectDetailComm(CommdVO commdVO) {
+		return commMapper.ajaxSelectDetailComm(commdVO);
 	}
 	
 }

@@ -10,4 +10,15 @@
 
 </select>
 
+
+<select id="ajaxSelectDetailComm" resultType="com.mandu.yamyam.common.LowerKeyMap">
+	
+	SELECT COMMD_CD, COMMD_NM, COMMD_INFO, COMMD_USE
+	FROM C_COMMD
+	WHERE COMM_CD = #{commCd}
+	
+</select>
+
+	
+	
 </mapper>

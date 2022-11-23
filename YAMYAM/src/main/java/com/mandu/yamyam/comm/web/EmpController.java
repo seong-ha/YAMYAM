@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.mandu.yamyam.comm.service.CommService;
 import com.mandu.yamyam.comm.service.CommVO;
-import com.mandu.yamyam.comm.service.CommdService;
 import com.mandu.yamyam.comm.service.CommdVO;
 import com.mandu.yamyam.comm.service.EmpService;
 import com.mandu.yamyam.comm.service.EmpVO;
@@ -26,8 +25,6 @@ public class EmpController {
 	EmpService empService;
 	@Autowired
 	CommService commService;
-	@Autowired
-	CommdService commdService;
 	
 	/*
 	 *  employeeAD.html에 관한 컨트롤러
@@ -105,10 +102,10 @@ public class EmpController {
 	
 	
 	// ajax 상세 공통 코드 불러오기
-	@GetMapping("ajax/selectCommd")
+	@PostMapping("ajax/selectCommd")
 	@ResponseBody
-	public List<CommdVO> ajaxSelectCommd(){
-		return commdService.ajaxSelectDetailComm();
+	public List<CommdVO> ajaxSelectCommd(CommdVO commdVO){
+		return commService.ajaxSelectDetailComm(commdVO);
 	}
 	
 	

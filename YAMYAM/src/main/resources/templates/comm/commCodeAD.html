@@ -239,7 +239,7 @@
 			}
 		})
 		
-		// ajax 공통 상세 코드 불러오기
+		/* // ajax 공통 상세 코드 불러오기
 		$.ajax({
 			url : "ajax/selectCommd",
 			type : "get",
@@ -251,7 +251,7 @@
 			error : function(reject){
 				console.log(reject);
 			}
-		})
+		}) */
 		
 		// 렌더링 에디터 (라디오박스)
 		
@@ -295,18 +295,31 @@
 		// 공통코드 칼럼 누르면 거기에 맞는 상세코드 나옴
 		
 		
-		grid.on('click', function (ev) {
-			
+  		grid.on('click', function (ev) {
 			console.log(ev.rowKey);
 			let commCd = grid.getRow(ev.rowKey).commCd;
 			
-		})
+			$.ajax({
+				url : "ajax/selectCommd",
+				type : "post",
+				data: {'commCd': commCd},
+				dataType: "json",
+				success : function(data){
+					console.log(data);
+					grid2.resetData(data);
+				},
+				error : function(reject){
+					console.log(reject);
+				}
+			})
+			
+		})  
 		
-		
-		grid2.on('click', function (ev) {
-			console.log(ev.rowkey);
-			let commdCd = grid2.getRow(ev.rowkey).commdCd;
-		})
+		 grid2.on('click', function (ev) {
+			console.log(ev.rowKey);
+			let commdCd = grid2.getRow(ev.rowKey).commdCd;
+			
+		}) 
 		
 		/* document.getElementById('commCode').addEventListener('click', function(){
 			
