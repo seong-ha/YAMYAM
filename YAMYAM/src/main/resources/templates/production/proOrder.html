@@ -205,7 +205,7 @@ text-align: center;
 				el: document.getElementById('planOrder'),
 				scrollX: false,
 				scrollY: false,
-				rowHeaders: ['rowNum'],
+				rowHeaders: ['checkbox','rowNum'],
 				columns: [
 					{
 						header: '라인코드',
@@ -221,7 +221,7 @@ text-align: center;
 					},
 					{
 						header: '작업일자',
-						name: 'podDates',
+						name: 'poddDates',
 						editor: {
 				            type: 'datePicker',
 				            options: {
@@ -263,7 +263,18 @@ text-align: center;
 							type : 'text'
 						}
 					}
-				]
+				],
+				summary: {
+			        height: 40,
+			        position: 'bottom', // or 'top'
+			        columnContent: {
+			        	poddAmt: {
+			            template: function(valueMap) {
+			              return `TOTAL: ${valueMap.sum}`;
+			            }
+			          }
+			        }
+			      }
 			});
 			return planOrder;
 		}
@@ -462,15 +473,21 @@ text-align: center;
 		----------------*/
 		function planOrderEdit(){
 			planOrder.on('afterChange',function(ev){
+				
 				let podDates = planOrder.getValue(ev.rowKey,'podDates');
 				let poddAmt = planOrder.getValue(ev.rowKey,'poddAmt');
 				let poddPrio = planOrder.getValue(ev.rowKey,'poddPrio');
 				let list = planOrder.getData();
-				let b = planOrder.getColumnValues('poddPrio');
 				
+				let b = planOrder.getColumnValues('poddPrio');
 				// 마지막 값이 채워지면 matNeed 그리드 호출
 				let a = list.length-1;
-				//console.log(b[a]);
+				
+				let plList = planDGrid.getData();
+				let po = plList[0].poddAmt;
+				let poSum = planOrder.getSummaryValues('poddAmt').sum;
+				console.log(poSum)
+				
 				if(b[a] != null){
 					
 	             	for(let i =0; i<list.length; i++){
@@ -479,10 +496,8 @@ text-align: center;
 						let prio = list[i].poddPrio;
 						let pplndCd = list[i].pplndCd;
 						let prdCd = list[i].prdCd;
-						
-						/* let a = list.length;
-						console.log(a); */
-						$.ajax({
+						if(po == poSum){
+							$.ajax({
 								url : '/getNeed',
 								method: "GET",
 								data : {"pplndCd" : pplndCd,'prdCd':prdCd},
@@ -491,7 +506,18 @@ text-align: center;
 									//console.log(res);
 									matNeed.resetData(res);							
 								})
-						
+							planOrder.checkAll();
+						}else{
+							toastr.options = {
+									  "closeButton": true,
+									  "newestOnTop": true,
+									  "positionClass": "toast-top-center",
+									  "preventDuplicates": true,
+									  "extendedTimeOut" : 0, 
+									  "timeOut" : 0
+							}
+							toastr.error(`생산지시량과 작업수량이<br> 일치하지 않습니다.`);
+						}
 					}
 				}
 			})
@@ -629,13 +655,16 @@ text-align: center;
 
 					if(list.length == 0){
 						matLot.appendRow(rows[0]);
+						
 						$('#matLotModal').modal("hide");	
+						matLot.uncheckAll();
+						
 					}else {
 						let rows = matLotGrid2.getCheckedRows();
 						let length = rows.length
 						$(rows).each(function(idx,el){
-							console.log(el);
 							matLot.appendRows([el]);
+							matLot.uncheckAll();
 						})
 						$('#matLotModal').modal("hide");
 					}
@@ -678,26 +707,31 @@ text-align: center;
 			 let x = matNeed.getData().length;
 			 let y = matLot.getData().length;
 			 if(x == y){
-				 let yy = planDGrid.getData();
-				 console.log(yy);
-				 /* $.ajax({
-					url : '/getMLOTList',
-					data : {"mtrNm" : mtrNm},
-					contentType: 'application/json',
-					dataType : 'json',
-					method: "GET",
-					success : function(data){matLotGrid2.resetData(data);},
-					error : function(reject){console.log(reject);}				
-				}) */ 
+				 let orderData = planOrder.getCheckedRows();
+				 let dataList = [];
+				 for(let i =0; i<orderData.length; i++){
+					 let plinceCd = orderData[0].plineCd;
+					 let prdCd = orderData[0].prdCd;
+					 let pplndCd = orderData[0].pplndCd;
+					 let poddAmt = orderData[i].poddAmt;
+					 let poddDates = orderData[i].poddDates;
+					 let poddPrio = orderData[i].poddPrio;
+					 dataList.push({pplndCd,prdCd,poddAmt,poddDates,poddPrio});
+					 sweetConfirm('C', function(){
+						 $.ajax({
+								url : '/orderInsert',
+								method: 'POST',
+								contentType : 'application/json',
+								data : JSON.stringify(dataList),
+								dataType : 'json',
+								success : function(data){Swal.fire('등록이 완료되었습니다'); matLotGrid2.clear();},
+								error : function(reject){Swal.fire('등록에 실패했습니다.'); console.log(reject);}				
+						 })
+					  })
+				 }
 			 }else {
-				 
-				 let yy = planDGrid.getData();
-				 console.log(yy);
-				/*  Swal.fire({
-						icon: 'error',
-						title :'필요자재가 부족합니다.'}); */
+				Swal.fire({	icon: 'error', 	title :'필요자재가 부족합니다.'});
 			 }
-				
 			})
 		}
 		

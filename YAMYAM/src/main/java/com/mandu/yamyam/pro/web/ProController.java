@@ -128,13 +128,19 @@ public class ProController {
 	@PostMapping("/orderInsert")
 	@ResponseBody
 	public int orderInsert(@RequestBody List<ProVO> vo) {
-		return 0;
+		return service.insertOrder(vo);
 	}
 	
 	
 	/*---------------
 	// 생산지시조회
 	----------------*/
+	@RequestMapping("/viewOrderList")
+	@ResponseBody
+	public List<ProVO> getOrderList(ProVO vo){
+		return service.getOrderList(vo);
+	}
+	
 	@RequestMapping("/planOrdCheck")
 	public String orderCheck(Model model) {
 		return "production/planOrdCheck";

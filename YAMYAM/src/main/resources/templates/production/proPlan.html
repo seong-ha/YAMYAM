@@ -268,7 +268,7 @@
 			}
 			, {
 				header : '진행구분',
-				name : 'pplnSts',
+				name : 'pplndSts',
 				filter: {
 			        type: 'select'			  
 			      }
@@ -325,14 +325,14 @@
 			    editor: 'text'
 			}, {
 				header : '진행구분',
-				name : 'pplnSts',
+				name : 'pplndSts',
 				filter: {
 			        type: 'select'			  
 			      }
 			}]
 		});
 		
-		detailPGrid.hideColumn('pplnSts');
+		detailPGrid.hideColumn('pplndSts');
 		// 계획 관리 그리드에서의 수정
 		detailPGrid.on('afterChange', function(ev) {
 
@@ -386,9 +386,9 @@
 				// 생산일수
 				let pplndDays = ckRow[i].pplndDays;
 				let pplndCd = ckRow[i].pplndCd;
-				let pplnSts = ckRow[i].pplnSts
+				let pplndSts = ckRow[i].pplndSts
 				list.push({pplndPrio,pplndDays,pplndCd})
-				if(pplnSts == '지시완료'){
+				if(pplndSts == '지시완료'){
 					let messeage = `지시완료된 상태는<br> 수정할 수 없습니다.`
 					Swal.fire({icon: 'error',title:messeage});
 				}else{
@@ -433,11 +433,11 @@
 			let list = [];
 			for(let i=0; i<ckRow.length;i++){
 				let pplndCd = ckRow[i].pplndCd;
-				let pplnSts = ckRow[i].pplnSts;
+				let pplndSts = ckRow[i].pplndSts;
 				let pplnCd = ckRow[i].pplnCd;
 				list.push({pplndCd,pplnCd});
 				console.log(list);
-				if(pplnSts == '지시완료'){
+				if(pplndSts == '지시완료'){
 					let messeage = `지시완료된 상태는<br> 삭제할 수 없습니다.`
 					Swal.fire({icon: 'error',title:messeage});
 				}else{
@@ -732,6 +732,14 @@
 
 			$("#startpicker-input").val(today);
 			$("#endpicker-input").val(today);
+			
+			$.ajax({
+				url : '/planList',
+				method: "GET",			
+			}).then(res=>{
+				manageGrid.resetData(res);
+				return res;
+			})
 		});	
 	}
 	

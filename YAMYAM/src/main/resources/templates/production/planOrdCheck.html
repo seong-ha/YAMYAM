@@ -51,7 +51,7 @@
 		
 		//date picker 초기화
 		searchInit(); 
-		gridInit();
+		let grid = gridInit();
 		
 		cancelBtnHandler();  //  date picker input 값 초기화 버튼
 		searchBtnHandler();	 //  date picker input 값 조회 버튼
@@ -62,67 +62,53 @@
 		function gridInit(){
 			let grid = new tui.Grid({
 				el : document.getElementById('grid'),
-				// 임시 데이터
-				data : [{
-							podCd : 'PID-20221101-001',
-							prdCd : 'MD-00200',
-							name : '얇은피 김치만두',
-							amt : '500',
-							plineCd : 'LINE-BAR-001',
-							prio : '1',
-							sts : '완료'},
-						{
-							podCd : 'PID-20221101-002',
-							prdCd : 'MD-00300',
-							name : '얇은피 새우만두',
-							amt : '300', 
-							plineCd : 'LINE-BAR-002',
-							prio : '2',
-							sts : '진행'
-						}],
-				// data 가져오는 법
-				// data: {
-				// 	api: {
-				// 		readData: {
-				// 			url: '/api/readData',
-				// 			method: 'GET'
-				// 		}
-				// 	}
-				// },
 				scrollX : false,
 				scrollY : false,
-				rowHeaders: ['rowNum'],				
+				rowHeaders: ['rowNum'],
 				columns : [ 
-				{
-					header : '생산지시코드',
-					name : 'podCd',
+				{	
+					header : '상세생산지시코드',
+					name : 'poddCd',
 				}, {
 					header : '제품코드',
 					name : 'prdCd'
 				}, {
 					header : '제품명',
-					name : 'name'
+					name : 'prdNm'
 				}, {
 					header : '생산수량',
-					name : 'amt'				
+					name : 'poddAmt'				
 				}, {
 					header : '라인코드',
 					name : 'plineCd',
 				}, {
+					header : '생산일자',
+					name : 'poddDates',
+					sortable : true
+				},{
 					header : '지시우선순위',
-					name : 'prio',
+					name : 'poddPrio',
+					sortable : true
 				}, {
 					header : '진행구분',
-					name : 'sts',
+					name : 'podSts',
 					filter: {
 				        type: 'select'
 				      }
-					
 				}, {
 					header : '비고',
 					name : 'other',
 				}, ]
 			});
+			$.ajax({
+				url : '/viewOrderList',
+				method: "GET",			
+			}).then(res=>{
+				grid.resetData(res);
+			})
+			
+			return grid;
+			
 		}
 		
 			
@@ -145,8 +131,16 @@
 					console.log(getStartDay);
 					console.log(getEndDay);
 					// 갖고온 start, end 값을 넘겨서 select 해오기
-					// ajax 받아오고
-					// success : function(data){manageGrid.resetData(data);}
+					
+					$.ajax({
+						url : '/viewOrderList',
+						data : {"startDate" : getStartDay, "endDate" : getEndDay},
+						contentType: 'application/json',
+						dataType : 'json',
+						method: "GET",
+						success : function(data){console.log(data); grid.resetData(data);},
+						error : function(reject){console.log(reject);}				
+					})
 					
 				})
 			}
@@ -161,6 +155,13 @@
 
 					$("#startpicker-input").val(today);
 					$("#endpicker-input").val(today);
+					
+					$.ajax({
+						url : '/viewOrderList',
+						method: "GET",			
+					}).then(res=>{
+						grid.resetData(res);
+					})
 				});	
 			}
 

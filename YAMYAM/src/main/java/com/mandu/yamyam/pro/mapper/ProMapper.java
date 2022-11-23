@@ -70,4 +70,12 @@ public interface ProMapper {
 	
 	// 상세생산지시 등록
 	public int insertOrderDetail(ProVO vo);
+	
+	// 상세 생산계획 테이블 진행구분 업데이트(미지시 -> 지시완료)
+	public int updatePplnd(ProVO vo);
+	
+	/*---------------
+	// 생산 지시 조회
+	----------------*/
+	public List<ProVO> getOrderList(ProVO vo);
 }

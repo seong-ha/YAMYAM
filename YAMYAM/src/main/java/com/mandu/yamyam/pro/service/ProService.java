@@ -19,7 +19,7 @@ public interface ProService {
 	
 	
 	// 상세생산계획 수정 (작업우선순위, 생산일자)
-		public int updatePlanDetail(List<ProVO> vo);
+	public int updatePlanDetail(List<ProVO> vo);
 		
 	// 상세생산계획 삭제
 	public int deletePlanDetail(List<ProVO> vo);
@@ -55,5 +55,11 @@ public interface ProService {
 	
 	// 생산지시 등록
 	public int insertOrder(List<ProVO> vo);
+	
+	/*---------------
+	// 생산 지시 조회
+	----------------*/
+	public List<ProVO> getOrderList(ProVO vo);
+	
 		
 }
