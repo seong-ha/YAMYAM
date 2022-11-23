@@ -10,11 +10,11 @@
 	</div>
 	<hr>
 	<ul class="ul-style">
-		<li><label for="matNm">자재명</label><input id="matNm" readonly><img
+		<li><label for="matNm">자재명</label><input id="matNm" readonly> <img
 			class="Magnifying-Glass-img" alt="image" data-bs-toggle="modal"
 			data-bs-target="#matModal" src="../images/Magnifying_Glass.png">
 			<input type="text" readonly></li>
-		<li><label for="actNm">업체명</label><input id="actNm" readonly><img
+		<li><label for="actNm">업체명</label><input id="actNm" readonly> <img
 			class="Magnifying-Glass-img" alt="image" data-bs-toggle="modal"
 			data-bs-target="#actModal" src="../images/Magnifying_Glass.png">
 			<input type="text" readonly></li>
@@ -32,7 +32,7 @@
 				<div id="endpicker-container" style="margin-left: -1px;"></div>
 			</div>
 			<button class="btn btn-dark btn-sm">조회</button>
-			<button class="btn btn-dark btn-sm">초기화</button></li>
+			<button class="btn btn-dark btn-sm" id="resetDpBtn">초기화</button></li>
 	</ul>
 
 	<div style="text-align: right;">
@@ -114,7 +114,7 @@
 			</div>
 		</div>
 	</div>
-	<script>
+	<script th:inline="javascript">
 	let grid = outMatList();		// 출고전체목록 그리드
 	
 	let modalGrid = matList();		// 자재목록 모달 그리드
@@ -124,37 +124,16 @@
 	modalRef();						// 모달 리프레시
 	
 	datePicker();					// DatePicker
+	resetDate();					// datapicker 초기화 버튼
 	
 	/*------------------------------
 	// 출고전체목록 그리드
 	--------------------------------*/
 	function outMatList(){
-		let dataList = [
-		    {
-		    	maLot: 'RML-10000-20221112001',
-		    	mtCode: 'RML-10101',
-		        maNm: '얇은 만두피',
-		        actNm: 'YD 만두피',
-		        outCount: 999,
-		        outDate: '2022-11-12',
-		        eDate: '2023-11-30',
-		        outD: '출고'
-		    },
-		    {
-		    	maLot: 'RML-10000-20221112002',
-		    	mtCode: 'RML-10101',
-		        maNm: '두꺼운 만두피',
-		        actNm: 'YD 만두피',
-		        outCount: 1200,
-		        outDate: '2022-11-12',
-		        eDate: '2023-11-30',
-		        outD: '출고'
-		    }
-		  ]
 		let grid = new tui.Grid({
 		      el: document.getElementById('grid'),
 		      bodyHeight: 500,
-		      data: dataList,
+		      data: [[${outOdList}]],
 		      rowHeaders: ['checkbox', 'rowNum'],
 		      scrollX: false,
 		      scrollY: true,
@@ -194,17 +173,6 @@
 		      ]
 		    });
 		
-		    grid.on('check', ev => {
-		      console.log('check!', ev);
-		    });
-		
-		    grid.on('uncheck', ev => {
-		      console.log('uncheck!', ev);
-		    });
-		
-		    grid.on('focusChange', ev => {
-		      console.log('change focused cell!', ev);
-		    });
 		    return grid;
 		}
 
@@ -212,22 +180,10 @@
 	// 자재목록 모달
 	--------------------------------*/
 	function matList() {
-		let dataList = [{
-			code: 'RML-10101',
-			name: '얇은 만두피',
-			size: 100,
-			count: 200
-		},
-		{
-			code: 'RML-10102',
-			name: '굵은 만두피',
-			size: 100,
-			count: 200
-		}]
 		let modalGrid = new tui.Grid({
 			el: document.getElementById('modalGrid'),
-			bodyHeight: 150,
-			data: dataList,
+			bodyHeight: 250,
+			data: null,
 			rowHeaders: ['checkbox'],
 			scrollX: false,
 			scrollY: true,
@@ -256,14 +212,10 @@
 	// 업체목록 모달
 	--------------------------------*/
 	function actList(){
-		let dataList = [{
-			actCode: 'VDR-1101',
-			actName: 'YD 만두피'
-		}]
 		var modalGrid2 = new tui.Grid({
 			el: document.getElementById('modalGrid2'),
-			bodyHeight: 150,
-			data: dataList,
+			bodyHeight: 250,
+			data: null,
 			rowHeaders: ['checkbox'],
 			scrollX: false,
 			scrollY: true,
@@ -285,26 +237,10 @@
 	// 현재고목록 모달
 	--------------------------------*/
 	function matStList(){
-		let dataList = [{
-			maLot: 'RML-10000-20221112001',
-			maCode: 'RML-10101',
-			maNm: '얇은 만두피',
-			actNm: 'YD 만두피',
-			count: 999,
-			date: '2023-11-30'
-		},
-		{
-			maLot: 'RML-10000-20221112002',
-			maCode: 'RML-10101',
-			maNm: '얇은 만두피',
-			actNm: 'SJ 만두피',
-			count: 999,
-			date: '2023-11-30'
-		}]
 		let modalGrid3 = new tui.Grid({
 			el: document.getElementById('modalGrid3'),
 			bodyHeight: 400,
-			data: dataList,
+			data: null,
 			rowHeaders: ['checkbox'],
 			scrollX: false,
 			scrollY: true,
@@ -358,22 +294,17 @@
 	// DatePicker
 	--------------------------------*/
 	function datePicker() {
-	   var today = new Date();
-	    var picker = tui.DatePicker.createRangePicker({
-	        startpicker: {
-	            date: today,
-	            input: '#startpicker-input',
-	            container: '#startpicker-container'
-	        },
-	        endpicker: {
-	            date: today,
-	            input: '#endpicker-input',
-	            container: '#endpicker-container'
-	        },
-	        selectableRanges: [
-	            [today, new Date(today.getFullYear() + 1, today.getMonth(), today.getDate())]
-	        ]
-	    });
+		rangeDatepickerInit('#startpicker-input', '#startpicker-container','#endpicker-input','#endpicker-container')
+	}
+	
+	/*------------------------
+	// DatePicker 초기화버튼 이벤트
+	--------------------------*/
+	function resetDate() {
+		document.getElementById('resetDpBtn').addEventListener('click',function(){
+			document.getElementById('startpicker-input').value = today;
+			document.getElementById('endpicker-input').value = today;
+		});	
 	}
 	</script>
 </div>

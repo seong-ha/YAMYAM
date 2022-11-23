@@ -90,12 +90,20 @@ public class MatController {
 		return service.chkMatList(vo);
 	}
 	
+	// 자재 발주 리스트 날짜 조회(일반 탭)
+	@PostMapping("/odListDtLookUpBtn")
+	@ResponseBody
+	public List<Map<String,Object>> odListDtLookUpBtn(@RequestBody MatVO vo){
+		return service.odListDtLookUpBtn(vo);
+	}
+	
 	// 신규 생산 계획서 리스트 날짜 조회(자재 발주 - 생산계획 탭)
 	@PostMapping("/newPlanLookUpBtn")
 	@ResponseBody
 	public List<Map<String,Object>> newPlanLookUpBtn(@RequestBody MatVO vo){
 		return service.newPlanLookUpBtn(vo);
 	}
+	
 	
 	
 	//======================
@@ -123,22 +131,69 @@ public class MatController {
 	}
 	
 
-	
+	//======================
+	// 3) 자재 입고 검수 관리
+	//======================
+	// 자재 입고 검수
 	@RequestMapping("/matInChk")
 	public String matInChk(Model model) {
+		model.addAttribute("chkMatList", service.chkOdMatList());
 		model.addAttribute("addChkList", service.addChkModal());
+		model.addAttribute("errorList", service.erCdErInfoLookUp());
+		model.addAttribute("empList", service.empLookUp());
 		return "mat/matInChk";
 	}
 	
+	// 자재 입고 검수 insert
+	@PostMapping("/ChkOd")
+	@ResponseBody
+	public int insChkOd(@RequestBody List<MatVO> list) {
+		int result = service.insertChkOd(list);
+		return result;
+	}
+	
+	// 자재 입고 검수 delete
+	@DeleteMapping("/ChkOd")
+	@ResponseBody
+	public int delChkOd(@RequestBody List<MatVO> list) {
+		int result = service.deletetChkOd(list);
+		return result;
+	}
+	
+	//======================
+	// 4) 자재 입고 관리
+	//======================
 	@RequestMapping("/matIn")
 	public String matIn(Model model) {
-		model.addAttribute("matList", service.matList());			// 돋보기 자재목록 모달
-		model.addAttribute("actList", service.actList());			// 돋보기 업체목록 모달
+		model.addAttribute("matInList", service.matInAllList());	// 입고 전체 조회
+		model.addAttribute("matList", service.matList());			// 돋보기 자재 목록 모달
+		model.addAttribute("empList", service.empLookUp());			// 돋보기 담당자 목록 모달
+		model.addAttribute("bfInList", service.beforeInList());		// 입고 예정 목록 모달
 		return "mat/matIn";
 	}
 	
+	// 자재 입고 관리 insert
+	@PostMapping("/inManage")
+	@ResponseBody
+	public int inManageInsert(@RequestBody List<MatVO> list) {
+		int result = service.inManageSave(list);
+		return result;
+	}
+	
+	// 자재 입고 관리 delete
+	@DeleteMapping("/inManage")
+	@ResponseBody
+	public int inManageDelete(@RequestBody List<MatVO> list) {
+		int result = service.inManageDelete(list);
+		return result;
+	}
+	
+	//======================
+	// 5) 자재 출고 관리
+	//======================
 	@RequestMapping("/matOut")
 	public String matOut(Model model) {
+		model.addAttribute("outOdList", service.matOutAllList());
 		return "mat/matOut";
 	}
 	
