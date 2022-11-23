@@ -42,7 +42,7 @@ public class CommController {
 	}
 	
 	// (직원관리-회원등록)
-	
+	// test
 	@PostMapping("/ajax/insertEmp")
 	@ResponseBody
 	public int employeeInsert(EmpVO empVO, Model model) {
@@ -50,6 +50,7 @@ public class CommController {
 		int result = commservice.inserEmpInfo(empVO);
 		System.out.println("result = " + result);
 		return result;
+		
 	}
 	
 	
