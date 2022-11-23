@@ -8,11 +8,11 @@
 	
 	<!-- 생산계획조회 -->
 	<select id="getPlan" resultType="com.mandu.yamyam.common.LowerKeyMap">
-		SELECT TO_CHAR(ppln_date,'yyyy-MM-dd') AS ppln_date, ppln_cd, od_cd, ppln_name, ppln_sts
-		from p_pln
+		SELECT TO_CHAR(l.ppln_date,'yyyy-MM-dd') AS ppln_date, l.ppln_cd, l.od_cd, l.ppln_name, d.pplnd_sts
+		from p_pln l join p_plnd d on l.ppln_cd = d.ppln_cd
 		<where>
             <if test='startDate!= null and endDate != null'>
-               TRUNC(PPLN_DATE) BETWEEN #{startDate}
+               TRUNC(l.PPLN_DATE) BETWEEN #{startDate}
                       AND #{endDate}
             </if>
         </where>
@@ -22,7 +22,7 @@
 	
 	<!-- 상세생산계획조회 -->
 	<select id="getPlanDetail" resultType="com.mandu.yamyam.common.LowerKeyMap">
-		SELECT P.PPLN_CD, P.PPLN_NAME, D.PPLND_CD, D.PRD_CD, D.PPLND_AMT, D.PPLND_PRIO, D.PPLND_DAYS, P.PPLN_STS, C.PRD_NM
+		SELECT P.PPLN_CD, P.PPLN_NAME, D.PPLND_CD, D.PRD_CD, D.PPLND_AMT, D.PPLND_PRIO, D.PPLND_DAYS, D.PPLND_STS, C.PRD_NM
 		FROM P_PLN P JOIN P_PLND D
              		 ON P.PPLN_CD = D.PPLN_CD
              		 JOIN C_PRD C
@@ -150,7 +150,7 @@
              		 ON P.PPLN_CD = D.PPLN_CD
                      JOIN C_PRD C
              		 ON C.PRD_CD = D.PRD_CD
-		WHERE p.ppln_sts='미지시'
+		WHERE d.pplnd_sts='미지시'
 	</select>
 	
 	<!-- 생산라인 조회 -->
@@ -217,6 +217,25 @@
 					   #{poddPrio})
 	</insert>
 	
+	<!-- 생산지시 조회 -->
+	<select id="getOrderList" resultType="com.mandu.yamyam.common.LowerKeyMap">
+		select od.podd_cd,c.prd_nm, o.prd_cd, od.podd_amt, o.pline_cd, od.podd_prio, o.pod_sts,TO_CHAR(od.podd_dates,'yyyy-MM-dd') as podd_dates
+		from p_od o join p_odd od on o.pod_cd= od.pod_cd
+	            	join c_prd c on o.prd_cd = c.prd_cd
+	    <where>
+	        <if test='startDate!= null and endDate != null'>
+	               TRUNC(od.podd_dates) BETWEEN #{startDate} AND #{endDate}
+	        </if>
+        </where>
+		order by od.podd_cd	            	
+	</select>
 	
 	
+	<!-- 상세 생산계획 테이블 진행구분 업데이트(미지시 -> 지시완료)-->
+	<update id="updatePplnd" parameterType="com.mandu.yamyam.pro.service.ProVO">
+		<selectKey keyProperty="podCd" resultType="String" order="AFTER">
+			select pplnd_cd from p_od WHERE POD_CD = #{podCd}
+		</selectKey>
+		UPDATE p_plnd SET PPLND_STS = '지시완료' where pplnd_cd = (select pplnd_cd from p_od WHERE POD_CD = #{podCd})
+	</update>
 </mapper>

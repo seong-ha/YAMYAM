@@ -117,10 +117,26 @@ public class ProServiceImpl implements ProService {
 	// 생산지시 등록
 	@Override
 	public int insertOrder(List<ProVO> vo) {
-		return 0;
+		int result = 0;
+		mapper.insertOrder(vo.get(0));
+		String podCd = vo.get(0).getPodCd();
+		
+		for(int i =0; i<vo.size(); i++) {
+			vo.get(i).setPodCd(podCd);
+			result += mapper.insertOrderDetail(vo.get(i));
+			mapper.updatePplnd(vo.get(i));
+		}
+		return result;
 	}
-	
 
 	
+	/*---------------
+	// 생산 지시 조회
+	----------------*/
+	@Override
+	public List<ProVO> getOrderList(ProVO vo) {
+		return mapper.getOrderList(vo);
+	}
+
 
 }
