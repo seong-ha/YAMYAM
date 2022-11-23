@@ -55,7 +55,7 @@
 								<div id="endpicker-container" style="margin-left: -1px;">
 								</div>
 							</div>
-							<button class="btn btn-dark btn-sm">조회</button>
+							<button class="btn btn-dark btn-sm" id="odListDtLookUpBtn">조회</button>
 							<button class="btn btn-dark btn-sm" id="resetBtn">초기화</button></li>
 					</ul>
 				</div>
@@ -209,7 +209,8 @@
 		saveOrder();						// 탭1 행 저장(일반 탭)
 		
 		odSaveBtn(); 						// 탭2 자재발주 그리드 저장 버튼
-		/* resetTab2GridBtn(); */			// 탭2 초기화 버튼
+		/* resetTab2GridBtn(); */			// 탭2 초기화 버튼 (데이터 현재 안 뜨는 상태라 보류)
+		odListDtLookUpBtn();				// 탭1 발주 리스트 날짜 조회 버튼
 		newPlanLookUpBtn();					// 탭2 신규 생산 계획서 리스트 날짜 조회 버튼
 		
 	/*------------------------------
@@ -292,9 +293,6 @@
 	-------------------------------------*/
 	function getModal() {
 		odLookUp.on('click',function(ev){
-			if(!ev.rowKey) {
-				return;
-			}
 			// 자재 목록 선택 시 행으로 가져오기
 	   		if(ev.columnName =='mtrCd' || ev.columnName =='mtrNm'){
 	   			$('#matModal').modal('show');
@@ -468,7 +466,6 @@
 						     required: true
 						      }
 					}
-						        
 		      ]
 		    });
 	    
@@ -498,7 +495,7 @@
 	function matList() {
 		let needMatModal = new tui.Grid({
 			el: document.getElementById('modalGrid'),
-			bodyHeight: 200,
+			bodyHeight: 250,
 			data: [[${matList}]],
 			rowHeaders: ['rowNum'],
 			scrollX: false,
@@ -529,7 +526,7 @@
 	function actListModal() {
 		let actList = new tui.Grid({
 			el: document.getElementById('modalGrid2'),
-			bodyHeight: 200,
+			bodyHeight: 250,
 			data: [[${actList}]],
 			rowHeaders: ['rowNum'],
 			scrollX: false,
@@ -704,44 +701,14 @@
 	// datepicker
 	----------------*/
 	function datePicker() {
-	   var today = new Date();
-	    var picker = tui.DatePicker.createRangePicker({
-	        startpicker: {
-	            date: today,
-	            input: '#startpicker-input',
-	            container: '#startpicker-container'
-	        },
-	        endpicker: {
-	            date: today,
-	            input: '#endpicker-input',
-	            container: '#endpicker-container'
-	        },
-	        selectableRanges: [
-	            [today, new Date(today.getFullYear() + 1, today.getMonth(), today.getDate())]
-	        ]
-	    });
+		rangeDatepickerInit('#startpicker-input', '#startpicker-container','#endpicker-input','#endpicker-container')
 	}
 	
 	/*------------
 	// datepicker2
 	----------------*/
 	function datePicker2() {
-		   var today = new Date();
-		    var picker = tui.DatePicker.createRangePicker({
-		        startpicker: {
-		            date: today,
-		            input: '#startpicker-input2',
-		            container: '#startpicker-container2'
-		        },
-		        endpicker: {
-		            date: today,
-		            input: '#endpicker-input2',
-		            container: '#endpicker-container2'
-		        },
-		        selectableRanges: [
-		            [today, new Date(today.getFullYear() + 1, today.getMonth(), today.getDate())]
-		        ]
-		    });
+		rangeDatepickerInit('#startpicker-input2', '#startpicker-container2','#endpicker-input2','#endpicker-container2')
 		}
 	
 	/*------------------------
@@ -751,11 +718,6 @@
 		document.getElementById('resetBtn').addEventListener('click',function(){
 			document.getElementById('startpicker-input').value = today;
 			document.getElementById('endpicker-input').value = today;
-			document.getElementById('matCode').value = '';
-			document.getElementById('matNm').value = '';
-			document.getElementById('matCd').value = '';
-			document.getElementById('actNm').value = '';
-			document.getElementById('actCd').value = '';
 		});	
 	}
 	
@@ -924,11 +886,8 @@
 	----------------------------------*/
 	function getSum() {
 		odMat.on('click',function(ev){
-			if(!ev.rowKey) {
-				return;
-			}
 	   		// 단가 * 발주량 = 총합
-	   		else if (ev.columnName == 'sumPrice'){
+	   		if (ev.columnName == 'sumPrice'){
 	   			let data = odMat.getRow(ev.rowKey);
 	   			let val =  odMat.getFocusedCell().rowKey;
 				if(data.matOddMn != null && data.matOddAmt != null){
@@ -982,6 +941,32 @@
 			   })
 			})
 		}
+	
+	/*-----------------------------
+	// 일반 탭 발주 리스트 날짜 조회버튼
+	---------------------------------*/
+	function odListDtLookUpBtn() {
+		document.getElementById('odListDtLookUpBtn').addEventListener('click', function(){
+			let startDate = document.getElementById('startpicker-input').value;
+			let endDate = document.getElementById('endpicker-input').value;
+			let list = {matOdDd:endDate, matOddDate:startDate};
+			console.log(list)
+			// 시작 일 <= 검색 날짜 <= 마지막 일
+			$.ajax({
+				url: '/odListDtLookUpBtn',
+				method: 'POST',
+				contentType: 'application/json',					
+				data: JSON.stringify(list),
+				success: function(result){
+					console.log(result);
+					odLookUp.resetData(result);
+				},
+				error: function(reject){
+					console.log(reject);
+				}
+			})
+		})
+	}
 	
 	/*-----------------------------
 	// 신규생산 계획서 리스트 날짜 조회버튼

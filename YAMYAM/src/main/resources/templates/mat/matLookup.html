@@ -36,7 +36,7 @@
 				<ul class="ul-style">
 					<li><label for="startpicker-input">발주신청일</label>
 					
-					<!-- datepicker -->
+						<!-- datepicker -->
 						<div class="tui-datepicker-input tui-datetime-input tui-has-focus">
 							<input id="startpicker-input" type="text" aria-label="Date">
 							<span class="tui-ico-date"></span>
@@ -133,11 +133,17 @@
 	      columns: [
 	        {
 	          header: '자재코드',
-	          name: 'mtrCd'
+	          name: 'mtrCd',
+			  filter: {
+			        type: 'select'			  
+			      }
 	        },
 	        {
 	          header: '자재명',
-	          name: 'mtrNm'
+	          name: 'mtrNm',
+			  filter: {
+			        type: 'select'			  
+			      }
 	        },
 	        {
 	          header: '단가(원)',
@@ -153,7 +159,10 @@
 	        },
 	        {
 	          header: '업체명',
-	          name: 'actNm'
+	          name: 'actNm',
+			  filter: {
+			        type: 'select'			  
+			      }
 	        },
 	        {
 	          header: '납기요청일',
@@ -276,22 +285,7 @@
 		// DatePicker
 		--------------------------------*/
 		function datePicker() {
-			   var today = new Date();
-			    var picker = tui.DatePicker.createRangePicker({
-			        startpicker: {
-			            date: today,
-			            input: '#startpicker-input',
-			            container: '#startpicker-container'
-			        },
-			        endpicker: {
-			            date: today,
-			            input: '#endpicker-input',
-			            container: '#endpicker-container'
-			        },
-			        selectableRanges: [
-			            [today, new Date(today.getFullYear() + 1, today.getMonth(), today.getDate())]
-			        ]
-			    });
+			rangeDatepickerInit('#startpicker-input', '#startpicker-container','#endpicker-input','#endpicker-container')
 			}
 		
 		/*------------------------

@@ -15,7 +15,10 @@ public class MatOdServiceImpl implements MatOdService {
 
 	@Autowired
 	MatOdMapper mapper;
-
+	
+	//===============================================
+	// 자재 발주 조회
+	//===============================================
 	// 돋보기 자재목록 모달
 	@Override
 	public List<Map<String, Object>> matList() {
@@ -28,6 +31,9 @@ public class MatOdServiceImpl implements MatOdService {
 		return mapper.actList();
 	}
 	
+	//===============================================
+	// 1) 자재 발주 관리
+	//===============================================
 	// 전체조회(일반 탭)
 	@Override
 	public List<Map<String, Object>> matOrderList() {
@@ -99,6 +105,18 @@ public class MatOdServiceImpl implements MatOdService {
 	public List<Map<String, Object>> needMatList(MatVO vo) {
 		return mapper.needMatList(vo.getPrdCd());
 	}
+	
+	// 생산계획 모달창 탭 날짜 조회 버튼(생산계획용 탭)
+	@Override
+	public List<Map<String, Object>> newPlanLookUpBtn(MatVO vo) {
+		return mapper.newPlanLookUpBtn(vo);
+	}
+	
+	// 발주 리스트 날짜 조회버튼(일반 탭)
+	@Override
+	public List<Map<String, Object>> odListDtLookUpBtn(MatVO vo) {
+		return mapper.odListDtLookUpBtn(vo);
+	}
 
 	// 자재발주 리스트(생산계획 탭)
 	@Override
@@ -106,26 +124,107 @@ public class MatOdServiceImpl implements MatOdService {
 		return mapper.chkMatList(vo.getMtrCd());
 	}
 
+	
+	//===============================================
+	// 2) 자재 발주 조회
+	//===============================================
 	// 발주 신청일 조회 버튼 클릭 이벤트 (자재 발주 조회 - 조건 조회 탭)
 	@Override
 	public List<Map<String, Object>> odListSearch(MatVO vo) {
 		return mapper.odListSearch(vo);
 	}
 
+	// 발주 신청일 클릭 시 이벤트 (조건 조회 탭)
+	@Override
+	public List<Map<String, Object>> clickOdDate(MatVO vo) {
+		return mapper.clickOdDate(vo);
+	}
+
+	//===============================================
+	// 3) 자재 입고 검수 관리
+	//===============================================
 	// 자재 입고 검수 관리 - 추가 모달창
 	@Override
 	public List<Map<String, Object>> addChkModal() {
 		return mapper.addChkModal();
 	}
 
+	// 자재 입고 검수 관리 - 전체 조회
 	@Override
-	public List<Map<String, Object>> clickOdDate(MatVO vo) {
-		return mapper.clickOdDate(vo);
+	public List<Map<String, Object>> chkOdMatList() {
+		return mapper.chkOdMatList();
+	}
+
+	// 불량코드/불량내용 조회
+	@Override
+	public List<Map<String, Object>> erCdErInfoLookUp() {
+		return mapper.erCdErInfoLookUp();
+	}
+
+	// 자재 입고 검수 관리 - insert
+	@Override
+	public int insertChkOd(List<MatVO> list) {
+		int result = 0;
+		for(int i=0; i<list.size(); i++) {
+			result += mapper.insertChkOd(list.get(i));
+		}
+		return result;
+	}
+	
+	// 자재 입고 검수 관리 - delete
+	@Override
+	public int deletetChkOd(List<MatVO> list) {
+		int result = 0;
+		   for(int i=0; i<list.size(); i++) {
+			   result += mapper.deletetChkOd(list.get(i));
+		   }
+		return result;
+	}
+
+	// 직원 목록 조회 모달
+	@Override
+	public List<Map<String, Object>> empLookUp() {
+		return mapper.empLookUp();
+	}
+
+	//===============================================
+	// 4) 자재 입고 관리
+	//===============================================
+	// 자재 입고 관리
+	@Override
+	public List<Map<String, Object>> matInAllList() {
+		return mapper.matInAllList();
+	}
+
+	// 입고 예정 목록
+	@Override
+	public List<Map<String, Object>> beforeInList() {
+		return mapper.beforeInList();
+	}
+
+	// insert
+	@Override
+	public int inManageSave(List<MatVO> list) {
+		int result = 0;
+		for(int i=0; i<list.size(); i++) {
+			result += mapper.inManageSave(list.get(i));
+		}
+		return result;
+	}
+
+	// delete
+	@Override
+	public int inManageDelete(List<MatVO> list) {
+		int result = 0;
+		for(int i=0; i<list.size(); i++) {
+			result += mapper.inManageDelete(list.get(i));
+		}
+		return result;
 	}
 
 	@Override
-	public List<Map<String, Object>> newPlanLookUpBtn(MatVO vo) {
-		return mapper.newPlanLookUpBtn(vo);
+	public List<Map<String, Object>> matOutAllList() {
+		return mapper.matOutAllList();
 	}
-
+	
 }

@@ -20,7 +20,7 @@ public class MatVO {
 	private String matChkCd;	// 입고검수코드
 	private int paAmt;			// 합격량
 	private int erAmt;			// 불합격량
-	private int empNo;			// 담당자 번호
+	private String empNm;		// 담당자 이름
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date matChkDate;	// 검사일자
 	private String erCd;		// 불량코드
@@ -38,6 +38,8 @@ public class MatVO {
 	private int matSamt;		// 재고
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date matEdate;		// 유통기한
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	private Date matInDate;		// 입고일
 	
 	// 자재발주 테이블
 	private String matOdCd;		// 발주코드
@@ -60,6 +62,13 @@ public class MatVO {
 	private String mattrUn;		// 작업단위
 	private int mtrSfamt;		// 안잰재고수량
 	private String mtrSts;		// 제품구분
+	
+	// 공통상세 테이블
+	private String commdCd;		// 상세공통코드
+	private String commCd;		// 공통코드
+	private String commdNm;		// 상세 공통 이름
+	private String commdInfo;	// 상세 공통 내용
+	private String commdUse;	// 사용여부
 	
 	// BOM 테이블
 	private int bomNo;			// 번호
