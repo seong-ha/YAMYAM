@@ -87,7 +87,7 @@
 				<!-- 관리탭 본문 start -->
 				<div class="tab-pane" id="manage" role="tabpanel"
 					aria-labelledby="manage-tab">
-					<form action="#">
+					<form action="#" id="form">
 						<div style="margin: 15px;">
 							<div class="d-md-flex justify-content-md-end">
 								<button type="button" class="btn btn-dark btn-sm me-md-2" data-bs-toggle="modal"
@@ -171,7 +171,7 @@
 									<div id="imgDiv" width=" 300px" height="300px">
 										<img id="imgTag" name="imgTag" alt="설비사진" src="" width=" 300px" height="300px">
 									</div>
-									<input type="file" id="img" name="img">
+									<input type="file" id="img" name="multi">
 								</div>
 							</div>
 							<!-- 테이블과 사진 배치 end -->
@@ -651,34 +651,23 @@
 					// 설비코드 값이 없으면 insert. 있으면 update
 					if (document.getElementById('eqpCd').value == '') {
 						// insert할 데이터
-						let data = {
-								eqpCd: document.getElementById('eqpCd').value,
-								eqpNm: document.getElementById('eqpNm').value,
-								mdNm: document.getElementById('mdNm').value,
-								chkCycle: document.getElementById('chkCycle').value,
-								actCd: document.getElementById('actCd').value,
-								mkDate: document.getElementById('mkDate').value,
-								buyDate: document.getElementById('buyDate').value,
-								eqpTypeCd: document.getElementById('eqpTypeCd').value,
-								eqpTypeNm: document.getElementById('eqpTypeNm').value,
-								eqpSts: document.getElementById('eqpSts').value,
-								uph: document.getElementById('uph').value,
-								highTemp: document.getElementById('highTemp').value,
-								lowTemp: document.getElementById('lowTemp').value,
-								img: document.getElementById('imgTag').value
-						};
+						
 						
 						// 업로드할 파일 데이터
-						var form = new FormData();
-				        form.append('img', $('#img')[0].files[0]);
-				        console.log(form);
+						let form = document.getElementById('form')
+						let formData = new FormData(form);
+				        
+				        for (let [key, value] of formData) {
+				          console.log(`${key}: ${value}\n`);
+				        }
+				        
 						sweetConfirm('C', function () {
 							$.ajax({
-					             url : "/result",
+					             url : "/eqpInsert",
 					             type : "post",
 					             processData : false,
 					             contentType : false,
-					             data : form,
+					             data : formData,
 					             success:function(data) {
 					                 console.log(data);
 									// ajax success
