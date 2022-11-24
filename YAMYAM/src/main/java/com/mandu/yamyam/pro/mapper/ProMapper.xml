@@ -1,6 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.mandu.yamyam.pro.mapper.ProMapper">
+
+	<!-- 공통코드 : 공정분류 -->
+	<select id="getCommP" resultType="com.mandu.yamyam.pro.service.ProVO">
+		select commd_cd, commd_nm
+		from c_commd
+		where comm_cd = 'EQP-TYPE'
+	</select>
+	
+	<!-- 공통코드 : 에러코드 -->
+	<select id="getCommE" resultType="com.mandu.yamyam.pro.service.ProVO">
+		select commd_cd, commd_nm
+		from c_commd
+		where comm_cd = 'ERR-PRO'
+	</select>
+	
 	<!-- 입력될 생산 우선순위 조회 -->
 	<select id="getPrioNo" resultType="Integer">
 		SELECT NVL(MAX(PPLND_PRIO),0)+1 as PPLND_PRIO FROM P_PLND
@@ -233,9 +248,37 @@
 	
 	<!-- 상세 생산계획 테이블 진행구분 업데이트(미지시 -> 지시완료)-->
 	<update id="updatePplnd" parameterType="com.mandu.yamyam.pro.service.ProVO">
-		<selectKey keyProperty="podCd" resultType="String" order="AFTER">
-			select pplnd_cd from p_od WHERE POD_CD = #{podCd}
-		</selectKey>
 		UPDATE p_plnd SET PPLND_STS = '지시완료' where pplnd_cd = (select pplnd_cd from p_od WHERE POD_CD = #{podCd})
 	</update>
+	
+	<!-- 자재 재고 수량 변경 -->
+	<update id="updateMin" parameterType="com.mandu.yamyam.pro.service.ProVO">
+		update m_in set mat_samt = (mat_samt - #{matOutAmt}) where mat_lot = #{matLot}
+	</update>
+	
+	
+	<!-- 생산관리 : 생산지시 목록 조회 -->
+	<select id="getOProList" resultType="com.mandu.yamyam.common.LowerKeyMap">
+		select p.pline_cd,c.prd_nm,TO_CHAR(d.podd_dates,'yyyy-MM-dd') as podd_dates, d.podd_cd, p.prd_cd, d.podd_amt
+		from p_od p join p_odd d on d.pod_cd = p.pod_cd
+					join c_prd c on p.prd_cd = c.prd_cd
+
+		<where>
+			<if test="poddDates != null">
+				TRUNC(d.podd_dates) = #{poddDates}	
+			</if>
+		</where>
+		
+	</select>
+	
+	
+	<!-- 공정관리 조회 -->
+	<select id="getProList" resultType="com.mandu.yamyam.common.LowerKeyMap">
+		select p.ppro_sts, p.ppro_cd, p.ppro_name, p.eqp_cd, p.ppro_emp_name, e.eqp_nm, e.md_nm from p_pro p join e_eqp e on p.eqp_cd = e.eqp_cd
+	</select>
+	
+	<!-- 제품 공정 흐름도 조회 -->
+	<select id="getFlowList" resultType="com.mandu.yamyam.common.LowerKeyMap">
+		select p.pline_cd, p.prd_cd,p.ppro_sts, c.prd_nm from p_line p join c_prd c on p.prd_cd = c.prd_cd
+	</select>
 </mapper>

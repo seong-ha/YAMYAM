@@ -11,6 +11,10 @@ import lombok.Data;
 @Data
 
 public class ProVO {
+	// 공통코드
+	private String commdCd;	// 분류 코드
+	private String commdNm;	// 분류 이름
+	
 	// 생산계획 테이블 P_PLN
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date pplnDate; 		// 계획등록일자
@@ -49,9 +53,11 @@ public class ProVO {
 	private Date poddDates;		// 생산일자
 	private int poddPrio;		// 지시우선순위
 	
-	// 생산공정 테이블 P_PRO
+	// 생산공정 테이블 P_PRO eqp_nm, eqp_cd, md_nm
 	private String pproCd;		// 공정코드
 	private String eqpCd;		// 설비코드
+	private String eqpNm;		// 설비이름
+	private String mdNm;		// 설비 모델이름
 	private String pproName;	// 공정명
 	private String pproEmpName; // 담당자
 	private int pproInAmt;		// 투입량
@@ -74,10 +80,11 @@ public class ProVO {
 	@JsonFormat(pattern="yyyy-MM-dd")
 	private Date deDate;	// 납기일자
 	private int odAmt;		// 생산요청 수량
-	private int matOutAmt;	// 자재 출고 수량
 	
-	// 필요자재LOT그리드
+	
+	// 자재 입고 테이블(자재 재고 변경)
 	private String mtrCd;	// 자재코드
 	private String mtrNm;	// 자재이름
-	
+	private int matOutAmt;	// 자재 출고 수량
+	private String matLot;	// 자재LOT
 }

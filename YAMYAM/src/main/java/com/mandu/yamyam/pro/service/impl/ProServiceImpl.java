@@ -15,6 +15,19 @@ public class ProServiceImpl implements ProService {
 
 	@Autowired
 	ProMapper mapper;
+
+	// 공통코드(공정분류)
+	@Override
+	public List<ProVO> getCommP() {
+		return mapper.getCommP();
+	}
+	
+	// 공통코드(에러코드)
+	@Override
+	public List<ProVO> getCommE() {
+		return mapper.getCommE();
+	}
+	
 	
 	// 생산계획 조회
 	@Override
@@ -128,7 +141,18 @@ public class ProServiceImpl implements ProService {
 		}
 		return result;
 	}
-
+	
+	// 자재 재고 수정
+	@Override
+	public int updateMin(List<ProVO> vo) {
+		System.out.println(vo);
+		int result = 0;
+		for(int y = 0; y<vo.size(); y++) {
+			
+			result += mapper.updateMin(vo.get(y));
+		}
+		return result;
+	}
 	
 	/*---------------
 	// 생산 지시 조회
@@ -137,6 +161,30 @@ public class ProServiceImpl implements ProService {
 	public List<ProVO> getOrderList(ProVO vo) {
 		return mapper.getOrderList(vo);
 	}
-
-
+	
+	/*---------------
+	// 생산 관리
+	----------------*/
+	// 지시완료된 생산지시 조회
+	@Override
+	public List<ProVO> getOProList(ProVO vo) {
+		return mapper.getOProList(vo);
+	}
+	
+	
+	/*---------------
+	// 공정 관리
+	----------------*/
+	@Override
+	public List<ProVO> getProList(ProVO vo) {
+		return mapper.getProList(vo);
+	}
+	
+	// 제품공정 흐름도 조회
+	@Override
+	public List<ProVO> getFlowList(ProVO vo) {
+		return mapper.getFlowList(vo);
+	}
+	
+	
 }
