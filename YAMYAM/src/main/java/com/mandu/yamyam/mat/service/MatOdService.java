@@ -109,15 +109,6 @@ public interface MatOdService {
 	//===============================================
 	// 5) 자재 출고 관리
 	//===============================================
-	// 자재 출고 관리
-	public List<Map<String, Object>> matOutAllList(MatVO vo);
-	
-	// 현 재고 목록
-	public List<Map<String, Object>> nowSamtList();
-	
-	// 출고 추가
-	public int odOutInsert(List<MatVO> list);
-	
-	// 출고 삭제
-	public int odOutDelete(List<MatVO> list);
+	// 생산 지시 조회
+	public List<Map<String, Object>> pOdAllList();
 }

@@ -496,42 +496,22 @@
 	</delete>
 	
 	<!-- 5) 자재 출고 관리 -->
-	<!-- 전체 조회 -->
-	<select id="matOutAllList" resultType="com.mandu.yamyam.common.LowerKeyMap">
-		SELECT T.MAT_LOT,
-		       T.MTR_CD,
-		       M.MTR_NM,
-		       A.ACT_NM,
-		       T.MAT_OUT_AMT,
-		       TO_CHAR(T.MAT_OUT_DATE,'yyyy-MM-dd') AS "MAT_OUT_DATE",
-		       I.MAT_EDATE,
-		       T.MAT_OUT_STS
+	<!-- 생산지시 전체 조회 -->
+	<select id="pOdAllList" resultType="com.mandu.yamyam.common.LowerKeyMap">
+		SELECT D.PODD_CD,
+		       O.POD_CD,
+		       O.PRD_CD,
+		       D.PODD_AMT,
+		       TO_CHAR(D.PODD_DATES, 'yyyy-MM-dd') AS "PODD_DATES",
+		       TO_CHAR(O.POD_DATES, 'yyyy-MM-dd') AS "POD_DATES",
+		       D.PODD_STS
 		       
-		FROM M_OUT T
+		FROM P_OD O
 		
-		 JOIN C_MTR M
-		   ON  M.MTR_CD = T.MTR_CD
-		   
-		 JOIN C_ACT A
-		   ON M.ACT_CD = A.ACT_CD
-		   
-		 JOIN M_IN I
-		   ON I.ACT_CD = A.ACT_CD
-		   
-		  <where>
-         	<if test = "mtrCd != null and !mtrCd.equals('')">
-	         	C.MTR_CD = #{mtrCd}
-	         </if>
- 	         <if test = "actNm != null and !actNm.equals('')">
-	         	AND A.ACT_NM = #{actNm}
-	         </if>
-	         <if test = "matInDate != null and !matInDate.equals('')">
-	         	AND T.MAT_OUT_DATE <![CDATA[>=]]> #{matInDate}
-	         </if>
-	         <if test = "matEdate != null and !matEdate.equals('')">
-	         	AND T.MAT_OUT_DATE <![CDATA[<=]]> #{matEdate}
-	         </if>
-         </where>
+		 JOIN P_ODD D
+		  ON D.POD_CD = O.POD_CD
+		  
+		WHERE D.PODD_STS = '자재팀확인'
 	</select>
 	
 	<!-- 추가 모달창 -->

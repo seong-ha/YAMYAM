@@ -209,16 +209,8 @@ public class MatController {
 	//======================
 	@RequestMapping("/matOut")
 	public String matOut(Model model) {
-		model.addAttribute("nowSamtList", service.nowSamtList());	// 현재고목록
-		model.addAttribute("matList", service.matList());			// 자재목록
-		model.addAttribute("actList", service.actList());			// 업체목록
+		model.addAttribute("pOdList", service.pOdAllList());
 		return "mat/matOut";
-	}
-	
-	@PostMapping("/matOut")
-	@ResponseBody
-	public List<Map<String,Object>> matOutList(@RequestBody MatVO vo){
-		return service.matOutAllList(vo); // 전체 조회
 	}
 	
 	//======================
