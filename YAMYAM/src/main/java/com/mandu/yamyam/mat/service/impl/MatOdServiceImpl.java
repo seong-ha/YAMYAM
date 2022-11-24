@@ -227,37 +227,14 @@ public class MatOdServiceImpl implements MatOdService {
 		}
 		return result;
 	}
-	
+
 	//===============================================
 	// 5) 자재 출고 관리
 	//===============================================
-	// 자재 출고 관리
+	// 생산 지시 조회
 	@Override
-	public List<Map<String, Object>> matOutAllList(MatVO vo) {
-		return mapper.matOutAllList(vo);
-	}
-	// 현 재고 목록
-	@Override
-	public List<Map<String, Object>> nowSamtList() {
-		return mapper.nowSamtList();
-	}
-
-	@Override
-	public int odOutInsert(List<MatVO> list) {
-		int result = 0;
-		for(int i=0; i<list.size(); i++) {
-			result += mapper.odOutInsert(list.get(i));
-		}
-		return result;
-	}
-
-	@Override
-	public int odOutDelete(List<MatVO> list) {
-		int result = 0;
-		for(int i=0; i<list.size(); i++) {
-			result += mapper.odOutDelete(list.get(i));
-		}
-		return result;
+	public List<Map<String, Object>> pOdAllList() {
+		return mapper.pOdAllList();
 	}
 
 	
