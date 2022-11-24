@@ -29,7 +29,7 @@
 						<td>제품코드 : </td>
 						<td><input type="text" id="pName" name="pName" readonly="readonly"></td>
 						<td>라인코드 : </td>
-						<td><input type="text" id="lineName" name="lineName" placeholder="라인코드를 입력하세요"></td>
+						<td><input type="text" id="lineName" name="lineName" readonly="readonly"></td>
 					</tr>
 						 
 				 </table>
@@ -81,30 +81,6 @@
 		function flowGridInit(){
 			let flowGrid = new tui.Grid({
 				el : document.getElementById('flowGrid'),
-				// 임시 데이터
-				data : [{
-							prdCd : 'MD-00100',
-							prdNm: '얇은피 고기만두',
-							plineCd : 'LIN-BAR-001'
-						},{
-							prdCd : 'MD-00200',
-							prdNm: '얇은피 김치만두',
-							plineCd : '' 
-						},{
-							prdCd : 'MD-00300',
-							prdNm: '얇은피 새우만두',
-							plineCd : 'LIN-BAR-002' 
-						}
-						],
-				// data 가져오는 법
-				// data: {
-				// 	api: {
-				// 		readData: {
-				// 			url: '/api/readData',
-				// 			method: 'GET'
-				// 		}
-				// 	}
-				// },
 				scrollX : false,
 				scrollY : false,
 				rowHeaders: ['rowNum'],				
@@ -121,6 +97,14 @@
 					name : 'plineCd'
 				}]
 			});
+			
+			$.ajax({
+				url : '/getFlow',
+				method: "GET",			
+			}).then(res=>{
+				flowGrid.resetData(res);
+			})
+			
 			return flowGrid;
 		}
 		
@@ -132,17 +116,6 @@
 		function flowManageInit(){
 			let flowManage = new tui.Grid({
 				el : document.getElementById('flowManage'),
-				// 임시 데이터
-				data : [],
-				// data 가져오는 법
-				// data: {
-				// 	api: {
-				// 		readData: {
-				// 			url: '/api/readData',
-				// 			method: 'GET'
-				// 		}
-				// 	}
-				// },
 				scrollX : false,
 				scrollY : false,
 				rowHeaders: ['checkbox','rowNum'],				
@@ -223,10 +196,12 @@
 				}
 				
 				let pCode = flowGrid.getValue(ev.rowKey, 'prdCd');
-				console.log(pCode);
+				let lineName = flowGrid.getValue(ev.rowKey, 'plineCd');
 				$('#pName').val(pCode);
-					/* let data = {pproCd :'',pproName:'',eqpCd:'',eqpNm :''};	
-					flowManage.appendRow(data);
+				$('#lineName').val(lineName);
+				
+				let data = {pproCd :'',pproName:'',eqpCd:'',eqpNm :''};	
+					//flowManage.appendRow(data);
 				
 					// ajax 
 					// 가져온 데이터 담아주기

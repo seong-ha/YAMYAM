@@ -20,7 +20,7 @@ public class CommServiceImpl implements CommService {
 	@Autowired
 	CommMapper commMapper;
 	
-
+	
 	// ajax 공통코드 불러오기
 	@Override
 	public List<CommVO> ajaxSelectComm() {
@@ -64,16 +64,5 @@ public class CommServiceImpl implements CommService {
 	public List<BOMVO> ajaxSelectBOM() {
 		return commMapper.ajaxSelectBOM();
 	}
-	
-
-
-
-	
-
- 
-
-	
-
-
 	
 }

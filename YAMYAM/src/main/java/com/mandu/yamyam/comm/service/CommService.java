@@ -6,10 +6,10 @@ public interface CommService {
 	
 	// ajax 공통코드 불러오기
 	public List<CommVO> ajaxSelectComm();
-	
+
 	// ajax 상세 공통 코드 불러오기
 	public List<CommdVO> ajaxSelectDetailComm(CommdVO commdVO);
-	
+
 	// ajax 상세 공통 코드 등록
 	public List<CommdVO> ajaxInsertDetailComm(List<CommdVO> commdVO); 
 		

@@ -148,7 +148,6 @@
 
 					</div>
 				</div>
-			<p th:text="${prioNo}"></p> 
 			
 			</div>
 	
@@ -250,13 +249,6 @@
 	function tab1GridInit(){
 			let manageGrid = new tui.Grid({
 			el : document.getElementById('manageGrid'),
-			// data 가져오는 법
-			  /*updateData: {url: '/planUpdate', method: 'POST'}
-			  createData: { url: '/api/create', method: 'POST' },
-		      updateData: { url: '/api/update', method: 'PUT' },
-		      deleteData: { url: '/api/delete', method: 'DELETE' },
-		      modifyData: { url: '/api/modify', method: 'POST' } */
-			// { "result": true, "data": { "contents": [], "pagination": { "page": 1, "totalCount": 100 } } }	
 			scrollX : false,
 			scrollY : false,
 			rowHeaders: ['rowNum'],
@@ -276,8 +268,7 @@
 			}
 			, {
 				header : '진행구분',
-				name : 'pplnSts',
-
+				name : 'pplndSts',
 				filter: {
 			        type: 'select'			  
 			      }
@@ -288,7 +279,6 @@
 			method: "GET",			
 		}).then(res=>{
 			manageGrid.resetData(res);
-			return res;
 		})
 			
 		return manageGrid;	
@@ -334,38 +324,26 @@
 			    editor: 'text'
 			}, {
 				header : '진행구분',
-				name : 'pplnSts',
-
+				name : 'pplndSts',
 				filter: {
 			        type: 'select'			  
 			      }
 			}]
 		});
-			
+		
+		detailPGrid.hideColumn('pplndSts');
 		// 계획 관리 그리드에서의 수정
-		detailPGrid.on('beforeChange', function(ev) {
+		detailPGrid.on('afterChange', function(ev) {
 
 			 ev.changes.forEach(change =>  {
 				    if (change.nextValue === 'needReplace') {
 				      // 'needReplace' is replaced with empty string
 				      change.nextValue = '';
+				      let rowKey = ev.changes[0].rowKey;
+					  let pplndAmt = planDGrid.getRow(rowKey).pplndAmt;
+					  let poddAmt = parseInt(planDGrid.getRow(rowKey).poddAmt);
 				    }
 				  });
-			  /**
-			    *   이벤트 객체는 아래와 같은 정보를 담고 있다.
-			    *  {
-			    *   // 이벤트 발생 종류(cell 편집, 붙여넣기, 키맵을 통한 삭제)
-			    *   origin: 'cell' | 'paste' | 'delete',
-			    *   // 변경 내용
-			    *   changes: [
-			    *      // beforeChange 인 경우에는 value는 현재 값, nextValue는 변경 예정 값(수정 또는 삭제 수행 후 적용될 값)
-			    *      { rowKey, columnName, value, nextValue }, ...
-			    *
-			    *      // afterChange 인 경우에는 value는 변경이 적용된 후 값, prevValue는 이전 셀의 값(beforeChange 의 value와 동일)
-			    *      { rowKey, columnName, value, prevValue }, ...
-			    *    ]
-			    *  }*/
-
 			}); 
 		
 		return detailPGrid;	
@@ -388,7 +366,6 @@
 		dataType : 'json',
 		}).then(res=>{
 			detailPGrid.resetData(res);
-			return res;
 		})
 		}); 
 	}
@@ -407,9 +384,9 @@
 				// 생산일수
 				let pplndDays = ckRow[i].pplndDays;
 				let pplndCd = ckRow[i].pplndCd;
-				let pplnSts = ckRow[i].pplnSts
+				let pplndSts = ckRow[i].pplndSts
 				list.push({pplndPrio,pplndDays,pplndCd})
-				if(pplnSts == '지시완료'){
+				if(pplndSts == '지시완료'){
 					let messeage = `지시완료된 상태는<br> 수정할 수 없습니다.`
 					Swal.fire({icon: 'error',title:messeage});
 				}else{
@@ -454,11 +431,11 @@
 			let list = [];
 			for(let i=0; i<ckRow.length;i++){
 				let pplndCd = ckRow[i].pplndCd;
-				let pplnSts = ckRow[i].pplnSts;
+				let pplndSts = ckRow[i].pplndSts;
 				let pplnCd = ckRow[i].pplnCd;
 				list.push({pplndCd,pplnCd});
 				console.log(list);
-				if(pplnSts == '지시완료'){
+				if(pplndSts == '지시완료'){
 					let messeage = `지시완료된 상태는<br> 삭제할 수 없습니다.`
 					Swal.fire({icon: 'error',title:messeage});
 				}else{
@@ -488,44 +465,7 @@
 					})
 				}
 			}
-			
-			/* let row = manageGrid.getCheckedRows();
-			let list2 = [];
-			for(let i=0; i<row.length;i++){
-				let pplndCd = row[i].pplnCd;
-				let pplnSts = row[i].pplnSts;
-				list.push(pplnCd);
-				console.log(list2);
-				if(pplnSts == '지시완료'){
-					let messeage = `지시완료된 상태는<br> 삭제할 수 없습니다.`
-					Swal.fire({icon: 'error',title:messeage});
-				}else{
-				sweetConfirm('D', function(){
-				// DB delete
-				//ajax 
-				// 성공
-					$.ajax({
-					url : '/deleteDetail',
-					method: 'POST',
-					contentType : 'application/json',
-					data :  JSON.stringify(list),
-					dataType : 'json',
-					success : function(data){
-							  Swal.fire('삭제가 완료되었습니다');
-							// grid에서 수정
-							  detailPGrid.removeCheckedRows();
-							  detailPGrid.refreshLayout();
-							},
-					error : function(reject){
-							console.log(reject);
-							// 실패
-							Swal.fire('삭제에 실패했습니다.');	
-							}			 		  
-							});	// ajax
-					})
-				}
-			} */
-			
+		
 		})
 	};
 			
@@ -556,16 +496,6 @@
 		// 생산계획 등록 그리드
 		let insertGrid = new tui.Grid({
 			el : document.getElementById('insertGrid'),
-			// 임시 데이터
-			// data 가져오는 법
-			// data: {
-			// 	api: {
-			// 		readData: {
-			// 			url: '/api/readData',
-			// 			method: 'GET'
-			// 		}
-			// 	}
-			// },
 			scrollX : false,
 			scrollY : false,
 			rowHeaders: ['checkbox','rowNum'],
@@ -580,7 +510,7 @@
 				name : 'prdNm'
 			}, {
 				header : '계획량',
-				name : 'odAmt',
+				name : 'rqtAmt',
 				editor : 'text'
 			}, {
 				header : '생산일수',
@@ -645,7 +575,7 @@
 				name : 'prdNm'
 			}, {
 				header : '요청수량',
-				name : 'odAmt',
+				name : 'rqtAmt',
 			}]
 		});
 			
@@ -664,9 +594,8 @@
 			// 클릭한 행의 자재명, 자재코드 
 			let val = requestModalGrid.getRow(ev.rowKey);
 			let RMCode = val.odCd;
-			console.log('모달그리드 : ' + RMCode);
 			let iGDataList = insertGrid.getData();
-			console.log(iGDataList);
+			let pplndAmt = requestModalGrid.getRow(ev.rowKey).rqtAmt;
 			if(iGDataList != ''){
 				for(let i =0; i<iGDataList; i++){
 					let code = el.odCd; 
@@ -676,7 +605,9 @@
 					}
 				}
 			}
+				 
 				insertGrid.appendRow(val);
+				insertGrid.setValue(ev.rowKey,'pplndAmt',pplndAmt)
 				$('#requestModal').modal("hide");	
 		})
 	}
@@ -770,8 +701,6 @@
 	function searchBtnHandler(){
 
 		$('#searchBtn').on('click',function(){
-			//let getStartDay = $("#startpicker-input").val().replace(/-/gi, '/').slice(-8);
-			//let getEndDay = $("#endpicker-input").val().replace(/-/gi, '/').slice(-8);
 			let getStartDay = $("#startpicker-input").val();
 			let getEndDay = $("#endpicker-input").val();
 			console.log(getStartDay);
@@ -801,6 +730,14 @@
 
 			$("#startpicker-input").val(today);
 			$("#endpicker-input").val(today);
+			
+			$.ajax({
+				url : '/planList',
+				method: "GET",			
+			}).then(res=>{
+				manageGrid.resetData(res);
+				return res;
+			})
 		});	
 	}
 	
@@ -860,8 +797,10 @@
 			for(let i=0; i<data.length;i++){
 				let pplndPrio = data[i].pplndPrio;
 				let pplndDays = data[i].pplndDays;
+				let prdCd = data[i].prdCd;				
 				let odCd = data[i].odCd;
-				dataList.push({pplnDate,pplnName,odCd})
+				let odAmt = data[i].rqtAmt;
+				dataList.push({pplnDate,pplnName,odCd,pplndPrio,pplndDays,prdCd,odAmt})
 				if(pplnName == ''){
 					Swal.fire({
 						icon: 'error',
@@ -879,12 +818,11 @@
 							url : '/planInsert',
 							method: 'POST',
 							contentType : 'application/json',
-							data :  JSON.stringify(dataList),
+							data : JSON.stringify(dataList),
 							dataType : 'json',
 							success : function(data){
 									 Swal.fire('등록이 완료되었습니다');
 									// grid에서 수정
-									  insertGrid.resetData(data);
 									  insertGrid.refreshLayout();
 									},
 							error : function(reject){

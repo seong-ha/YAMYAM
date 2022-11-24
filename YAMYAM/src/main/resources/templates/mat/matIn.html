@@ -10,15 +10,19 @@
 	</div>
 	<hr>
 	<ul class="ul-style">
-		<li><label for="matNm">자재명</label><input id="matNm" readonly><img
+		<li><label for="matNm">자재명</label><input id="matNm"
+			data-bs-toggle="modal" data-bs-target="#matModal" readonly> <img
 			class="Magnifying-Glass-img" alt="image" data-bs-toggle="modal"
 			data-bs-target="#matModal" src="../images/Magnifying_Glass.png">
-			<input type="text" readonly></li>
-		<li><label for="empNm">담당자</label><input id="empNm" readonly><img
+			<input id="matOdCd" type="text" data-bs-toggle="modal"
+			data-bs-target="#matModal" readonly></li>
+		<li><label for="empNm">담당자</label><input id="empNm"
+			data-bs-toggle="modal" data-bs-target="#empModal" readonly> <img
 			class="Magnifying-Glass-img" alt="image" data-bs-toggle="modal"
 			data-bs-target="#empModal" src="../images/Magnifying_Glass.png">
-			<input type="text" readonly></li>
-			
+			<input id="empId"type="text" data-bs-toggle="modal" data-bs-target="#empModal"
+			readonly></li>
+
 		<!-- Date Picker -->
 		<li><label for="startpicker-input">입고일자</label>
 			<div class="tui-datepicker-input tui-datetime-input tui-has-focus">
@@ -31,18 +35,18 @@
 					class="tui-ico-date"></span>
 				<div id="endpicker-container" style="margin-left: -1px;"></div>
 			</div>
-			<button class="btn btn-dark btn-sm">조회</button>
-			<button class="btn btn-dark btn-sm">초기화</button></li>
+			<button class="btn btn-dark btn-sm" id="SearchBtn">조회</button>
+			<button class="btn btn-dark btn-sm" id="resetDpBtn">초기화</button></li>
 	</ul>
+
+	<div id="grid"></div>
 
 	<div style="text-align: right;">
 		<button class="btn btn-dark btn-sm" data-bs-toggle="modal"
 			data-bs-target="#addModal">추가</button>
-		<button class="btn btn-dark btn-sm">선택삭제</button>
-		<button class="btn btn-dark btn-sm">저장</button>
+		<button class="btn btn-dark btn-sm" id="deleteBtn">삭제</button>
+		<button class="btn btn-dark btn-sm" id="saveBtn">저장</button>
 	</div>
-
-	<div id="grid"></div>
 
 	<!-- 추가 버튼 모달 -->
 	<div class="modal" id="addModal" tabindex="-1"
@@ -58,10 +62,6 @@
 					<div>
 						<div id="modalGrid" style="width: 100%;"></div>
 					</div>
-					<div align="center">
-						<button class="btn btn-dark btn-sm" data-bs-dismiss="modal">추가</button>
-						<button class="btn btn-dark btn-sm" data-bs-dismiss="modal">취소</button>
-					</div>
 				</div>
 
 			</div>
@@ -71,20 +71,16 @@
 	<!-- 자재 목록 모달 -->
 	<div class="modal" id="matModal" tabindex="-1"
 		aria-labelledby="matModalLabel" aria-hidden="true">
-		<div class="modal-dialog modal-xl">
+		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header">
 					<h5 class="modal-title" id="matModalLabel">자재 목록</h5>
 					<button type="button" class="btn-close" data-bs-dismiss="modal"
-						aria-label="Close"></button>
+						aria-label="Close" id="mtrCloseBtn"></button>
 				</div>
 				<div class="modal-body">
 					<div>
 						<div id="modalGrid3"></div>
-					</div>
-					<div align="center">
-						<button class="btn btn-dark btn-sm" data-bs-dismiss="modal">추가</button>
-						<button class="btn btn-dark btn-sm" data-bs-dismiss="modal">취소</button>
 					</div>
 				</div>
 
@@ -95,164 +91,146 @@
 	<!-- 담당자 목록 모달 -->
 	<div class="modal" id="empModal" tabindex="-1"
 		aria-labelledby="empModalLabel" aria-hidden="true">
-		<div class="modal-dialog modal-xl">
+		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header">
 					<h5 class="modal-title" id="empModalLabel">사원 목록</h5>
 					<button type="button" class="btn-close" data-bs-dismiss="modal"
-						aria-label="Close"></button>
+						aria-label="Close" id="empCloseBtn"></button>
 				</div>
 				<div class="modal-body">
 					<div>
 						<div id="modalGrid2"></div>
-					</div>
-					<div align="center">
-						<button class="btn btn-dark btn-sm" data-bs-dismiss="modal">추가</button>
-						<button class="btn btn-dark btn-sm" data-bs-dismiss="modal">취소</button>
 					</div>
 				</div>
 
 			</div>
 		</div>
 	</div>
-	<script>
+	
+	<script th:inline="javascript">
 	let grid = inMatList(); 		// 입고전체조회 그리드
 	
-	let modalGrid = matList();		// 자재목록 모달 그리드
-	let modalGrid2 = empList();		// 자재목록 모달 그리드
-	let modalGrid3 = addInMat();	// 입고예정추가 모달 그리드
+	let modalGrid = matList();		// 자재 목록 모달 그리드
+	let modalGrid2 = empList();		// 직원 목록 모달 그리드
+	let modalGrid3 = addInMat();	// 입고 예정 추가 모달 그리드
 	
 	modalRef();						// 모달 리프레쉬
 	
-	datePicker();
+	datePicker();					// datapicker
+	
+	resetBtnFn();					// 초기화 버튼
+	SearchBtnFn();					// 조회 버튼
+	insertOrder();					// 행 추가
+	saveBtnFn();					// 저장 버튼
+	deleteBtnFn();					// 삭제 버튼
+	
+	matModalClickFn();				// 자재 모달 클릭 시 인풋 태그로
+	empModalClickFn();				// 직원 모달 클릭 시 인풋 태그로
 	
 	/*------------------------------
 	// 입고전체조회 그리드
 	--------------------------------*/
 	function inMatList(){
-		let dataList = [
-		    {
-		        maCode: 'OAF-20221104-011',
-		        mtCode: 'RML-10101',
-		        maNm: '얇은 만두피',
-		        count: 999,
-		        inDate: '2022-11-12',
-		        maLot: 'OAF-20221104-011',
-		        eDate: '2023-11-30'
-		    },
-		    {
-		        maCode: 'OAF-20221105-011',
-		        mtCode: 'RML-10101',
-		        maNm: '두꺼운 만두피',
-		        count: 1000,
-		        inDate: '2022-11-12',
-		        maLot: 'OAF-20221104-012',
-		        eDate: '2023-11-30'
-		    }
-		  ]
 		let grid = new tui.Grid({
 		      el: document.getElementById('grid'),
 		      bodyHeight: 500,
-		      data: dataList,
-		      rowHeaders: ['checkbox', 'rowNum'],
+		      data: null,
+		      rowHeaders: ['checkbox','rowNum'],
 		      scrollX: false,
 		      scrollY: true,
 		      columns: [
 		        {
 		          header: '발주코드',
-		          name: 'maCode'
+		          name: 'matOdCd',
+		          sortable: true
 		        },
 		        {
 		          header: '자재코드',
-		          name: 'mtCode'
+		          name: 'mtrCd',
+		          sortable: true
 		        },
 		        {
 		          header: '자재명',
-		          name: 'maNm'
+		          name: 'mtrNm',
+		          sortable: true
 		        },
 		        {
 		          header: '입고량',
-		          name: 'count'
+		          name: 'matInAmt',
+		          sortable: true
 		        },
 		        {
 		          header: '입고일',
-		          name: 'inDate'
+		          name: 'matInDate',
+		          sortable: true,
+		          editor: 'datePicker',
+			      validation: {
+					     dataType: 'datePicker',
+					     required: true
+					      }
 		        },
 		        {
 		          header: '자재LOT번호',
-		          name: 'maLot'
+		          name: 'matLot',
+		          sortable: true
 		        },
 		        {
 		          header: '유통기한',
-		          name: 'eDate'
+		          name: 'matEdate',
+		          sortable: true
 		        }
 		      ]
 		    });
 		
-		    grid.on('check', ev => {
-		      console.log('check!', ev);
-		    });
-		
-		    grid.on('uncheck', ev => {
-		      console.log('uncheck!', ev);
-		    });
-		
-		    grid.on('focusChange', ev => {
-		      console.log('change focused cell!', ev);
-		    });
     	return grid;
 	}
 	
 	/*------------------------------
-	// 자재목록 모달 그리드
+	// 입고예정 추가
 	--------------------------------*/
-	function matList() {
-		let dataList = [{
-			code: 'OAF-20221104-001',
-			maCode: 'RML-10101',
-			maNm: '얇은 만두피',
-			actNm: 'YD 만두피',
-			count: 999,
-			date: '2022-11-12'
-		},
-		{
-			code: 'OAF-20221106-003',
-			maCode: 'RML-10101',
-			maNm: '얇은 만두피',
-			actNm: 'SJ 만두피',
-			count: 1000,
-			date: '2022-11-12'
-		}]
+	function addInMat() {
 		let modalGrid = new tui.Grid({
 			el: document.getElementById('modalGrid'),
 			bodyHeight: 400,
-			data: dataList,
-			rowHeaders: ['checkbox'],
+			data: [[${bfInList}]],
+			rowHeaders: ['rowNum'],
 			scrollX: false,
 			scrollY: true,
 			columns: [{
 		          header: '발주코드',
-		          name: 'code'
+		          name: 'matOdCd',
+		          sortable: true
 		        },
 		        {
 		          header: '자재코드',
-		          name: 'maCode'
+		          name: 'mtrCd',
+		          sortable: true
 		        },
 		        {
 		          header: '자재명',
-		          name: 'maNm'
+		          name: 'mtrNm',
+		          sortable: true
 		        },
 		        {
 			      header: '업체명',
-			      name: 'actNm'
+			      name: 'actNm',
+			      sortable: true
 			    },
 		        {
 				  header: '입고량',
-				  name: 'count'
+				  name: 'matInAmt',
+				  sortable: true
 				},
 			    {
 				  header: '검사일자',
-				  name: 'date'
+				  name: 'matChkDate',
+				  sortable: true
+				},
+			    {
+				  header: '유통기한',
+				  name: 'matEdate',
+				  sortable: true
 				}
 	      ] 
 		});
@@ -263,30 +241,29 @@
 	// 담당자목록 모달 그리드
 	--------------------------------*/
 	function empList(){
-		let dataList = [{
-			empNm: '김검수',
-			empId: 'wantToGoHome'
-		},
-		{
-			empNm: '이검수',
-			empId: 'meToo'
-		}
-		]
 		let modalGrid2 = new tui.Grid({
 			el: document.getElementById('modalGrid2'),
-			bodyHeight: 150,
-			data: dataList,
-			rowHeaders: ['checkbox'],
+			bodyHeight: 250,
+			data: [[${empList}]],
+			rowHeaders: ['rowNum'],
 			scrollX: false,
 			scrollY: true,
 			columns: [
 				{
 					header: '이름',
 					name: 'empNm',
+					sortable: true,
+					filter: {
+					        type: 'select'			  
+					      }
 				},
 				{
 					header: '아이디',
 					name: 'empId',
+					sortable: true,
+					filter: {
+					        type: 'select'			  
+					      }
 				}
 			]
 		});
@@ -294,45 +271,33 @@
 	}
 	
 	/*------------------------------
-	// 입고예정 추가
+	// 자재목록 모달 그리드
 	--------------------------------*/
-	function addInMat(){
-		let dataList = [{
-			code: 'RML-10101',
-			name: '얇은 만두피',
-			size: 100,
-			count: 200
-		},
-		{
-			code: 'RML-10102',
-			name: '굵은 만두피',
-			size: 100,
-			count: 200
-		}]
+	function matList(){
 		let modalGrid3 = new tui.Grid({
 			el: document.getElementById('modalGrid3'),
-			bodyHeight: 150,
-			data: dataList,
-			rowHeaders: ['checkbox'],
+			bodyHeight: 250,
+			data: [[${matList}]],
+			rowHeaders: ['rowNum'],
 			scrollX: false,
 			scrollY: true,
 			columns: [{
 		          header: '자재코드',
-		          name: 'code'
+		          name: 'mtrCd',
+		          sortable: true,
+				  filter: {
+				        type: 'select'			  
+				      }
 		        },
 		        {
 		          header: '자재명',
-		          name: 'name'
-		        },
-		        {
-		          header: '규격',
-		          name: 'size'
-		        },
-		        {
-			      header: '수량',
-			      name: 'count'
-			    }
-	      ] 
+		          name: 'mtrNm',
+		          sortable: true,
+				  filter: {
+				        type: 'select'			  
+				      }
+		        }
+	     	] 
 		});
 		return modalGrid3;
 	}
@@ -358,22 +323,184 @@
 	// DatePicker
 	----------------*/
 	function datePicker() {
-	   var today = new Date();
-	    var picker = tui.DatePicker.createRangePicker({
-	        startpicker: {
-	            date: today,
-	            input: '#startpicker-input',
-	            container: '#startpicker-container'
-	        },
-	        endpicker: {
-	            date: today,
-	            input: '#endpicker-input',
-	            container: '#endpicker-container'
-	        },
-	        selectableRanges: [
-	            [today, new Date(today.getFullYear() + 1, today.getMonth(), today.getDate())]
-	        ]
-	    });
+		rangeDatepickerInit('#startpicker-input', '#startpicker-container','#endpicker-input','#endpicker-container')
+		document.getElementById('startpicker-input').value = null;
+		document.getElementById('endpicker-input').value = null;
+	}
+	
+	/*------------------------
+	// 초기화버튼 이벤트
+	--------------------------*/
+	function resetBtnFn() {
+		document.getElementById('resetDpBtn').addEventListener('click',function(){
+			document.getElementById('startpicker-input').value = null;
+			document.getElementById('endpicker-input').value = null;
+			document.getElementById('matNm').value = '';
+			document.getElementById('matOdCd').value = '';
+			document.getElementById('empNm').value = '';
+			document.getElementById('empId').value = '';
+		});	
+	}
+	
+	/*------------------------
+	// 행 추가 버튼
+	----------------------------*/
+	function insertOrder() {
+		modalGrid3.on('click', function(ev){
+			let data = modalGrid3.getRow(ev.rowKey);
+			console.log(data);
+			    let rowData = {matOdCd: data.matOdCd, mtrCd: data.mtrCd, 
+			    				mtrNm: data.mtrNm, matInAmt: data.matInAmt, 
+			    				matInDate: "", matLot : "" , matEdate: data.matEdate};
+ 		    grid.appendRow(rowData);
+		})
+	}
+	
+	/*-----------
+	// 행 삭제 버튼
+	--------------*/
+	function deleteBtnFn() {
+		document.getElementById('deleteBtn').addEventListener('click', function(){
+			let data = grid.getCheckedRows();
+			console.log(data);
+		
+			Swal.fire({
+			      title: '정말로 삭제 하시겠습니까?',
+			      //text: "다시 되돌릴 수 없습니다. 신중하세요.",
+			      icon: 'warning',
+			      showCancelButton: true,
+			      confirmButtonColor: '#3085d6',
+			      cancelButtonColor: '#d33',
+			      confirmButtonText: '승인',
+			      cancelButtonText: '취소',
+			      //reverseButtons: true, // 버튼 순서 거꾸로
+			      
+			    }).then((result) => {
+			    	  $.ajax({
+				        	url: '/inManage',
+				        	method: 'DELETE',
+				        	contentType: 'application/JSON',
+							data: JSON.stringify(data),
+							success: function(result){
+								console.log(result);
+								if(result >= 1){
+						        	Swal.fire('삭제가 완료되었습니다.');
+						        	grid.removeCheckedRows();
+								} else {
+									Swal.fire('삭제에 실패하였습니다.');
+								}
+							},
+							error: function(reject){
+								console.log(reject);
+							}
+			        })
+			})
+		})
+	}
+	
+	/*--------------------------------
+	// 저장 버튼 insert 이벤트
+	----------------------------------*/
+	function saveBtnFn() {
+		document.getElementById('saveBtn').addEventListener('click', function(){
+			let data = grid.getCheckedRows();
+			console.log(data);
+			Swal.fire({
+		      title: '저장 하시겠습니까?',
+		      icon: 'warning',
+		      showCancelButton: true,
+		      confirmButtonColor: '#3085d6',
+		      cancelButtonColor: '#d33',
+		      confirmButtonText: '승인',
+		      cancelButtonText: '취소',
+		      
+		    }).then((result) => {
+		      if (result.isConfirmed) {
+		        $.ajax({
+		        	url: '/inManage',
+		        	method: 'POST',
+		        	contentType: 'application/JSON',
+					data: JSON.stringify(data),
+					success: function(result){
+						console.log(result);
+						if(result >= 1){
+				        	Swal.fire('저장이 완료되었습니다.');
+							setTimeout(() => location.reload(),400);
+						} else {
+							Swal.fire('저장에 실패하였습니다.');
+						}
+					},
+					error: function(reject){
+						console.log(reject);
+					}
+		        })
+		      }
+		   })
+		})
+	}
+	
+	/*--------------------------------
+	// 조회 버튼 클릭 시 그리드 등장
+	----------------------------------*/
+	function SearchBtnFn() {
+		document.getElementById('SearchBtn').addEventListener('click',function() {
+			let matOdCd = document.getElementById('matOdCd').value; // 자재 코드
+			let empNm = document.getElementById('empNm').value; // 직원 이름
+			let matInDate = document.getElementById('startpicker-input').value; // 시작 날짜
+			let matEdate = document.getElementById('endpicker-input').value; // WHERE절 비교 용으로 유통기한에 end Date담음
+			
+			let data = {mtrCd: matOdCd, empNm: empNm, matInDate: matInDate, matEdate: matEdate};
+			
+			$.ajax({
+				url: '/matIn',
+				method: 'POST',
+				contentType: 'application/JSON',
+				data: JSON.stringify(data),
+				success: function(result){
+					grid.resetData(result)
+				},
+				error: function(reject) {
+					console.log(reject);
+				}
+			})
+		})
+	}
+	
+	/*--------------------------------
+	// 자재 모달 행 클릭시 인풋 태그로
+	----------------------------------*/
+	function matModalClickFn() {
+		modalGrid.on('click', function(ev){
+			let data = modalGrid.getRow(ev.rowKey);
+			console.log(data);
+			let matNm = document.getElementById('matNm');
+			let matCd = document.getElementById('matOdCd');
+
+			
+			matNm.value = data.mtrNm;
+			matCd.value = data.mtrCd;
+
+			
+			mtrCloseBtn.click();
+		})
+	}
+	
+	/*--------------------------------
+	// 직원 모달 행 클릭시 인풋 태그로
+	----------------------------------*/
+	function empModalClickFn() {
+		modalGrid2.on('click', function(ev){
+			let data = modalGrid2.getRow(ev.rowKey);
+			console.log(data);
+			
+			let empNm = document.getElementById('empNm');
+			let empId = document.getElementById('empId');
+			
+			empNm.value = data.empNm;
+			empId.value = data.empId;
+			
+			empCloseBtn.click();
+		})
 	}
 	</script>
 </div>

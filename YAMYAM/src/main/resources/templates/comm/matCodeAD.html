@@ -254,9 +254,24 @@ width:80%;	display: inline;
 	     })
 	     
 	     
+<<<<<<< HEAD
 	     // 자재명 돋보기 클릭시 데이터 가져오기(미구현)
 	     
 	    /*  grid2.addEventListener('click', function(e){
+=======
+	     // 자재 코드 1줄 클릭시 데이터 가져오기
+	    
+	     grid2.addEventListener('click', function(){
+	     rowData = [{mtrCd: "", mtrNm: "", mtrStd: "", mtrUn: "", mtrSfamt: "", mtrSts: ""}];
+	     })
+	    	 
+		
+	     
+	     
+	     // 자재명 돋보기 클릭시 데이터 가져오기(미구현)
+	     
+	     grid2.addEventListener('click', function(e){
+>>>>>>> main
 	    	 let rowData = grid2.getRow(e.rowKey);
 	    	 
 	    	 let actCd = rowData['actCd'];
@@ -271,6 +286,7 @@ width:80%;	display: inline;
 	    	 
 	    	 $('grid2').modal("hide");
 	     })
+<<<<<<< HEAD
 	      */
 	      
 	     // 자재 코드 정보 불러오기
@@ -304,6 +320,16 @@ width:80%;	display: inline;
 			}
 		}) */
 		
+=======
+	     
+	     // 거래처 검색에서 데이터 가져오기
+	     
+	     
+	     
+	     
+	     
+ 
+>>>>>>> main
 	</script>
 
 </div>

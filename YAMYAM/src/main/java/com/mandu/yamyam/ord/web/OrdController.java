@@ -21,6 +21,35 @@ public class OrdController {
 	@Autowired
 	OrdService service;
 	
+	/*-----------------
+	//     Modal
+	-------------------*/
+	
+	// 거래처 Modal 조회
+	@GetMapping("actListModal")
+	@ResponseBody
+	public List<OrdVO> actList() {
+		return service.actList();
+	}
+	
+	// 제품명 Modal 조회
+	@GetMapping("prdListModal")
+	@ResponseBody
+	public List<OrdVO> prdList() {
+		return service.prdList();
+	}
+	
+	// 완제품LOT Modal 조회
+	@GetMapping("lotListModal")
+	@ResponseBody
+	public List<OrdVO> lotList() {
+		return service.lotList();
+	}
+	
+	/*-----------------
+	//   주문 관리 Tab
+	-------------------*/
+	
 	// 주문서 조회
 	@GetMapping("ordList")
 	@ResponseBody
@@ -28,26 +57,67 @@ public class OrdController {
 		return service.getOrdList();
 	}
 	
-	// 거래처 Modal 조회
-
+	// 주문서 조건조회
+	@GetMapping("detailList")
+	@ResponseBody
+	public List<OrdVO> getList(OrdVO vo) {
+		return service.getList(vo);
+	}
 	
 	// 주문서 등록
-	@PostMapping("/insertOrd")
+	@PostMapping("insertOrd")
 	@ResponseBody
 	public int insertOrd(@RequestBody List<OrdVO> vo) {
-		System.out.println(1213);
 		int result =  service.insertOrd(vo);
-		System.out.println(result);
+		return result;
+	}
+	
+	// 주문서 수정
+	@PostMapping("updateOrd")
+	@ResponseBody
+	public int updateOrd(@RequestBody List<OrdVO> vo) {
+		int result =  service.updateOrd(vo);
 		return result;
 	}
 	
 	// 주문서 선택삭제
 	@DeleteMapping("deleteOrd")
 	@ResponseBody
-	public int deleteOrd(@RequestBody OrdVO vo) {
+	public int deleteOrd(@RequestBody List<OrdVO> vo) {
 		int result = service.deleteOrd(vo);
 		return result;
 	}
+	
+	
+	/*-----------------
+	// 완제품 출고 조회 Tab
+	-------------------*/
+	
+	// 출고 내역 리스트 조회
+	@GetMapping("ordOutList")
+	@ResponseBody
+	public List<OrdVO> getOrdOutList() {
+		return service.getOrdOutList();
+	}
+	
+	// 출고 내역 리스트 조건조회
+	@GetMapping("detailOutList")
+	@ResponseBody
+	public List<OrdVO> getDetailOutList(OrdVO vo) {
+		return service.getDetailOutList(vo);
+	}
+	
+	// 출고중인 주문서 출고완료로 수정
+	@PostMapping("updateOutOrd")
+	@ResponseBody
+	public int updateOutOrd(@RequestBody List<OrdVO> vo) {
+		int result =  service.updateOutOrd(vo);
+		return result;
+	}
+	
+	/*-----------------
+	// 영업 관리 layout
+	-------------------*/
 	
 	// 주문 관리
 	@RequestMapping("/odAd") 

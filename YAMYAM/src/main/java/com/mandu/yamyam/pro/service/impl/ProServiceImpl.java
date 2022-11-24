@@ -15,6 +15,19 @@ public class ProServiceImpl implements ProService {
 
 	@Autowired
 	ProMapper mapper;
+
+	// 공통코드(공정분류)
+	@Override
+	public List<ProVO> getCommP() {
+		return mapper.getCommP();
+	}
+	
+	// 공통코드(에러코드)
+	@Override
+	public List<ProVO> getCommE() {
+		return mapper.getCommE();
+	}
+	
 	
 	// 생산계획 조회
 	@Override
@@ -32,8 +45,12 @@ public class ProServiceImpl implements ProService {
 	@Override
 	public int insertPlan(List<ProVO> vo) {
 		int result = 0;
+		mapper.insertPlan(vo.get(0));
+		mapper.updateBpod(vo.get(0));
+		String code = vo.get(0).getPplnCd();
 		for(int i=0; i<vo.size(); i++) {
-			result += mapper.insertPlan(vo.get(i));
+			vo.get(i).setPplnCd(code);
+			result += mapper.insertPlanDetail(vo.get(i));
 		}
 		return result;
 	}
@@ -83,5 +100,91 @@ public class ProServiceImpl implements ProService {
 		return mapper.getPrioNo();
 	}
 	
+	/*---------------
+	// 생산 지시 관리
+	----------------*/
+	// 미지시 계획 조회
+	@Override
+	public List<ProVO> noOrderList() {
+		return mapper.noOrderList();
+	}
+	
+	// 생산라인 조회
+	@Override
+	public List<Map<String, Object>> lineList(ProVO vo) {
+		return mapper.lineList(vo);
+	}
+	
+	// 필요자재 조회
+	@Override
+	public List<ProVO> needM(ProVO vo) {
+		return mapper.needM(vo);
+	}
 
+	// 필요자재LOT목록 조회
+	@Override
+	public List<ProVO> mLotList(ProVO vo) {
+		return mapper.mLotList(vo);
+	}
+
+	// 생산지시 등록
+	@Override
+	public int insertOrder(List<ProVO> vo) {
+		int result = 0;
+		mapper.insertOrder(vo.get(0));
+		String podCd = vo.get(0).getPodCd();
+		
+		for(int i =0; i<vo.size(); i++) {
+			vo.get(i).setPodCd(podCd);
+			result += mapper.insertOrderDetail(vo.get(i));
+			mapper.updatePplnd(vo.get(i));
+		}
+		return result;
+	}
+	
+	// 자재 재고 수정
+	@Override
+	public int updateMin(List<ProVO> vo) {
+		System.out.println(vo);
+		int result = 0;
+		for(int y = 0; y<vo.size(); y++) {
+			
+			result += mapper.updateMin(vo.get(y));
+		}
+		return result;
+	}
+	
+	/*---------------
+	// 생산 지시 조회
+	----------------*/
+	@Override
+	public List<ProVO> getOrderList(ProVO vo) {
+		return mapper.getOrderList(vo);
+	}
+	
+	/*---------------
+	// 생산 관리
+	----------------*/
+	// 지시완료된 생산지시 조회
+	@Override
+	public List<ProVO> getOProList(ProVO vo) {
+		return mapper.getOProList(vo);
+	}
+	
+	
+	/*---------------
+	// 공정 관리
+	----------------*/
+	@Override
+	public List<ProVO> getProList(ProVO vo) {
+		return mapper.getProList(vo);
+	}
+	
+	// 제품공정 흐름도 조회
+	@Override
+	public List<ProVO> getFlowList(ProVO vo) {
+		return mapper.getFlowList(vo);
+	}
+	
+	
 }
