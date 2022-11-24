@@ -44,10 +44,11 @@
 			<div id="proGrid"></div>
 		</div>
 		<div class="col-1" >
-			<h4>공정상세사항</h4>
-			<div>
+			<div style="float : center;">
+				<h4 style="text-align:center;">공정</h4>
+				<h4 style="text-align:center;">상세사항</h4>
 			
-				<table style="width: 100%; float:center;">
+			<table style="width: 100%; float:center;">
 					<tr>
 						<td><button type="button" id="startBtn" class="btn btn-dark btn2">생산시작</button></td>
 					</tr>
@@ -127,9 +128,10 @@
 <script>
 
 	let pOrderGrid = orderGridInit();			// 진행생산지시 grid 초기화
-	let progressGrid = progressGridInit();		// 공정목록 grid 초기화
+	let proGrid = progressGridInit();		// 공정목록 grid 초기화
 	let orModalGrid = orModalGridInit();		// 생산지시목록 모달 grid
 	let pLModalGrid = pLModalGridInit();		// 공정이동표 모달 grid
+
 	
 	
 	progressBtnHandler();		// 생산지시목록 클릭 버튼 이벤트 핸들러
@@ -195,29 +197,10 @@
 	function progressGridInit(){
 		let proGrid = new tui.Grid({
 			el: document.getElementById('proGrid'),
-			// 임시 데이터
-			data: [{
-				plineNo : '',
-				pproCd : '',
-				pproName : '',
-				eqpCd : '',
-				plineCd : '',
-				pproEmpName : '',
-				pproInAmt : '',
-				pproErAmt : '',
-				pproOtAmt : '',
-				pproSTime : '',
-				pproETime : '',
-				eqpSts : ''
-			}],
 			scrollX: false,
 			scrollY: false,
 			rowHeaders: ['rowNum'],
 			columns: [
-				{
-					header: '진행순번',
-					name: 'plineNo'
-				},
 				{
 					header: '공정코드',
 					name: 'pproCd'
@@ -392,8 +375,24 @@
 	----------------*/
 	function pOrderGridClickHandler(){
 		$('#pOrderGrid').on('click',function(ev){
-			let plineCd = pOrderGrid.getData()[0].plineCd;
-			console.log(plineCd);
+			console.log(ev);
+			let data = pOrderGrid.getData();
+			let plineCd = data[0].plineCd;
+			$.ajax({
+				url : '/flowProgress',
+				data : {"plineCd" : plineCd},
+				contentType: 'application/json',
+				dataType : 'json',
+				method: "GET",
+				success : function(data){
+					proGrid.resetData(data);
+					let proData = proGrid.getData();
+					for(let i = 0; i<proData.length; i++){
+						proGrid.setValue(i, 'eqpSts', '대기'); 
+					}
+				},
+				error : function(reject){console.log(reject);}				
+			})
 			// /proInUpdate
 			
 		})

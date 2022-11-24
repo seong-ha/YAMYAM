@@ -64,12 +64,13 @@
 		let eqModalGrid = eqModalGridInit();	// 미사용 설비 모달 그리드
 
 		
-		searchBtnHandler();	 	//  date picker input 값 조회 버튼
+		searchBtnHandler();	 	// 검색 버튼 이벤트 핸들러
 		plusBtnHandler(); 	 	// 그리드 행 추가 이벤트 핸들러
 		removeBtnHandler();  	// 그리드 행 삭제 이벤트 핸들러
 		insertBtnHandler();		// 그리드 행 저장 이벤트 핸들러
 		gridClick(); 			// 공정관리 그리드 클릭 이벤트
 		eqModalGridClick();		// 미사용 설비 모달  그리드 클릭 이벤트
+		cancelBtnHandler();     // 값 초기화 버튼
 		
 		/*------------
 		// grid 초기화
@@ -77,13 +78,15 @@
 		function gridInit(){
 			let grid = new tui.Grid({
 				el : document.getElementById('grid'),
+				bodyHeight: 510,
 				scrollX : false,
-				scrollY : false,
+				scrollY : true,
 				rowHeaders: ['checkbox','rowNum'],				
 				columns : [ 
 				{
 					header : '공정코드',
 					name : 'pproCd',
+					editor : 'text'
 				}, {
 					header : '공정구분',
 					name : 'pproSts',
@@ -91,36 +94,18 @@
 					      type: 'select',
 					      options: {
 					        listItems: [
-					          {
-					            text: '혼합',
-					            value: '혼합'
-					          },
-					          {
-					            text: '성형',
-					            value: '성형'
-					          },
-					          {
-					            text: '증숙',
-					            value: '증숙'
-					          },
-					          {
-					            text: '냉동',
-					            value: '냉동'
-					          },
-					          {
-					            text: '포장',
-					            value: '포장'
-					          },
-				          	{
-					            text: '박스',
-					            value: '박스'
-					          }
-					        ]
+					          {text: '혼합', value: '혼합'},
+					          {text: '성형', value: '성형'},
+					          {text: '증숙', value: '증숙'},
+					          {text: '냉동', value: '냉동'},
+					          {text: '포장', value: '포장'},
+				          	  {text: '박스', value: '박스'}]
 					      }
-					    }
+					}
 				}, {
 					header : '공정명',
-					name : 'pproName'
+					name : 'pproName',
+					editor : 'text'
 				}, {
 					header : '설비명',
 					name : 'eqpNm'				
@@ -132,7 +117,19 @@
 					name : 'mdNm',
 				}, {
 					header : '담당자',
-					name : 'pproEmpName'
+					name : 'pproEmpName',
+					editor: {
+					      type: 'select',
+					      options: {
+					        listItems: [
+					          {text: '최혼합', value: '최혼합'},
+					          {text: '최성형', value: '최성형'},
+					          {text: '최증숙', value: '최증숙'},
+					          {text: '최냉동', value: '최냉동'},
+					          {text: '최포장', value: '최포장'},
+				          	  {text: '최박스', value: '최박스'}]
+					      }
+					}
 	
 				}]
 			});
@@ -157,26 +154,6 @@
 		function eqModalGridInit(){
 			let eqModalGrid = new tui.Grid({
 				el: document.getElementById('eqModalGrid'),
-				// 임시 데이터
-				data: [{
-					eqpCd : 'EQM-002',
-					eqpNm : '급속냉동기',
-					mdNm:'Fz-2003',
-					pproEmpName : 'BIBIGO'
-				},
-				{
-					eqpCd : 'EQM-003',
-					eqpNm : '판형열교환기',
-					mdNm:'OEM',
-					pproEmpName : 'BIBIGO'
-				},
-				{
-					eqpCd : 'EQM-004',
-					eqpNm : '살균설비',
-					mdNm:'LS-100HD',
-					pproEmpName : 'BIBIGO'
-				}
-				],
 				scrollX: false,
 				scrollY: false,
 				rowHeaders: ['rowNum'],
@@ -202,13 +179,6 @@
 			return eqModalGrid;
 		}
 	
-
-		if(name == null){
-			 $("#materialModal").modal("show");
-			 materialGrid.refreshLayout();
-		}
-		
-		
 		
 		/*------------
 		// 공정관리 그리드 클릭 이벤트
@@ -220,10 +190,14 @@
 				}
 				let name = grid.getValue(ev.rowKey, 'eqpNm')
 				if(name == null){
-					if(ev.columnName =='eqpNm' || ev.columnName =='eqpCd' || ev.columnName =='mdNm'){
-			   			$('#eqModal').modal('show');
-			   			eqModalGrid.refreshLayout();
-			   		}
+					$.ajax({
+						url : '/noUseEqp',
+						method: "GET",			
+					}).then(res=>{
+						eqModalGrid.resetData(res);
+					})
+		   			$('#eqModal').modal('show');
+		   			eqModalGrid.refreshLayout();
 				}
 				
 			})
@@ -257,16 +231,36 @@
 		function searchBtnHandler(){
 
 			$('#searchBtn').on('click',function(){
-				let proName = $('select[name=pList] option:selected').val();
-				console.log(proName);
-				// 갖고온 start, end 값을 넘겨서 select 해오기
-				// ajax 받아오고
-				// success : function(data){manageGrid.resetData(data);}
+				let eqpType = $('select[name=pList] option:selected').val();
 				
+				$.ajax({
+					url : '/getProList',
+					data : {"eqpType" : eqpType},
+					contentType: 'application/json',
+					dataType : 'json',
+					method: "GET",
+					success : function(data){grid.resetData(data);},
+					error : function(reject){console.log(reject);}				
+				})
 			})
 		}
 
-		
+		/*------------
+		// 초기화버튼 이벤트 핸들러
+		----------------*/
+		function cancelBtnHandler(){
+			$('#cancelBtn').on('click',function(){
+				
+				$.ajax({
+					url : '/getProList',
+					contentType: 'application/json',
+					dataType : 'json',
+					method: "GET",
+					success : function(data){grid.resetData(data);},
+					error : function(reject){console.log(reject);}				
+				})
+			});	
+		}
 		
 		/*------------
 		// 그리드 행 추가 버튼 이벤트 핸들러
@@ -306,7 +300,7 @@
 		
 		
 		/*------------
-		// 저장 버튼 클릭 이벤트 핸들러
+		// 저장 버튼 클릭 이벤트 핸들러 (수행시 공정테이블에 insert)
 		----------------*/	
 		function insertBtnHandler(){
 			// grid 선택 행 삭제

@@ -49,7 +49,7 @@ public interface ProService {
 	// 생산 지시 관리
 	----------------*/
 	// 미지시 계획 조회
-	public List<ProVO> noOrderList();
+	public List<ProVO> noOrderList(ProVO vo);
 	
 	// 생산라인 조회
 	public List<Map<String,Object>> lineList(ProVO vo);
@@ -71,6 +71,14 @@ public interface ProService {
 	// 제품 공정 흐름도 조회
 	public List<ProVO> getFlowList(ProVO vo);
 	
+	// 제품 공정 흐름도 관리
+	public List<ProVO> flowManage(ProVO vo);
+	
+	// 미사용 설비 조회
+	public List<ProVO> noUseEqp();
+	
+	// 제품 공정 목록 조회
+	public List<ProVO> flowProgress(ProVO vo);
 	
 	/*---------------
 	// 생산 관리

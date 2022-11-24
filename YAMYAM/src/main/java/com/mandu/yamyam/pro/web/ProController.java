@@ -98,8 +98,8 @@ public class ProController {
 	// 미지시계획목록 조회
 	@RequestMapping("/getNoOrder")
 	@ResponseBody
-	public List<ProVO> getNoOrderList(){
-		return service.noOrderList();
+	public List<ProVO> getNoOrderList(ProVO vo){
+		return service.noOrderList(vo);
 	}
 	
 	// 생산지시 조회
@@ -150,6 +150,13 @@ public class ProController {
 		return service.getOProList(vo);
 	}
 	
+	// 공정목록 조회
+	@RequestMapping("/flowProgress")
+	@ResponseBody
+	public List<ProVO> flowProgress(ProVO vo){
+		return service.flowProgress(vo);
+	}
+	
 	// 투입량 수정
 	@PostMapping("/proInUpdate")
 	@ResponseBody
@@ -178,6 +185,13 @@ public class ProController {
 		return service.getProList(vo);
 	}
 	
+	// 제품공정흐름도 조회
+	@RequestMapping("/noUseEqp")
+	@ResponseBody
+	public List<ProVO> noUseEqp(ProVO vo){
+		return service.noUseEqp();
+	}
+	
 	/*---------------
 	// 공정 흐름도
 	----------------*/
@@ -194,6 +208,14 @@ public class ProController {
 	public List<ProVO> getFlow(ProVO vo){
 		return service.getFlowList(vo);
 	}
+	
+	// 제품공정흐름도 관리
+	@RequestMapping("/flowManage")
+	@ResponseBody
+	public List<ProVO> flowManage(ProVO vo){
+		return service.flowManage(vo);
+	}
+	
 	
 	// 공정 모니터링
 	@RequestMapping("/monitoring")

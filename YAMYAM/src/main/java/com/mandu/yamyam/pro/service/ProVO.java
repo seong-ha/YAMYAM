@@ -57,6 +57,7 @@ public class ProVO {
 	private String pproCd;		// 공정코드
 	private String eqpCd;		// 설비코드
 	private String eqpNm;		// 설비이름
+	private String eqpType; 	// 설비타입
 	private String mdNm;		// 설비 모델이름
 	private String pproName;	// 공정명
 	private String pproEmpName; // 담당자
