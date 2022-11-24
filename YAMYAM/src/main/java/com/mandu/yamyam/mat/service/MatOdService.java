@@ -14,12 +14,11 @@ public interface MatOdService {
 	// 돋보기 업체 목록 모달
 	public List<Map<String, Object>> actList();
 	
-	
 	//===============================================
 	// 1) 자재 발주 관리
 	//===============================================
 	// 자재 발주 관리 - 전체 조회(일반 탭)
-	public List<Map<String, Object>> matOrderList();
+	public List<Map<String, Object>> matOrderList(MatVO vo);
 	
 	// 자재 발주 전체 리스트(생산계획서용 탭)
 	public List<Map<String, Object>> odMatList();
@@ -61,6 +60,9 @@ public interface MatOdService {
 	//===============================================
 	// 2) 자재 발주 조회
 	//===============================================
+	// 자재 발주 전체 조회
+	public List<Map<String, Object>> matOdLookUpList();
+	
 	// 발주 신청일 조회 버튼 클릭 이벤트 (조건 조회 탭)
 	public List<Map<String, Object>> odListSearch(MatVO vo);
 	
@@ -72,7 +74,7 @@ public interface MatOdService {
 	// 3) 자재 입고 검수 관리
 	//===============================================
 	// 자재 입고 검수 관리 - 전체 조회
-	public List<Map<String, Object>> chkOdMatList();
+	public List<Map<String, Object>> chkOdMatList(MatVO vo);
 	
 	// 자재 입고 검수 관리 - 추가 모달창
 	public List<Map<String, Object>> addChkModal();
@@ -93,7 +95,7 @@ public interface MatOdService {
 	// 4) 자재 입고 관리
 	//===============================================
 	// 자재 입고 관리
-	public List<Map<String, Object>> matInAllList();
+	public List<Map<String, Object>> matInAllList(MatVO vo);
 	
 	// 입고 예정 목록
 	public List<Map<String, Object>> beforeInList();
@@ -108,8 +110,14 @@ public interface MatOdService {
 	// 5) 자재 출고 관리
 	//===============================================
 	// 자재 출고 관리
-	public List<Map<String, Object>> matOutAllList();
+	public List<Map<String, Object>> matOutAllList(MatVO vo);
 	
 	// 현 재고 목록
 	public List<Map<String, Object>> nowSamtList();
+	
+	// 출고 추가
+	public int odOutInsert(List<MatVO> list);
+	
+	// 출고 삭제
+	public int odOutDelete(List<MatVO> list);
 }
