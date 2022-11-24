@@ -124,6 +124,10 @@ public class MatOdServiceImpl implements MatOdService {
 		return mapper.chkMatList(vo.getMtrCd());
 	}
 
+	@Override
+	public int updatePlndSts(MatVO vo) {
+		return mapper.updatePlndSts(vo);
+	}
 	
 	//===============================================
 	// 2) 자재 발주 조회
@@ -236,6 +240,19 @@ public class MatOdServiceImpl implements MatOdService {
 	public List<Map<String, Object>> pOdAllList() {
 		return mapper.pOdAllList();
 	}
+
+	// 필요자재
+	@Override
+	public List<Map<String, Object>> needMtrList(MatVO vo) {
+		return mapper.needMtrList(vo);
+	}
+	
+	// 필요자재LOT목록
+	@Override
+	public List<Map<String, Object>> needMtrLotList(MatVO vo) {
+		return mapper.needMtrLotList(vo);
+	}
+
 
 	
 }

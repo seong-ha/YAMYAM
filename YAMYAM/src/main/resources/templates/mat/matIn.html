@@ -164,7 +164,13 @@
 		          header: '입고일',
 		          name: 'matInDate',
 		          sortable: true,
-		          editor: 'datePicker',
+			      editor: {
+			    	  type: 'datePicker',
+			    	  options: {
+			    		  format: 'yyyy-MM-dd',
+			    		  language: 'ko'
+			    	  }
+			      },
 			      validation: {
 					     dataType: 'datePicker',
 					     required: true

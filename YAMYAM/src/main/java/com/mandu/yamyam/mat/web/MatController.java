@@ -9,6 +9,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -109,7 +110,12 @@ public class MatController {
 		return service.newPlanLookUpBtn(vo);
 	}
 	
-	
+	// 저장하면 자재팀확인 -> 미지시 업데이트
+	@PutMapping("/matOd")
+	@ResponseBody
+	public int updatePlndSts(@RequestBody MatVO vo) {
+		return service.updatePlndSts(vo);
+	}
 	
 	//======================
 	// 2) 자재 발주 조회
@@ -212,6 +218,21 @@ public class MatController {
 		model.addAttribute("pOdList", service.pOdAllList());
 		return "mat/matOut";
 	}
+	
+	// 필요자재
+	@PostMapping("/needMtrList")
+	@ResponseBody
+	public List<Map<String,Object>> needMtrList(@RequestBody MatVO vo){
+		return service.needMtrList(vo);
+	}
+	
+	// 필요자재LOT목록
+	@PostMapping("/needLotList")
+	@ResponseBody
+	public List<Map<String,Object>> needMtrLotList(@RequestBody MatVO vo){
+		return service.needMtrLotList(vo);
+	}
+	
 	
 	//======================
 	// 6) 자재 입출고 조회

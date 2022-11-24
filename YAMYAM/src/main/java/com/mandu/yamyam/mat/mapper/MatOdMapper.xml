@@ -67,7 +67,8 @@
 	</select>
 	
 	<!-- 자재 발주 관리(일반 탭) - 날짜 기준 조건 적용 -->
-	<select id="odListDtLookUpBtn" resultType="com.mandu.yamyam.common.LowerKeyMap">
+	<select id="odListDtLookUpBtn" parameterType="com.mandu.yamyam.mat.service.MatVO" 
+								   resultType="com.mandu.yamyam.common.LowerKeyMap">
 		SELECT O.MAT_OD_CD,
 		       D.MTR_CD,
 		       C.MTR_NM,
@@ -89,8 +90,14 @@
 		 JOIN  C_ACT A 
 		   ON D.ACT_CD = A.ACT_CD
 		   
-		 WHERE MAT_OD_DD <![CDATA[>=]]> #{matOddDate}
-		  AND MAT_OD_DD <![CDATA[<=]]> #{matOdDd}
+		 <where>
+		 	<if test="matOddDate != null and !matOddDate.equals('')">
+				MAT_OD_DD <![CDATA[>=]]> #{matOddDate}
+		 	</if>
+		 	<if test="matOdDd != null and !matOdDd.equals('')">
+				AND MAT_OD_DD <![CDATA[<=]]> #{matOdDd}
+		 	</if>
+		 </where>
 		  
 		 ORDER BY O.MAT_OD_DD
 	</select>
@@ -159,7 +166,7 @@
 		WHERE D.PPLND_STS = '자재팀확인'
 	</select>
 	
-	<!-- 자재 발주 관리(생산계획서용 탭) - 신규 생산 계획서 모델 선택 모달창 검색조건 추가 -->
+	<!-- 자재 발주 관리(생산계획서용 탭) - 신규 생산 계획서 리스트 선택 모달창 -->
 	<select id="newPlanLookUpBtn" parameterType="com.mandu.yamyam.mat.service.MatVO" 
 							resultType="com.mandu.yamyam.common.LowerKeyMap">
 		SELECT P.PPLN_CD,
@@ -244,6 +251,11 @@
             WHERE M.MTR_CD = #{value}
 	</select>
 	
+	<update id="updatePlndSts" parameterType="com.mandu.yamyam.mat.service.MatVO">
+		UPDATE P_PLND 
+		 SET PPLND_STS = '미지시'
+		WHERE PPLN_CD = #{pplnCd}
+	</update>
 	
 	<!-- 2) 자재 발주 조회 -->
 	<!-- 자재 발주 전체 조회 -->
@@ -535,24 +547,43 @@
 		    ON I.ACT_CD = A.ACT_CD
 	</select>
 	
-	<!-- 출고 insert -->
-	<insert id="odOutInsert" parameterType="com.mandu.yamyam.mat.service.MatVO">
-		INSERT INTO 
-		M_OUT (MAT_OUT_NO,
-			   POD_CD,
-			   MTR_CD,
-			   MAT_LOT,
-			   MAT_OUT,AMT,
-			   TO_CHAR(MAT_OUT_DATE, 'yyyy-MM-dd') AS "MAT_OUT_DATE"
-			   )
-				
-		VLAUES(M_OUTNUM_SEQ.NEXTVAL,
-			   '',
-			   #{mtrCd},
-			   #{matLot},
-			   #{matOutAmt},
-			   #{matOutDate}
-			   )
-	</insert>
+	<!-- 필요자재 -->
+	<select id="needMtrList" parameterType="com.mandu.yamyam.mat.service.MatVO"
+							 resultType="com.mandu.yamyam.common.LowerKeyMap">
+		SELECT P.PRD_CD,
+		       B.MTR_CD,
+		       (SELECT FIND_MTR_NAME(B.MTR_CD) FROM DUAL) AS "MTR_NM" ,
+		       ((SELECT FIND_BOM_AMT(P.PRD_CD,B.MTR_CD) FROM DUAL) * B.BOM_AMT) AS "AMT"
+		FROM C_PRD P
+		
+		 JOIN C_BOM B
+		  ON B.PRD_CD = P.PRD_CD
+		  
+		  JOIN P_OD D
+		   ON D.PRD_CD = P.PRD_CD
+		   
+		   JOIN P_ODD O
+		    ON O.POD_CD = D.POD_CD
+		    
+		WHERE P.PRD_CD = #{prdCd}
+		AND O.PODD_CD = #{poddCd}
+		AND B.MTR_CD IS NOT NULL
+	</select>
+	
+	<!-- 필요자재 LOT 목록 -->
+	<select id="needMtrLotList" parameterType="com.mandu.yamyam.mat.service.MatVO"
+				  resultType="com.mandu.yamyam.common.LowerKeyMap">
+		SELECT I.MAT_LOT,
+		       M.MTR_NM,
+		       I.MAT_SAMT,
+		       TO_CHAR(I.MAT_EDATE, 'yyyy-MM-dd') AS "MAT_EDATE"
+		       
+		FROM M_IN I
+		
+		 JOIN C_MTR M
+		  ON M.MTR_CD = I.MTR_CD
+		  
+		WHERE M.MTR_NM = #{mtrNm}
+	</select>
 	
 </mapper>
