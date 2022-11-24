@@ -179,7 +179,7 @@
 							<div id="endpicker-container2" style="margin-left: -1px;"></div>
 						</div>
 						<button class="btn btn-dark btn-sm" id="newPlanLookupBtn">조회</button>
-						<button class="btn btn-dark btn-sm" id="resetBtn2">초기화</button>
+						<!-- <button class="btn btn-dark btn-sm" id="resetBtn2">초기화</button> -->
 						<div>
 							<div id="modalGrid3"></div>
 						</div>
@@ -222,14 +222,14 @@
 		datePicker(); 						// datePicker
 		datePicker2();						// datePicker2
 		resetBtnEvent();					// 검색 조건 초기화 버튼
-		resetDate();						// datepicker2 초기화 버튼
+		/* resetDate(); */						// datepicker2 초기화 버튼
 	
 		insertOrder();						// 탭1 행 추가(일반 탭)
 		deleteOrderList();					// 탭1 행 삭제(일반 탭)
 		saveOrder();						// 탭1 행 저장(일반 탭)
 		
 		odSaveBtn(); 						// 탭2 자재발주 그리드 저장 버튼
-		resetTab2Btn();						// 탭2 초기화 버튼 (데이터 현재 안 뜨는 상태라 보류)
+		/* resetTab2Btn();						// 탭2 초기화 버튼 (데이터 현재 안 뜨는 상태라 보류) */
 		newPlanLookUpBtn();					// 탭2 신규 생산 계획서 리스트 날짜 조회 버튼
 		
 	/*------------------------------
@@ -307,7 +307,13 @@
 	          header: '납기요청일',
 	          name: 'matOddDate',
 	          sortable: true,
-		      editor: 'datePicker',
+		      editor: {
+		    	  type: 'datePicker',
+		    	  options: {
+		    		  format: 'yyyy-MM-dd',
+		    		  language: 'ko'
+		    	  }
+		      },
 		      validation: {
 				     dataType: 'datePicker',
 				     required: true
@@ -544,7 +550,13 @@
 					  header: '납기요청일',
 					  name: 'matOddDate',
 					  sortable: true,
-				      editor: 'datePicker',
+				      editor: {
+				    	  type: 'datePicker',
+				    	  options: {
+				    		  format: 'yyyy-MM-dd',
+				    		  language: 'ko'
+				    	  }
+				      },
 				      validation: {
 						     dataType: 'datePicker',
 						     required: true
@@ -732,7 +744,6 @@
 	function chkPlanMat() {
 		newPlan.on('click', function(){
 			let data = newPlan.getCheckedRows();
-			/* console.log(data[0]); */
 			$.ajax({
 				url: '/needMatList',
 				type: 'POST',
@@ -755,7 +766,6 @@
 	function chkMatList() {
 		needMat.on('click', function(){
 			let data = needMat.getCheckedRows();
-		/* 	console.log(data[0]); */
  			$.ajax({
 				url: '/chkMatList',
 				type: 'POST',
@@ -824,12 +834,12 @@
 	/*--------------------------------
 	// 모달창 안의 DatePicker 초기화버튼 이벤트
 	----------------------------------*/
-	function resetDate() {
+/* 	function resetDate() {
 		document.getElementById('resetBtn2').addEventListener('click',function(){
-			document.getElementById('startpicker-input2').value = today;
-			document.getElementById('endpicker-input2').value = today;
+			document.getElementById('startpicker-input2').value = null;
+			document.getElementById('endpicker-input2').value = null;
 		});	
-	}
+	} */
 	
 	/*------------------------
 	// 자재발주 전체조회 행 추가 버튼
@@ -1002,7 +1012,8 @@
 		let odSaveBtn = document.getElementById('odSaveBtn');
 		odSaveBtn.addEventListener('click',function(){
 			let data = odMat.getData();
-			console.log(data);
+			let planData = newPlan.getCheckedRows();
+			console.log(planData[0])
 			
 			// 여러건 저장
 			Swal.fire({
@@ -1023,17 +1034,32 @@
 						data: JSON.stringify(data),
 						success: function(result){
 							console.log(result);
-							if(result > 2){
+							if(result >= 2){
 					        	Swal.fire('저장이 완료되었습니다.');
 								setTimeout(() => location.reload(),400);
 							} else {
 								Swal.fire('저장에 실패하였습니다.');
 							}
+						}, // success end
+						error: function(reject){
+							console.log(reject);
+						}
+			        }) // ajax end
+			        
+					// 체크된 pplnCd의 상태를 미지시로 업데이트
+					$.ajax({
+			        	url: '/matOd',
+			        	method: 'PUT',
+			        	contentType: 'application/JSON',
+						data: JSON.stringify(planData[0]),
+						success: function(result){
+							console.log(result)
+							console.log(planData[0].pplnCd + ' 미지시로 업데이트 완료!')
 						},
 						error: function(reject){
 							console.log(reject);
 						}
-			        })
+					}) // ajax end
 			      }
 			   })
 			})
@@ -1068,13 +1094,13 @@
 	/*-----------------------------
 	// 탭2 초기화 버튼
 	---------------------------------*/
-	function resetTab2Btn() {
+/* 	function resetTab2Btn() {
 		document.getElementById('resetGridBtn').addEventListener('click',function(ev){
 			newPlan.removeRows(ev.rowKey);
 			needMat.removeRows(ev.rowKey);
 			odMat.removeRows(ev.rowKey);
 		})
-	}
+	} */
 	
 	
 	/*--------------------------------

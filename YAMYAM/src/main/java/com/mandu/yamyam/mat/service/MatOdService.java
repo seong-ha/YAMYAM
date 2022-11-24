@@ -56,6 +56,8 @@ public interface MatOdService {
 	// 발주 리스트 날짜 조회버튼(일반 탭)
 	public List<Map<String, Object>> odListDtLookUpBtn(MatVO vo);
 	
+	// 저장하면 자재팀확인 -> 미지시 업데이트
+	public int updatePlndSts(MatVO vo);
 	
 	//===============================================
 	// 2) 자재 발주 조회
@@ -111,4 +113,10 @@ public interface MatOdService {
 	//===============================================
 	// 생산 지시 조회
 	public List<Map<String, Object>> pOdAllList();
+	
+	// 필요자재
+	public List<Map<String, Object>> needMtrList(MatVO vo);
+	
+	// 필요자재LOT목록
+	public List<Map<String, Object>> needMtrLotList(MatVO vo);
 }

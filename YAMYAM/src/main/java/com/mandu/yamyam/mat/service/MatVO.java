@@ -10,7 +10,6 @@ import lombok.Data;
 public class MatVO {
 	// 자재출고 테이블
 	private int matOutNo;		// 자재출고번호
-	private String podCd;		// 생산지시코드
 	private int matOutAmt;		// 출고수량
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date matOutDate;	// 출고일자
@@ -97,6 +96,21 @@ public class MatVO {
 	private Date rqtDate;		// 요청일자
 	private int rqtAmt;			// 요청수량
 	private int rqtSts;			// 진행상황구분
+	
+	// 생산지시
+	private String podCd;		// 생산지시코드
+	private String plineCd;		// 라인코드
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	private Date podDates;		// 지시등록일자
+	
+	// 상세생산지시
+	private String poddCd;		// 상세생산지시코드
+	private String poddSts;		// 진행구분
+	private int poddAmt;		// 작업지시량
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	private Date poddDates;		// 생산일자
+	private int poddPrio;		// 지시우선순위
+	private String poddOther;	// 비고
 	
 	// 완제품 재고 테이블
 	private String prdLot;		// 완제품Lot

@@ -30,12 +30,13 @@
 				<div id="matLot"></div>
 				<div style="float:right">
 					<button type="button" id="deleteBtn"
-					class="btn btn-dark btn-sm" >행 삭제</button>
-					<button type="button" id="orderBtn" style="color:yellow;" class="btn btn-dark btn-sm">생산 지시</button>
+					class="btn btn-dark btn-sm" >초기화</button>
+					<button type="button" id="orderBtn" style="color:yellow;" class="btn btn-dark btn-sm">출고 처리</button>
 				</div>
 			</div>
 		</div>
 		<br>
+		
 		<!-- 필요자재LOT 모달 -->
 		<div class="modal" id="matLotModal" tabindex="-1"
 			aria-labelledby="matLotModalLabel" aria-hidden="true">
@@ -57,7 +58,7 @@
 								<button type="button" id ="sBtn" class="btn btn-dark btn-sm">조회</button>
 							</div>
 
-							<div id="matLotGrid2"></div>
+							<div id="lotModal"></div>
 							<div><button type="button" id ="okBtn" class="btn btn-dark btn-sm" style="float:right;">입력</button></div>
 						</div>
 					</div>
@@ -66,32 +67,17 @@
 			</div>
 		</div>
 		
-		<!-- 미지시 계획 조회 모달 -->
-		<div class="modal" id="noOrderModal" tabindex="-1">
-			<div class="modal-dialog modal-xl">
-				<div class="modal-content">
-					<div class="modal-header">
-						<h4 class="modal-title" id="noOrderModalLabel">미지시 생산계획 목록</h4>
-						<button type="button" class="btn-close" data-bs-dismiss="modal"
-							aria-label="Close"></button>
-					</div>
-					<div class="modal-body">
-						<div>
-							<div id="modalGrid"></div>
-						</div>
-					</div>
-
-				</div>
-			</div>
-		</div>
-
-
 
 	<script th:inline="javascript">
-		let grid = pOdList();		// 출고전체목록 그리드
+		let grid = pOdList();				 // 생산지시 그리드
 		let matNeed = matNeedGridInit();	 // 필요자재 grid 
 		let matLot = matLotGridInit(); 		 // 필요자재 LOT grid 
 	
+		let matLotGrid2 = matLotGrid2Init(); // 자재Lot목록 모달
+		
+		modalRef();							 // 모달그리드 리프레시
+		planChkFn();			 			 // 생산지시 체크 시 필요자재 그리드 표시
+		inputBtnFn();						 // 입력 버튼 이벤트
 		/*------------------------------
 		// 생산지시 그리드
 		--------------------------------*/
@@ -170,7 +156,7 @@
 					},
 					{
 						header: '소모량',
-						name: 'matOutAmt'
+						name: 'amt'
 					}
 				]
 			});
@@ -181,29 +167,34 @@
 				matLotGrid2.clear();
 				
 				let mtrNm = matNeed.getRow(ev.rowKey).mtrNm;
-				let amt = matNeed.getRow(ev.rowKey).matOutAmt;
+				let amt = matNeed.getRow(ev.rowKey).amt;
 				let prdCd = matNeed.getRow(ev.rowKey).prdCd;
 				$('#mtrNm').attr("value",mtrNm);
 				$('#amt').attr("value",amt);
 				
-				$.ajax({
-					url : '/getMLOTList',
-					data : {"mtrNm" : mtrNm},
-					contentType: 'application/json',
-					dataType : 'json',
-					method: "GET",
-					success : function(data){matLotGrid2.resetData(data);},
-					error : function(reject){console.log(reject);}				
-				})
 				
-
 				$("#matLotModal").modal("show");
+				
+				let data = {mtrNm:mtrNm};
+				
+				$.ajax({
+					url: '/needLotList',
+					method: 'POST',
+					contentType: 'application/JSON',
+					dataType: 'JSON',
+					data: JSON.stringify(data),
+					success: function(result){
+						matLotGrid2.resetData(result);
+					},
+					error: function(reject){
+						console.log(reject);
+					}
+				})
 				
 				// 모달이 로드 되는데 시간이 걸리므로 인터벌 걸어주기
 				setInterval(function(){
 					matLotGrid2.refreshLayout()
 					},100);	
-				
 				
 			})
 
@@ -246,17 +237,16 @@
 			return matLot;
 		}
 			
-		
-		
-
 		/*------------
 		// 모달에 뜨는 필요자재 LOT grid 
 		----------------*/	
 		function matLotGrid2Init(){
 			let matLotGrid2 = new tui.Grid({
-				el: document.getElementById('matLotGrid2'),
+				el: document.getElementById('lotModal'),
+				bodyHeight: 250,
+				data: null,
 				scrollX: false,
-				scrollY: false,
+				scrollY: true,
 				rowHeaders: ['checkbox','rowNum'],
 				columns: [
 					{
@@ -294,6 +284,99 @@
 			      }
 			});
 			return matLotGrid2; 
+		}
+		
+		/*------------------------------
+		// 자재목록 모달 그리드(일반 탭)
+		--------------------------------*/
+		function matList() {
+			let needMatModal = new tui.Grid({
+				el: document.getElementById('modalGrid'),
+				bodyHeight: 250,
+				data: [[${matList}]],
+				rowHeaders: ['rowNum'],
+				scrollX: false,
+				scrollY: true,
+				columns: [
+					{
+						header: '자재코드',
+						name: 'mtrCd',
+						sortable: true,
+						  filter: {
+							  type: 'select'			  
+							  }
+					},
+					{
+						header: '자재명',
+						name: 'mtrNm',
+						sortable: true,
+						  filter: {
+							 type: 'select'			  
+							 }
+					}
+				]
+			});
+			return needMatModal;
+		}
+		
+		// 생산지시 체크 시 필요자재 그리드 표시
+		function planChkFn() {
+			document.getElementById('grid').addEventListener('click', function(){
+				let data = grid.getCheckedRows();
+				console.log(data[0]);
+				
+				$.ajax({
+					url: '/needMtrList',
+					method: 'POST',
+					contentType: 'application/JSON',
+					dataType: 'JSON',
+					data: JSON.stringify(data[0]),
+					success: function(result){
+						matNeed.resetData(result);
+					},
+					error: function(reject){
+						console.log(reject);
+					}
+					
+				})
+			})
+		}
+		
+	    /*---------------------------------
+		// 해당하는 header의 모달창 띄우기(일반 탭)
+		-------------------------------------*/
+		function getModal() {
+			document.getElementById('matNeed').addEventListener('click', function(ev){
+				// 행 클릭 시 모달 띄우기
+		   		if(ev.columnName =='prdCd' || ev.columnName =='mtrCd'||
+		   		   ev.columnName == 'mtrNm' ||ev.columnName == 'matAmt'){
+		   			$('#lotModal').modal('show');
+		   			lotModal.refreshLayout();
+		   		}
+		   	});
+			
+	    }
+	    
+		/*------------------------------
+		// 모달 그리드 리프레쉬
+		--------------------------------*/
+		function modalRef(){
+			document.addEventListener('shown.bs.modal', function (){
+				matLotGrid2.refreshLayout();
+			});
+		}
+		
+		/*------------------------------
+		// 모달에서 입력 버튼 클릭 이벤트
+		--------------------------------*/
+		function inputBtnFn() {
+			document.getElementById('okBtn').addEventListener('click',function(){
+				let data = matLotGrid2.getCheckedRows();
+				
+				for(let i=0; i<data.length; i++) {
+					matLot.appendRows(data);
+				}
+			})
 		}
 		
 	</script>
