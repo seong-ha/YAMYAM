@@ -46,6 +46,13 @@ public class OrdController {
 		return service.lotList();
 	}
 	
+	// 완제품LOT 재고 현황 모달
+	@GetMapping("lotSListModal")
+	@ResponseBody
+	public List<OrdVO> lotSList() {
+		return service.lotSList();
+	}
+	
 	/*-----------------
 	//   주문 관리 Tab
 	-------------------*/
@@ -107,13 +114,41 @@ public class OrdController {
 		return service.getDetailOutList(vo);
 	}
 	
-	// 출고중인 주문서 출고완료로 수정
-	@PostMapping("updateOutOrd")
+	
+	/*-----------------
+	// 완제품 출고 관리 Tab
+	-------------------*/
+	
+	// 진행중인 리스트 조회
+		@GetMapping("ingOrdList")
+		@ResponseBody
+		public List<OrdVO> getIngOrdList() {
+			return service.getIngOrdList();
+		}
+		
+	// 진행중인 주문서 조건조회
+	@GetMapping("ingOrdDetailList")
 	@ResponseBody
-	public int updateOutOrd(@RequestBody List<OrdVO> vo) {
-		int result =  service.updateOutOrd(vo);
+	public List<OrdVO> getIngOrdDetailList(OrdVO vo) {
+		return service.getIngOrdDetailList(vo);
+	}
+	
+	// 출고 등록 리스트 등록
+	@PostMapping("insertOutList")
+	@ResponseBody
+	public int insertOutList(@RequestBody List<OrdVO> vo) {
+		int result =  service.insertOutList(vo);
 		return result;
 	}
+	
+	// 출고 등록 리스트 삭제
+	@DeleteMapping("deleteOutList")
+	@ResponseBody
+	public int deleteOutList(@RequestBody List<OrdVO> vo) {
+		int result = service.deleteOutList(vo);
+		return result;
+	}
+	
 	
 	/*-----------------
 	// 영업 관리 layout

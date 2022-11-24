@@ -36,6 +36,12 @@ public class OrdServiceImpl implements OrdService {
 		return map.lotList();
 	}
 	
+	// 완제품LOT 재고 현황 모달
+	@Override
+	public List<OrdVO> lotSList() {
+		return map.lotSList();
+	}
+	
 	
 	/*------------
 	// 주문 관리 Tab
@@ -78,7 +84,7 @@ public class OrdServiceImpl implements OrdService {
 	public int deleteOrd(List<OrdVO> vo) {
 		int result = 0;
 		for(int i=0; i<vo.size(); i++) {
-			result += map.updateOrd(vo.get(i));
+			result += map.deleteOrd(vo.get(i));
 		}
 		return result;
 	}
@@ -99,20 +105,40 @@ public class OrdServiceImpl implements OrdService {
 	public List<OrdVO> getDetailOutList(OrdVO vo) {
 		return map.getDetailOutList(vo);
 	}
+
+	/*-----------------
+	// 완제품 출고 관리 Tab
+	-------------------*/
 	
-	// 출고중인 주문서 출고완료로 수정
+	// 진행중인 주문서 리스트 조회
 	@Override
-	public int updateOutOrd(List<OrdVO> vo) {
+	public List<OrdVO> getIngOrdList() {
+		return map.getIngOrdList();
+	}
+
+	// 진행중인 주문서 조건조회
+	@Override
+	public List<OrdVO> getIngOrdDetailList(OrdVO vo) {
+		return map.getIngOrdDetailList(vo);
+	}
+
+	// 출고 등록 리스트 등록
+	@Override
+	public int insertOutList(List<OrdVO> vo) {
 		int result = 0;
 		for(int i=0; i<vo.size(); i++) {
-			result += map.updateOutOrd(vo.get(i));
+			result += map.insertOutList(vo.get(i));
 		}
 		return result;
 	}
 
+	// 출고 등록 리스트 삭제
 	@Override
-	public List<OrdVO> getIngOrdList() {
-		// TODO Auto-generated method stub
-		return null;
+	public int deleteOutList(List<OrdVO> vo) {
+		int result = 0;
+		for(int i=0; i<vo.size(); i++) {
+			result += map.deleteOutList(vo.get(i));
+		}
+		return result;
 	}
 }

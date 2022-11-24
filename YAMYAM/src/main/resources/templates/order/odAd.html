@@ -243,6 +243,19 @@ text-align: center;
 			$("#actNm").val("");
 			$("#prdCd").val("");
 			$("#prdNm").val("");
+			
+			$.ajax({
+				   url:'/ordList',
+				   contentType: 'application/json',
+				   dataType: "json",
+				   method: "GET",
+				   success : function(data) {
+					   grid.resetData(data);
+				   },
+				   error : function(reject) {
+					   console.log(reject);
+				   }
+			   })
 		});	
 	}
    
@@ -302,7 +315,13 @@ text-align: center;
 		        header: '납기 일자',
 		        align : 'center',
 		        name: 'deDate',
-		        editor: 'datePicker',
+		        editor: {
+		        	type : 'datePicker',
+	        		options: {
+			              format: 'yyyy-MM-dd',
+			              language : 'ko'
+			            }
+		        },
 		        validation: {
 				     dataType: 'datePicker',
 				     required: true
@@ -311,8 +330,7 @@ text-align: center;
 		      {
 		        header: '진행 상황',
 		        align : 'center',
-		        name: 'odSts',
-		        editor: 'text'
+		        name: 'odSts'
 		      }
 		    ]
 		  });
@@ -397,9 +415,8 @@ text-align: center;
 				let odAmt = rowData[i].odAmt;
 				let actCd = rowData[i].actCd;
 				let deDate = rowData[i].deDate;
-				let odSts = rowData[i].odSts;
 				let odCd = rowData[i].odCd;
-				ordList.push({prdCd,odAmt,actCd,deDate,odSts,odCd});
+				ordList.push({prdCd,odAmt,actCd,deDate,odCd});
 				console.log(rowData[i].odCd);
 			if (rowData[i].odCd == null){
 				sweetConfirm('C', function(){
