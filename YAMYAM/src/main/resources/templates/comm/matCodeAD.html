@@ -119,59 +119,9 @@ width:80%;	display: inline;
 
 
 	<script>
-		const gridData = [ {
-			MTR_CD : 'HS-001',
-			MTR_NM : '고기',
-			MTR_STD : '50kg',
-			MTR_UN : 'BOX',
-			MTR_SFAMT : '1000',
-			MTR_STS : '원자재'
-		}, {
-			MTR_CD : 'HS-001',
-			MTR_NM : '고기',
-			MTR_STD : '50kg',
-			MTR_UN : 'BOX',
-			MTR_SFAMT : '1000',
-			MTR_STS : '원자재'
-		}, {
-			MTR_CD : 'HS-001',
-			MTR_NM : '고기',
-			MTR_STD : '50kg',
-			MTR_UN : 'BOX',
-			MTR_SFAMT : '1000',
-			MTR_STS : '원자재'
-		}
-
-		];
 		
-		const gridData2 = [ {
-			ACT_CD : 'LHS1005',
-			ACT_NM : '만두머신-4',
-			ACT_NUM : '477001-20',
-			ACT_TEL : '053-555-1881'
-		},
-		{
-			ACT_CD : 'LHS1005',
-			ACT_NM : '만두머신-4',
-			ACT_NUM : '477001-20',
-			ACT_TEL : '053-555-1881'
-		},
-		{
-			ACT_CD : 'LHS1005',
-			ACT_NM : '만두머신-4',
-			ACT_NUM : '477001-20',
-			ACT_TEL : '053-555-1881'
-		},{
-			ACT_CD : 'LHS1005',
-			ACT_NM : '만두머신-4',
-			ACT_NUM : '477001-20',
-			ACT_TEL : '053-555-1881'
-		}
-		];
-
 		const grid = new tui.Grid({
 			el : document.getElementById('grid'),
-			data : gridData.slice(0, 6),
 			bodyHeight : 550,
 			scrollX : true,
 			scrollY : false,
@@ -179,45 +129,44 @@ width:80%;	display: inline;
 			
 			columns : [ {
 				header : '자재 코드',
-				name : 'MTR_CD'
+				name : 'mtrCd'
 			}, {
 				header : '자재명',
-				name : 'MTR_NM'
+				name : 'mtrNm'
 			}, {
 				header : '규격',
-				name : 'MTR_STD'
+				name : 'mtrStd'
 			}, {
 				header : '작업단위',
-				name : 'MTR_UN'
+				name : 'mtrUn'
 			}, {
 				header : '안전 재고 수량',
-				name : 'MTR_SFAMT'
+				name : 'mtrSfamt'
 			}, {
 				header : '제품구분',
-				name : 'MTR_STS'
+				name : 'mtrSts'
 			} ],
 			showDummyRows : true
 		});
 		
 		const grid2 = new tui.Grid({
 			el : document.getElementById('grid2'),
-			data : gridData2.slice(0, 6),
 			bodyHeight : 600,
 			scrollX : true,
 			scrollY : false,
 			rowHeaders: ['rowNum'],
 			columns : [ {
 				header : '거래처 코드',
-				name : 'ACT_CD'
+				name : 'actCd'
 			}, {
 				header : '거래처 업체명',
-				name : 'ACT_NM'
+				name : 'actNm'
 			}, {
 				header : '사업자등록번호',
-				name : 'ACT_NUM'
+				name : 'actNum'
 			}, {
 				header : '전화번호',
-				name : 'ACT_TEL'
+				name : 'actTel'
 			}
 			],
 			showDummyRows : true
@@ -305,6 +254,11 @@ width:80%;	display: inline;
 	     })
 	     
 	     
+<<<<<<< HEAD
+	     // 자재명 돋보기 클릭시 데이터 가져오기(미구현)
+	     
+	    /*  grid2.addEventListener('click', function(e){
+=======
 	     // 자재 코드 1줄 클릭시 데이터 가져오기
 	    
 	     grid2.addEventListener('click', function(){
@@ -317,6 +271,7 @@ width:80%;	display: inline;
 	     // 자재명 돋보기 클릭시 데이터 가져오기(미구현)
 	     
 	     grid2.addEventListener('click', function(e){
+>>>>>>> main
 	    	 let rowData = grid2.getRow(e.rowKey);
 	    	 
 	    	 let actCd = rowData['actCd'];
@@ -331,6 +286,41 @@ width:80%;	display: inline;
 	    	 
 	    	 $('grid2').modal("hide");
 	     })
+<<<<<<< HEAD
+	      */
+	      
+	     // 자재 코드 정보 불러오기
+	     
+		$.ajax({
+			url : "ajax/selectMtr",
+			type : "get",
+			dataType: "json",
+			success : function(data){
+				console.log(data);
+				grid.resetData(data);
+			},
+			error : function(reject){
+				console.log(reject);
+			}
+		})
+		
+
+		// 거래처 검색 정보 불러오기
+	    
+/* 		$.ajax({
+			url : "ajax/selectAct",
+			type : "get",
+			dataType: "json",
+			success : function(data){
+				console.log(data);
+				grid.resetData(data);
+			},
+			error : function(reject){
+				console.log(reject);
+			}
+		}) */
+		
+=======
 	     
 	     // 거래처 검색에서 데이터 가져오기
 	     
@@ -339,6 +329,7 @@ width:80%;	display: inline;
 	     
 	     
  
+>>>>>>> main
 	</script>
 
 </div>

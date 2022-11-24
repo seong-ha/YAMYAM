@@ -71,28 +71,28 @@
 				        <div class="mb-3 row">
 							    <label for="staticEmail" class="col-sm-3 col-form-label">완제품 코드</label>
 							    <div class="col-sm-9">
-							      <input type="text" name="PRD_CD" class="form-control" id="distributeCodeName">
+							      <input type="text" name="prdCd" class="form-control" id="prdCode">
 							    </div>
 						</div>
 				        
 				        <div class="mb-3 row">
 							    <label for="staticEmail" class="col-sm-3 col-form-label">완제품 명</label>
 							    <div class="col-sm-9">
-							      <input type="text" name="PRD_NM" class="form-control" id="distributeCodeName">
+							      <input type="text" name="prdNm" class="form-control" id="prdName">
 							    </div>
 						</div>
 				        
 				        <div class="mb-3 row">
 							    <label for="staticEmail" class="col-sm-3 col-form-label">규격</label>
 							    <div class="col-sm-9">
-							      <input type="text" name="PRD_STD" class="form-control" id="distributeCodeName">
+							      <input type="text" name="prdStd" class="form-control" id="prdStandard">
 							    </div>
 						</div>
 						
 						<div class="mb-3 row" style="padding-left: 46px;">
 								
 							    단위<div style="width: 190px; padding-left: 56px;
-							    text-align: left;" id="select-box3" ></div>
+							    text-align: left;" id="select-box3"></div>
 						</div>
 				        
 			      </div>
@@ -126,39 +126,9 @@
 	</div>
 
 	<script>
-	const gridData = [ {
-		  PRD_CD: 'PRD-0001',
-		  PRD_NM: '만두1',
-		  PRD_STD : '20kg',
-		  PRD_UN : 'EA',
-		  PRD_SFAMT : '1000',
-		  },
-		  {
-		 PRD_CD: 'PRD-0001',
-		 PRD_NM: '만두1',
-		 PRD_STD : '20kg',
-		 PRD_UN : 'EA',
-		 PRD_SFAMT : '1000',
-		 },
-		 {
-		 PRD_CD: 'PRD-0001',
-		 PRD_NM: '만두1',
-		 PRD_STD : '20kg',
-		 PRD_UN : 'EA',
-		 PRD_SFAMT : '1000',
-		 },
-	     {
-		 PRD_CD: 'PRD-0001',
-		 PRD_NM: '만두1',
-		 PRD_STD : '20kg',
-		 PRD_UN : 'EA',
-		 PRD_SFAMT : '1000',
-		 },
-	];
-
+	
 		const grid = new tui.Grid({
 			el : document.getElementById('grid'),
-			data : gridData,
 			scrollX : true,
 			scrollY : false,
 			bodyHeight : 480,
@@ -166,19 +136,19 @@
 			
 			columns : [ {
 				header : '완제품 코드',
-				name : 'PRD_CD'
+				name : 'prdCd'
 			}, {
 				header : '완제품명',
-				name : 'PRD_NM'
+				name : 'prdNm'
 			}, {
 				header : '규격',
-				name : 'PRD_STD'
+				name : 'prdStd'
 			}, {
 				header : '단위',
-				name : 'PRD_UN'
+				name : 'prdUn'
 			}, {
 				header : '안전재고수량',
-				name : 'PRD_SFAMT'
+				name : 'prdSfamt' 
 			} ],
 			showDummyRows : true
 		});
@@ -270,6 +240,21 @@
 			    selectBox.deselect();
 			    selectBox2.deselect();
 		 })
+		 
+		 // 완제품 코드 정보 불러오기
+	     
+		$.ajax({
+			url : "ajax/selectPrd",
+			type : "get",
+			dataType: "json",
+			success : function(data){
+				console.log(data);
+				grid.resetData(data);
+			},
+			error : function(reject){
+				console.log(reject);
+			}
+		})
 		
 		
     </script>

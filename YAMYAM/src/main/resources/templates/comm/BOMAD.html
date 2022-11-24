@@ -14,11 +14,11 @@
 	<br> <br>
 	
 	<ul class="ul-style">
-			<li><label for="matNm">제품 코드</label><input id="matNm" name="PRD_CD" readonly>
+			<li><label for="matNm">제품 코드</label><input id="matNm" name="prdCd" readonly>
 				<img id="matNm" class="Magnifying-Glass-img" alt="image"
 					data-bs-toggle="modal" data-bs-target="#exampleModal"
 					src="../images/Magnifying_Glass.png" >
-				<input type="text" name="PRD_NM" readonly>
+				<input type="text" name="prdNm" readonly>
 				&nbsp;&nbsp;사용여부&nbsp;<input type="checkbox">
 			</li>
 			
@@ -116,27 +116,7 @@
 	<div id="grid"></div>
 
 	<script>
-	  const gridData = [ {
-		  BOM_NO: '1',
-	      PPRO_NAME: '1100',
-	      BOM_CD: '홍길동',
-	      PRD_CD : '2002/07/05',
-	      MTR_CD : 'no',
-	      MTR_NM : '영업부',
-	      BOM_AMT : '0',
-	      BOM_USE : '사용여부'
-		  },
-		  {
-		   BOM_NO: '2',
-		   PPRO_NAME: '1100',
-		   BOM_CD: '홍길동',
-		   PRD_CD : '2002/07/05',
-		   MTR_CD : 'no',
-		   MTR_NM : '영업부',
-		   BOM_AMT : '0',
-		   BOM_USE : '사용여부'
-		   }
-       ];
+	  
 	  
 	  const gridData2 = [{
 		  BOM_NO: '1',
@@ -205,34 +185,33 @@
 	  
 		const grid = new tui.Grid({
 			el : document.getElementById('grid'),
-			data : gridData,
 			scrollX : true,
 			scrollY : false,
 			bodyHeight : 500,
 			columns : [ {
 				header : 'No',
-				name : 'BOM_NO'
+				name : 'bomNo'
 			}, {
 				header : '사용 공정명',
-				name : 'PPRO_NAME'
+				name : 'pproCd'
 			}, {
 				header : 'BOM코드',
-				name : 'BOM_CD'
+				name : 'bomCd'
 			}, {
 				header : '제품 코드',
-				name : 'PRD_CD'
+				name : 'prdCd'
 			}, {
 				header : '자재 코드',
-				name : 'MTR_CD'
+				name : 'mtrCd'
 			}, {
 				header : '자재명',
-				name : 'MTR_NM'
+				name : 'mtrNm'
 			}, {
 				header : '소모량',
-				name : 'BOM_AMT'
+				name : 'bomAmt'
 			}, {
 				header : '사용 여부',
-				name : 'BOM_USE'
+				name : 'bomUse'
 			}
 			],
 			showDummyRows : true
@@ -247,16 +226,16 @@
 			bodyHeight : 500,
 			columns : [ {
 				header : 'No',
-				name : 'BOM_NO'
+				name : 'bomNo'
 			}, {
 				header : '제품 코드',
-				name : 'PRD_CD'
+				name : 'prdCd'
 			}, {
 				header : '제품명',
-				name : 'PRD_NM'
+				name : 'prdNm'
 			}, {
 				header : '규격',
-				name : 'PRD_STD'
+				name : 'prdStd'
 			}
 			],
 		});

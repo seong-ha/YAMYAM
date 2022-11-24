@@ -37,7 +37,7 @@
 					<button class="nav-link" id="pills-profile-tab"
 						data-bs-toggle="pill" data-bs-target="#pills-profile"
 						type="button" role="tab" aria-controls="pills-profile"
-						aria-selected="false">그룹 코드</button>
+						aria-selected="false">공통 코드</button>
 				</li>
 			</ul>
 
@@ -71,32 +71,32 @@
 					  <div class="mb-3 row">
 					    <label for="staticEmail" class="col-sm-2 col-form-label">공통 코드</label>
 					    <div class="col-sm-10">
-					      <input type="text" name="COMM_CD" class="form-control" id="distributeCodeName">
+					      <input type="text" name="commCd" class="form-control" id="commCode">
 					    </div>
 					  </div>
 					  
 					  <div class="mb-3 row">
 					    <label for="staticEmail" class="col-sm-2 col-form-label">공통 코드 이름</label>
 					    <div class="col-sm-10">
-					      <input type="text" name="COMM_NM" class="form-control" id="distributeCodeName">
+					      <input type="text" name="commNm" class="form-control" id="commCodeName">
 					    </div>
 					  </div>
 					  
 					  <div class="mb-3 row">
 					    <label for="staticEmail" class="col-sm-2 col-form-label">공통 코드 내용</label>
 					    <div class="col-sm-10">
-					      <input type="text" name="COMM_INFO" class="form-control" id="distributeCodeName">
+					      <input type="text" name="commInfo" class="form-control" id="commCodeInfo">
 					    </div>
 					  </div>
 					
 					사용 여부&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 					<div class="form-check form-check-inline">
-					  <input class="form-check-input" type="radio" name="COMM_USE" id="inlineRadio1" value="option1">
-					  <label class="form-check-label" for="inlineRadio1">YES</label>
+					  <input class="form-check-input" type="radio" name="commUse" id="useRadio1" value="option1">
+					  <label class="form-check-label" for="useRadio1">YES</label>
 					</div>
 					<div class="form-check form-check-inline">
-					  <input class="form-check-input" type="radio" name="COMM_USE" id="inlineRadio2" value="option2">
-					  <label class="form-check-label" for="inlineRadio2">NO</label>
+					  <input class="form-check-input" type="radio" name="commUse" id="useRadio2" value="option2">
+					  <label class="form-check-label" for="useRadio2">NO</label>
 					</div>
 					
 				
@@ -126,86 +126,26 @@
 	
 	<script>
 
-	const gridData = [ {
-			COMM_CD : 'ABC001',
-			COMM_NM : '규격',
-		}, {
-			COMM_CD : 'ABC002',
-			COMM_NM : '단위',
-		}, {
-			COMM_CD : 'ABC003',
-			COMM_NM : '설비상태',
-		}, {
-			COMM_CD : 'ABC004',
-			COMM_NM : '단위',
-		}, {
-			COMM_CD : 'ABC005',
-			COMM_NM : '단위',
-		}, {
-			COMM_CD : 'ABC006',
-			COMM_NM : '규격',
-		}, {
-			COMM_CD : 'ABC006',
-			COMM_NM : '규격',
-		}, {
-			COMM_CD : 'ABC006',
-			COMM_NM : '규격',
-		}, {
-			COMM_CD : 'ABC006',
-			COMM_NM : '규격',
-		}, {
-			COMM_CD : 'ABC006',
-			COMM_NM : '규격',
-		}, {
-			COMM_CD : 'ABC006',
-			COMM_NM : '규격',
-		},
-
-		];
-
-		const gridData2 = [ {
-			COMMD_CD : 'STATE-1',
-			COMMD_NM : '가동',
-			COMMD_INFO : '가동 중을 뜻하는 코드',
-			COMMD_USE : '사용여부'
-		}, {
-			COMMD_CD : 'STATE-2',
-			COMMD_NM : '가동',
-			COMMD_INFO : '가동 중을 뜻하는 코드',
-			COMMD_USE : '사용여부'
-		}, {
-			COMMD_CD : 'STATE-3',
-			COMMD_NM : '가동',
-			COMMD_INFO : '가동 중을 뜻하는 코드',
-			COMMD_USE : '사용여부'
-		}, {
-			COMMD_CD : 'STATE-4',
-			COMMD_NM : '가동',
-			COMMD_INFO : '가동 중을 뜻하는 코드',
-			COMMD_USE : '사용여부'
-		} ];
-
-		
 
 		const grid = new tui.Grid({
+			
 			el : document.getElementById('grid'),
 			bodyHeight : 300, // 스크롤
 
-			data : gridData,
 			width : 400,
 			scrollX : true,
 			scrollY : true,
 			rowHeaders: ['rowNum'],
 			columns : [{
 				header : '공통 코드',
-				name : 'COMM_CD',
+				name : 'commCd',
 				sortingType: 'desc',
 		        sortable: true,
 		        align: 'center',
 		        filter: 'text'
 			}, {
 				header : '공통 코드 이름',
-				name : 'COMM_NM',
+				name : 'commNm',
 				sortingType: 'desc',
 		        sortable: true,
 		        align: 'center'
@@ -218,9 +158,10 @@
 		
 		 class CustomSliderRenderer {
 	      constructor(props) {
+	    	  
 	        const el = document.createElement('div');
-	        el.innerHTML = `<input type ="radio" value="1" name="COMMD_USE">yes &nbsp;&nbsp;&nbsp;&nbsp;
-	        <input type ="radio" value="2" name="COMMD_USE">no`;
+	        el.innerHTML = `<input type ="radio" value="YES" name="commdUse">yes &nbsp;&nbsp;&nbsp;&nbsp;
+	        <input type ="radio" value="NO" name="commdUse">no`;
 	        this.el=el;
 	        this.render(props);
 	      }
@@ -237,9 +178,8 @@
 
 		const grid2 = new tui.Grid({
 			el : document.getElementById('grid2'),
+			
 			bodyHeight : 300, // 스크롤
-
-			data : gridData2,
 			width : 900,
 			scrollX : true,
 			scrollY : true,
@@ -248,7 +188,7 @@
 			columns : [
 				{
 					header : '상세 공통 코드',
-					name : 'COMMD_CD',
+					name : 'commdCd',
 					sortingType: 'desc',
 			        sortable: true,
 			        align: 'center',
@@ -256,7 +196,7 @@
 				},
 				{
 					header : '상세 공통 이름',
-					name : 'COMMD_NM',
+					name : 'commdNm',
 					sortingType: 'desc',
 			        sortable: true,
 			        align: 'center',
@@ -264,7 +204,7 @@
 				},
 				{
 					header : '상세 공통 내용',
-					name : 'COMMD_INFO',
+					name : 'commdInfo',
 					sortingType: 'desc',
 			        sortable: true,
 			        align: 'center',
@@ -273,33 +213,66 @@
 				{
 					
 					header : '사용 여부',
-					name : 'COMMD_USE',
+					name : 'commdUse',
 					sortingType: 'desc',
 			        sortable: true,
 			        align: 'center',
-				    renderer: {
-			            type: CustomSliderRenderer,
-			            
-			        } 
+			        editor: {
+			            type: 'radio',
+			            options: {
+			              listItems: [
+			                { text: 'YES', value: 'YES' },
+			                { text: 'NO', value: 'NO' }
+			              ]
+			            }
+			        }
 				}
 			],
 		});
 		
+		// ajax 공통코드 불러오기
+		
+		$.ajax({
+			url : "ajax/selectComm",
+			type : "get",
+			dataType: "json",
+			success : function(data){
+				console.log(data);
+				grid.resetData(data);
+			},
+			error : function(reject){
+				console.log(reject);
+			}
+		})
+		
+		/* // ajax 공통 상세 코드 불러오기
+		$.ajax({
+			url : "ajax/selectCommd",
+			type : "get",
+			dataType: "json",
+			success : function(data){
+				console.log(data);
+				grid2.resetData(data);
+			},
+			error : function(reject){
+				console.log(reject);
+			}
+		}) */
 		
 		// 렌더링 에디터 (라디오박스)
 		
-		  grid.resetData(gridData);
+		// grid.resetData(gridData2);
 		
 		// 공통 코드 검색
 		
 		document.getElementById('commBtn').addEventListener('click', function(){
-    	grid.filter('COMM_CD', [{code: 'eq', value: commSearch.value}]);
+    	grid.filter('commCd', [{code: 'eq', value: commSearch.value}]);
      		
         });
 		
 		document.getElementById('commSearch').addEventListener("keydown", function(){
 	         if(event.keyCode == 13){
-	        	 grid.filter('COMM_CD', [{code: 'eq', value: commSearch.value}]);
+	        	 grid.filter('commCd', [{code: 'eq', value: commSearch.value}]);
 	        	 searchEmpName.value = '';
 	         }
 	     });
@@ -307,24 +280,84 @@
 		// 초기화 버튼 누를시 다시 데이터 원상복구
 	     
 	    document.getElementById("commreset").addEventListener('click', function(){
-	    	grid.unfilter('COMM_CD', [{code: 'eq', value: commSearch.value}]);
+	    	grid.unfilter('commCd', [{code: 'eq', value: commSearch.value}]);
        	 	searchEmpName.value = '';
 	     });
 
 		// 코드조회에 코드 추가
 		
 		document.getElementById("addCode").addEventListener('click', function(){
-		let rowData = [{COMMD_CD: "", COMMD_NM: "", COMMD_INFO: "", COMMD_USE: ""}];
+		let rowData = [{commdCd: "", commdNm: "", commdInfo: "", commdUse: ""}];
 		grid2.appendRow(rowData);
 		});
 		
-		// 저장버튼(미구현)
+		
+		// 현재 선택한 공통코드
+		let selectedComm = '';
+		
+		
+		// 공통코드 칼럼 누르면 거기에 맞는 상세코드 나옴
+  		grid.on('click', function (ev) {
+			let commCd = grid.getRow(ev.rowKey).commCd;
+			console.log(grid.getRow(ev.rowKey).commCd);
+			selectedComm = commCd;
+			
+			$.ajax({
+				url : "ajax/selectCommd",
+				type : "post",
+				data: {'commCd': commCd},
+				dataType: "json",
+				success : function(data){
+					console.log(data);
+					grid2.resetData(data);
+				},
+				error : function(reject){
+					console.log(reject);
+				}
+			})
+			
+		})  
+		
+		
+		// 공통코드 추가 후 저장시 등록
 		
 		document.getElementById('saveCode').addEventListener('click', function(){
-		let rowData = [{COMMD_CD: "", COMMD_NM: "", COMMD_INFO: "", COMMD_USE: ""}];
-		
+			let rowsData = grid2.getCheckedRows();
+			let insertList = [];
+			
+			for (let i = 0; i < rowsData.length; i++) {
+				let insertObject = {
+						commdCd : rowsData[i].commdCd,
+						commCd : selectedComm,
+						commdNm : rowsData[i].commdNm,
+						commdInfo : rowsData[i].commdInfo,
+						commdUse : rowsData[i].commdUse	
+				};
+				
+				insertList.push(insertObject);
+			}
+			
+			console.log(insertList[0]);
+			sweetConfirm('C', function () {
+			
+				$.ajax({
+					url : "ajax/insertCommd",
+					type : "post",
+					contentType: "application/json",
+					data: JSON.stringify(insertList),
+					dataType: "json",
+					success : function(data){
+						console.log(data);
+						grid2.resetData(data);
+					},
+					error : function(reject){
+						console.log(reject);
+					}
+				})
+			
+			})
 		})
-		
+			
 	</script>
 
 </div>

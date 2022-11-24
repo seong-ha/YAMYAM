@@ -2,78 +2,79 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.mandu.yamyam.comm.mapper.CommMapper">
 
-	<!-- ajax 데이터 불러오기 -->
+<!-- ajax 공통코드 불러오기 -->
+<select id="ajaxSelectComm" resultType="com.mandu.yamyam.common.LowerKeyMap">
 	
-	<select id="ajaxSelectAllEmp" resultType="com.mandu.yamyam.common.LowerKeyMap">
+	SELECT COMM_CD, COMM_NM
+	FROM C_COMM
+
+</select>
+
+<!-- ajax 상세 공통 코드 불러오기 -->
+<select id="ajaxSelectDetailComm" resultType="com.mandu.yamyam.common.LowerKeyMap">
 	
-	SELECT EMP_NO,
-	       EMP_NM,
-	       TO_CHAR(EMP_DATE, 'yyyy-MM-dd') as EMP_DATE,
-	       EMP_ID,
-	       DEPT_NM,
-	       EMP_ROLE
-	FROM C_EMP E, C_DEPT D
-	WHERE E.DEPT_CD  = D.DEPT_CD
+	SELECT COMMD_CD, COMMD_NM, COMMD_INFO, COMMD_USE
+	FROM C_COMMD
+	WHERE COMM_CD = #{commCd}
 	
-	</select>
+</select>
+
+<!-- 상세 공통 코드 등록 -->
+
+<insert id="ajaxInsertDetailComm" parameterType="com.mandu.yamyam.comm.service.CommdVO">
+
+	INSERT INTO C_COMMD
+	(
+	COMMD_CD, 
+	COMM_CD,
+	COMMD_NM,
+	COMMD_INFO,
+	COMMD_USE
+	)
 	
-	<!-- 부서 조회(modal) -->
-	<select id="selectDept" resultType="com.mandu.yamyam.comm.service.DeptVO">
+	VALUES
+	(
+	#{commdCd},
+	#{commCd},
+	#{commdNm},
+	#{commdInfo},
+	#{commdUse}
+	)
 	
-	SELECT * 
-	FROM C_DEPT
 	
-	</select>
-	
-	<!-- 상세 공통조회(modaL) -->
-	
-	<select id="selectCommCode" resultType="com.mandu.yamyam.comm.service.CommdVO">
+</insert>
+
+<!-- ajax 자재코드 불러오기 -->
+<select id="ajaxSelectMat" resultType="com.mandu.yamyam.common.LowerKeyMap">
 	
 	SELECT *
-	FROM C_COMMD
-	WHERE COMM_CD = #{value}
+	FROM C_MTR
 	
-	</select>
-	
-	
-	<!-- 회원 등록(모달) -->
-	<insert id="inserEmpInfo" parameterType="com.mandu.yamyam.comm.service.EmpVO">
-		
-	
-	</insert>
-	
-	<!-- 회원 수정(모달) -->
-	<update id="updateEmpInfo" parameterType="com.mandu.yamyam.comm.service.EmpVO">
-		UPDATE C_EMP
-			<set>
-				<if test ="empId != null and !empId.equals('')">
-					emp_id = #{empId},
-				</if>
-				
-				<if test ="empPw != null and !empPw.equals('') and empPw == empPwcr">
-					emp_pw = #{empPw},
-				</if>
-				
-				<if test ="empNm != null and !empNm.equals('')">
-					emp_nm = #{empNm},
-				</if>
-				
-				<if test ="empRole != null and !empRole.equals('')">
-					emp_role = #{empRole}
-				</if>
-			</set>
-		WHERE EMP_NO = #{empNo}
-	
-	</update>
-	
-	
-	<!-- 회원 삭제(모달) -->
-	<delete id="deleteEmpInfo" parameterType="com.mandu.yamyam.comm.service.EmpVO">
-	
-	DELETE FROM C_EMP 
-	WHERE EMP_NO = #{empNo}
-	
-	</delete>
+</select>
 
+<!-- ajax 자재에 거래처검색(모달) 불러오기 -->
+<select id="ajaxSelectAct" resultType="com.mandu.yamyam.common.LowerKeyMap">
+	
+	SELECT *
+	FROM C_ACT
+	
+</select>
+
+<!-- ajax 완제품코드 불러오기 -->
+<select id="ajaxSelectPrd" resultType="com.mandu.yamyam.common.LowerKeyMap">
+	
+	SELECT * 
+	FROM C_PRD
+
+</select>
+
+<!-- ajax BOM 불러오기 -->
+
+<select id="ajaxSelectBOM" resultType="com.mandu.yamyam.common.LowerKeyMap">
+
+	SELECT * 
+	FROM C_BOM
+	
+</select>
 	
 </mapper>
