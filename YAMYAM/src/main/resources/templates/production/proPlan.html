@@ -279,7 +279,6 @@
 			method: "GET",			
 		}).then(res=>{
 			manageGrid.resetData(res);
-			return res;
 		})
 			
 		return manageGrid;	
@@ -367,7 +366,6 @@
 		dataType : 'json',
 		}).then(res=>{
 			detailPGrid.resetData(res);
-			return res;
 		})
 		}); 
 	}

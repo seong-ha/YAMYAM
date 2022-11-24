@@ -131,6 +131,13 @@ public class ProController {
 		return service.insertOrder(vo);
 	}
 	
+	// 자재 재고 업데이트
+	@PostMapping("/miUpdate")
+	@ResponseBody
+	public int miUpdatet(@RequestBody List<ProVO> vo) {
+		return service.updateMin(vo);
+	}
+	
 	
 	/*---------------
 	// 생산지시조회
@@ -145,29 +152,61 @@ public class ProController {
 	public String orderCheck(Model model) {
 		return "production/planOrdCheck";
 	}
-		
+	
+	/*---------------
+	// 생산관리
+	----------------*/
+	
 	// 생산관리
 	@RequestMapping("/proOrdManage")
 	public String proOrdManage(Model model) {
 		return "production/proOrdManage";
 	}
-
+	
+	// 생산지시 목록 조회
+	@RequestMapping("/getOProList")
+	@ResponseBody
+	public List<ProVO> getOProList(ProVO vo){
+		return service.getOProList(vo);
+	}
+	
+	
 	// 공정 실적 조회
 	@RequestMapping("/proResult")
 	public String proResult(Model model) {
+		model.addAttribute("eCode", service.getCommE());
 		return "production/proResult";
 	}
 	
 	// 공정 관리
 	@RequestMapping("/proManage")
 	public String proManage(Model model) {
+		model.addAttribute("pCode", service.getCommP());
 		return "production/proManage";
 	}
+	
+	// 제품공정흐름도 조회
+	@RequestMapping("/getProList")
+	@ResponseBody
+	public List<ProVO> getProList(ProVO vo){
+		return service.getProList(vo);
+	}
+	
+	/*---------------
+	// 공정 흐름도
+	----------------*/
 	
 	// 공정 흐름도
 	@RequestMapping("/flowDiagram")
 	public String flowDiagram(Model model) {
 		return "production/flowDiagram";
+	}
+	
+	// 제품공정흐름도 조회
+	@RequestMapping("/getFlow")
+	@ResponseBody
+	public List<ProVO> getFlow(ProVO vo){
+		return service.getFlowList(vo);
 	}
 	
 	// 공정 모니터링

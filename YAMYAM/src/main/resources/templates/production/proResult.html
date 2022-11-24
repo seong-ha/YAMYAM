@@ -30,14 +30,7 @@
 				<td style="width: 140px;">불량분류 &nbsp;</td>
 				<td>
 					<select id="errPro" name="errPro">
-					    <option value="ERR-PRO-001" selected>불량없음</option>
-					    <option value="ERR-PRO-002">이물질 혼입</option>
-					    <option value="ERR-PRO-003">자재초과</option>	
-					    <option value="ERR-PRO-004">자재부족</option>	
-					    <option value="ERR-PRO-005">증숙불량</option>	
-					    <option value="ERR-PRO-006">냉동불량</option>	
-					    <option value="ERR-PRO-007">포장불량</option>	
-					    <option value="ERR-PRO-008">제품모양불량</option>										
+					<option th:each="eCode : ${eCode}" th:text="${eCode.commdNm}" th:value="${eCode.commdCd}"></option>								
 					</select>
 				</td>
 			</tr>

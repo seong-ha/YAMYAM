@@ -61,7 +61,7 @@
 	
 	<!-- 생산지시목록 모달 -->
 	<div class="modal" id="orderModal" tabindex="-1">
-		<div class="modal-dialog" >
+		<div class="modal-dialog modal-xl" >
 			<div class="modal-content">
 				<div class="modal-header">
 					<h4 class="modal-title">생산지시 목록</h4>
@@ -69,14 +69,16 @@
 				</div>
 				<div class="modal-body">
 					<div>
+						생산 일자 : 
 						<div class="tui-datepicker-input tui-datetime-input tui-has-focus">
 							<input type="text" id="datepicker-input" aria-label="Date-Time">
 							<span class="tui-ico-date"></span>
 							<div id="wrapper" style="margin-top: -1px;"></div>
 						
 						</div>
-					
+						
 						<button type="button" id="searchBtn" class="btn btn-dark btn-sm">검색</button>
+						<button type="button" id="cancelBtn" class="btn btn-dark btn-sm">초기화</button>
 					</div>
 					<div>
 						<div id="orModalGrid"></div>
@@ -133,7 +135,7 @@
 	stopBtnHandler();			// 중지 버튼 이벤트 핸들러
 	restartBtnHandler();		// 재시작 버튼 이벤트 핸들러
 	scheduleBtnHandler();		// 공정이동표 클릭 버튼 이벤트 핸들러
-	
+	cancelBtnHandler();  	    // date picker input 값 초기화 버튼
 	
 	/*------------
 	// datepicker
@@ -149,34 +151,13 @@
 	function orderGridInit(){
 		let pOrderGrid = new tui.Grid({
 			el: document.getElementById('pOrderGrid'),
-			// 임시 데이터
-			data: [{
-				podCd : '',
-				prdCd : '',
-				prdNm : '',
-				poddAmt : '',
-				plineCd : '',
-				plineNo : ''
-			}],
-			// data 가져오는 법
-			// data: {
-			// 	api: {
-			// 		readData: {
-			// 			url: '/api/readData',
-			// 			method: 'GET'
-			// 		}
-			// 	}
-			// },
 			scrollX: false,
 			scrollY: false,
 			rowHeaders: ['rowNum'],
-			// columnOptions: {
-			// 	minWidth: 180
-			// },
 			columns: [
 				{
 					header: '생산지시코드',
-					name: 'podCd'
+					name: 'poddCd'
 				},
 				{
 					header: '제품코드',
@@ -193,10 +174,6 @@
 				{
 					header: '라인코드',
 					name: 'plineCd'
-				},
-				{
-					header: '지시순번',
-					name: 'plineNo'
 				}
 			]
 		});
@@ -228,21 +205,9 @@
 				pproETime : '',
 				eqpSts : ''
 			}],
-			// data 가져오는 법
-			// data: {
-			// 	api: {
-			// 		readData: {
-			// 			url: '/api/readData',
-			// 			method: 'GET'
-			// 		}
-			// 	}
-			// },
 			scrollX: false,
 			scrollY: false,
 			rowHeaders: ['rowNum'],
-			// columnOptions: {
-			// 	minWidth: 180
-			// },
 			columns: [
 				{
 					header: '진행순번',
@@ -306,32 +271,21 @@
 	function orModalGridInit(){
 		let orModalGrid = new tui.Grid({
 			el: document.getElementById('orModalGrid'),
-			// 임시 데이터
-			data: [{
-				podCd : 'PID-20221117-001',
-				prdNm : '얇은피 고기만두',
-				poddAmt : '500'
-			}],
-			// data 가져오는 법
-			// data: {
-			// 	api: {
-			// 		readData: {
-			// 			url: '/api/readData',
-			// 			method: 'GET'
-			// 		}
-			// 	}
-			// },
 			scrollX: false,
 			scrollY: false,
 			rowHeaders: ['rowNum'],
 			columns: [
 				{
-					header: '생산지시코드',
-					name: 'podCd'
+					header: '상세생산지시코드',
+					name: 'poddCd'
 				},
 				{
 					header: '제품명',
 					name: 'prdNm'
+				},
+				{
+					header: '생산일자',
+					name: 'poddDates'
 				},
 				{
 					header: '생산량',
@@ -339,9 +293,16 @@
 				}
 			]
 		});
+		
+		$.ajax({
+			url : '/getOProList',
+			method: "GET",			
+		}).then(res=>{
+			orModalGrid.resetData(res);
+		})
+			
 		return orModalGrid;
 	}
-	
 	
 	/*------------
 	// 공정이동표 모달 grid
@@ -448,16 +409,36 @@
 	function searchBtnHandler(){
 
 		$('#searchBtn').on('click',function(){
-			let date = $("#datepicker-input").val();
-			console.log(date);
-			// 갖고온 start, end 값을 넘겨서 select 해오기
-			// ajax 받아오고
-			// success : function(data){manageGrid.resetData(data);}
+			let poddDates = $("#datepicker-input").val();
+			$.ajax({
+				url : '/getOProList',
+				data : {"poddDates" : poddDates},
+				contentType: 'application/json',
+				dataType : 'json',
+				method: "GET",
+				success : function(data){console.log(data); orModalGrid.resetData(data);},
+				error : function(reject){console.log(reject);}				
+			})
 			
 		})
 	}
 	
-	
+	/*------------
+	// datePicker 초기화버튼 이벤트 핸들러
+	----------------*/
+	function cancelBtnHandler(){
+		$('#cancelBtn').on('click',function(){
+
+			$("#datepicker-input").val(today);
+			
+			$.ajax({
+				url : '/getOProList',
+				method: "GET",			
+			}).then(res=>{
+				orModalGrid.resetData(res);
+			})
+		});	
+	}
 	
 	/*------------
 	// 생산지시목록 모달에 클릭 이벤트 핸들러
@@ -486,6 +467,8 @@
 		})
 	
 	}
+	
+	
 	
 	/*------------
 	// sweetConfirm 

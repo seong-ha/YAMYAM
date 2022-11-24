@@ -40,11 +40,11 @@ text-align: center;
 			 &nbsp;&nbsp;	
 		</div>
 		<div class="row">
-			<div class="col-7">
+			<div class="col-6">
 				<h4>상세생산계획</h4>
 				<div id="planDGrid"></div>
 			</div>
-			<div class="col-5">
+			<div class="col-6">
 				<h4>생산지시</h4>
 				<div id="planOrder"></div>
 			</div>
@@ -139,7 +139,7 @@ text-align: center;
 		planDGridChangeHandler() // 계획 관리 그리드에서의 수정
 		planOrderEdit(); 		 // 생산지시그리드 editingFinish 이벤트 핸들러 
 		okBtnHandler(); 	 	 // 필요자재 LOT 모달 입력 핸들러
-		sBtnHandler();  		 // sBtn 조회 버튼 이벤트 핸들러 		
+		//sBtnHandler();  		 // sBtn 조회 버튼 이벤트 핸들러 		
 		orderBtnHandler(); 		 // 생산 지시 버튼 이벤트 핸들러
 		
 		/*------------
@@ -171,23 +171,13 @@ text-align: center;
 						name: 'prdCd'
 					},
 					{
-						header: '생산계획수량',
-						name: 'pplndAmt',
-						align: 'right'
+						header: '제품명',
+						name: 'prdNm'
 					},
 					{
 						header: '생산지시량',
-						name: 'poddAmt',
-						editor : 'text',
-						align: 'right',
-						validation: {
-					        dataType: 'text',
-					        required: true
-					} 		
-					},
-					{
-						header: '잔량',
-						name: 'restAmt'
+						name: 'pplndAmt',
+						align: 'right'
 					}
 				]
 			});
@@ -324,6 +314,15 @@ text-align: center;
 				$('#mtrNm').attr("value",mtrNm);
 				$('#amt').attr("value",amt);
 				
+				$.ajax({
+					url : '/getMLOTList',
+					data : {"mtrNm" : mtrNm},
+					contentType: 'application/json',
+					dataType : 'json',
+					method: "GET",
+					success : function(data){matLotGrid2.resetData(data);},
+					error : function(reject){console.log(reject);}				
+				})
 				
 
 				$("#matLotModal").modal("show");
@@ -429,7 +428,6 @@ text-align: center;
 		
 		
 		
-		
 		/*------------
 		// 모달에 뜨는 생산요청 toast grid 
 		----------------*/	
@@ -484,7 +482,7 @@ text-align: center;
 				let a = list.length-1;
 				
 				let plList = planDGrid.getData();
-				let po = plList[0].poddAmt;
+				let po = plList[0].pplndAmt;
 				let poSum = planOrder.getSummaryValues('poddAmt').sum;
 				console.log(poSum)
 				
@@ -597,38 +595,26 @@ text-align: center;
 		// 계획 관리 그리드에서의 수정
 		----------------*/	
 		function planDGridChangeHandler(){
-			planDGrid.on('afterChange', function(ev) {
+			planDGrid.on('click', function(ev) {
 			
-			planDGrid.on('editingFinish', function(ev){
-				toastr.options = {
-						  "closeButton": true,
-						  "newestOnTop": true,
-						  "positionClass": "toast-top-center",
-						  "preventDuplicates": true,
-						  "extendedTimeOut" : 0, 
-						  "timeOut" : 0
-				}
-				 let pplndAmt = planDGrid.getRow(ev.rowKey).pplndAmt;
-				 let poddAmt = ev.value;
-				 planDGrid.setValue(ev.rowKey, 'restAmt', pplndAmt-poddAmt);
-				 
-				 if(pplndAmt < poddAmt){
-					 toastr.error(`계획수량보다 지시수량이<br> 많습니다.`);
-				 } else {
-				 let pplndCd = planDGrid.getRow(ev.rowKey).pplndCd;
-				 let pplndDays = planDGrid.getRow(ev.rowKey).pplndDays;
-				 let prdCd = planDGrid.getRow(ev.rowKey).prdCd;
-				 $.ajax({
-						url : '/proOrderList',
-						method: "GET",
-						data : {"prdCd":prdCd,"pplndDays":pplndDays}
-					}).then(res=>{
-						planOrder.resetData(res);
-					})
-					
-					planOrder.refreshLayout();
-				 	}
+			
+				
+			 let poddAmt = planDGrid.getRow(ev.rowKey).pplndAmt;
+			 
+			 let pplndCd = planDGrid.getRow(ev.rowKey).pplndCd;
+			 let pplndDays = planDGrid.getRow(ev.rowKey).pplndDays;
+			 let prdCd = planDGrid.getRow(ev.rowKey).prdCd;
+			 $.ajax({
+					url : '/proOrderList',
+					method: "GET",
+					data : {"prdCd":prdCd,"pplndDays":pplndDays}
+				}).then(res=>{
+					planOrder.resetData(res);
 				})
+				
+				planOrder.refreshLayout();
+				 
+				
 				
 			});
 		}
@@ -686,15 +672,7 @@ text-align: center;
 		 $('#sBtn').on('click',function(){
 			 let mtrNm = $("input[type=text][name=mtrNm]").val();
 		 
-				 $.ajax({
-					url : '/getMLOTList',
-					data : {"mtrNm" : mtrNm},
-					contentType: 'application/json',
-					dataType : 'json',
-					method: "GET",
-					success : function(data){matLotGrid2.resetData(data);},
-					error : function(reject){console.log(reject);}				
-				})
+				 
 			})
 		}
 		
@@ -709,6 +687,7 @@ text-align: center;
 			 if(x == y){
 				 let orderData = planOrder.getCheckedRows();
 				 let dataList = [];
+				 // 생산지시 관련 테이블 C
 				 for(let i =0; i<orderData.length; i++){
 					 let plinceCd = orderData[0].plineCd;
 					 let prdCd = orderData[0].prdCd;
@@ -717,18 +696,47 @@ text-align: center;
 					 let poddDates = orderData[i].poddDates;
 					 let poddPrio = orderData[i].poddPrio;
 					 dataList.push({pplndCd,prdCd,poddAmt,poddDates,poddPrio});
-					 sweetConfirm('C', function(){
-						 $.ajax({
-								url : '/orderInsert',
-								method: 'POST',
-								contentType : 'application/json',
-								data : JSON.stringify(dataList),
-								dataType : 'json',
-								success : function(data){Swal.fire('등록이 완료되었습니다'); matLotGrid2.clear();},
-								error : function(reject){Swal.fire('등록에 실패했습니다.'); console.log(reject);}				
-						 })
-					  })
 				 }
+				 sweetConfirm('C', function(){
+					 $.ajax({
+							url : '/orderInsert',
+							method: 'POST',
+							contentType : 'application/json',
+							data : JSON.stringify(dataList),
+							dataType : 'json',
+							success : function(data){
+								 let lotData = matLot.getData();
+								 let lotList = [];
+								 for(let y = 0; y<lotData.length; y++){
+									 let matOutAmt = lotData[y].amt;
+									 let matLot = lotData[y].matLot;
+									 lotList.push({matLot,matOutAmt});
+									 console.log(lotList);
+									 // m_in 테이블 update
+								 }
+								 
+								 $.ajax({
+										url : '/miUpdate',
+										method: 'POST',
+										contentType : 'application/json',
+										data : JSON.stringify(lotList),
+										dataType : 'json',
+										success : function(data){
+											console.log(data);
+											Swal.fire('등록이 완료되었습니다');
+											matLotGrid2.clear();
+											matLot.clear();
+										},
+										error : function(reject){console.log(reject);}				
+								 }) 
+								
+								},
+							error : function(reject){Swal.fire('등록에 실패했습니다.'); console.log(reject);}				
+					 })
+				  })
+				 
+				 // 자재입고 테이블 재고 U
+				
 			 }else {
 				Swal.fire({	icon: 'error', 	title :'필요자재가 부족합니다.'});
 			 }

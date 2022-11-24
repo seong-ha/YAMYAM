@@ -5,6 +5,13 @@ import java.util.Map;
 
 
 public interface ProService {
+
+	// 공통코드 (공정분류)
+	public List<ProVO> getCommP();
+	
+	// 공통코드 (에러코드)
+	public List<ProVO> getCommE();
+	
 	// 입력될 생산 우선순위 조회
 	public int getPrioNo();
 	/*---------------
@@ -56,10 +63,28 @@ public interface ProService {
 	// 생산지시 등록
 	public int insertOrder(List<ProVO> vo);
 	
+	// 자재 입고 테이블 업데이트(재고 변경)
+	public int updateMin(List<ProVO> vo);
+	
 	/*---------------
 	// 생산 지시 조회
 	----------------*/
 	public List<ProVO> getOrderList(ProVO vo);
 	
+	
+	/*---------------
+	// 공정 관리
+	----------------*/
+	public List<ProVO> getProList(ProVO vo);
+	
+	// 제품 공정 흐름도 조회
+	public List<ProVO> getFlowList(ProVO vo);
+	
+	
+	/*---------------
+	// 생산 관리
+	----------------*/
+	// 지시완료된 생산지시 조회
+	public List<ProVO> getOProList(ProVO vo);
 		
 }
