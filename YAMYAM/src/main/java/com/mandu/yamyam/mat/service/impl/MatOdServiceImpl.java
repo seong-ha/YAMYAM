@@ -36,8 +36,8 @@ public class MatOdServiceImpl implements MatOdService {
 	//===============================================
 	// 전체조회(일반 탭)
 	@Override
-	public List<Map<String, Object>> matOrderList() {
-		return mapper.matOrderList();
+	public List<Map<String, Object>> matOrderList(MatVO vo) {
+		return mapper.matOrderList(vo);
 	}
 
 	// 자재 발주 관리 - 발주코드 단건 삭제(일반 탭)
@@ -128,6 +128,12 @@ public class MatOdServiceImpl implements MatOdService {
 	//===============================================
 	// 2) 자재 발주 조회
 	//===============================================
+	// 자재 발주 전체 조회
+	@Override
+	public List<Map<String, Object>> matOdLookUpList() {
+		return mapper.matOdLookUpList();
+	}
+	
 	// 발주 신청일 조회 버튼 클릭 이벤트 (자재 발주 조회 - 조건 조회 탭)
 	@Override
 	public List<Map<String, Object>> odListSearch(MatVO vo) {
@@ -151,8 +157,8 @@ public class MatOdServiceImpl implements MatOdService {
 
 	// 자재 입고 검수 관리 - 전체 조회
 	@Override
-	public List<Map<String, Object>> chkOdMatList() {
-		return mapper.chkOdMatList();
+	public List<Map<String, Object>> chkOdMatList(MatVO vo) {
+		return mapper.chkOdMatList(vo);
 	}
 
 	// 불량코드/불량내용 조회
@@ -192,8 +198,8 @@ public class MatOdServiceImpl implements MatOdService {
 	//===============================================
 	// 자재 입고 관리
 	@Override
-	public List<Map<String, Object>> matInAllList() {
-		return mapper.matInAllList();
+	public List<Map<String, Object>> matInAllList(MatVO vo) {
+		return mapper.matInAllList(vo);
 	}
 
 	// 입고 예정 목록
@@ -227,13 +233,32 @@ public class MatOdServiceImpl implements MatOdService {
 	//===============================================
 	// 자재 출고 관리
 	@Override
-	public List<Map<String, Object>> matOutAllList() {
-		return mapper.matOutAllList();
+	public List<Map<String, Object>> matOutAllList(MatVO vo) {
+		return mapper.matOutAllList(vo);
 	}
 	// 현 재고 목록
 	@Override
 	public List<Map<String, Object>> nowSamtList() {
 		return mapper.nowSamtList();
 	}
+
+	@Override
+	public int odOutInsert(List<MatVO> list) {
+		int result = 0;
+		for(int i=0; i<list.size(); i++) {
+			result += mapper.odOutInsert(list.get(i));
+		}
+		return result;
+	}
+
+	@Override
+	public int odOutDelete(List<MatVO> list) {
+		int result = 0;
+		for(int i=0; i<list.size(); i++) {
+			result += mapper.odOutDelete(list.get(i));
+		}
+		return result;
+	}
+
 	
 }

@@ -10,6 +10,19 @@
 	</div>
 	<hr>
 	<ul class="ul-style">
+			<li><label for="matNm">자재명</label><input id="matNm"
+			data-bs-toggle="modal" data-bs-target="#matMg" readonly> <img
+			class="Magnifying-Glass-img" alt="image" data-bs-toggle="modal"
+			data-bs-target="#matMg" src="../images/Magnifying_Glass.png">
+			<input id="matOdCd" type="text" data-bs-toggle="modal"
+			data-bs-target="#matMg" readonly></li>
+		<li><label for="empNm">담당자</label><input id="empNm"
+			data-bs-toggle="modal" data-bs-target="#empMg" readonly> <img
+			class="Magnifying-Glass-img" alt="image" data-bs-toggle="modal"
+			data-bs-target="#empMg" src="../images/Magnifying_Glass.png">
+			<input id="empId"type="text" data-bs-toggle="modal" data-bs-target="#empMg"
+			readonly></li>
+	
 		<!-- Date Picker -->
 		<li><label for="startpicker-input">검사일자</label>
 			<div class="tui-datepicker-input tui-datetime-input tui-has-focus">
@@ -22,9 +35,11 @@
 					class="tui-ico-date"></span>
 				<div id="endpicker-container" style="margin-left: -1px;"></div>
 			</div>
-			<button class="btn btn-dark btn-sm">조회</button>
+			<button class="btn btn-dark btn-sm" id="SearchBtn">조회</button>
 			<button class="btn btn-dark btn-sm" id="resetBtn">초기화</button></li>
 	</ul>
+
+	<div id="grid"></div>
 
 	<div style="text-align: right;">
 		<button class="btn btn-dark btn-sm" data-bs-toggle="modal"
@@ -32,8 +47,6 @@
 		<button class="btn btn-dark btn-sm" id="deleteBtn">삭제</button>
 		<button class="btn btn-dark btn-sm" id="saveChkBtn">저장</button>
 	</div>
-
-	<div id="grid"></div>
 
 	<!-- 불량코드 목록 모달 -->
 	<div class="modal" id="errorModal" tabindex="-1"
@@ -92,12 +105,56 @@
 		</div>
 	</div>
 	
+	<!-- 자재 목록 모달 -->
+	<div class="modal" id="matMg" tabindex="-1"
+		aria-labelledby="matMgLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="matMgLabel">자재 목록</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal"
+						aria-label="Close" id="matMgCloseBtn"></button>
+				</div>
+				<div class="modal-body">
+					<div>
+						<div id="modalGrid4"></div>
+					</div>
+				</div>
+
+			</div>
+		</div>
+	</div>
+
+	<!-- 담당자 목록 모달 -->
+	<div class="modal" id="empMg" tabindex="-1"
+		aria-labelledby="empMgLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="empMgLabel">사원 목록</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal"
+						aria-label="Close" id="empMgCloseBtn"></button>
+				</div>
+				<div class="modal-body">
+					<div>
+						<div id="modalGrid5"></div>
+					</div>
+				</div>
+
+			</div>
+		</div>
+	</div>
+	
 	<script th:inline="javascript">
-		let grid = chkMatList();			// 자재전체조회 그디르
+		let grid = chkMatList();			// 자재전체조회 그리드
+		SearchBtnFn();						// 조회버튼 클릭시 전체조회 그리드 등장
 		
 		let modalGrid = errorList();		// 불량코드 목록 모달 그리드
 		let modalGrid2 = empList();			// 담당자 목록 모달 그리드
 		let modalGrid3 = addPlan();			// 추가 목록 모달 그리드
+		
+		let modalGrid4 = matMgList();		// 자재 목록 모달 그리드
+		let modalGrid5 = empMgList();		// 직원 목록 모달 그리드
 		
 		errorListSelect();					// 불량코드 목록 행 클릭 이벤트
 		empListSelect();					// 담당자 목록 행 클릭 이벤트
@@ -108,8 +165,11 @@
 		getModal();							// 담당자/불량코드 모달
 		modalRef();							// 모달 리프레쉬
 		
+		matModalClickFn();					// 자재 모달 클릭 시 인풋 태그로
+		empModalClickFn();					// 직원 모달 클릭 시 인풋 태그로
+		
 		datePicker();						// datepicker
-		resetDate();						// datepicker 초기화
+		resetBtn();						// 초기화
 		
 		/*------------------------------
 		// 자재전체조회 그리드
@@ -118,7 +178,7 @@
 			const grid = new tui.Grid({
 			      el: document.getElementById('grid'),
 			      bodyHeight: 500,
-			      data: [[${chkMatList}]],
+			      data: null,
 			      rowHeaders: ['checkbox', 'rowNum'],
 			      scrollX: false,
 			      scrollY: true,
@@ -126,6 +186,7 @@
 			        {
 			          header: '발주코드',
 			          name: 'matOdCd',
+			          sortable: true,
 					  filter: {
 					        type: 'select'			  
 					      }
@@ -133,6 +194,7 @@
 			        {
 			          header: '자재코드',
 			          name: 'mtrCd',
+			          sortable: true,
 					  filter: {
 					        type: 'select'			  
 					      }
@@ -140,27 +202,32 @@
 			        {
 			          header: '자재명',
 			          name: 'mtrNm',
+			          sortable: true,
 					  filter: {
 					        type: 'select'			  
 					      }
 			        },
 			        {
 			          header: '발주총량',
-			          name: 'matOddAmt'
+			          name: 'matOddAmt',
+			          sortable: true
 			        },
 			        {
 			          header: '합격량',
 			          name: 'paAmt',
+			          sortable: true,
 					  editor: 'text'
 				    },
 			        {
 			          header: '불합격량',
 			          name: 'erAmt',
+			          sortable: true,
 					  editor: 'text'
 				    },
 			        {
 			          header: '담당자',
 			          name: 'empNm',
+			          sortable: true,
 					  filter: {
 					        type: 'select'			  
 					      }
@@ -168,6 +235,7 @@
 			        {
 			          header: '검사일자',
 			          name: 'matChkDate',
+			          sortable: true,
 					  editor: 'datePicker',
 					  validation: {
 							 dataType: 'datePicker',
@@ -177,6 +245,7 @@
 			        {
 			            header: '불량코드',
 			            name: 'erCd',
+			            sortable: true,
 						  filter: {
 						        type: 'select'			  
 						      }
@@ -184,6 +253,7 @@
 			          {
 			              header: '불량내용',
 			              name: 'erInfo',
+			              sortable: true,
 						  filter: {
 						        type: 'select'			  
 						      }
@@ -192,6 +262,33 @@
 			    });
 			
 			    return grid;
+		}
+		
+		/*--------------------------------
+		// 조회 버튼 클릭 시 그리드 등장
+		----------------------------------*/
+		function SearchBtnFn() {
+			document.getElementById('SearchBtn').addEventListener('click',function() {
+				let matOdCd = document.getElementById('matOdCd').value; // 자재 코드
+				let empNm = document.getElementById('empNm').value; // 직원 이름
+				let matInDate = document.getElementById('startpicker-input').value; // 시작 날짜
+				let matEdate = document.getElementById('endpicker-input').value; // WHERE절 비교 용으로 유통기한에 end Date담음
+				
+				let data = {mtrCd: matOdCd, empNm: empNm, matInDate: matInDate, matEdate: matEdate};
+				
+				$.ajax({
+					url: '/matInChk',
+					method: 'POST',
+					contentType: 'application/JSON',
+					data: JSON.stringify(data),
+					success: function(result){
+						grid.resetData(result)
+					},
+					error: function(reject) {
+						console.log(reject);
+					}
+				})
+			})
 		}
 	
 		/*------------------------------
@@ -207,11 +304,13 @@
 				scrollY: true,
 				columns: [{
 			          header: '불량코드',
-			          name: 'commdCd'
+			          name: 'commdCd',
+			          sortable: true
 			        },
 			        {
 			          header: '불량내용',
-			          name: 'commdNm'
+			          name: 'commdNm',
+			          sortable: true
 			        }
 		     	 ] 
 			});
@@ -233,10 +332,12 @@
 					{
 						header: '이름',
 						name: 'empNm',
+						sortable: true
 					},
 					{
 						header: '아이디',
 						name: 'empId',
+						sortable: true
 					}
 				]
 			});
@@ -256,44 +357,36 @@
 				scrollY: true,
 				columns: [{
 			          header: '발주코드',
-			          name: 'matOdCd'
+			          name: 'matOdCd',
+			          sortable: true
 			        },
 			        {
 			          header: '자재코드',
-			          name: 'mtrCd'
+			          name: 'mtrCd',
+			          sortable: true
 			        },
 			        {
 			          header: '자재명',
-			          name: 'matOddAmt'
+			          name: 'matOddAmt',
+			          sortable: true
 			        },
 			        {
 				      header: '발주총량',
-				      name: 'mtrNm'
+				      name: 'mtrNm',
+				      sortable: true
 				    }
 		      ] 
 			});
 			return modalGrid3;
 		}
 		
-		// 그리드 리프레쉬
-		function modalRef(){
-			document.addEventListener('shown.bs.modal', function (){
-				modalGrid.refreshLayout();
-			}, '.modal');
-			
-			document.addEventListener('shown.bs.modal', function (){
-				modalGrid2.refreshLayout();
-			}, '.modal');
-			
-			document.addEventListener('shown.bs.modal', function (){
-				modalGrid3.refreshLayout();
-			}, '.modal');
-		}
 		/*------------------------------
 		// DatePicker
 		--------------------------------*/
 		function datePicker() {
 			rangeDatepickerInit('#startpicker-input', '#startpicker-container','#endpicker-input','#endpicker-container')
+			document.getElementById('startpicker-input').value = null;
+			document.getElementById('endpicker-input').value = null;
 		}
 		
 	    /*---------------------------------
@@ -403,12 +496,16 @@
 		}
 		
 		/*--------------------------------
-		// 모달창 안의 DatePicker 초기화버튼 이벤트
+		// 초기화버튼 이벤트
 		----------------------------------*/
-		function resetDate() {
+		function resetBtn() {
 			document.getElementById('resetBtn').addEventListener('click',function(){
-				document.getElementById('startpicker-input').value = today;
-				document.getElementById('endpicker-input').value = today;
+				document.getElementById('startpicker-input').value = null;
+				document.getElementById('endpicker-input').value = null;
+				document.getElementById('matNm').value = '';
+				document.getElementById('matOdCd').value = '';
+				document.getElementById('empNm').value = '';
+				document.getElementById('empId').value = '';
 			});	
 		}
 		
@@ -451,6 +548,131 @@
 			      }
 			   })
 			})
+		}
+		
+		/*------------------------------
+		// 자재목록 모달 그리드
+		--------------------------------*/
+		function matMgList(){
+			let modalGrid4 = new tui.Grid({
+				el: document.getElementById('modalGrid4'),
+				bodyHeight: 250,
+				data: [[${matList}]],
+				rowHeaders: ['rowNum'],
+				scrollX: false,
+				scrollY: true,
+				columns: [{
+			          header: '자재코드',
+			          name: 'mtrCd',
+			          sortable: true,
+					  filter: {
+					        type: 'select'			  
+					      }
+			        },
+			        {
+			          header: '자재명',
+			          name: 'mtrNm',
+			          sortable: true,
+					  filter: {
+					        type: 'select'			  
+					      }
+			        }
+		     	] 
+			});
+			return modalGrid4;
+		}
+		
+		/*------------------------------
+		// 담당자목록 모달 그리드
+		--------------------------------*/
+		function empMgList(){
+			let modalGrid5 = new tui.Grid({
+				el: document.getElementById('modalGrid5'),
+				bodyHeight: 250,
+				data: [[${empList}]],
+				rowHeaders: ['rowNum'],
+				scrollX: false,
+				scrollY: true,
+				columns: [
+					{
+						header: '이름',
+						name: 'empNm',
+						sortable: true,
+						filter: {
+						        type: 'select'			  
+						      }
+					},
+					{
+						header: '아이디',
+						name: 'empId',
+						sortable: true,
+						filter: {
+						        type: 'select'			  
+						      }
+					}
+				]
+			});
+			return modalGrid5;
+		}
+		
+		/*--------------------------------
+		// 자재 모달 행 클릭시 인풋 태그로
+		----------------------------------*/
+		function matModalClickFn() {
+			modalGrid4.on('click', function(ev){
+				let data = modalGrid4.getRow(ev.rowKey);
+				console.log(data);
+				let matNm = document.getElementById('matNm');
+				let matCd = document.getElementById('matOdCd');
+
+				
+				matNm.value = data.mtrNm;
+				matCd.value = data.mtrCd;
+
+				
+				matMgCloseBtn.click();
+			})
+		}
+		
+		/*--------------------------------
+		// 직원 모달 행 클릭시 인풋 태그로
+		----------------------------------*/
+		function empModalClickFn() {
+			modalGrid5.on('click', function(ev){
+				let data = modalGrid5.getRow(ev.rowKey);
+				console.log(data);
+				
+				let empNm = document.getElementById('empNm');
+				let empId = document.getElementById('empId');
+				
+				empNm.value = data.empNm;
+				empId.value = data.empId;
+				
+				empMgCloseBtn.click();
+			})
+		}
+		
+		// 그리드 리프레쉬
+		function modalRef(){
+			document.addEventListener('shown.bs.modal', function (){
+				modalGrid.refreshLayout();
+			});
+			
+			document.addEventListener('shown.bs.modal', function (){
+				modalGrid2.refreshLayout();
+			});
+			
+			document.addEventListener('shown.bs.modal', function (){
+				modalGrid3.refreshLayout();
+			});
+			
+			document.addEventListener('shown.bs.modal', function (){
+				modalGrid4.refreshLayout();
+			});
+			
+			document.addEventListener('shown.bs.modal', function (){
+				modalGrid5.refreshLayout();
+			});
 		}
 	</script>
 </div>

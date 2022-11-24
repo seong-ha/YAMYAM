@@ -126,7 +126,7 @@
 		const grid = new tui.Grid({
 	      el: document.getElementById('grid'),
 	      bodyHeight: 700,
-	      data: [[${odList}]],
+	      data: [[${matLookUpAllList}]],
 	      rowHeaders: ['rowNum'],
 	      scrollX: false,
 	      scrollY: true,
@@ -134,6 +134,7 @@
 	        {
 	          header: '자재코드',
 	          name: 'mtrCd',
+	          sortable: true,
 			  filter: {
 			        type: 'select'			  
 			      }
@@ -141,32 +142,38 @@
 	        {
 	          header: '자재명',
 	          name: 'mtrNm',
+	          sortable: true,
 			  filter: {
 			        type: 'select'			  
 			      }
 	        },
 	        {
 	          header: '단가(원)',
-	          name: 'matOddMn'
+	          name: 'matOddMn',
+	          sortable: true
 	        },
 	        {
 	          header: '발주량',
-	          name: 'matOddAmt'
+	          name: 'matOddAmt',
+	          sortable: true
 	        },
 	        {
 	          header: '총액',
-	          name: 'matSum'
+	          name: 'matSum',
+	          sortable: true
 	        },
 	        {
 	          header: '업체명',
 	          name: 'actNm',
+	          sortable: true,
 			  filter: {
 			        type: 'select'			  
 			      }
 	        },
 	        {
 	          header: '납기요청일',
-	          name: 'matOddDate'
+	          name: 'matOddDate',
+	          sortable: true
 	        }
 	      ]
 	    });
@@ -188,11 +195,13 @@
 		      columns: [
 		    	  {
 			          header: '발주코드',
-			          name: 'matOdCd'
+			          name: 'matOdCd',
+			          sortable: true
 			        },
 			        {
 			          header: '발주신청일',
-			          name: 'matOdDd'
+			          name: 'matOdDd',
+			          sortable: true
 			        }
 		      ]
 		    });
@@ -215,36 +224,43 @@
 		    	  {
 			          header: '자재코드',
 			          name: 'matOdCd',
+			          sortable: true
 			        },
 			        {
 			          header: '자재명',
 			          name: 'mtrNm',
+			          sortable: true,
 					  filter: {
 					        type: 'select'			  
 					      }
 			        },
 			        {
 			        	header: '단가(원)',
-				        name: 'matOddMn'
+				        name: 'matOddMn',
+				        sortable: true
 			        },
 			        {
 			        	header: '발주량',
-			        	name: 'matOddAmt'
+			        	name: 'matOddAmt',
+			        	sortable: true
 			        },
 			        {
 			        	header: '총액',
-			        	name: 'matSum'
+			        	name: 'matSum',
+			        	sortable: true
 			        },
 			        {
 			        	header: '업체명',
 			        	name: 'actNm',
+			        	sortable: true,
 						  filter: {
 						        type: 'select'			  
 						      }
 			        },
 			        {
 			        	header: '납기요청일',
-			        	name: 'matOddDate'
+			        	name: 'matOddDate',
+			        	sortable: true
 			        }
 		      ]
 		    });
@@ -286,15 +302,17 @@
 		--------------------------------*/
 		function datePicker() {
 			rangeDatepickerInit('#startpicker-input', '#startpicker-container','#endpicker-input','#endpicker-container')
-			}
+			document.getElementById('startpicker-input').value = null;
+			document.getElementById('endpicker-input').value = null;	
+		}
 		
 		/*------------------------
 		// DatePicker 초기화버튼 이벤트
 		--------------------------*/
 		function resetDate() {
 			document.getElementById('resetDpBtn').addEventListener('click',function(){
-				document.getElementById('startpicker-input').value = today;
-				document.getElementById('endpicker-input').value = today;
+				document.getElementById('startpicker-input').value = null;
+				document.getElementById('endpicker-input').value = null;
 			});	
 		}
 		
