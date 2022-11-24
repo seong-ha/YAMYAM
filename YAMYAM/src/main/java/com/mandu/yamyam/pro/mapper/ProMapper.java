@@ -98,6 +98,9 @@ public interface ProMapper {
 	// 지시완료된 생산지시 조회
 	public List<ProVO> getOProList(ProVO vo);
 	
+	// 생산공정 수정(투입량)
+	public int updateProInAmt(ProVO vo);
+	
 	
 	/*---------------
 	// 공정 관리

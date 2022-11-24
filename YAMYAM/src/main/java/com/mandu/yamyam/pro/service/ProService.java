@@ -53,19 +53,10 @@ public interface ProService {
 	
 	// 생산라인 조회
 	public List<Map<String,Object>> lineList(ProVO vo);
-	
-	// 필요자재 조회
-	public List<ProVO> needM(ProVO vo);
-	
-	// 필요자재 lot 목록 조회
-	public List<ProVO> mLotList(ProVO vo);
-	
+
 	// 생산지시 등록
 	public int insertOrder(List<ProVO> vo);
-	
-	// 자재 입고 테이블 업데이트(재고 변경)
-	public int updateMin(List<ProVO> vo);
-	
+
 	/*---------------
 	// 생산 지시 조회
 	----------------*/
@@ -86,5 +77,8 @@ public interface ProService {
 	----------------*/
 	// 지시완료된 생산지시 조회
 	public List<ProVO> getOProList(ProVO vo);
+	
+	// 생산공정 수정(투입량)
+	public int updateProInAmt(ProVO vo);
 		
 }

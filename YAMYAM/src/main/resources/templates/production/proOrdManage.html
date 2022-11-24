@@ -13,6 +13,10 @@
 	margin : 5px;
 	width : 90px;
 }
+.row {
+	margin-bottom : 20px;
+	margin-top : 30px;
+}
 
 </style>
 </head>
@@ -31,16 +35,16 @@
 		</table>
 	</div>
 	<div class="row">
-		<p>진행생산지시</p>
+		<h4>진행생산지시</h4>
 		<div id="pOrderGrid"></div>
 	</div>
 	<div class="row">
 		<div class="col-11">
-			<p>공정목록</p>
+			<h4>공정목록</h4>
 			<div id="proGrid"></div>
 		</div>
 		<div class="col-1" >
-			<p>공정상세사항</p>
+			<h4>공정상세사항</h4>
 			<div>
 			
 				<table style="width: 100%; float:center;">
@@ -122,7 +126,7 @@
 		
 <script>
 
-	let orderGrid = orderGridInit();			// 진행생산지시 grid 초기화
+	let pOrderGrid = orderGridInit();			// 진행생산지시 grid 초기화
 	let progressGrid = progressGridInit();		// 공정목록 grid 초기화
 	let orModalGrid = orModalGridInit();		// 생산지시목록 모달 grid
 	let pLModalGrid = pLModalGridInit();		// 공정이동표 모달 grid
@@ -136,6 +140,7 @@
 	restartBtnHandler();		// 재시작 버튼 이벤트 핸들러
 	scheduleBtnHandler();		// 공정이동표 클릭 버튼 이벤트 핸들러
 	cancelBtnHandler();  	    // date picker input 값 초기화 버튼
+	pOrderGridClickHandler();   // 진행생산지시 그리드 클릭 버튼 이벤트 핸들러
 	
 	/*------------
 	// datepicker
@@ -304,6 +309,8 @@
 		return orModalGrid;
 	}
 	
+	
+	
 	/*------------
 	// 공정이동표 모달 grid
 	----------------*/
@@ -380,9 +387,17 @@
 		return pLModalGrid;
 	}
 	
-	
-	
-	
+	/*------------
+	// 진행생산지시 그리드 클릭 버튼 이벤트 핸들러
+	----------------*/
+	function pOrderGridClickHandler(){
+		$('#pOrderGrid').on('click',function(ev){
+			let plineCd = pOrderGrid.getData()[0].plineCd;
+			console.log(plineCd);
+			// /proInUpdate
+			
+		})
+	}
 	
 
 	/*------------
@@ -449,8 +464,8 @@
 			//console.log(ev.rowKey); 선택한 행의 row번호
 			// 클릭한 행의 자재명, 자재코드 
 			let val = [orModalGrid.getRow(ev.rowKey)];
-			console.log(val);
-			orderGrid.resetData(val);
+			//console.log(val);
+			pOrderGrid.resetData(val);
 			$('#orderModal').modal("hide");	
 			
 			// 이미 존재하는 값 불러오지 않기(필터링)
