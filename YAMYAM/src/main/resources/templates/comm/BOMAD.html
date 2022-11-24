@@ -118,25 +118,6 @@
 	<script>
 	  
 	  
-	  const gridData2 = [{
-		  BOM_NO: '1',
-	      PRD_CD: 'GGMD-01',
-	      PRD_NM: '고기만두',
-	      PRD_STD : 'SPEC02',
-		  },
-		  {
-		  BOM_NO: '2',
-		  PRD_CD: 'GGMD-02',
-		  PRD_NM: '고기만두',
-		  PRD_STD : 'SPEC02',
-		  },
-		  {
-		  BOM_NO: '3',
-		  PRD_CD: 'GGMD-03',
-		  PRD_NM: '고기만두',
-		  PRD_STD : 'SPEC02',
-		  }
-	  ];
 	  
 	  const gridData3 = [{
 		  BOM_NO: '1',
@@ -220,7 +201,6 @@
 		
 		const grid2 = new tui.Grid({
 			el : document.getElementById('grid2'),
-			data : gridData2,
 			scrollX : true,
 			scrollY : false,
 			bodyHeight : 500,
@@ -246,10 +226,6 @@
 	            grid2.refreshLayout(); //모달창 새로고침
 	       })
 	       
-	       
-	    //각종 이벤트 함수 모음
-	    
-	    
 	    
     </script>
     
