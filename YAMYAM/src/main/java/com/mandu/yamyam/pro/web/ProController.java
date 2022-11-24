@@ -109,20 +109,6 @@ public class ProController {
 		return service.lineList(vo);
 	}
 	
-	// 필요자재 조회
-	@RequestMapping("/getNeed")
-	@ResponseBody
-	public List<ProVO> getNeedM(ProVO vo){
-		return service.needM(vo);
-	}
-	
-	// 필요자재LOT목록 조회
-	// 필요자재 조회
-	@RequestMapping("/getMLOTList")
-	@ResponseBody
-	public List<ProVO> getLotList(ProVO vo){
-		return service.mLotList(vo);
-	}
 	
 	// 생산지시 추가
 	@PostMapping("/orderInsert")
@@ -131,12 +117,6 @@ public class ProController {
 		return service.insertOrder(vo);
 	}
 	
-	// 자재 재고 업데이트
-	@PostMapping("/miUpdate")
-	@ResponseBody
-	public int miUpdatet(@RequestBody List<ProVO> vo) {
-		return service.updateMin(vo);
-	}
 	
 	
 	/*---------------
@@ -170,6 +150,12 @@ public class ProController {
 		return service.getOProList(vo);
 	}
 	
+	// 투입량 수정
+	@PostMapping("/proInUpdate")
+	@ResponseBody
+	public int proInUpdate(@RequestBody ProVO vo) {
+		return service.updateProInAmt(vo);
+	}
 	
 	// 공정 실적 조회
 	@RequestMapping("/proResult")

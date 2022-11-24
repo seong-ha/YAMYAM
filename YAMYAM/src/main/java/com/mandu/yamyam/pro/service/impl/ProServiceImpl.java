@@ -115,17 +115,6 @@ public class ProServiceImpl implements ProService {
 		return mapper.lineList(vo);
 	}
 	
-	// 필요자재 조회
-	@Override
-	public List<ProVO> needM(ProVO vo) {
-		return mapper.needM(vo);
-	}
-
-	// 필요자재LOT목록 조회
-	@Override
-	public List<ProVO> mLotList(ProVO vo) {
-		return mapper.mLotList(vo);
-	}
 
 	// 생산지시 등록
 	@Override
@@ -142,17 +131,7 @@ public class ProServiceImpl implements ProService {
 		return result;
 	}
 	
-	// 자재 재고 수정
-	@Override
-	public int updateMin(List<ProVO> vo) {
-		System.out.println(vo);
-		int result = 0;
-		for(int y = 0; y<vo.size(); y++) {
-			
-			result += mapper.updateMin(vo.get(y));
-		}
-		return result;
-	}
+
 	
 	/*---------------
 	// 생산 지시 조회
@@ -172,6 +151,13 @@ public class ProServiceImpl implements ProService {
 	}
 	
 	
+	// 생산공정 수정(투입량)
+	@Override
+	public int updateProInAmt(ProVO vo) {
+		return mapper.updateProInAmt(vo);
+	}
+	
+	
 	/*---------------
 	// 공정 관리
 	----------------*/
@@ -185,6 +171,7 @@ public class ProServiceImpl implements ProService {
 	public List<ProVO> getFlowList(ProVO vo) {
 		return mapper.getFlowList(vo);
 	}
+	
 	
 	
 }

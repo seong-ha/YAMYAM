@@ -8,64 +8,160 @@
 <meta charset="UTF-8">
 <title>YAMYAM</title>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+<style type="text/css">
+.row {
+	margin-bottom : 20px;
+	margin-top : 30px;
+}
+</style>
 </head>
 
 <body>
 	<!-- 본문 시작 -->
 	<div layout:fragment="content" class="container">
-		<h3>생산지시 조회</h3>
-		<div>
-			<table style="width: 100%;">
-				<tr>
-					<td style="width: 70px;">지시일자 &nbsp;</td>
-					<td>
-						<div class="tui-datepicker-input tui-datetime-input tui-has-focus">
-					        <input id="startpicker-input" type="text" aria-label="Date">
-					        <span class="tui-ico-date"></span>
-					        <div id="startpicker-container" style="margin-left: -1px;"></div>
-					    </div>
-					    <span>-</span>
-					    <div class="tui-datepicker-input tui-datetime-input tui-has-focus">
-					        <input id="endpicker-input" type="text" aria-label="Date">
-					        <span class="tui-ico-date"></span>
-					        <div id="endpicker-container" style="margin-left: -1px;"></div>
-					    </div>
-						<button type="button" id="searchBtn"
-							class="btn btn-dark btn-sm">검색</button>
-						<button type="button" id="cancelBtn"
-							class="btn btn-dark btn-sm">초기화</button>
-					</td>
-					<td></td>
-				</tr>
-				<tr>
-					<td colspan="3">
-						<div id="grid"></div>
-					</td>
-				</tr>
-				
-			</table>
+	<button type="button" id="showNOModal" class="btn btn-dark btn-sm" style="width: 140px; float:right;" data-bs-toggle="modal" data-bs-target="#orderModal"> 생산지시 조회</button>
+		<h3>생산지시 관리 및 조회</h3>
 
+		<div class="row">
+			<div class="col-7">
+				<h4>미지시 생산계획</h4>
+				<div id="grid"></div>
+			</div>
+			<div class="col-5">
+				<h4>상세생산계획</h4>
+				<div id="planDGrid"></div>
+			</div>
 		</div>
+		<div class="row">
+			<h4>생산지시</h4>
+			<div id="planOrder"></div>
+		</div>
+		<button type="button" id="orderBtn" style="color:yellow; float:right;" class="btn btn-dark btn-sm">생산 지시</button>
+		
+	
+		<!-- 생산지시 조회 모달 -->
+		<div class="modal" id="orderModal" tabindex="-1">
+			<div class="modal-dialog modal-fullscreen">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h4 class="modal-title" id="orderModalLabel">생산지시조회</h4>
+						<button type="button" class="btn-close" data-bs-dismiss="modal"
+							aria-label="Close"></button>
+					</div>
+					<div class="modal-body">
+						<div>
+							<table style="width: 100%;">
+								<tr>
+									<td style="width: 70px;">지시일자 &nbsp;</td>
+									<td>
+										<div class="tui-datepicker-input tui-datetime-input tui-has-focus">
+									        <input id="startpicker-input" type="text" aria-label="Date">
+									        <span class="tui-ico-date"></span>
+									        <div id="startpicker-container" style="margin-left: -1px;"></div>
+									    </div>
+									    <span>-</span>
+									    <div class="tui-datepicker-input tui-datetime-input tui-has-focus">
+									        <input id="endpicker-input" type="text" aria-label="Date">
+									        <span class="tui-ico-date"></span>
+									        <div id="endpicker-container" style="margin-left: -1px;"></div>
+									    </div>
+										<button type="button" id="searchBtn"
+											class="btn btn-dark btn-sm">검색</button>
+										<button type="button" id="cancelBtn"
+											class="btn btn-dark btn-sm">초기화</button>
+									</td>
+									<td></td>
+								</tr>
+								<tr>
+									<td colspan="3">
+										<div id="modalGrid"></div>
+									</td>
+								</tr>
+							</table>
+						</div>
+						<div>
+							
+						</div>
+					</div>
 
+				</div>
+			</div>
+		</div>
 	<script>
 		
 		//date picker 초기화
 		searchInit(); 
 		let grid = gridInit();
+		let planDGrid = planDGridInit(); 	 // 상세계획 조회 grid
+		let planOrder = planOrderGridInit(); // 생산지시 grid 
+		let modalGrid =  modalGridInit();    // 모달에 뜨는 미지시계획 grid 
 		
 		cancelBtnHandler();  //  date picker input 값 초기화 버튼
 		searchBtnHandler();	 //  date picker input 값 조회 버튼
-
+		showNOModalHandler(); 	 // 미지시계획 모달 클릭 버튼 이벤트
+		gridClickHandler(); 	 // 미지시계획조회 그리드 선택시 자료를 상세생산계획 Grid에 넣어주기
+		planDGridChangeHandler() // 계획 관리 그리드에서의 수정
+		planOrderEdit(); 		 // 생산지시그리드 editingFinish 이벤트 핸들러 
+		orderBtnHandler(); 		 // 생산 지시 버튼 이벤트 핸들러
+		
 		/*------------
-		// grid 초기화
-		----------------*/
+		// grid 초기화 (미지시 생산계획) 
+		----------------*/	
 		function gridInit(){
 			let grid = new tui.Grid({
-				el : document.getElementById('grid'),
+				el: document.getElementById('grid'),
+				scrollX: false,
+				scrollY: false,
+				rowHeaders: ['rowNum'],
+				columns: [
+					{
+						header: '계획코드',
+						name: 'pplnCd',
+					},
+					{
+						header: '계획등록일',
+						name: 'pplnDate',
+					},
+					{
+						header: '계획명',
+						name: 'pplnName',
+					},
+					{
+						header: '제품명',
+						name: 'prdNm'
+					},
+					{
+						header: '제품명',
+						name: 'prdCd'
+					}
+				]
+			});
+			$.ajax({
+				url : '/getNoOrder',
+				method: "GET",			
+			}).then(res=>{
+				grid.resetData(res);
+			})
+			
+			return grid;
+		}
+		
+		
+		
+		/*------------
+		// modalGrid 초기화
+		----------------*/
+		function modalGridInit(){
+			let modalGrid = new tui.Grid({
+				el : document.getElementById('modalGrid'),
 				scrollX : false,
 				scrollY : false,
 				rowHeaders: ['rowNum'],
 				columns : [ 
+				{	
+					header : '생산지시코드',
+					name : 'podCd',
+				},
 				{	
 					header : '상세생산지시코드',
 					name : 'poddCd',
@@ -91,7 +187,7 @@
 					sortable : true
 				}, {
 					header : '진행구분',
-					name : 'podSts',
+					name : 'poddSts',
 					filter: {
 				        type: 'select'
 				      }
@@ -100,16 +196,129 @@
 					name : 'other',
 				}, ]
 			});
-			$.ajax({
-				url : '/viewOrderList',
-				method: "GET",			
-			}).then(res=>{
-				grid.resetData(res);
-			})
-			
-			return grid;
-			
+			return modalGrid;
 		}
+		
+		
+		
+		/*------------
+		// 상세계획 조회 grid
+		----------------*/
+	
+		function planDGridInit(){
+			let planDGrid = new tui.Grid({
+				el: document.getElementById('planDGrid'),
+				scrollX: false,
+				scrollY: false,
+				rowHeaders: ['rowNum'],
+				columns: [
+					{
+						header: '상세계획코드',
+						name: 'pplndCd'
+					},
+					{
+						header: '생산일수',
+						name: 'pplndDays',
+						align: 'right'
+					},
+					{
+						header: '생산지시량',
+						name: 'pplndAmt',
+						align: 'right'
+					}
+				]
+			});
+			return planDGrid;
+		}
+		
+		planDGrid.hideColumn('pplnCd');
+		
+		
+		/*------------
+		// 생산지시 grid 
+		----------------*/
+		function planOrderGridInit(){
+			let planOrder = new tui.Grid({
+				el: document.getElementById('planOrder'),
+				scrollX: false,
+				scrollY: false,
+				rowHeaders: ['checkbox','rowNum'],
+				columns: [
+					{
+						header: '라인코드',
+						name: 'plineCd',
+					},
+					{
+						header: '상세계획코드',
+						name: 'pplndCd'
+					},
+					{
+						header: '제품코드',
+						name: 'prdCd'
+					},
+					{
+						header: '작업일자',
+						name: 'poddDates',
+						editor: {
+				            type: 'datePicker',
+				            options: {
+				              format: 'yyyy-MM-dd',
+				              language : 'ko'
+				            }
+				          },
+				        validation: {
+						        dataType: 'datePicker',
+						        required: true
+						      }  
+					},
+					{
+						header: '작업수량(BOX)',
+						name: 'poddAmt',
+						editor : {
+							type : 'text'
+						},
+						validation: {
+						        dataType: 'text',
+						        required: true
+						} 						
+					},
+					{
+						header: '일자별우선순위',
+						name: 'poddPrio',
+						editor : {
+							type : 'text'
+						},
+						 validation: {
+						        dataType: 'text',
+						        required: true
+						} 	
+					},
+					{
+						header: '비고',
+						name: 'ppodOther',
+						editor : {
+							type : 'text'
+						}
+					}
+				],
+				summary: {
+			        height: 40,
+			        position: 'bottom', // or 'top'
+			        columnContent: {
+			        	poddAmt: {
+			            template: function(valueMap) {
+			              return `TOTAL: ${valueMap.sum}`;
+			            }
+			          }
+			        }
+			      }
+			});
+			return planOrder;
+		}
+		planOrder.hideColumn('pplndCd');
+		planOrder.hideColumn('prdCd');
+		
+		
 		
 			
 			/*------------
@@ -128,9 +337,6 @@
 				$('#searchBtn').on('click',function(){
 					let getStartDay = $("#startpicker-input").val();
 					let getEndDay = $("#endpicker-input").val();
-					console.log(getStartDay);
-					console.log(getEndDay);
-					// 갖고온 start, end 값을 넘겨서 select 해오기
 					
 					$.ajax({
 						url : '/viewOrderList',
@@ -138,7 +344,7 @@
 						contentType: 'application/json',
 						dataType : 'json',
 						method: "GET",
-						success : function(data){console.log(data); grid.resetData(data);},
+						success : function(data){console.log(data); modalGrid.resetData(data);},
 						error : function(reject){console.log(reject);}				
 					})
 					
@@ -160,11 +366,159 @@
 						url : '/viewOrderList',
 						method: "GET",			
 					}).then(res=>{
-						grid.resetData(res);
+						modalGrid.resetData(res);
 					})
 				});	
 			}
+			
+			
+			
+			/*------------
+			// showNOModalBtn 이벤트 핸들러 
+			----------------*/	
+			function showNOModalHandler(){
+				// 미지시계획 모달 클릭 버튼 이벤트
+				$('#showNOModal').on('click',function(){
+					
+					$('#orderModal').modal("show");
+					
+					$.ajax({
+						url : '/viewOrderList',
+						method: "GET",			
+					}).then(res=>{
+						modalGrid.resetData(res);
+					})
+					modalGrid.refreshLayout();
+				});
+			}
+			
+			
+			
+			/*------------
+			// 미지시상세계획그리드 클릭 이벤트 핸들러 
+			----------------*/	
+			function gridClickHandler(){
+			// 미지시계획조회 모달창의 그리드 선택시 자료를 상세생산계획 Grid에 넣어주기
+				grid.on('click',function(ev){
+					let pplnCd = grid.getRow(ev.rowKey).pplnCd;
+					let prdNm  = grid.getRow(ev.rowKey).prdNm;
+					let pplndAmt = grid.getRow(ev.rowKey).pplndAmt;
+					let pplndDays = grid.getRow(ev.rowKey).pplndDays;
+					let prdCd = grid.getRow(ev.rowKey).prdCd;
+					let pplndCd = grid.getRow(ev.rowKey).pplndCd;
+					let resetData = [{pplnCd: pplnCd, pplndDays:pplndDays, prdNm: prdNm, pplndAmt: pplndAmt,poddAmt: '',restAmt: '',pplndCd:pplndCd,prdCd:prdCd}];
+					
+					planDGrid.resetData(resetData);
+					planOrder.clear();
+				});
+			}
+			
+			
+			
+			
+			/*------------
+			// 생산지시그리드 afterChange 이벤트 핸들러 
+			----------------*/
+			function planOrderEdit(){
+				planOrder.on('afterChange',function(ev){
+					
+/* 					let podDates = planOrder.getValue(ev.rowKey,'podDates');
+					let poddAmt = planOrder.getValue(ev.rowKey,'poddAmt');
+					let poddPrio = planOrder.getValue(ev.rowKey,'poddPrio'); */
+					let list = planOrder.getData();
+					
+					let b = planOrder.getColumnValues('poddPrio');
+					// 마지막 값이 채워지면 matNeed 그리드 호출
+					let a = list.length-1;
+					
+					let plList = planDGrid.getData();
+					let po = plList[0].pplndAmt;
+					let poSum = planOrder.getSummaryValues('poddAmt').sum;
+					console.log(poSum)
+					
+					if(b[a] != null){
+							if(po == poSum){
+								planOrder.checkAll();
+							}else{
+								toastr.options = {
+										  "closeButton": true,
+										  "newestOnTop": true,
+										  "positionClass": "toast-top-center",
+										  "preventDuplicates": true,
+										  "extendedTimeOut" : 0, 
+										  "timeOut" : 0
+								}
+								toastr.error(`생산지시량과 작업수량이<br> 일치하지 않습니다.`);
+							}
+						
+					}
+				})
+			}
+			
 
+			/*------------
+			// 계획 관리 그리드에서의 수정
+			----------------*/	
+			function planDGridChangeHandler(){
+				planDGrid.on('click', function(ev) {
+				
+				
+					
+				 let poddAmt = planDGrid.getRow(ev.rowKey).pplndAmt;
+				 
+				 let pplndCd = planDGrid.getRow(ev.rowKey).pplndCd;
+				 let pplndDays = planDGrid.getRow(ev.rowKey).pplndDays;
+				 let prdCd = planDGrid.getRow(ev.rowKey).prdCd;
+				 $.ajax({
+						url : '/proOrderList',
+						method: "GET",
+						data : {"prdCd":prdCd,"pplndDays":pplndDays}
+					}).then(res=>{
+						planOrder.resetData(res);
+					})
+					
+					planOrder.refreshLayout();
+					 
+					
+					
+				});
+			}
+			/*------------
+			// 생산 지시 버튼 이벤트 핸들러 
+			----------------*/	
+			function orderBtnHandler(){
+			 $('#orderBtn').on('click',function(){
+					 
+				 let orderData = planOrder.getCheckedRows();
+					 let dataList = [];
+					 // 생산지시 관련 테이블 C
+					 for(let i =0; i<orderData.length; i++){
+						 let plinceCd = orderData[0].plineCd;
+						 let prdCd = orderData[0].prdCd;
+						 let pplndCd = orderData[0].pplndCd;
+						 let poddAmt = orderData[i].poddAmt;
+						 let poddDates = orderData[i].poddDates;
+						 let poddPrio = orderData[i].poddPrio;
+						 dataList.push({pplndCd,prdCd,poddAmt,poddDates,poddPrio});
+					 }
+					 
+					 sweetConfirm('C', function(){
+						 $.ajax({
+								url : '/orderInsert',
+								method: 'POST',
+								contentType : 'application/json',
+								data : JSON.stringify(dataList),
+								dataType : 'json',
+								success : function(data){
+									Swal.fire('생산지시가 등록되었습니다.'); console.log(data);
+									},
+								error : function(reject){Swal.fire('등록에 실패했습니다.'); console.log(reject);}				
+						 })
+					  })
+				})
+			}
+
+			
 	</script>
 
 	</div>
