@@ -77,4 +77,10 @@ public class EqpServiceImpl implements EqpService {
 		return result;
 	}
 
+	// 비가동명 리스트 조회
+	@Override
+	public List<EqpVO> getUopTypeList() {
+		return eqpMapper.getUopTypeList();
+	}
+
 }

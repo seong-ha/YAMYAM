@@ -22,8 +22,8 @@ public class EqpRestController {
 		return eqpService.getEqpList();
 	}
 
-	// 설비가동여부 리스트 조회
-	@GetMapping("/eqpStsListModal")
+	// 설비목록 모달 조회
+	@GetMapping("/getEqpListModal")
 	public List<EqpVO> getEqpListModal() {
 		return eqpService.getEqpListModal();
 	}
@@ -31,8 +31,6 @@ public class EqpRestController {
 	// 설비 단건 조회
 	@PostMapping("/getEqp")
 	public EqpVO getEqp(EqpVO eqpVO) {
-		System.out.println(eqpVO.getEqpCd());
-		System.out.println(eqpService.getEqp(eqpVO));
 		return eqpService.getEqp(eqpVO);
 	}
 

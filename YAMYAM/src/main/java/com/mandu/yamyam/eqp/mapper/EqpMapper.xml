@@ -92,7 +92,7 @@
             chk_cycle = #{chkCycle},
             eqp_sts = #{eqpSts},
             uph = #{uph},
-            <if test="img != null || !img.equals('')">
+            <if test="img != null">
             	img = #{img},
             </if>
             eqp_type = #{eqpType},
@@ -131,8 +131,16 @@
 		 WHERE comm_cd = 'EQP-TYPE'
 	</select>
 	
+	<!-- 설비 삭제 -->
 	<delete id="eqpDelete" parameterType="com.mandu.yamyam.eqp.service.EqpVO">
 		DELETE FROM e_eqp
 		WHERE eqp_cd = #{eqpCd}
 	</delete>
+	
+	<!-- 비가동명 리스트 조회 -->
+	<select id="getUopTypeList" resultType="com.mandu.yamyam.eqp.service.EqpVO">
+		select commd_cd, commd_nm
+		from   c_commd
+		where  comm_cd = 'UOP-TYPE'
+	</select>
 </mapper>

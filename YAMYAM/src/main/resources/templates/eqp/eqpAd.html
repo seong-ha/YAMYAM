@@ -247,9 +247,12 @@
 		
 		<script type="text/javascript">
 			let selectEqpGrid = selectTabInit(); 		// 조회탭 그리드 초기화
+			getSelectEqpData();							// 조회탭 그리드 정보 초기화
 			let eqpListModalGrid = eqpListModalInit();	// 관리탭 설비목록 모달 그리드 초기화
+			getEqpListModalData();						// 설비 목록 정보 가져오기
 			let eqpTypeModalGrid = eqpTypeModalInit();	// 관리탭 설비구분 모달 그리드 초기화
 			
+			tabBtnHandler();							// 조회탭 버튼 클릭 이벤트(정보최신화 및 refresh)
 			searchBtn();								// 조회탭 검색버튼
 			searchResetBtn();							// 조회탭 검색 초기화 버튼
 			deleteBtn();								// 조회탭 선택 삭제 버튼
@@ -368,18 +371,6 @@
 				      ]
 				});
 				
-				// 설비 리스트 전제 조회
-				$.ajax({
-					url:'/getEqpList',
-					dataType: 'json',
-					success: function (data) {
-						selectEqpGrid.resetData(data);
-					},
-					error: function (reject) {
-						console.log(reject);
-					}
-				})
-				
 				return selectEqpGrid;
 			}
 			
@@ -413,17 +404,7 @@
 			      	] 
 				});
 				
-				// 설비 목록 정보 가져오기
-				$.ajax({
-					url: '/eqpStsListModal',
-					dataType: "json",
-					success: function (data) {
-						eqpListModalGrid.resetData(data);
-					},
-					error: function (reject) {
-						console.log(reject);
-					}
-				});
+				
 				
 				// 관리탭 설비목록 모달에서 하나 클릭시, 설비전체 input태그에 값 넣어주고 모달창 닫기
 				eqpListModalGrid.on('click', function (ev) {
@@ -485,6 +466,7 @@
 				});
 				
 				
+				
 				// 상세공통의 설비구분코드 설비구분명 eqpTypeModalGrid에 set
 				$.ajax({
 					url: '/eqpTypeListModal',
@@ -496,6 +478,7 @@
 						console.log(reject);
 					}
 				});
+				
 				
 				
 				/* ---------------
@@ -521,6 +504,7 @@
 			----------------*/
 			function tabBtnHandler(){
 				document.getElementById('select-tab').addEventListener('click', function () {
+					getSelectEqpData();	// 정보 최신화
 					selectEqpGrid.refreshLayout();
 				});	
 			}
@@ -557,6 +541,26 @@
 					selectEqpGrid.unfilter('eqpSts');
 				})
 			}
+			
+			
+			
+			/* ---------------
+			설비 리스트 전제 조회
+			--------------- */
+			function getSelectEqpData() {
+				$.ajax({
+					url:'/getEqpList',
+					dataType: 'json',
+					success: function (data) {
+						selectEqpGrid.resetData(data);
+					},
+					error: function (reject) {
+						console.log(reject);
+					}
+				});
+			}
+			
+			
 			
 			/* ---------------
 			조회탭 체크 삭제 버튼
@@ -604,6 +608,23 @@
 				});
 			}
 			
+			
+			
+			/* ---------------
+			설비 목록 정보 가져오기
+			--------------- */
+			function getEqpListModalData() {
+				$.ajax({
+					url: '/getEqpListModal',
+					dataType: "json",
+					success: function (data) {
+						eqpListModalGrid.resetData(data);
+					},
+					error: function (reject) {
+						console.log(reject);
+					}
+				});
+			}
 			
 			
 			
@@ -669,10 +690,6 @@
 						let form = document.getElementById('form');
 						let formData = new FormData(form);
 				        
-				        for (let [key, value] of formData) {
-				          console.log(`${key}: ${value}\n`);
-				        }
-				        
 						sweetConfirm('C', function () {
 							$.ajax({
 					             url : "/eqpInsertUpdate",
@@ -681,11 +698,11 @@
 					             contentType : false,
 					             data : formData,
 					             success:function(data) {
-					                 console.log(data);
 									 // ajax success
 									 if (data.result == 'success') {
 									 	 toastr.success('정상적으로 저장되었습니다.');
 										 document.getElementById('reset').click();
+										 getEqpListModalData();	// 정보 최신화
 					            	 } else if (data.result == '예외발생') {
 					            		 toastr.error('예외가 발생하여 저장에 실패했습니다.');
 					            	 } else {
@@ -700,6 +717,14 @@
 						
 						
 					} else {
+						// 업로드할 파일 데이터
+						let form = document.getElementById('form');
+						let formData = new FormData(form);
+				        
+				        /* for (let [key, value] of formData) {
+				          console.log(`${key}: ${value}\n`);
+				        } */
+						
 						sweetConfirm('U', function () {
 							$.ajax({
 					             url : "/eqpInsertUpdate",
@@ -742,6 +767,7 @@
 					document.getElementById('imgTag').src = '';
 				});
 			}
+			
 			
 
 			/* ---------------

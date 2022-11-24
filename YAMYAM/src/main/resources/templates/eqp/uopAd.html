@@ -47,11 +47,11 @@
 		<hr>
 		
 		<div class="row">
-			<div class="col-5">
+			<div class="col-4">
 				<h3>설비목록</h3>
 				<div id="selectEqp"></div>
 			</div>
-			<div class="col-7">
+			<div class="col-8">
 				<h3>비가동 이력</h3>
 				<ul class="ul-style">
 					<li>
@@ -104,9 +104,7 @@
 							<td>
 								<select name="uopNm" id="uopNm" class="form-select-sm">
 									<option class="form-select form-select-sm" value="" disabled selected>비가동명 선택</option>
-							        <option value="수리">수리</option>
-							        <option value="점검">점검</option>
-							        <option value="기타">기타</option>
+							        <option th:each="uopType : ${uopTypeList}" th:value="${uopType.commdCd}" th:text="${uopType.commdNm}">
 							    </select>
 							</td>
 							<td></td>
@@ -140,6 +138,7 @@
 		<script>
 			let selectEqpGrid = selectEqpGridInit();	// 설비목록 grid 초기화
 			let selectUopGrid = selectUopGridInit();	// 비가동 이력 grid 초기화
+			getSelectEqpData();							// 설비 목록 전제 조회
 			
 			datePickerInit();							// 비가돟 이력쪽 datepicker
 			uopRecordSearch();							// 비가동 이력쪽 조회버튼 누르면 결과값 가져와서 selectUopGrid에 뿌려주기
@@ -168,20 +167,6 @@
 				let selectEqpGrid = new tui.Grid({
 				      el: document.getElementById('selectEqp'),
 				      bodyHeight: 600, // 스크롤
-				      data: [
-				    	{
-				    		eqpCd: 'eqp-20221104-001',
-				    		eqpNm: '만두소 배합기1',
-				    		eqpType: '대기',
-				    		eqpSts: '가동'
-					    },
-				    	{
-				    		eqpCd: 'eqp-20221104-002',
-				    		eqpNm: '만두소 배합기2',
-				    		eqpType: '대기',
-				    		eqpSts: '가동'
-					    }
-					  ],
 				      rowHeaders: ['rowNum'],
 				      scrollX: false,
 				      scrollY: true,
@@ -290,11 +275,11 @@
 					      align: 'left'
 				        },
 				        {
-				          header: '비가동명',
-				          name: 'uopNm',
+				          header: '비가동구분',
+				          name: 'uopType',
 					      align: 'left',
 					      filter: {
-					    	  type: 'select'
+					    	  type: 'center'
 					      }
 				        },
 				        {
@@ -349,6 +334,22 @@
 				rangeDatepickerInit('#startpicker-input', '#startpicker-container','#endpicker-input','#endpicker-container')
 			}
 			
+			
+			/* ---------------
+			설비 목록 전제 조회
+			--------------- */
+			function getSelectEqpData() {
+				$.ajax({
+					url:'/getEqpList',
+					dataType: 'json',
+					success: function (data) {
+						selectEqpGrid.resetData(data);
+					},
+					error: function (reject) {
+						console.log(reject);
+					}
+				});
+			}
 			
 			
 			/* ---------------

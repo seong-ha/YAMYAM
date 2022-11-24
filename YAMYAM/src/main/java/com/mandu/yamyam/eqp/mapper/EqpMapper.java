@@ -31,4 +31,7 @@ public interface EqpMapper {
 	
 	// 설비 삭제
 	int eqpDelete(EqpVO eqpVO);
+	
+	// 비가동명 리스트 조회
+	List<EqpVO> getUopTypeList();
 }
