@@ -105,8 +105,8 @@ public class ProServiceImpl implements ProService {
 	----------------*/
 	// 미지시 계획 조회
 	@Override
-	public List<ProVO> noOrderList() {
-		return mapper.noOrderList();
+	public List<ProVO> noOrderList(ProVO vo) {
+		return mapper.noOrderList(vo);
 	}
 	
 	// 생산라인 조회
@@ -170,6 +170,24 @@ public class ProServiceImpl implements ProService {
 	@Override
 	public List<ProVO> getFlowList(ProVO vo) {
 		return mapper.getFlowList(vo);
+	}
+	
+	// 제품 공정 흐름도 관리
+	@Override
+	public List<ProVO> flowManage(ProVO vo) {
+		return mapper.flowManage(vo);
+	}
+
+	// 미사용설비 조회
+	@Override
+	public List<ProVO> noUseEqp() {
+		return mapper.noUseEqp();
+	}
+	
+	// 제품 공정 목록 조회
+	@Override
+	public List<ProVO> flowProgress(ProVO vo) {
+		return mapper.flowProgress(vo);
 	}
 	
 	

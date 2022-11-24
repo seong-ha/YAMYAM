@@ -14,11 +14,11 @@
 	<div layout:fragment="content" class="container">
 		
 		<div class="row">
-			<div class="col-6">
-				<h3>제품 공정 흐름도</h3>
+			<div class="col-5">
+				<h3 style="margin-bottom:42px;">제품 공정 흐름도</h3>
 				<div id="flowGrid"></div>
 			</div>
-			<div class="col-6" >
+			<div class="col-7" >
 				 <table>
 					<tr>
 						<td colspan="4">
@@ -195,21 +195,26 @@
 					return;
 				}
 				
-				let pCode = flowGrid.getValue(ev.rowKey, 'prdCd');
-				let lineName = flowGrid.getValue(ev.rowKey, 'plineCd');
-				$('#pName').val(pCode);
-				$('#lineName').val(lineName);
+				let prdCd = flowGrid.getValue(ev.rowKey, 'prdCd');
+				let plineCd = flowGrid.getValue(ev.rowKey, 'plineCd');
+				$('#pName').val(prdCd);
+				$('#lineName').val(plineCd);
 				
 				let data = {pproCd :'',pproName:'',eqpCd:'',eqpNm :''};	
-					//flowManage.appendRow(data);
 				
-					// ajax 
-					// 가져온 데이터 담아주기
-					// flowManage.resetData(data);	 */				
-				
-				
+				$.ajax({
+					url : '/flowManage',
+					method: "GET",
+					data : {"plineCd" : plineCd},
+					contentType: 'application/json',
+					dataType : 'json',
+				}).then(res=>{
+					flowManage.resetData(res);
+				})
 			})
 		}
+		
+		
 		
 		/*------------
 		// 흐름도 관리 그리드 클릭 이벤트
