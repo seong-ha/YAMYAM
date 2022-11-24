@@ -17,6 +17,9 @@ public interface OrdService {
 	// 돋보기 완제품LOT목록 모달
 	public List<OrdVO> lotList();
 	
+	// 완제품LOT 재고 현황 모달
+	public List<OrdVO> lotSList();
+	
 	
 	/*-----------------
 	//   주문 관리 Tab
@@ -48,9 +51,6 @@ public interface OrdService {
 	// 출고 내역 리스트 조건조회
 	public List<OrdVO> getDetailOutList(OrdVO vo);
 	
-	// 출고중인 주문서 출고완료로 수정
-	public int updateOutOrd(List<OrdVO> vo);
-	
 	
 	/*-----------------
 	// 완제품 출고 관리 Tab
@@ -59,11 +59,13 @@ public interface OrdService {
 	// 진행중인 주문 리스트 조회
 	public List<OrdVO> getIngOrdList();
 	
-	// 출고 등록 리스트 조회
-
+	// 진행중인 주문 리스트 조건조회
+	public List<OrdVO> getIngOrdDetailList(OrdVO vo);
+	
 	// 출고 등록 리스트 등록
+	public int insertOutList(List<OrdVO> vo);
 	
 	// 출고 등록 리스트 삭제
-	
+	public int deleteOutList(List<OrdVO> vo);
 	
 }

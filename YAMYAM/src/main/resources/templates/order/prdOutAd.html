@@ -11,7 +11,7 @@
 #od-btn {
 	display: inline-block; margin: 0 5px; float: right;
 }
-#actCd, #actCd2, #startpicker-input, #endpicker-input {
+#startpicker-input, #endpicker-input {
 text-align: center;
 }
 </style>
@@ -46,7 +46,7 @@ text-align: center;
 	    </div>
 	    
 	          <!-- 완제품 재고 현황 Modal -->
-      <div class="modal" id="sAmtModal" tabindex="-1"
+      <div class="modal" id="lotSModal" tabindex="-1"
          aria-labelledby="exampleModalLabel" aria-hidden="true">
          <div class="modal-dialog">
             <div class="modal-content">
@@ -56,7 +56,7 @@ text-align: center;
                      aria-label="Close"></button>
                </div>
                <div class="modal-body">
-               <div id="sAmtModallGrid"></div>
+               <div id="lotSModallGrid"></div>
                </div>
             </div>
          </div>
@@ -66,7 +66,7 @@ text-align: center;
 	<div id="od-content-2">
 		<h4>진행중인 주문서 현황</h4>
 		
-	<div id="orderGrid"></div>
+	<div id="grid"></div>
 
 	</div>
 	<br>
@@ -87,19 +87,22 @@ text-align: center;
 	/*------------
 	// function
 	----------------*/
+	getOrdIngList();		// DB에서 주문서목록 불러오기
+	getOrdOutList();		// DB에서 출고등록목록 불러오기
+	//getlotSList();			// DB에서 LOT재고현황 불러오기 
 	searchBtnHandler();		// 조회 버튼 핸들러
 	cancelBtnHandler();		// 데이트피커 값 초기화 버튼
 	deleteBtnHandler();		// 삭제 버튼 이벤트 핸들러
-	//sAmtGridInit(); 		// 완제품LOT 재고 현황 모달
 	
-	let orderGird = orderGridInit();		// 진행중인 주문서 Grid
+	//let lotSGrid = lotSGridInit(); 		// 완제품LOT 재고 현황 모달
+	let grid = orderGridInit();		// 진행중인 주문서 Grid
 	let insertOutGrid = insertGridInit();	// 출고등록 Grid
 	
 	
 	/*------------
 	// 데이트피커
 	----------------*/
-rangeDatepickerInit('#startpicker-input', '#startpicker-container','#endpicker-input','#endpicker-container')
+	rangeDatepickerInit('#startpicker-input', '#startpicker-container','#endpicker-input','#endpicker-container')
 
 	
 	/*------------
@@ -110,7 +113,7 @@ rangeDatepickerInit('#startpicker-input', '#startpicker-container','#endpicker-i
 			let getStartDate = $("#startpicker-input").val();
 			let getEndDate = $("#endpicker-input").val();
 			$.ajax({
-				   url:'/detailIngOutList',
+				   url:'/ingOrdDetailList',
 				   contentType: 'application/json',
 				   dataType: "json",
 				   method: "GET",
@@ -118,8 +121,7 @@ rangeDatepickerInit('#startpicker-input', '#startpicker-container','#endpicker-i
 					   "startDate" : getStartDate, "endDate" : getEndDate
 				   },
 				   success : function(data) {
-					   orderGird.resetData(data);
-					   console.log(getLot);
+					   grid.resetData(data);
 				   },
 				   error : function(reject) {
 					   console.log(reject);
@@ -129,33 +131,38 @@ rangeDatepickerInit('#startpicker-input', '#startpicker-container','#endpicker-i
 	}
 	
 	
-	/*------------
+	
+	  /*------------
 	// 주문 조회 초기화 버튼
 	----------------*/
 	function cancelBtnHandler(){
 		$('#cancelBtn').on('click',function(){
 			$("#startpicker-input").val(today);
 			$("#endpicker-input").val(today);
+			
+			$.ajax({
+				   url:'/ingOrdList',
+				   contentType: 'application/json',
+				   dataType: "json",
+				   method: "GET",
+				   success : function(data) {
+					   grid.resetData(data);
+				   },
+				   error : function(reject) {
+					   console.log(reject);
+				   }
+			   })
 		});	
 	}
+	
 	
 	
     /*------------
 	// 주문서 리스트 그리드
 	----------------*/
 	function orderGridInit(){
-	let orderGrid = new tui.Grid({
-	    el: document.getElementById('orderGrid'),
-	    data: [
-	        {
-	        	odDate : '2022-11-01',
-	        	odCd : 'ORD-20221101-001',
-	        	prdCd : 'MD-00100',
-	        	prdNm : '얇은피 고기만두',
-	        	actNm : 'YD 마트',
-	        	odAmt : 200
-	        }
-	        ],
+	let grid = new tui.Grid({
+	    el: document.getElementById('grid'),
 	    rowHeaders: ['rowNum'],
 	    scrollX: false,
 	    scrollY: false,
@@ -193,17 +200,64 @@ rangeDatepickerInit('#startpicker-input', '#startpicker-container','#endpicker-i
 	      }
 	    ]
 	  });
-		return orderGrid;
+		return grid;
     }
-    
+    	
+
+	/*------------
+	// 주문서 리스트 가져오기
+	----------------*/
+	  function getOrdIngList() {
+          $.ajax({
+             url : '/ingOrdList',
+             dataType : "json",
+             success : function(data) {
+            	 grid.resetData(data);
+             },
+             error : function(reject) {
+                console.log(reject);
+             }
+          })
+       }
     
   
 	/*------------
+	// 주문서 행 클릭 핸들러
+	----------------*/
+	function ordIngListClick() {
+		grid.on('click',function(ev){
+			if(!ev.rowKey) {
+				return;
+			}
+		let odCd = insertOutGrid.getValue(ev.rowKey, 'odCd')
+		
+		if(odCd != null){
+	   		 $.ajax({
+	             url : '/lotSListModal',
+	             dataType : "json",
+	             success : function(data) {
+	            	 insertOutGrid.resetData(data);
+	   				$('#lotSModal').modal('show');
+	   				insertOutGrid.refreshLayout();
+	             },
+	             error : function(reject) {
+	                console.log(reject);
+	             }
+	          })
+			 
+		}
+			
+		})
+	}
+	
+	
+	
+	/*------------
 	// 완제품 재고 현황 Modal
 	----------------*/
-	function sAmtGridInit() {
-		let sAmtModalGrid = new tui.Grid({
-		    el: document.getElementById('sAmtModalGrid'),
+	function lotSGridInit() {
+		let lotSModalGrid = new tui.Grid({
+		    el: document.getElementById('lotSModalGrid'),
 		    bodyHeight: 500,
 		    rowHeaders: ['rowNum'],
 		    scrollX: false,
@@ -236,7 +290,7 @@ rangeDatepickerInit('#startpicker-input', '#startpicker-container','#endpicker-i
 		      },
 		    ]
 		  });
-			return sAmtModalGrid;
+			return lotSModalGrid;
 	}
     
 	
@@ -244,18 +298,18 @@ rangeDatepickerInit('#startpicker-input', '#startpicker-container','#endpicker-i
 	// 완제품 재고 현황 Modal (DB에서 데이터 가져오기)
 	----------------*/
 	function getsAmtList(){
-		sAmtModalGrid.on('click',function(ev){
+		lotSModalGrid.on('click',function(ev){
 			   $.ajax({
-				   url:'/sAmtModal',
+				   url:'/lotSModal',
 				   dataType: "json",
 				   success : function(data) {
-					  sAmtModalGrid.resetData(data);
+					   lotSModalGrid.resetData(data);
 				   },
 				   error : function(reject) {
 					   console.log(reject);
 				   }
 			   })
-			   sAmtModalGrid.refreshLayout();
+			   lotSModalGrid.refreshLayout();
 		 });
 	}
 	
@@ -266,17 +320,6 @@ rangeDatepickerInit('#startpicker-input', '#startpicker-container','#endpicker-i
     function insertGridInit() {
 	let insertOutGrid = new tui.Grid({
 	    el: document.getElementById('insertOutGrid'),
-	    data: [
-	        {
-	        	odCd : 'ORD-20221101-002',
-	        	prdCd : 'MD-00200',
-	        	lot : 'LOT-PRO-221104-621',
-	        	outAmt : 200,
-	        	outDate : '2022-11-04',
-	        	podDate : '2022-11-03',
-	        	eDate : '2023-10-04'
-	        }
-	        ],
 	    rowHeaders: ['checkbox','rowNum'],
 	    scrollX: false,
 	    scrollY: false,
@@ -284,47 +327,65 @@ rangeDatepickerInit('#startpicker-input', '#startpicker-container','#endpicker-i
 	      {
 	        header: '주문 코드',
 	        align : 'center',
-	        name: 'odCd'
+	        name  : 'odCd'
 	      },
 	      {
 	        header: '제품 코드',
 	        align : 'center',
-	        name: 'prdCd'
+	        name  : 'prdCd'
 	      },
 	      {
 	        header: '완제품LOT',
 	        align : 'center',
-	        name: 'lot'
+	        name  : 'prdLot'
 	      },
 	      {
 	        header: '출고량',
 	        align : 'center',
-	        name: 'outAmt'
+	        name  : 'bamt'
 	      },
 	      {
 	        header: '출고 일자',
 	        align : 'center',
-	        name: 'outDate'
+	        name  : 'bdates'
 	      },
 	      {
 	        header: '제조 일자',
 	        align : 'center',
-	        name: 'podDate'
+	        name  : 'podDate'
 	      },
 	      {
 	        header: '유통기한',
 	        align : 'center',
-	        name: 'eDate'
+	        name  : 'edate'
 	      },
 	      {
 	        header: '비고',
 	        align : 'center',
-	        name: 'outEtc'
+	        name  : 'outEtc'
 	      }
 	    ]
 	  });
 	  	return insertOutGrid;
 	 }
+    
+    
+    /*------------
+	// 출고 내역 주문서 리스트 가져오기
+	----------------*/
+	  function getOrdOutList() {
+          $.ajax({
+             url : '/ordOutList',
+             dataType : "json",
+             success : function(data) {
+            	insertOutGrid.resetData(data);
+             },
+             error : function(reject) {
+                console.log(reject);
+             }
+          })
+       }
+    
     
     
 	/*------------
@@ -345,14 +406,12 @@ rangeDatepickerInit('#startpicker-input', '#startpicker-container','#endpicker-i
 			// sweetalert2
 			Swal.fire({
 			      title: '정말로 삭제 하시겠습니까?',
-			      //text: "다시 되돌릴 수 없습니다. 신중하세요.",
 			      icon: 'warning',
 			      showCancelButton: true,
 			      confirmButtonColor: '#3085d6',
 			      cancelButtonColor: '#d33',
-			      confirmButtonText: '승인',
+			      confirmButtonText: '확인',
 			      cancelButtonText: '취소',
-			      //reverseButtons: true, // 버튼 순서 거꾸로
 			      
 			    }).then((result) => {
 			      if (result.isConfirmed) {
