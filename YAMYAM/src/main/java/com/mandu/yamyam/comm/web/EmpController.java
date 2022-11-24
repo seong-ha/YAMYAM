@@ -11,11 +11,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.mandu.yamyam.comm.service.ActVO;
 import com.mandu.yamyam.comm.service.CommService;
 import com.mandu.yamyam.comm.service.CommVO;
 import com.mandu.yamyam.comm.service.CommdVO;
 import com.mandu.yamyam.comm.service.EmpService;
 import com.mandu.yamyam.comm.service.EmpVO;
+import com.mandu.yamyam.comm.service.MtrVO;
+import com.mandu.yamyam.comm.service.PrdVO;
 
 
 @Controller
@@ -108,6 +111,13 @@ public class EmpController {
 		return commService.ajaxSelectDetailComm(commdVO);
 	}
 	
+	// ajax 상세 공통 코드 등록
+	@PostMapping("ajax/insertCommd")
+	@ResponseBody
+	public List<CommdVO> ajaxInsertCommd(@RequestBody List<CommdVO> commdVO) {
+		return commService.ajaxInsertDetailComm(commdVO);
+	}
+	
 	
 	/*
 	 *  matCodeAD.html에 관한 컨트롤러
@@ -119,24 +129,55 @@ public class EmpController {
 		return "comm/matCodeAD";
 	}
 	
+	
 	/*
 	 *  actCodeAD.html에 관한 컨트롤러
 	 */
 	
+	
+	// matCodeAd.html 화면 불러오기
 	@RequestMapping("/actCodeAD")
 	public String actCodeAD() {
 		
 		return "comm/actCodeAD";
 	}
 	
+	// ajax 자재 코드 불러오기
+	
+	@GetMapping("ajax/selectMtr")
+	@ResponseBody
+	public List<MtrVO> ajaxSelectMtrCode(){
+		
+		return commService.ajaxSelectMat();
+	}
+	
+	// ajax 자재 탭에 거래처검색(모달) 정보 불러오기
+	
+	@GetMapping("ajax/selectAct")
+	@ResponseBody
+	public List<ActVO> ajaxSelectActCode(){
+		
+		return commService.ajaxSelectAct();
+	}
+	
+	
 	/*
 	 *  pdtCodeAD.html에 관한 컨트롤러
 	 */
 	
+	// pdtCodeAD.html 화면 불러오기
 	@RequestMapping("/pdtCodeAD")
 	public String pdtCodeAD() {
 		
 		return "comm/pdtCodeAD";
+	}
+	
+	// ajax 완제품 코드 불러오기
+	@GetMapping("ajax/selectPrd")
+	@ResponseBody
+	public List<PrdVO> ajaxSelectPrdCode() {
+		
+		return commService.ajaxSelectPrd();
 	}
 	
 	/*

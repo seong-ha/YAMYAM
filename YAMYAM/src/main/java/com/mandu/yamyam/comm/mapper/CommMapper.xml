@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.mandu.yamyam.comm.mapper.CommMapper">
 
-
+<!-- ajax 공통코드 불러오기 -->
 <select id="ajaxSelectComm" resultType="com.mandu.yamyam.common.LowerKeyMap">
 	
 	SELECT COMM_CD, COMM_NM
@@ -10,7 +10,7 @@
 
 </select>
 
-
+<!-- ajax 상세 공통 코드 불러오기 -->
 <select id="ajaxSelectDetailComm" resultType="com.mandu.yamyam.common.LowerKeyMap">
 	
 	SELECT COMMD_CD, COMMD_NM, COMMD_INFO, COMMD_USE
@@ -19,6 +19,62 @@
 	
 </select>
 
+<!-- 상세 공통 코드 등록 -->
+
+<insert id="ajaxInsertDetailComm" parameterType="com.mandu.yamyam.comm.service.CommdVO">
+
+	INSERT INTO C_COMMD
+	(
+	COMMD_CD, 
+	COMM_CD,
+	COMMD_NM,
+	COMMD_INFO,
+	COMMD_USE
+	)
 	
+	VALUES
+	(
+	#{commdCd},
+	#{commCd},
+	#{commdNm},
+	#{commdInfo},
+	#{commdUse}
+	)
+	
+	
+</insert>
+
+<!-- ajax 자재코드 불러오기 -->
+<select id="ajaxSelectMat" resultType="com.mandu.yamyam.common.LowerKeyMap">
+	
+	SELECT *
+	FROM C_MTR
+	
+</select>
+
+<!-- ajax 자재에 거래처검색(모달) 불러오기 -->
+<select id="ajaxSelectAct" resultType="com.mandu.yamyam.common.LowerKeyMap">
+	
+	SELECT *
+	FROM C_ACT
+	
+</select>
+
+<!-- ajax 완제품코드 불러오기 -->
+<select id="ajaxSelectPrd" resultType="com.mandu.yamyam.common.LowerKeyMap">
+	
+	SELECT * 
+	FROM C_PRD
+
+</select>
+
+<!-- ajax BOM 불러오기 -->
+
+<select id="ajaxSelectBOM" resultType="com.mandu.yamyam.common.LowerKeyMap">
+
+	SELECT * 
+	FROM C_BOM
+	
+</select>
 	
 </mapper>

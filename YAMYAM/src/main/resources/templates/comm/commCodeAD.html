@@ -158,9 +158,10 @@
 		
 		 class CustomSliderRenderer {
 	      constructor(props) {
+	    	  
 	        const el = document.createElement('div');
-	        el.innerHTML = `<input type ="radio" value="1" name="commdUse">yes &nbsp;&nbsp;&nbsp;&nbsp;
-	        <input type ="radio" value="2" name="commdUse">no`;
+	        el.innerHTML = `<input type ="radio" value="YES" name="commdUse">yes &nbsp;&nbsp;&nbsp;&nbsp;
+	        <input type ="radio" value="NO" name="commdUse">no`;
 	        this.el=el;
 	        this.render(props);
 	      }
@@ -216,10 +217,15 @@
 					sortingType: 'desc',
 			        sortable: true,
 			        align: 'center',
-				    renderer: {
-			            type: CustomSliderRenderer,
-			            
-			        } 
+			        editor: {
+			            type: 'radio',
+			            options: {
+			              listItems: [
+			                { text: 'YES', value: 'YES' },
+			                { text: 'NO', value: 'NO' }
+			              ]
+			            }
+			        }
 				}
 			],
 		});
@@ -285,19 +291,16 @@
 		grid2.appendRow(rowData);
 		});
 		
-		// 저장버튼(미구현)
 		
-		document.getElementById('saveCode').addEventListener('click', function(){
-		let rowData = [{commdCd: "", commdNm: "", commdInfo: "", commdUse: ""}];
+		// 현재 선택한 공통코드
+		let selectedComm = '';
 		
-		})
 		
 		// 공통코드 칼럼 누르면 거기에 맞는 상세코드 나옴
-		
-		
   		grid.on('click', function (ev) {
-			console.log(ev.rowKey);
 			let commCd = grid.getRow(ev.rowKey).commCd;
+			console.log(grid.getRow(ev.rowKey).commCd);
+			selectedComm = commCd;
 			
 			$.ajax({
 				url : "ajax/selectCommd",
@@ -315,16 +318,46 @@
 			
 		})  
 		
-		 grid2.on('click', function (ev) {
-			console.log(ev.rowKey);
-			let commdCd = grid2.getRow(ev.rowKey).commdCd;
-			
-		}) 
 		
-		/* document.getElementById('commCode').addEventListener('click', function(){
-			
-		}) */
+		// 공통코드 추가 후 저장시 등록
 		
+		document.getElementById('saveCode').addEventListener('click', function(){
+			let rowsData = grid2.getCheckedRows();
+			let insertList = [];
+			
+			for (let i = 0; i < rowsData.length; i++) {
+				let insertObject = {
+						commdCd : rowsData[i].commdCd,
+						commCd : selectedComm,
+						commdNm : rowsData[i].commdNm,
+						commdInfo : rowsData[i].commdInfo,
+						commdUse : rowsData[i].commdUse	
+				};
+				
+				insertList.push(insertObject);
+			}
+			
+			console.log(insertList[0]);
+			sweetConfirm('C', function () {
+			
+				$.ajax({
+					url : "ajax/insertCommd",
+					type : "post",
+					contentType: "application/json",
+					data: JSON.stringify(insertList),
+					dataType: "json",
+					success : function(data){
+						console.log(data);
+						grid2.resetData(data);
+					},
+					error : function(reject){
+						console.log(reject);
+					}
+				})
+			
+			})
+		})
+			
 	</script>
 
 </div>
