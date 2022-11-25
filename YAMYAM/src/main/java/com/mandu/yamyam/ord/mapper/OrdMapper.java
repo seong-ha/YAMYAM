@@ -72,4 +72,15 @@ public interface OrdMapper {
 	public int deleteOutList(OrdVO vo);
 	
 	
+	/*-----------------
+	// 생산 요청 관리 Tab
+	-------------------*/
+	
+	// 생산 요청 관리 리스트 조회
+	public List<OrdVO> getPodList();
+	
+	// 생산 요청 관리 주문서 조건조회
+	public List<OrdVO> getPodDetailList(OrdVO vo);
+	
+	
 }

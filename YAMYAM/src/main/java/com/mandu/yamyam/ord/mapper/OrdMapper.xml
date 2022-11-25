@@ -157,7 +157,7 @@
 	<!--
 		완제품 출고 관리 Tab
 							 -->
-	<!-- 진행중인 주문서 조건조회 -->			
+	<!-- 진행중인 주문서 리스트조회 -->			
 	<select id="getIngOrdList" resultType="com.mandu.yamyam.common.LowerKeyMap">
 		SELECT TO_CHAR(OD.OD_DATE,'yyyy-MM-dd') AS OD_DATE, OD.OD_CD, P.PRD_CD, P.PRD_NM, A.ACT_NM, OD.OD_AMT
 		FROM B_OD OD JOIN C_PRD P
@@ -185,5 +185,17 @@
 		INSERT INTO B_OUT
 	</insert>
 	
+	
+	<!--
+		생산 요청 관리 Tab
+							 -->
+	<!-- 생산 요청 관리 리스트 조회 -->	
+	<select id="getPodList" resultType="com.mandu.yamyam.common.LowerKeyMap">
+		SELECT 
+	</select>
+	
+	<!-- 생산 요청 관리 조건조회 -->
+	<select id="getPodDetailList" resultType="com.mandu.yamyam.common.LowerKeyMap">
+	</select>
 	
 </mapper>

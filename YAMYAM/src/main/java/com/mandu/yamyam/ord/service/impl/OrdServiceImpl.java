@@ -141,4 +141,21 @@ public class OrdServiceImpl implements OrdService {
 		}
 		return result;
 	}
+
+	
+	/*-----------------
+	// 생산 요청 관리 Tab
+	-------------------*/
+	
+	// 생산 요청 관리 리스트 조회
+	@Override
+	public List<OrdVO> getPodList() {
+		return map.getPodList();
+	}
+
+	// 생산 요청 관리 주문서 조건조회
+	@Override
+	public List<OrdVO> getPodDetailList(OrdVO vo) {
+		return map.getPodDetailList(vo);
+	}
 }

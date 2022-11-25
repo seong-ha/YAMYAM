@@ -56,7 +56,7 @@ text-align: center;
                      aria-label="Close"></button>
                </div>
                <div class="modal-body">
-               <div id="lotSModallGrid"></div>
+               <div id="lotSModalGrid"></div>
                </div>
             </div>
          </div>
@@ -90,13 +90,14 @@ text-align: center;
 	getOrdIngList();		// DB에서 주문서목록 불러오기
 	getOrdOutList();		// DB에서 출고등록목록 불러오기
 	//getlotSList();			// DB에서 LOT재고현황 불러오기 
+	//ordIngListClick();			// DB에서 LOT재고현황 불러오기 
 	searchBtnHandler();		// 조회 버튼 핸들러
 	cancelBtnHandler();		// 데이트피커 값 초기화 버튼
 	deleteBtnHandler();		// 삭제 버튼 이벤트 핸들러
 	
-	//let lotSGrid = lotSGridInit(); 		// 완제품LOT 재고 현황 모달
-	let grid = orderGridInit();		// 진행중인 주문서 Grid
-	let insertOutGrid = insertGridInit();	// 출고등록 Grid
+	let lotSModalGrid = lotSGridInit(); 		// 완제품LOT 재고 현황 모달
+	let grid = orderGridInit();					// 진행중인 주문서 Grid
+	let insertOutGrid = insertGridInit();		// 출고등록 Grid
 	
 	
 	/*------------
@@ -226,19 +227,20 @@ text-align: center;
 	----------------*/
 	function ordIngListClick() {
 		grid.on('click',function(ev){
+			let rowData = grid.getRow(ev.rowKey);
 			if(!ev.rowKey) {
 				return;
 			}
-		let odCd = insertOutGrid.getValue(ev.rowKey, 'odCd')
+		//let odCd = grid.getValue(ev.rowKey, 'odCd')
 		
-		if(odCd != null){
+		if(rowData[i] != null){
 	   		 $.ajax({
 	             url : '/lotSListModal',
 	             dataType : "json",
 	             success : function(data) {
-	            	 insertOutGrid.resetData(data);
+	            	 grid.resetData(data);
 	   				$('#lotSModal').modal('show');
-	   				insertOutGrid.refreshLayout();
+	   				grid.refreshLayout();
 	             },
 	             error : function(reject) {
 	                console.log(reject);
@@ -276,7 +278,12 @@ text-align: center;
 		      {
 		        header: '출고량',
 		        align : 'center',
-		        name  : 'bAmt'
+		        name  : 'bAmt',
+		        editor: 'text',
+				validation: {
+				     dataType: 'text',
+				     required: true
+				      }
 		      },
 		      {
 		        header: '제조일자',
@@ -287,7 +294,7 @@ text-align: center;
 		        header: '유통기한',
 		        align : 'center',
 		        name  : 'edate'
-		      },
+		      }
 		    ]
 		  });
 			return lotSModalGrid;
@@ -297,10 +304,10 @@ text-align: center;
 	/*------------
 	// 완제품 재고 현황 Modal (DB에서 데이터 가져오기)
 	----------------*/
-	function getsAmtList(){
-		lotSModalGrid.on('click',function(ev){
+	function getlotSList(){
+		lotSModalGrid.on('click',function(){
 			   $.ajax({
-				   url:'/lotSModal',
+				   url:'/lotSListModal',
 				   dataType: "json",
 				   success : function(data) {
 					   lotSModalGrid.resetData(data);
