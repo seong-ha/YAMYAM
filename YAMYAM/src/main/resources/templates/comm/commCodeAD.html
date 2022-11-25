@@ -9,7 +9,7 @@
 	<div class="row">
 		
 		
-		<h2>공통 코드 관리</h2>
+		<h3>공통 코드 관리</h3>
 		<hr>
 
 		<br> <br> <br> <br> <br>
@@ -51,6 +51,7 @@
 
 						<button type="button" class="btn btn-dark btn-sm" id="addCode">코드 추가</button>
 						<button type="button" class="btn btn-dark btn-sm" id="saveCode">저장</button>
+						<button type="button" class="btn btn-dark btn-sm" id="deleteCode">삭제</button>
 					</div>
 
 
@@ -91,17 +92,17 @@
 					
 					사용 여부&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 					<div class="form-check form-check-inline">
-					  <input class="form-check-input" type="radio" name="commUse" id="useRadio1" value="option1">
+					  <input class="form-check-input" type="radio" name="commUse" id="useRadio1" value="YES">
 					  <label class="form-check-label" for="useRadio1">YES</label>
 					</div>
 					<div class="form-check form-check-inline">
-					  <input class="form-check-input" type="radio" name="commUse" id="useRadio2" value="option2">
+					  <input class="form-check-input" type="radio" name="commUse" id="useRadio2" value="NO">
 					  <label class="form-check-label" for="useRadio2">NO</label>
 					</div>
 					
 				
 					<div align="right">
-					<button type="button" class="btn btn-dark btn-sm">등록</button>
+					<button type="button" class="btn btn-dark btn-sm" id="updateBtn">등록</button>
 					</div>
 					
 					</div>
@@ -156,7 +157,7 @@
 	
 		// 렌더링 에디터 (라디오박스)
 		
-		 class CustomSliderRenderer {
+		 /* class CustomSliderRenderer {
 	      constructor(props) {
 	    	  
 	        const el = document.createElement('div');
@@ -173,7 +174,7 @@
 	      render(props) {
 	        this.el.value = String(props.value);
 	      }
-	    }
+	    } */
 		
 
 		const grid2 = new tui.Grid({
@@ -318,10 +319,10 @@
 			
 		})  
 		
-		
-		// 공통코드 추가 후 저장시 등록
+		// 상세 공통 코드 추가 후 저장시 등록
 		
 		document.getElementById('saveCode').addEventListener('click', function(){
+			grid2.blur();
 			let rowsData = grid2.getCheckedRows();
 			let insertList = [];
 			
@@ -348,7 +349,12 @@
 					dataType: "json",
 					success : function(data){
 						console.log(data);
-						grid2.resetData(data);
+						if (data > 0) {
+							toastr.success('정상적으로 등록되었습니다.');
+							grid2.uncheckAll();
+						} else {
+							toastr.error('등록에 실패했습니다.');
+						}
 					},
 					error : function(reject){
 						console.log(reject);
@@ -357,6 +363,84 @@
 			
 			})
 		})
+		
+		// 상세 공통 코드 삭제
+		
+		document.getElementById('deleteCode').addEventListener('click',function(){
+			
+			sweetConfirm('D', function () {
+				let data = grid2.getCheckedRows(); 
+				// ajax 상세 정보 삭제
+				
+				console.log(data);
+				
+				$.ajax({
+					url : "ajax/delCommd",
+					type : "post",
+					data: JSON.stringify(data),
+					contentType: "application/json",
+					dataType: "json",
+					success : function(data){
+						if (data > 0) {
+							// ajax success
+				            toastr.success('정상적으로 삭제되었습니다.');
+				            grid2.removeCheckedRows();
+				            
+				            
+						} else {
+							// ajax fail
+				            toastr.error('삭제에 실패했습니다.');	
+						}
+					},
+						error : function(reject){
+							console.log(reject);
+						}
+					
+					});
+		            
+		         });
+					
+			});
+		
+		// 공통 코드 등록
+		
+		document.getElementById('updateBtn').addEventListener('click', function(){
+			sweetConfirm('C', function () {
+				
+				let data = {
+					
+					commCd : document.getElementById('commCode').value,
+					commNm : document.getElementById('commCodeName').value,
+					commInfo : document.getElementById('commCodeInfo').value,
+					commUse : document.querySelector('input[name=commUse]:checked').value
+				}
+				console.log(data);
+				
+				grid.appendRow(data);
+				$.ajax({
+					url : "ajax/insertComm",
+					type : "post",
+					data: JSON.stringify(data),
+					contentType: "application/json",
+					success : function(data){
+						if (data > 0) {
+							// ajax success
+				            toastr.success('정상적으로 등록되었습니다.');
+				            //setTimeout(() => {location.reload(), 3000});
+						} else {
+							// ajax fail
+				            toastr.error('등록에 실패했습니다.');	
+						}
+					},
+					error : function(reject){
+						console.log(reject);
+					}
+				
+				});
+			})
+		})
+		
+		
 			
 	</script>
 

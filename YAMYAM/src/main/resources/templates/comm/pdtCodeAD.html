@@ -6,18 +6,20 @@
 <div class="container" layout:fragment="content">
 
 	<br>
-	<h2>완제품 코드 관리</h2>
+	<h3>완제품 코드 관리</h3>
 	<hr>
 	
 	<br>
-	<form>
+	<form id="frm">
+	    <input type = "hidden" name="prdStd" id="standard">
+	    <input type = "hidden" name="prdUn" id="unit">
 		<table>
 			<tr>
 				<td>
 					<ul class="ul-style">
-					<li><label for="matCode" style="width:130px">제품 코드</label><input id="matCode" name="PRD_CD">
+					<li><label for="matCode" style="width:130px">제품 코드</label><input id="matCode" name="prdCd">
 					&nbsp;&nbsp;&nbsp;
-					<label for="matCode">제품명</label><input id="matCode" name="PRD_NM">
+					<label for="matCode">제품명</label><input id="matCode" name="prdNm">
 					</li>
 					</ul>
 				</td>
@@ -34,8 +36,8 @@
 							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;단위</label>&nbsp;&nbsp;&nbsp;&nbsp;
 							<div style="width: 190px;" id="select-box2"></div>&nbsp;
 							
-							<button type="button" class="btn btn-dark btn-sm">조회</button>&nbsp;
-							<input type="reset" class="btn btn-dark btn-sm" id="reset" name="reset">
+							<button type ="button" class="btn btn-dark btn-sm" onclick="selectBoxPrd()">조회</button>&nbsp;
+							<input type="reset" class="btn btn-dark btn-sm" id="reset" name="reset" onclick="resetf()">
 					  	</li>
 				    </ul>
 				    
@@ -130,7 +132,7 @@
 		const grid = new tui.Grid({
 			el : document.getElementById('grid'),
 			scrollX : true,
-			scrollY : false,
+			scrollY : true,
 			bodyHeight : 480,
 			rowHeaders: ['checkbox'],
 			
@@ -159,14 +161,14 @@
 				placeholder : '규격',
 				data : [ {
 					label : '10kg',
-					value : '10kg' // 코드 바꾸기
+					value : 'STD10' // 코드 바꾸기
 				}, {
 					label : '20kg',
-					value : '20kg'
+					value : 'STD20'
 				},
 				{
 					label : '30kg',
-					value : '30kg' // 코드 바꾸기
+					value : 'STD30' // 코드 바꾸기
 				}, {
 					label : '40kg',
 					value : '40kg'
@@ -194,7 +196,7 @@
 				}],
 				autofocus : true
 			});	
-		
+
 		var selectBox2 = new tui.SelectBox('#select-box2', {
 			placeholder : '단위',
 			data : [ {
@@ -229,11 +231,6 @@
 			autofocus : true
 		});	
 		
-		//grid select box change
-		selectBox.on('change', ev => {
-			mtrStd.value=ev.curr.value;
-			  console.log(ev);
-		});
 		
 		//셀렉트 박스 초기화
 		 document.getElementsByName('reset')[0].addEventListener('click', function(){
@@ -242,21 +239,39 @@
 		 })
 		 
 		 // 완제품 코드 정보 불러오기
-	     
-		$.ajax({
-			url : "ajax/selectPrd",
-			type : "get",
-			dataType: "json",
-			success : function(data){
-				console.log(data);
-				grid.resetData(data);
-			},
-			error : function(reject){
-				console.log(reject);
-			}
-		})
+	    function selectBoxPrd(){
+			$.ajax({
+				url : "ajax/selectPrd",
+				type : "get",
+				dataType: "json",
+				data : $('#frm').serialize(),
+				success : function(data){
+					console.log(data);
+					grid.resetData(data);
+				},
+				error : function(reject){
+					console.log(reject);
+				}
+			})
+		}
+		
+		// bind 'change' event
+		selectBox.on('change', ev => {
+		  console.log(` ${ev.curr.getLabel()}    ${ev.curr.getValue()}`);
+		  $('#standard').val(ev.curr.getValue());
+		});
 		
 		
+		selectBox2.on('change', ev => {
+			  console.log(` ${ev.curr.getLabel()}    ${ev.curr.getValue()}`);
+			  $('#unit').val(ev.curr.getValue());
+			});
+		
+		
+		function resetf(){
+			 $('#standard').val("")
+			 $('#unit').val("")
+		}
     </script>
     
 </div>

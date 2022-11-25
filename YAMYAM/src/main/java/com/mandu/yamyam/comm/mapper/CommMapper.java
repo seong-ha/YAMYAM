@@ -18,17 +18,33 @@ public interface CommMapper {
 	public List<CommdVO> ajaxSelectDetailComm(CommdVO commdVO);
 
 	// ajax 상세 공통 코드 등록
-	public List<CommdVO> ajaxInsertDetailComm(List<CommdVO> commdVO);
+	public int ajaxInsertDetailComm(CommdVO commdVO);
+	
+	// ajax 상세 공통 코드 삭제
+	public int ajaxDeleteDetailComm(CommdVO commdVO);
+	
+	// ajax 공통 코드 등록
+	public int ajaxInsertComm(CommVO commVO);
+	
 	
 	// ajax 자재 코드 불러오기
-	public List<MtrVO> ajaxSelectMat();
+	public List<MtrVO> ajaxSelectMat();	
 	
-	// ajax 자재에 거래처검색(모달) 불러오기
+	// ajax 자재탭 - 거래처 코드(모달) 불러오기
+	public List<ActVO> ajaxSelectModalAct();
+	
+	
+	
+	// ajax 거래처 코드 불러오기
 	public List<ActVO> ajaxSelectAct();
 	
+	
 	// ajax 완제품 코드 불러오기
-	public List<PrdVO> ajaxSelectPrd();
+	public List<PrdVO> ajaxSelectPrd(PrdVO prdVO);
+	
 	
 	// ajax BOM 코드 불러오기
 	public List<BOMVO> ajaxSelectBOM();
+	// ajax BOM 제품목록(모달창)
+	public List<PrdVO> ajaxSelectModalBOM();
 }

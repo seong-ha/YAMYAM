@@ -41,7 +41,35 @@
 	#{commdUse}
 	)
 	
+</insert>
+
+<!-- 상세 공통 코드 삭제 -->
+
+<delete id="ajaxDeleteDetailComm" parameterType="com.mandu.yamyam.comm.service.CommdVO">
 	
+	DELETE FROM C_COMMD
+	WHERE COMMD_CD = #{commdCd}
+	
+</delete>
+
+<!-- 공통 코드 등록 -->
+
+<insert id="ajaxInsertComm" parameterType="com.mandu.yamyam.comm.service.CommVO">
+
+	INSERT INTO C_COMM
+	(COMM_CD, 
+	 COMM_NM, 
+	 COMM_INFO, 
+	 COMM_USE
+	 )
+	VALUES
+	(
+	#{commCd},
+	#{commNm},
+	#{commInfo},
+	#{commUse}
+	)
+
 </insert>
 
 <!-- ajax 자재코드 불러오기 -->
@@ -52,7 +80,15 @@
 	
 </select>
 
-<!-- ajax 자재에 거래처검색(모달) 불러오기 -->
+<!-- ajax 거래처 코드(모달) 불러오기 -->
+<select id="ajaxSelectModalAct" resultType="com.mandu.yamyam.common.LowerKeyMap">
+	
+	SELECT ACT_CD, ACT_NM, ACT_NUM, ACT_TEL
+	FROM C_ACT
+
+</select>
+
+<!-- ajax 거래처 코드 불러오기 -->
 <select id="ajaxSelectAct" resultType="com.mandu.yamyam.common.LowerKeyMap">
 	
 	SELECT *
@@ -65,15 +101,44 @@
 	
 	SELECT * 
 	FROM C_PRD
+	<where>
+	
+	<if test = "prdStd !=null and prdStd != ''">
+	prd_std = #{prdStd}
+	</if>	
 
+	<if test = "prdUn !=null and prdUn != ''">
+	prd_un = #{prdUn}
+	</if>
+	
+	<if test = "prdCd !=null and prdCd != ''">
+	prd_cd like '%' || Upper(#{prdCd}) || '%'
+	</if>
+	
+	<if test = "prdNm !=null and prdNm != ''">
+	prd_nm like '%' || #{prdNm} || '%'
+	</if>	
+	
+	</where> 
 </select>
 
 <!-- ajax BOM 불러오기 -->
 
 <select id="ajaxSelectBOM" resultType="com.mandu.yamyam.common.LowerKeyMap">
 
-	SELECT * 
-	FROM C_BOM
+	SELECT B.BOM_NO, P.PPRO_NAME, B.BOM_CD, B.PRD_CD, B.MTR_CD, C.MTR_NM, B.BOM_AMT, B.BOM_USE
+	FROM C_BOM B, P_PRO P, C_MTR C
+	WHERE  B.PPRO_CD = P.PPRO_CD
+	AND B.MTR_CD = C.MTR_CD
+	
+</select>
+
+<!-- ajax BOM 제품목록 모달창 불러오기 -->
+
+<select id="ajaxSelectModalBOM" resultType="com.mandu.yamyam.common.LowerKeyMap">
+
+	SELECT PRD_CD, PRD_NM, PRD_STD
+	FROM C_PRD
 	
 </select>
 	

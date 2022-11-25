@@ -7,7 +7,7 @@
 
 	<br>
 	
-	<h2>BOM관리</h2>
+	<h3>BOM관리</h3>
 	
 	<hr>
 	
@@ -118,27 +118,8 @@
 	<script>
 	  
 	  
-	  const gridData2 = [{
-		  BOM_NO: '1',
-	      PRD_CD: 'GGMD-01',
-	      PRD_NM: '고기만두',
-	      PRD_STD : 'SPEC02',
-		  },
-		  {
-		  BOM_NO: '2',
-		  PRD_CD: 'GGMD-02',
-		  PRD_NM: '고기만두',
-		  PRD_STD : 'SPEC02',
-		  },
-		  {
-		  BOM_NO: '3',
-		  PRD_CD: 'GGMD-03',
-		  PRD_NM: '고기만두',
-		  PRD_STD : 'SPEC02',
-		  }
-	  ];
 	  
-	  const gridData3 = [{
+	/*   const gridData3 = [{
 		  BOM_NO: '1',
 		  PPRO_CD: 'LHS-0001',
 		  PPRO_NAME: '혼합 공정',
@@ -180,20 +161,20 @@
 		  MTR_CD: 'WJJ-01',
 		  MTR_NM: '고기',
 		  }
-	  ];
+	  ]; */
 
 	  
 		const grid = new tui.Grid({
 			el : document.getElementById('grid'),
 			scrollX : true,
-			scrollY : false,
+			scrollY : true,
 			bodyHeight : 500,
 			columns : [ {
 				header : 'No',
 				name : 'bomNo'
 			}, {
 				header : '사용 공정명',
-				name : 'pproCd'
+				name : 'pproName'
 			}, {
 				header : 'BOM코드',
 				name : 'bomCd'
@@ -220,14 +201,10 @@
 		
 		const grid2 = new tui.Grid({
 			el : document.getElementById('grid2'),
-			data : gridData2,
 			scrollX : true,
-			scrollY : false,
+			scrollY : true,
 			bodyHeight : 500,
-			columns : [ {
-				header : 'No',
-				name : 'bomNo'
-			}, {
+			columns : [{
 				header : '제품 코드',
 				name : 'prdCd'
 			}, {
@@ -241,15 +218,39 @@
 		});
 		
 		
-		//모달창 리프레시(모달창에 그리드 화면 띄울때 써야함!)
+		// 모달창 리프레시(모달창에 그리드 화면 띄울때 써야함!)
 	     exampleModal.addEventListener('shown.bs.modal', () => {
 	            grid2.refreshLayout(); //모달창 새로고침
-	       })
+	     })
+	     
+	     // BOM 정보 불러오기
+		$.ajax({
+			url : "ajax/selectBOM",
+			type : "get",
+			dataType: "json",
+			success : function(data){
+				console.log(data);
+				grid.resetData(data);
+			},
+			error : function(reject){
+				console.log(reject);
+			}
+		})
+		
+		// BOM 제품정보 모달 불러오기
+		$.ajax({
+			url : "ajax/selectModalBOM",
+			type : "get",
+			dataType: "json",
+			success : function(data){
+				console.log(data);
+				grid2.resetData(data);
+			},
+			error : function(reject){
+				console.log(reject);
+			}
+		})
 	       
-	       
-	    //각종 이벤트 함수 모음
-	    
-	    
 	    
     </script>
     
