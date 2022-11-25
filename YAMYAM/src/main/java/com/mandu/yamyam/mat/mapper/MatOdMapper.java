@@ -120,4 +120,43 @@ public interface MatOdMapper {
 	
 	// 필요자재LOT목록
 	public List<Map<String, Object>> needMtrLotList(MatVO vo);
+	
+	// 출고처리 - 자재 마이너스 업데이트
+	public int updateOutOd(MatVO vo);
+	
+	// 출고처리 - 상태 완료로 업데이트
+	public int updateOutSts(MatVO vo);
+	
+	//===============================================
+	// 6) 자재 입출고 조회
+	//===============================================
+	// 전체 리스트
+	public List<Map<String, Object>> inOutAllList();
+	
+	// 입고 전체 리스트
+	public List<Map<String, Object>> outInAllList();
+	
+	// 입고 조건 검색
+	public List<Map<String, Object>> selectInOutAllList(MatVO vo);
+	
+	// 출고 조건조회
+	public List<Map<String, Object>> selectOutInAllList(MatVO vo);
+	
+	//===============================================
+	// 7) 자재 재고 조회
+	//===============================================
+	// 전체 조회
+	public List<Map<String, Object>> matStockList();
+	
+	// 홀딩수량
+	public List<Map<String, Object>> getHoldAmt();
+	
+	// 조건조회
+	public List<Map<String, Object>> matStockSelectList(MatVO vo);
+	
+	//===============================================
+	// 8) 자재 반품 관리
+	//===============================================
+	// 조건조회
+	public List<Map<String, Object>> selectReList(MatVO vo);
 }

@@ -148,4 +148,6 @@ public class MatVO {
 	private int pplndDays;		// 생산일수
 	private int pplndAmt;		// 생산계획량
 	
+	// 기타
+	private int amt;			// 수량
 }

@@ -10,15 +10,19 @@
 	</div>
 	<hr>
 	<ul class="ul-style">
-		<li><label for="matNm">자재명</label><input id="matNm" readonly> <img
+		<li><label for="matNm">자재명</label><input id="matNm"
+			data-bs-toggle="modal" data-bs-target="#matModal" readonly> <img
 			class="Magnifying-Glass-img" alt="image" data-bs-toggle="modal"
 			data-bs-target="#matModal" src="../images/Magnifying_Glass.png">
-			<input type="text" readonly></li>
-		<li><label for="actNm">업체명</label><input id="actNm" readonly> <img
+			<input type="text" id="matCd" data-bs-toggle="modal"
+			data-bs-target="#matModal" readonly></li>
+		<li><label for="actNm">업체명</label><input id="actNm"
+			data-bs-toggle="modal" data-bs-target="#actModal" readonly> <img
 			class="Magnifying-Glass-img" alt="image" data-bs-toggle="modal"
 			data-bs-target="#actModal" src="../images/Magnifying_Glass.png">
-			<input type="text" readonly></li>
-			
+			<input type="text" id="actCd" data-bs-toggle="modal"
+			data-bs-target="#actModal" readonly></li>
+
 		<!-- Date Picker -->
 		<li><label for="startpicker-input">유통기한</label>
 			<div class="tui-datepicker-input tui-datetime-input tui-has-focus">
@@ -31,11 +35,18 @@
 					class="tui-ico-date"></span>
 				<div id="endpicker-container" style="margin-left: -1px;"></div>
 			</div>
-			<button class="btn btn-dark btn-sm">조회</button>
-			<button class="btn btn-dark btn-sm">초기화</button></li>
+			<button class="btn btn-dark btn-sm" id="searchBtn">조회</button>
+			<button class="btn btn-dark btn-sm" id="resetBtn">초기화</button></li>
 	</ul>
 
-	<div id="grid"></div>
+	<table class="table">
+		<tr>
+			<td class="col-7"><h3>재고조회</h3><div id="grid"></div></td>
+			<td class="col-5"><h3>홀딩수량</h3><div id="grid2"></div>
+			<p style="font-size: 0.8em">홀딩수량 : 완제품 생산계획량 * BOM의 자재소모량</p></td>
+		</tr>
+	</table>
+			
 
 
 	<!-- 자재 목록 모달 -->
@@ -46,7 +57,7 @@
 				<div class="modal-header">
 					<h5 class="modal-title" id="matModalLabel">자재 목록</h5>
 					<button type="button" class="btn-close" data-bs-dismiss="modal"
-						aria-label="Close"></button>
+						aria-label="Close" id="matCloseBtn"></button>
 				</div>
 				<div class="modal-body">
 					<div>
@@ -65,7 +76,7 @@
 				<div class="modal-header">
 					<h5 class="modal-title" id="actModalLabel">업체 목록</h5>
 					<button type="button" class="btn-close" data-bs-dismiss="modal"
-						aria-label="Close"></button>
+						aria-label="Close" id="actCloseBtn"></button>
 				</div>
 				<div class="modal-body">
 					<div>
@@ -79,13 +90,20 @@
 
 	<script th:inline="javascript">
 	let grid = matStList(); 	// 자재재고조회 그리드
+	let grid2 = holdAmtGrid();	// 홀딩수량조회 그리드
 	let modalGrid = matList();	// 자재목록 모달
 	let modalGrid2 = actList();	// 업체목록 모달
 	
 	modalRef();					// 모달 리프레쉬
 	
-	datePicker();
+	datePicker();				// 데이트피커
 	
+	clickGridFn();				// 전체조회 그리드 행 클릭 이벤트
+	
+	matModalClickFn();			// 자재모달 행 클릭 이벤트
+	actModalClickFn();			// 업체모달 행 클릭 이벤트
+	SearchBtnFn();				// 조회버튼 클릭 이벤트
+	resetBtnEvent();			// 리셋버튼 클릭 이벤트
 	/*------------
 	// 자재재고조회
 	----------------*/
@@ -93,43 +111,77 @@
 		let grid = new tui.Grid({
 		      el: document.getElementById('grid'),
 		      bodyHeight: 500,
-		      data: null,
+		      data: [[${matStList}]],
 		      rowHeaders: ['rowNum'],
 		      scrollX: false,
 		      scrollY: true,
 		      columns: [
 		        {
 		          header: '자재LOT번호',
-		          name: 'maLot'
+		          name: 'matLot'
 		        },
 		        {
 		          header: '자재코드',
-		          name: 'mtCode'
+		          name: 'mtrCd'
 		        },
 		        {
 		          header: '자재명',
-		          name: 'maNm'
+		          name: 'mtrNm'
 		        },
 		        {
 		          header: '업체명',
 		          name: 'actNm'
 		        },
 		        {
-		          header: '수량',
-		          name: 'count'
-		        },
-		        {
-		          header: '홀딩수량',
-		          name: 'hCount'
+		          header: '재고',
+		          name: 'matSamt'
 		        },
 		        {
 		          header: '유통기한',
-		          name: 'eDate'
+		          name: 'matEdate'
 		        }
 		      ]
 		    });
 		
     	return grid;
+	}
+	
+	/*------------
+	// 홀딩수량
+	----------------*/
+	function holdAmtGrid() {
+		let grid2 = new tui.Grid({
+		      el: document.getElementById('grid2'),
+		      bodyHeight: 100,
+		      data: null,
+		      rowHeaders: ['rowNum'],
+		      scrollX: false,
+		      scrollY: true,
+		      columns: [
+		    	  {
+			          header: '자재코드',
+			          name: 'mtrCd',
+			          sortable: true,
+					  filter: {
+							 type: 'select'			  
+							 }
+			        },
+			        {
+			          header: '자재명',
+			          name: 'mtrNm',
+			          sortable: true,
+					  filter: {
+							 type: 'select'			  
+							 }
+			        },
+			        {
+			          header: '홀딩수량',
+			          name: 'amt',
+			          sortable: true
+			        }
+		      ]
+		    });
+			return grid2;
 	}
 	
 	/*------------------------------
@@ -204,26 +256,107 @@
 				modalGrid2.refreshLayout();
 			}, '.modal');
 		}
-		/*------------
-		// datepicker
-		----------------*/
-		function datePicker() {
-		   var today = new Date();
-		    var picker = tui.DatePicker.createRangePicker({
-		        startpicker: {
-		            date: today,
-		            input: '#startpicker-input',
-		            container: '#startpicker-container'
-		        },
-		        endpicker: {
-		            date: today,
-		            input: '#endpicker-input',
-		            container: '#endpicker-container'
-		        },
-		        selectableRanges: [
-		            [today, new Date(today.getFullYear() + 1, today.getMonth(), today.getDate())]
-		        ]
-		    });
+		
+		/*------------------------------
+		// Date Picker
+		--------------------------------*/
+		 function datePicker() {
+			 rangeDatepickerInit('#startpicker-input', '#startpicker-container','#endpicker-input','#endpicker-container');
+				document.getElementById('startpicker-input').value = null;
+				document.getElementById('endpicker-input').value = null;
+		   }
+		
+		/*------------------------------
+		// 그리드 클릭 시 홀딩수량
+		--------------------------------*/
+		function clickGridFn() {
+			document.getElementById('grid').addEventListener('click', function(){
+				let data = grid.getData();
+				let val = grid.getFocusedCell().rowKey;
+				console.log(data[val].mtrCd)
+				let result = 0;
+				for(let i=0; i<[[${holdAmt}]].length; i++){
+					if(data[val].mtrCd == [[${holdAmt}]][i].mtrCd) {
+						result += [[${holdAmt}]][i].amt;
+					}
+				}
+				console.log(result);
+				let holdData = [{mtrCd: data[val].mtrCd, mtrNm: data[val].mtrNm, amt: result}];
+				grid2.resetData(holdData);
+			})
+		}
+		
+		/*------------------------------
+		// 자재목록 모달 클릭 이벤트
+		--------------------------------*/
+		function matModalClickFn() {
+			document.getElementById('modalGrid').addEventListener('click', function() {
+				let data = modalGrid.getData();
+				let val = modalGrid.getFocusedCell().rowKey;
+				
+				document.getElementById('matNm').value = data[val].mtrNm;
+				document.getElementById('matCd').value = data[val].mtrCd;
+				
+				matCloseBtn.click();
+			})
+		}
+		
+		/*------------------------------
+		// 업체목록 모달 클릭 이벤트
+		--------------------------------*/
+		function actModalClickFn() {
+			document.getElementById('modalGrid2').addEventListener('click', function() {
+				let data = modalGrid2.getData();
+				let val = modalGrid2.getFocusedCell().rowKey;
+				
+				document.getElementById('actNm').value = data[val].actNm;
+				document.getElementById('actCd').value = data[val].actCd;
+				
+				actCloseBtn.click();
+			})
+		}
+		
+		
+		/*--------------------------------
+		// 조회 버튼 클릭 시 조건조회 그리드 등장
+		----------------------------------*/
+		function SearchBtnFn() {
+			document.getElementById('searchBtn').addEventListener('click',function(){
+				let matOdCd = document.getElementById('matCd').value; // 자재 코드
+				let actNm = document.getElementById('actNm').value; // 업체 이름
+				let matInDate = document.getElementById('startpicker-input').value; // 시작 날짜
+				let matEdate = document.getElementById('endpicker-input').value; // WHERE절 비교 용으로 유통기한에 end Date담음
+				
+				let data = {mtrCd: matOdCd, actNm: actNm, matInDate: matInDate, matEdate: matEdate};
+				
+				$.ajax({
+					url: '/matStockLookup',
+					method: 'POST',
+					contentType: 'application/JSON',
+					data: JSON.stringify(data),
+					success: function(result){
+						grid.resetData(result)
+					},
+					error: function(reject) {
+						console.log(reject);
+					}
+				})
+			})
+		}
+		
+		/*------------------------
+		// 초기화버튼 이벤트
+		--------------------------*/
+		function resetBtnEvent() {
+			document.getElementById('resetBtn').addEventListener('click',function(){
+				document.getElementById('startpicker-input').value = null;
+				document.getElementById('endpicker-input').value = null;
+				
+				document.getElementById('matCd').value = '';
+				document.getElementById('matNm').value = '';
+				document.getElementById('actNm').value = '';
+				document.getElementById('actCd').value = '';
+			});	
 		}
 	</script>
 </div>

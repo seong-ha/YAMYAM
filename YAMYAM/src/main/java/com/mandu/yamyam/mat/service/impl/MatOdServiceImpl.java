@@ -253,6 +253,73 @@ public class MatOdServiceImpl implements MatOdService {
 		return mapper.needMtrLotList(vo);
 	}
 
+	// 출고처리 - 자재 마이너스 업데이트
+	@Override
+	public int updateOutOd(List<MatVO> list) {
+		int result = 0;
+		for(int i=0; i<list.size(); i++) {
+		 result += mapper.updateOutOd(list.get(i));
+		}
+		return result;
+	}
 
+	// 출고처리 - 상태 완료로 업데이트
+	@Override
+	public int updateOutSts(MatVO vo) {
+		return mapper.updateOutSts(vo);
+	}
+
+	//===============================================
+	// 6) 자재 입출고 조회
+	//===============================================
+	// 입고 전체조회
+	@Override
+	public List<Map<String, Object>> inOutAllList() {
+		return mapper.inOutAllList();
+	}
 	
+	// 입고 전체조회
+	@Override
+	public List<Map<String, Object>> outInAllList() {
+		return mapper.outInAllList();
+	}
+
+	// 입고 조건조회
+	@Override
+	public List<Map<String, Object>> selectInOutAllList(MatVO vo) {
+		return mapper.selectInOutAllList(vo);
+	}
+
+	// 출고 조건조회
+	@Override
+	public List<Map<String, Object>> selectOutInAllList(MatVO vo) {
+		return mapper.selectOutInAllList(vo);
+	}
+	
+	//===============================================
+	// 7) 자재 재고 조회
+	//===============================================
+	// 전체조회
+	@Override
+	public List<Map<String, Object>> matStockList() {
+		return mapper.matStockList();
+	}
+
+	@Override
+	public List<Map<String, Object>> getHoldAmt() {
+		return mapper.getHoldAmt();
+	}
+
+	@Override
+	public List<Map<String, Object>> matStockSelectList(MatVO vo) {
+		return mapper.matStockSelectList(vo);
+	}
+
+	//===============================================
+	// 8) 자재 반품 관리
+	//===============================================
+	@Override
+	public List<Map<String, Object>> selectReList(MatVO vo) {
+		return mapper.selectReList(vo);
+	}
 }
