@@ -99,7 +99,7 @@ text-align: center;
 	/*------------
 	// function
 	----------------*/
-	//getPodList();			// DB에서 생산요청목록 불러오기
+	getPodList();			// DB에서 생산요청목록 불러오기
 	
 	searchBtnHandler();		// 조회 버튼 핸들러
 	cancelBtnHandler();		// input 값 초기화 버튼
@@ -107,8 +107,8 @@ text-align: center;
 	//SaveBtnHandler();		// 저장 버튼 핸들러
 	exportBtnHandler(); 	// 엑셀출력 버튼 핸들러
 	
-	let podListGrid = podListGridInit();
-	let orderModalGrid = orderGridInit();
+	let podListGrid = podListGridInit();	// 생산요청 리스트
+	let orderModalGrid = orderGridInit(); 	// 주문서관리 Modal
 	
 	
 	/*------------
@@ -122,8 +122,40 @@ text-align: center;
 	----------------*/
 	function searchBtnHandler(){
 		$('#searchBtn').on('click',function(){
-			let getStartDay = $("startpicker-input").val();
-			let getEndDay = $("#endpicker-input").val();
+			let getSts = $("input[name=flexRadioDefault]:checked").val();
+			let getStartDate = $("#startpicker-input").val();
+			let getEndDate = $("#endpicker-input").val();
+			if(getSts == '전체') {
+				$.ajax({
+					 url : '/PodList',
+					 contentType: 'application/json',
+		             dataType : "json",
+		             method: "GET",
+		             success : function(data) {
+		            	 podListGrid.resetData(data);
+		             },
+		             error : function(reject) {
+		                console.log(reject);
+		             }
+				})
+			}else if(getSts != '전체') {
+				$.ajax({
+				   url:'/PodDetailList',
+				   contentType: 'application/json',
+				   dataType: "json",
+				   method: "GET",
+				   data : {
+					   "rqtSts" : getSts, "startDate" : getStartDate, "endDate" : getEndDate
+				   },
+				   success : function(data) {
+					   podListGrid.resetData(data);
+					   console.log(getOdSts);
+				   },
+				   error : function(reject) {
+					   console.log(reject);
+				   }
+			   })
+			}
 		});
 	}
    
@@ -145,27 +177,21 @@ text-align: center;
 	function podListGridInit(){
 		let podListGrid = new tui.Grid({
 		    el: document.getElementById('podListGrid'),
-		    data: [
-		        {
-		        	rqtDate : '2022-11-05',
-		        	odCd : 'ORD-20221105-001',
-		        	prdCd : 'MD-00100',
-		        	prdNm : '얇은피 고기만두',
-		        	odAmt : 200,
-		        	sAmt : 100,
-		        	rqtAmt : 100,
-		        	deDate : '2022-11-08',
-		        	sts : '완료'
-		        }
-		        ],
 		    rowHeaders: ['checkbox'],
 		    scrollX: false,
 		    scrollY: false,
 		    columns: [
 		      {
 		        header: '생산요청 일자',
+		        align : 'center',
 		        name: 'rqtDate',
-		        editor: 'datePicker',
+		        editor: {
+		        	type : 'datePicker',
+	        		options: {
+			              format: 'yyyy-MM-dd',
+			              language : 'ko'
+			            }
+		        },
 		        validation: {
 				     dataType: 'datePicker',
 				     required: true
@@ -173,26 +199,32 @@ text-align: center;
 		      },
 		      {
 		        header: '주문 코드',
+		        align : 'center',
 		        name: 'odCd'
 		      },
 		      {
 		        header: '제품 코드',
+		        align : 'center',
 		        name: 'prdCd'
 		      },
 		      {
 		        header: '제품명',
+		        align : 'center',
 		        name: 'prdNm'
 		      },
 		      {
 		        header: '주문량',
+		        align : 'center',
 		        name: 'odAmt'
 		      },
 		      {
 		        header: '재고량',
-		        name: 'sAmt'
+		        align : 'center',
+		        name: 'samt'
 		      },
 		      {
 		        header: '요청수량',
+		        align : 'center',
 		        name: 'rqtAmt',
 		        editor: 'text',
 				// 필수 입력 값
@@ -203,11 +235,13 @@ text-align: center;
 		      },
 		      {
 		        header: '납기 일자',
+		        align : 'center',
 		        name: 'deDate',
 		      },
 		      {
 		        header: '진행 상황',
-		        name: 'sts'
+		        align : 'center',
+		        name: 'rqtSts'
 		      },
 		    ]
 		  });
@@ -215,14 +249,41 @@ text-align: center;
     }
 
     
+	/*------------
+	// 생산요청 리스트 가져오기
+	----------------*/
+	  function getPodList() {
+          $.ajax({
+             url : '/PodList',
+             dataType : "json",
+             success : function(data) {
+            	 podListGrid.resetData(data);
+             },
+             error : function(reject) {
+                console.log(reject);
+             }
+          })
+       }
+    
+    
 	 /*------------
 	// 해당하는 header의 모달창 띄우기
 	----------------*/
 	podListGrid.on('click',function(ev){
 
    		if(ev.columnName =='odCd'){
-   			$('#orderModal').modal('show');
-   		 orderModalGrid.refreshLayout();
+   		 $.ajax({
+             url : '/ordModal',
+             dataType : "json",
+             success : function(data) {
+            	 orderModalGrid.resetData(data);
+   				$('#orderModal').modal('show');
+   				orderModalGrid.refreshLayout();
+             },
+             error : function(reject) {
+                console.log(reject);
+             }
+          })
    		}
    	});
 
@@ -273,38 +334,47 @@ text-align: center;
 	function orderGridInit() {
 		let orderModalGrid = new tui.Grid({
 		    el: document.getElementById('orderModalGrid'),
-		    data: [
-		        {
-		           odCd : 'ORD-20221110-001',
-		           prdCd : 'MD-00100',
-		           prdNm : '얇은피 고기만두',
-		           odAmt : '500'
-		        }
-		        ],
 		    rowHeaders: ['rowNum'],
 		    scrollX: false,
 		    scrollY: false,
 		    columns: [
 		      {
 		        header: '주문 코드',
+		        align : 'center',
 		        name: 'odCd'
 		      },
 		      {
 		        header: '제품 코드',
+		        align : 'center',
 		        name: 'prdCd'
 		      },
 		      {
 		        header: '제품명',
+		        align : 'center',
 		        name: 'prdNm'
 		      },
 		      {
 		        header: '주문량',
+		        align : 'center',
 		        name: 'odAmt'
+		      },
+		      {
+		        header: '재고량',
+		        align : 'center',
+		        name: 'samt'
+		      },
+		      {
+		        header: '납기일자',
+		        align : 'center',
+		        name: 'deDate'
 		      }
 		    ]
 		  });
 			return orderModalGrid;
 	   }
+	
+		orderModalGrid.hideColumn('samt');
+		orderModalGrid.hideColumn('deDate');
 	
 	
 	 /*------------
@@ -321,10 +391,80 @@ text-align: center;
 	    podListGrid.setValue(val2, 'prdCd', val.prdCd);
 	    podListGrid.setValue(val2, 'prdNm', val.prdNm);
 	    podListGrid.setValue(val2, 'odAmt', val.odAmt);
+	    podListGrid.setValue(val2, 'samt', val.samt);
+	    podListGrid.setValue(val2, 'deDate', val.deDate);
 
 	    $('#orderModal').modal("hide");
    })
    
+   
+    /*------------
+	// 저장 버튼 클릭
+	----------------*/
+	function SaveBtnHandler(){
+		$('#saveBtn').on('click',function(){
+			let rowData = podListGrid.getCheckedRows();
+			let ordList = [];
+			for (let i=0; i<rowData.length; i++) {
+				let prdCd = rowData[i].prdCd;
+				let odAmt = rowData[i].odAmt;
+				let actCd = rowData[i].actCd;
+				let deDate = rowData[i].deDate;
+				let odCd = rowData[i].odCd;
+				ordList.push({prdCd,odAmt,actCd,deDate,odCd});
+				console.log(rowData[i].odCd);
+			}
+			if (rowData[i].odCd == null){
+				sweetConfirm('C', function(){
+							$.ajax({
+								url : '/insertOrd',
+								type : 'post',
+								contentType: 'application/json',
+								data: JSON.stringify(ordList),
+								dataType : 'json',
+								 success : function(result) {
+					                 if(result > 0){
+					                	 Swal.fire(
+					       			          '등록이 완료되었습니다.'	);
+					                	 getOrdList();
+					                 }else {
+					                	 Swal.fire(
+					                			 '등록이 실패하였습니다.');
+					                 }
+					              },
+					              error : function(reject) {
+					                 console.log(reject);
+					              }
+							})
+				})
+			}else if(rowData[i].odCd != null) {
+				sweetConfirm('U', function(){
+					$.ajax({
+						url : '/updateOrd',
+						type : 'post',
+						contentType: 'application/json',
+						data: JSON.stringify(ordList),
+						dataType : 'json',
+						 success : function(result) {
+			                 if(result > 0){
+			                	 Swal.fire(
+			       			          '수정이 완료되었습니다.'	);
+			                	 getOrdList();
+			                 }else {
+			                	 Swal.fire(
+			                			 '수정이 실패하였습니다.');
+			                 }
+			              },
+			              error : function(reject) {
+			                 console.log(reject);
+			              }
+					}) // end of ajax
+				})	// end of swc
+			}	// end of if
+		}) // end of click
+   }
+	 
+	 
    
 	/*------------
 	// 엑셀 내보내기

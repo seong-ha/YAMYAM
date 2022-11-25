@@ -8,10 +8,10 @@
 <title>YAMYAM</title>
 
 <style>
-#od-btn {
+#od-btn,#modalSaveBtn{
 	display: inline-block; margin: 0 5px; float: right;
 }
-#startpicker-input, #endpicker-input {
+#startpicker-input, #endpicker-input{
 text-align: center;
 }
 </style>
@@ -56,6 +56,7 @@ text-align: center;
                      aria-label="Close"></button>
                </div>
                <div class="modal-body">
+               <button class="btn btn-dark btn-sm" id="modalSaveBtn">등록</button>
                <div id="lotSModalGrid"></div>
                </div>
             </div>
@@ -64,17 +65,26 @@ text-align: center;
 	</div>	
 
 	<div id="od-content-2">
-		<h4>진행중인 주문서 현황</h4>
-		
+				<h4>진행중인 주문서 현황</h4>	
 	<div id="grid"></div>
 
 	</div>
 	<br>
 	<div id="od-content-3">
-		<h4>출고 등록 현황 리스트</h4>
-
+	<table>
+		<tr>
+			<td>
+				<h4>출고 등록 현황 리스트</h4>
+			</td>
+		</tr>
+			<tr>
+			<td>주문코드 : 
+			<input type="text" id="odCode" name="odCode" readonly="readonly"></td>
+			<td>제품명 : 
+			<input type="text" id="prdName" name="prdName" readonly="readonly"></td>
+		</tr>
+	</table>
 	<div id="od-btn">
-	<button class="btn btn-dark btn-sm" id="insertBtn">추가</button>
 	<button class="btn btn-dark btn-sm" id="deleteBtn">선택삭제</button>
 	<button class="btn btn-dark btn-sm" id="saveBtn">저장</button>
 	</div>
@@ -88,12 +98,11 @@ text-align: center;
 	// function
 	----------------*/
 	getOrdIngList();		// DB에서 주문서목록 불러오기
-	getOrdOutList();		// DB에서 출고등록목록 불러오기
-	//getlotSList();			// DB에서 LOT재고현황 불러오기 
-	//ordIngListClick();			// DB에서 LOT재고현황 불러오기 
+	//getOrdOutList();		// DB에서 출고등록목록 불러오기
 	searchBtnHandler();		// 조회 버튼 핸들러
 	cancelBtnHandler();		// 데이트피커 값 초기화 버튼
 	deleteBtnHandler();		// 삭제 버튼 이벤트 핸들러
+	modalSaveBtnHandler();	// 모달 등록 버튼 이벤트 핸들러
 	
 	let lotSModalGrid = lotSGridInit(); 		// 완제품LOT 재고 현황 모달
 	let grid = orderGridInit();					// 진행중인 주문서 Grid
@@ -165,45 +174,45 @@ text-align: center;
 	let grid = new tui.Grid({
 	    el: document.getElementById('grid'),
 	    rowHeaders: ['rowNum'],
+	    bodyHeight: 200,
 	    scrollX: false,
-	    scrollY: false,
+	    scrollY: true,
 	    columns: [
 	      {
 	        header: '주문 일자',
 	        align : 'center',
-	        name: 'odDate'
+	        name  : 'odDate'
 	      },
 	      {
 	        header: '주문 코드',
 	        align : 'center',
-	        name: 'odCd'
+	        name  : 'odCd'
 	      },
 	      {
 	        header: '제품 코드',
 	        align : 'center',
-	        name: 'prdCd'
+	        name  : 'prdCd'
 	      },
 	      {
 	        header: '제품명',
 	        align : 'center',
-	        name: 'prdNm'
+	        name  : 'prdNm'
 	      },
 	      {
 	        header: '거래처명',
 	        align : 'center',
-	        name: 'actNm',
+	        name  : 'actNm',
 	        filter: {type: 'select'}
 	      },
 	      {
 	        header: '주문량',
 	        align : 'center',
-	        name: 'odAmt'
+	        name  : 'odAmt'
 	      }
 	    ]
 	  });
 		return grid;
     }
-    	
 
 	/*------------
 	// 주문서 리스트 가져오기
@@ -225,35 +234,28 @@ text-align: center;
 	/*------------
 	// 주문서 행 클릭 핸들러
 	----------------*/
-	function ordIngListClick() {
 		grid.on('click',function(ev){
-			let rowData = grid.getRow(ev.rowKey);
-			if(!ev.rowKey) {
-				return;
-			}
-		//let odCd = grid.getValue(ev.rowKey, 'odCd')
-		
-		if(rowData[i] != null){
-	   		 $.ajax({
-	             url : '/lotSListModal',
-	             dataType : "json",
-	             success : function(data) {
-	            	 grid.resetData(data);
-	   				$('#lotSModal').modal('show');
-	   				grid.refreshLayout();
-	             },
-	             error : function(reject) {
-	                console.log(reject);
-	             }
-	          })
-			 
-		}
 			
+			let odCode = grid.getValue(ev.rowKey, 'prdCd');
+			let prdName = grid.getValue(ev.rowKey, 'prdNm');
+			$('#odCode').val(odCd);
+			$('#prdName').val(prdNm);
+			
+			let rowData = {odCode :'', prdName:'', prdLot:'', bamt :'', bdates : '', 
+							podDate : '', edate : '', outEtc : ''};
+
+			$.ajax({
+				url : '/',
+				method: "GET",
+				data : {"odCd" : odCode},
+				contentType: 'application/json',
+				dataType : 'json',
+			}).then(res=>{
+				insertOutGrid.resetData(res);
 		})
-	}
+	})
 	
-	
-	
+		
 	/*------------
 	// 완제품 재고 현황 Modal
 	----------------*/
@@ -261,27 +263,30 @@ text-align: center;
 		let lotSModalGrid = new tui.Grid({
 		    el: document.getElementById('lotSModalGrid'),
 		    bodyHeight: 500,
-		    rowHeaders: ['rowNum'],
+		    rowHeaders: ['checkbox'],
 		    scrollX: false,
 		    scrollY: true,
 		    columns: [
 		      {
 		        header: '완제품LOT',
 		        align : 'center',
-		        name  : 'prdLot'
+		        name  : 'prdLot',
+		        width : 120
 		      },
 		      {
 		        header: '생산량',
 		        align : 'center',
-		        name  : 'binAmt'
+		        name  : 'binAmt',
+		        width : 30
 		      },
 		      {
 		        header: '출고량',
 		        align : 'center',
 		        name  : 'bAmt',
+		        width : 30,
 		        editor: 'text',
 				validation: {
-				     dataType: 'text',
+				     dataType: 'number',
 				     required: true
 				      }
 		      },
@@ -301,26 +306,68 @@ text-align: center;
 	}
     
 	
+	
+    
+    
 	/*------------
-	// 완제품 재고 현황 Modal (DB에서 데이터 가져오기)
+	// 해당하는 header의 모달창 띄우기
 	----------------*/
-	function getlotSList(){
-		lotSModalGrid.on('click',function(){
-			   $.ajax({
-				   url:'/lotSListModal',
-				   dataType: "json",
-				   success : function(data) {
-					   lotSModalGrid.resetData(data);
-				   },
-				   error : function(reject) {
-					   console.log(reject);
-				   }
-			   })
-			   lotSModalGrid.refreshLayout();
-		 });
-	}
+	insertOutGrid.on('click',function(ev){
+   		if(ev.columnName =='prdLot'){
+   		 $.ajax({
+             url : '/lotSListModal',
+             dataType : "json",
+             success : function(data) {
+            	 lotSModalGrid.resetData(data);
+   				$('#lotSModal').modal('show');
+   				lotSModalGrid.refreshLayout();
+             },
+             error : function(reject) {
+                console.log(reject);
+             }
+          })
+   		}
+   	});
 	
 	
+    /*------------
+	// LOT 모달 등록 버튼 핸들러
+	----------------*/
+	let ordCode = '';
+	function modalSaveBtnHandler(){
+		$('#modalSaveBtn').on('click',function(){
+			let data = lotSModalGrid.getCheckedRows();
+			let list = [];
+			let bAmt = '';
+			let podDate = '';
+			let edate = '';
+			let lot = '';
+			for (let i=0; i<data.length; i++) {
+				bAmt = data[i].bAmt;
+				podDate = data[i].podDate;
+				edate = data[i].edate;
+				lot = data[i].prdLot;
+				ordCode = data[i].odCd;
+			list.push({bAmt,podDate,edate,lot});
+			console.log(data[i].bAmt);
+			console.log(list);
+			}
+			if(list != null) {
+			let val = insertOutGrid.getFocusedCell().rowKey; // 출고등록 그리드
+			console.log(bAmt);
+			insertOutGrid.appendRows(list);
+			//insertOutGrid.setValue(val,'prdLot', lot);
+			//insertOutGrid.setValue(val,'bAmt', bAmt);
+			//insertOutGrid.setValue(val,'podDate', podDate);
+			//insertOutGrid.setValue(val,'edate', edate);
+			$('#lotSModal').modal("hide");
+				}
+
+		});
+    	
+    }
+    
+    
     /*------------
 	// 출고 등록 그리드
 	----------------*/
@@ -328,8 +375,9 @@ text-align: center;
 	let insertOutGrid = new tui.Grid({
 	    el: document.getElementById('insertOutGrid'),
 	    rowHeaders: ['checkbox','rowNum'],
+	    bodyHeight: 200,
 	    scrollX: false,
-	    scrollY: false,
+	    scrollY: true,
 	    columns: [
 	      {
 	        header: '주문 코드',
@@ -337,9 +385,9 @@ text-align: center;
 	        name  : 'odCd'
 	      },
 	      {
-	        header: '제품 코드',
+	        header: '제품명',
 	        align : 'center',
-	        name  : 'prdCd'
+	        name  : 'prdNm'
 	      },
 	      {
 	        header: '완제품LOT',
@@ -349,12 +397,23 @@ text-align: center;
 	      {
 	        header: '출고량',
 	        align : 'center',
-	        name  : 'bamt'
+	        name  : 'bAmt'
 	      },
 	      {
 	        header: '출고 일자',
 	        align : 'center',
-	        name  : 'bdates'
+	        name  : 'bdates',
+	        editor: {
+	        	type : 'datePicker',
+        		options: {
+		              format: 'yyyy-MM-dd',
+		              language : 'ko'
+		            }
+	        },
+	        validation: {
+			     dataType: 'datePicker',
+			     required: true
+			      }
 	      },
 	      {
 	        header: '제조 일자',
@@ -369,7 +428,13 @@ text-align: center;
 	      {
 	        header: '비고',
 	        align : 'center',
-	        name  : 'outEtc'
+	        name  : 'outEtc',
+	        editor: 'text',
+			// 필수 입력 값
+			validation: {
+			     dataType: 'text',
+			     required: true
+			      }
 	      }
 	    ]
 	  });
@@ -394,15 +459,7 @@ text-align: center;
        }
     
     
-    
-	/*------------
-	// 주문서 추가 버튼
-	----------------*/
-   $('#insertBtn').on('click',function(){
-      let rowData = [{odCd: "", prdCd: "", lot: "", outAmt: "", outDate: "", podDate : "" , eDate: ""}]
-      insertOutGrid.appendRow(rowData); 
-	});
-	
+
 	
 	/*------------
 	// 삭제 버튼 클릭(그리드행 삭제)

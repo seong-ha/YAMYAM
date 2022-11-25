@@ -42,6 +42,12 @@ public class OrdServiceImpl implements OrdService {
 		return map.lotSList();
 	}
 	
+	// 주문서 관리 모달
+	@Override
+	public List<OrdVO> ordList() {
+		return map.ordList();
+	}
+	
 	
 	/*------------
 	// 주문 관리 Tab
@@ -157,5 +163,28 @@ public class OrdServiceImpl implements OrdService {
 	@Override
 	public List<OrdVO> getPodDetailList(OrdVO vo) {
 		return map.getPodDetailList(vo);
+	}
+
+	// 생산 요청 관리 추가
+	@Override
+	public int insertPodOrd(List<OrdVO> vo) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public int updatePodOrd(List<OrdVO> vo) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	// 생산 요청 관리 삭제
+	@Override
+	public int deletePodOrd(List<OrdVO> vo) {
+		int result = 0;
+		for(int i=0; i<vo.size(); i++) {
+			result += map.deleteOutList(vo.get(i));
+		}
+		return result;
 	}
 }

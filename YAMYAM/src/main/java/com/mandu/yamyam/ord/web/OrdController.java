@@ -53,6 +53,13 @@ public class OrdController {
 		return service.lotSList();
 	}
 	
+	// 주문서 관리 모달
+	@GetMapping("ordModal")
+	@ResponseBody
+	public List<OrdVO> ordList() {
+		return service.ordList();
+	}
+	
 	/*-----------------
 	//   주문 관리 Tab
 	-------------------*/
@@ -120,11 +127,11 @@ public class OrdController {
 	-------------------*/
 	
 	// 진행중인 리스트 조회
-		@GetMapping("ingOrdList")
-		@ResponseBody
-		public List<OrdVO> getIngOrdList() {
-			return service.getIngOrdList();
-		}
+	@GetMapping("ingOrdList")
+	@ResponseBody
+	public List<OrdVO> getIngOrdList() {
+		return service.getIngOrdList();
+	}
 		
 	// 진행중인 주문서 조건조회
 	@GetMapping("ingOrdDetailList")
@@ -147,6 +154,24 @@ public class OrdController {
 	public int deleteOutList(@RequestBody List<OrdVO> vo) {
 		int result = service.deleteOutList(vo);
 		return result;
+	}
+	
+	/*-----------------
+	// 생산 요청 관리 Tab
+	-------------------*/
+	
+	// 생산 요청 관리 리스트 조회
+	@GetMapping("PodList")
+	@ResponseBody
+	public List<OrdVO> getPodList() {
+		return service.getPodList();
+	}
+		
+	// 생산 요청 관리 주문서 조건조회
+	@GetMapping("PodDetailList")
+	@ResponseBody
+	public List<OrdVO> getPodDetailList(OrdVO vo) {
+		return service.getPodDetailList(vo);
 	}
 	
 	
