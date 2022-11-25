@@ -19,79 +19,31 @@
 }
 
 </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dayjs/1.10.7/dayjs.min.js"></script>
 </head>
 
 <body>
 	<!-- 본문 시작 -->
 	<div layout:fragment="content" class="container">
-	<div class="row">
+		<div><button type="button" id="scheduleBtn" class="btn btn-dark btn-sm" style="float: right">공정이동표</button></div>
 		<h3>생산 관리</h3>
-		<table style="width: 100%;">
-			<tr>
-				<td><button type="button" id="progressBtn" class="btn btn-dark btn-sm" data-bs-toggle="modal" data-bs-target="#orderModal">생산지시목록</button></td>
-				<td><button type="button" id="scheduleBtn" class="btn btn-dark btn-sm" style="float: right">공정이동표</button></td>
-			</tr>
-
-		</table>
-	</div>
+		
 	<div class="row">
 		<h4>진행생산지시</h4>
 		<div id="pOrderGrid"></div>
 	</div>
 	<div class="row">
-		<div class="col-11">
 			<h4>공정목록</h4>
 			<div id="proGrid"></div>
-		</div>
-		<div class="col-1" >
-			<div style="float : center;">
-				<h4 style="text-align:center;">공정</h4>
-				<h4 style="text-align:center;">상세사항</h4>
-			
-			<table style="width: 100%; float:center;">
-					<tr>
-						<td><button type="button" id="startBtn" class="btn btn-dark btn2">생산시작</button></td>
-					</tr>
-					<tr>
-						<td><button type="button" id="stopBtn" class="btn btn-dark btn2">긴급중지</button></td>
-					</tr>
-					<tr>
-						<td><button type="button" id="restartBtn" class="btn btn-dark btn2">재시작</button></td>
-					</tr>
-				</table>
+			<div>
+				<button type="button" id="restartBtn" class="btn btn-dark btn2" style="float:right;">재시작</button>
+				<button type="button" id="stopBtn" class="btn btn-dark btn2" style="float:right;">긴급중지</button>
+				<button type="button" id="startBtn" class="btn btn-dark btn2" style="float:right;">생산시작</button>
 			</div>
-		</div>
 		
 	</div>
 	
-	<!-- 생산지시목록 모달 -->
-	<div class="modal" id="orderModal" tabindex="-1">
-		<div class="modal-dialog modal-xl" >
-			<div class="modal-content">
-				<div class="modal-header">
-					<h4 class="modal-title">생산지시 목록</h4>
-					<button type="button" class="btn-close" data-bs-dismiss="modal"	aria-label="Close" id="close_modal"></button>
-				</div>
-				<div class="modal-body">
-					<div>
-						생산 일자 : 
-						<div class="tui-datepicker-input tui-datetime-input tui-has-focus">
-							<input type="text" id="datepicker-input" aria-label="Date-Time">
-							<span class="tui-ico-date"></span>
-							<div id="wrapper" style="margin-top: -1px;"></div>
-						
-						</div>
-						
-						<button type="button" id="searchBtn" class="btn btn-dark btn-sm">검색</button>
-						<button type="button" id="cancelBtn" class="btn btn-dark btn-sm">초기화</button>
-					</div>
-					<div>
-						<div id="orModalGrid"></div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
+
 	
 	<!-- 공정이동표 모달 -->
 	<div class="modal" id="progressModal" tabindex="-1">
@@ -129,27 +81,15 @@
 
 	let pOrderGrid = orderGridInit();			// 진행생산지시 grid 초기화
 	let proGrid = progressGridInit();		// 공정목록 grid 초기화
-	let orModalGrid = orModalGridInit();		// 생산지시목록 모달 grid
 	let pLModalGrid = pLModalGridInit();		// 공정이동표 모달 grid
-
 	
 	
-	progressBtnHandler();		// 생산지시목록 클릭 버튼 이벤트 핸들러
-	searchBtnHandler();			// 날짜 검색버튼 이벤트 핸들러
-	orModalGridClickHandler();	// 생산지시목록 모달에 클릭 이벤트 핸들러
 	startBtnHandler();  		// 시작 버튼 이벤트 핸들러
 	stopBtnHandler();			// 중지 버튼 이벤트 핸들러
 	restartBtnHandler();		// 재시작 버튼 이벤트 핸들러
 	scheduleBtnHandler();		// 공정이동표 클릭 버튼 이벤트 핸들러
-	cancelBtnHandler();  	    // date picker input 값 초기화 버튼
 	pOrderGridClickHandler();   // 진행생산지시 그리드 클릭 버튼 이벤트 핸들러
-	
-	/*------------
-	// datepicker
-	----------------*/	
-	pickerInit('#wrapper', '#datepicker-input');
-	
-	
+
 	
 	/*------------
 	// 진행생산지시 grid
@@ -184,6 +124,14 @@
 				}
 			]
 		});
+		
+		$.ajax({
+			url : '/getOProList',
+			method: "GET",			
+		}).then(res=>{
+			pOrderGrid.resetData(res);
+		})
+		
 		return pOrderGrid;
 	}
 	
@@ -215,7 +163,7 @@
 				},
 				{
 					header: '설비명',
-					name: 'plineCd'
+					name: 'eqpNm'
 				},
 				{
 					header: '담당자',
@@ -223,15 +171,18 @@
 				},
 				{
 					header: '투입량',
-					name: 'pproInAmt'
+					name: 'pproInAmt',
+					width : '100'
 				},
 				{
 					header: '불량량',
-					name: 'pproErAmt'
+					name: 'pproErAmt',
+					width : '100'
 				},
 				{
 					header: '생산량',
-					name: 'pproOtAmt'
+					name: 'pproOtAmt',
+					width : '100'
 				},
 				{
 					header: '시작시간',
@@ -243,7 +194,8 @@
 				},
 				{
 					header: '상태', // 설비상태
-					name: 'eqpSts'
+					name: 'eqpSts',
+					width : '20'
 				},
 			]
 		});
@@ -251,46 +203,6 @@
 	}
 	
 	
-	
-	/*------------
-	// 생산지시목록 모달 grid
-	----------------*/
-	
-	function orModalGridInit(){
-		let orModalGrid = new tui.Grid({
-			el: document.getElementById('orModalGrid'),
-			scrollX: false,
-			scrollY: false,
-			rowHeaders: ['rowNum'],
-			columns: [
-				{
-					header: '상세생산지시코드',
-					name: 'poddCd'
-				},
-				{
-					header: '제품명',
-					name: 'prdNm'
-				},
-				{
-					header: '생산일자',
-					name: 'poddDates'
-				},
-				{
-					header: '생산량',
-					name: 'poddAmt'
-				}
-			]
-		});
-		
-		$.ajax({
-			url : '/getOProList',
-			method: "GET",			
-		}).then(res=>{
-			orModalGrid.resetData(res);
-		})
-			
-		return orModalGrid;
-	}
 	
 	
 	
@@ -313,21 +225,9 @@
 				pproErAmt : '',
 				pproOtAmt : ''
 			}],
-			// data 가져오는 법
-			// data: {
-			// 	api: {
-			// 		readData: {
-			// 			url: '/api/readData',
-			// 			method: 'GET'
-			// 		}
-			// 	}
-			// },
 			scrollX: false,
 			scrollY: false,
 			rowHeaders: ['rowNum'],
-			// columnOptions: {
-			// 	minWidth: 180
-			// },
 			columns: [
 				{
 					header: '진행순번',
@@ -370,14 +270,16 @@
 		return pLModalGrid;
 	}
 	
+	
+	
 	/*------------
 	// 진행생산지시 그리드 클릭 버튼 이벤트 핸들러
 	----------------*/
 	function pOrderGridClickHandler(){
 		$('#pOrderGrid').on('click',function(ev){
-			console.log(ev);
 			let data = pOrderGrid.getData();
 			let plineCd = data[0].plineCd;
+			let pproInAmt = data[0].poddAmt;
 			$.ajax({
 				url : '/flowProgress',
 				data : {"plineCd" : plineCd},
@@ -386,103 +288,16 @@
 				method: "GET",
 				success : function(data){
 					proGrid.resetData(data);
-					let proData = proGrid.getData();
-					for(let i = 0; i<proData.length; i++){
-						proGrid.setValue(i, 'eqpSts', '대기'); 
-					}
+					proGrid.setValue(0,'pproInAmt',pproInAmt);
 				},
 				error : function(reject){console.log(reject);}				
 			})
-			// /proInUpdate
 			
 		})
 	}
 	
 
-	/*------------
-	// 생산지시목록 클릭 버튼 이벤트 핸들러
-	----------------*/
-	function progressBtnHandler(){
-		// 모달 클릭 버튼 이벤트
-		$('#progressBtn').on('click',function(){
-	
-			 $("#orderModal").modal("show");
 
-			// 모달이 로드 되는데 시간이 걸리므로 인터벌 걸어주기
-			setInterval(function(){
-				orModalGrid.refreshLayout()
-				},100);	
-		});
-	}
-	
-	
-	
-	/*------------
-	// 날짜 검색버튼 이벤트 핸들러
-	----------------*/
-	function searchBtnHandler(){
-
-		$('#searchBtn').on('click',function(){
-			let poddDates = $("#datepicker-input").val();
-			$.ajax({
-				url : '/getOProList',
-				data : {"poddDates" : poddDates},
-				contentType: 'application/json',
-				dataType : 'json',
-				method: "GET",
-				success : function(data){console.log(data); orModalGrid.resetData(data);},
-				error : function(reject){console.log(reject);}				
-			})
-			
-		})
-	}
-	
-	/*------------
-	// datePicker 초기화버튼 이벤트 핸들러
-	----------------*/
-	function cancelBtnHandler(){
-		$('#cancelBtn').on('click',function(){
-
-			$("#datepicker-input").val(today);
-			
-			$.ajax({
-				url : '/getOProList',
-				method: "GET",			
-			}).then(res=>{
-				orModalGrid.resetData(res);
-			})
-		});	
-	}
-	
-	/*------------
-	// 생산지시목록 모달에 클릭 이벤트 핸들러
-	----------------*/
-	function orModalGridClickHandler(){
-
-		orModalGrid.on('click',function(ev){
-			//console.log(ev.rowKey); 선택한 행의 row번호
-			// 클릭한 행의 자재명, 자재코드 
-			let val = [orModalGrid.getRow(ev.rowKey)];
-			//console.log(val);
-			pOrderGrid.resetData(val);
-			$('#orderModal').modal("hide");	
-			
-			// 이미 존재하는 값 불러오지 않기(필터링)
-			
-			/* let RMCode = val.orderCode;
-			let iGDataList = insertGrid.getData();
-			$(iGDataList).each(function(idx,el){
-				let code = el.orderCode; 
-				if(RMCode != code){
-					pOrderGrid.appendRow(val);
-				}
-					$('#requestModal').modal("hide");				
-			}) */
-		})
-	
-	}
-	
-	
 	
 	/*------------
 	// sweetConfirm 
@@ -508,6 +323,27 @@
 		     
 	}
 	
+		
+	
+	
+	
+	/*------------
+	// 공정표 클릭 버튼 이벤트 핸들러
+	----------------*/
+	function scheduleBtnHandler(){
+		// 모달 클릭 버튼 이벤트
+		$('#scheduleBtn').on('click',function(){
+	
+			 $("#progressModal").modal("show");
+
+			// 모달이 로드 되는데 시간이 걸리므로 인터벌 걸어주기
+			setInterval(function(){
+				pLModalGrid.refreshLayout()
+				},100);	
+		});
+	}
+	
+	
 	
 	/*------------
 	// 시작 버튼 이벤트 핸들러
@@ -517,19 +353,107 @@
 		$('#startBtn').on('click',function(){
 			// sweetalert2
 			sweetConfirm('S', 'success',function(){
+				// 생산시작
+				// 설비상태 : 가동으로 업데이트 ajax : update
+
+				let eqpCd = proGrid.getValue(0,'eqpCd');
+				let plineCd = proGrid.getValue(0,'plineCd');
+				let pproCd = proGrid.getValue(0,'pproCd');
+				let pproInAmt = proGrid.getValue(0,'pproInAmt');
+				
+				// 설비 -> 가동으로 변경.
+				/* $.ajax({
+					url : '/eqpUpdate',
+					method: 'POST',
+					data :  {"eqpCd" : eqpCd, "plineCd" : plineCd, "pproCd" : pproCd, "pproInAmt": pproInAmt},
+					dataType : 'json',
+					success : function(data){
+							// grid에서 수정
+							proGrid.resetData(data);
+							proGrid.refreshLayout();
+							},
+					error : function(reject){
+							console.log(reject);
+							// 실패
+					}			 		  
+				}); */
+				/* // 설비 -> 대기로 변경.
+				$.ajax({
+					url : '/eqpUpdate',
+					method: 'POST',
+					data :  {"eqpCd" : eqpCd},
+					dataType : 'json',
+					success : function(data){
+							// grid에서 수정
+							proGrid.resetData(data);
+							proGrid.refreshLayout();
+							},
+					error : function(reject){
+							console.log(reject);
+							// 실패
+					}			 		  
+				}); */
+				
+				let date = dayjs();
+				let time = date.format("YYYY-MM-DD HH:mm:ss");
+				
+				var am = 0;
+				var interval = setInterval(viewProgress(),1000); // 변수를 선언해줄경우 1번 실행
+				
+				function viewProgress(){
+					
+					proGrid.setValue(am,'pproSTime', time);
+					
+					setInterval(function(){
+						let time = date.add(40,"second").format("YYYY-MM-DD HH:mm:ss");
+						let pproInAmt = proGrid.getValue(am,'pproInAmt');
+						let pproErAmt = proGrid.getValue(am,'pproErAmt');
+						let amt = pproInAmt-pproErAmt;
+						proGrid.setValue(am,'pproOtAmt',amt);
+						proGrid.setValue(am,'pproErAmt',0)
+						proGrid.setValue(am,'pproETime', time);
+						am++;
+						proGrid.setValue(am,'pproInAmt', amt);
+						time = date.add(40,"second").format("YYYY-MM-DD HH:mm:ss");
+						proGrid.setValue(am,'pproSTime', time);
+						proGrid.refreshLayout();
+					},1000)
+				}
+				
+
+				
+				
+				/* setTimeout(function(){
+					proGrid.setValue(0,'pproSTime', time);
+					proGrid.refreshLayout();
+					},100)
+					
+				setTimeout(function(){
+					let time = date.add(40,"second").format("YYYY-MM-DD HH:mm:ss");
+					//time = (time + ":30"); 
+					let pproInAmt = proGrid.getValue(0,'pproInAmt');					
+					proGrid.setValue(0,'pproErAmt',0)
+					let pproErAmt = proGrid.getValue(0,'pproErAmt');
+					let amt = pproInAmt-pproErAmt;
+					proGrid.setValue(0,'pproOtAmt',amt);
+					proGrid.setValue(0,'pproETime', time);
+					proGrid.setValue(1,'pproInAmt', amt);					
+					proGrid.refreshLayout();
+					},1000)
+				// 상태가 대기면 -> update p_pro 테이블
+				
+				let sts = proGrid.getValue(0,'eqpSts');
+				console.log(sts); */
+				
+				
 				
 				
 			})
 
-			// 갖고온 start, end 값을 넘겨서 select 해오기
-			// ajax 받아오고
-			// success : function(data){manageGrid.resetData(data);}
+			// 설비의 상태가 가동중이면 ajax update
 			
 		})
 	}
-	
-	
-	
 	
 	/*------------
 	// 긴급중지 버튼 이벤트 핸들러
@@ -539,7 +463,7 @@
 		$('#stopBtn').on('click',function(){
 			// sweetalert2
 			sweetConfirm('T', 'error', function(){
-				
+				clearInterval(interval);
 				
 			})
 
@@ -570,24 +494,6 @@
 			
 		})
 	}
-	
-	/*------------
-	// 공정표 클릭 버튼 이벤트 핸들러
-	----------------*/
-	function scheduleBtnHandler(){
-		// 모달 클릭 버튼 이벤트
-		$('#scheduleBtn').on('click',function(){
-	
-			 $("#progressModal").modal("show");
-
-			// 모달이 로드 되는데 시간이 걸리므로 인터벌 걸어주기
-			setInterval(function(){
-				pLModalGrid.refreshLayout()
-				},100);	
-		});
-	}
-	
-	
 	
 </script>		
 </div>
