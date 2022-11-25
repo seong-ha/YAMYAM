@@ -20,6 +20,9 @@ public interface OrdService {
 	// 완제품LOT 재고 현황 모달
 	public List<OrdVO> lotSList();
 	
+	// 주문서 관리 모달
+	public List<OrdVO> ordList();
+	
 	
 	/*-----------------
 	//   주문 관리 Tab
@@ -82,4 +85,13 @@ public interface OrdService {
 	
 	// 생산 요청 관리 주문서 조건조회
 	public List<OrdVO> getPodDetailList(OrdVO vo);
+	
+	// 생산 요청 관리 추가
+	public int insertPodOrd(List<OrdVO> vo);
+	
+	// 생산 요청 관리 수정
+	public int updatePodOrd(List<OrdVO> vo);
+	
+	// 생산 요청 관리 삭제
+	public int deletePodOrd(List<OrdVO> vo);
 }

@@ -188,7 +188,7 @@ text-align: center;
    
    /*------------
 	// 조회버튼 이벤트 핸들러
-	----------------*/
+	----------------*/ // 함수로 아작스 두개 묶기
 	function searchBtnHandler(){
 		$('#searchBtn').on('click',function(){
 			let getOdSts = $("input[name=flexRadioDefault]:checked").val();
@@ -234,7 +234,7 @@ text-align: center;
 	
    /*------------
 	// 주문 조회 초기화 버튼
-	----------------*/
+	----------------*/ // 폼으로 감싸서 한번에 초기화시키기
 	function cancelBtnHandler(){
 		$('#cancelBtn').on('click',function(){
 			$("#startpicker-input").val(today);
@@ -405,7 +405,7 @@ text-align: center;
 	
    /*------------
 	// 저장 버튼 클릭
-	----------------*/
+	----------------*/ // 컨트롤러에서 if문으로 나눠주기
 	function SaveBtnHandler(){
 		$('#saveBtn').on('click',function(){
 			let rowData = grid.getCheckedRows();
@@ -418,6 +418,8 @@ text-align: center;
 				let odCd = rowData[i].odCd;
 				ordList.push({prdCd,odAmt,actCd,deDate,odCd});
 				console.log(rowData[i].odCd);
+			}
+			
 			if (rowData[i].odCd == null){
 				sweetConfirm('C', function(){
 							$.ajax({
@@ -465,7 +467,7 @@ text-align: center;
 					})
 				})
 			}
-			}
+			
 		})
 		
    }
