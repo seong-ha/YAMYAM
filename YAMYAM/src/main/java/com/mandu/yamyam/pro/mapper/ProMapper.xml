@@ -6,7 +6,7 @@
 	<select id="getCommP" resultType="com.mandu.yamyam.pro.service.ProVO">
 		select commd_cd, commd_nm
 		from c_commd
-		where comm_cd = 'EQP-TYPE'
+		where comm_cd = #{commCd}
 	</select>
 	
 	<!-- 공통코드 : 에러코드 -->
@@ -23,15 +23,21 @@
 	
 	<!-- 생산계획조회 -->
 	<select id="getPlan" resultType="com.mandu.yamyam.common.LowerKeyMap">
-		SELECT TO_CHAR(l.ppln_date,'yyyy-MM-dd') AS ppln_date, l.ppln_cd, l.od_cd, l.ppln_name, d.pplnd_sts
-		from p_pln l join p_plnd d on l.ppln_cd = d.ppln_cd
+		SELECT TO_CHAR(l.ppln_date,'yyyy-MM-dd') AS ppln_date, 
+		       l.ppln_cd, 
+		       l.od_cd, 
+		       l.ppln_name, 
+		       d.pplnd_sts
+		from p_pln l 
+		join p_plnd d 
+		  on l.ppln_cd = d.ppln_cd
 		<where>
             <if test='startDate!= null and endDate != null'>
                TRUNC(l.PPLN_DATE) BETWEEN #{startDate}
                       AND #{endDate}
             </if>
         </where>
-         ORDER BY PPLN_CD
+         ORDER BY PPLN_CD DESC
 	</select>
 	
 	
@@ -108,7 +114,7 @@
 	
 	<!-- 생산요청서 진행사항 수정 -->
 	<update id="updateBpod" parameterType="com.mandu.yamyam.pro.service.ProVO">
-		update b_pod set rqt_sts = '계획완료'
+		update b_pod set rqt_sts = 'RQT-STS3'
 		where od_cd = #{odCd}
 	</update>
 	
@@ -173,7 +179,9 @@
 	
 	<!-- 생산라인 조회 -->
 	<select id="lineList" resultType="com.mandu.yamyam.common.LowerKeyMap">
-		select p.pplnd_cd, l.pline_cd, p.prd_cd from p_plnd p join p_line l on p.prd_cd = l.prd_cd where p.PRD_CD = #{prdCd} and ROWNUM &lt;= #{pplndDays}
+		select p.pplnd_cd, l.pline_cd, p.prd_cd from p_plnd p join p_line l on p.prd_cd = l.prd_cd 
+		where p.PRD_CD = #{prdCd} 
+		and ROWNUM &lt;= #{pplndDays}
 	</select>
 	
 	
@@ -218,7 +226,8 @@
 	
 	<!-- 생산지시 조회 -->
 	<select id="getOrderList" resultType="com.mandu.yamyam.common.LowerKeyMap">
-		select o.pod_cd, od.podd_cd,c.prd_nm, o.prd_cd, od.podd_amt, o.pline_cd, od.podd_prio, od.podd_sts,TO_CHAR(od.podd_dates,'yyyy-MM-dd') as podd_dates
+		select o.pod_cd, od.podd_cd,c.prd_nm, o.prd_cd, od.podd_amt, o.pline_cd, od.podd_prio, od.podd_sts,
+		      TO_CHAR(od.podd_dates,'yyyy-MM-dd') as podd_dates
 		from p_od o join p_odd od on o.pod_cd= od.pod_cd
 	            	join c_prd c on o.prd_cd = c.prd_cd
 	    <where>
@@ -238,26 +247,42 @@
 	
 	<!-- 생산관리 : 생산지시 목록 조회 -->
 	<select id="getOProList" resultType="com.mandu.yamyam.common.LowerKeyMap">
-		select p.pline_cd,c.prd_nm,TO_CHAR(d.podd_dates,'yyyy-MM-dd') as podd_dates, d.podd_cd, p.prd_cd, d.podd_amt
-		from p_od p join p_odd d on d.pod_cd = p.pod_cd
-					join c_prd c on p.prd_cd = c.prd_cd
-
-		<where>
-			<if test="poddDates != null">
-				TRUNC(d.podd_dates) = #{poddDates}	
-			</if>
-		</where>
-		order by 3
+		SELECT p.pline_cd,c.prd_nm,TO_CHAR(d.podd_dates,'yyyy-MM-dd') AS podd_dates, d.podd_cd, p.prd_cd, d.podd_amt
+		FROM p_od p JOIN p_odd d ON d.pod_cd = p.pod_cd
+					JOIN c_prd c ON p.prd_cd = c.prd_cd
+		WHERE  TRUNC(SYSDATE) = TRUNC(d.podd_dates)
+		ORDER BY 3
 	</select>
-	<!-- 생산관리 : 투입량 수정 -->
-	<update id="updateProInAmt" parameterType="com.mandu.yamyam.pro.service.ProVO">
-		update p_pro set ppro_in_amt = #{pproInAmt} where pline_cd = #{plineCd}
+	
+	<!-- 생산관리 : 공정목록 조회 -->
+	<select id="flowProgress" resultType="com.mandu.yamyam.common.LowerKeyMap">
+		SELECT p.ppro_cd, p.ppro_name, e.eqp_cd,e.eqp_nm, find_code_name(e.eqp_sts) AS eqp_sts , p.ppro_emp_name, p.ppro_in_amt, p.pline_cd
+		FROM p_pro p JOIN e_eqp e ON p.eqp_cd = e.eqp_cd
+		WHERE p.pline_cd = #{plineCd}
+	</select>
+	
+	<!-- 설비상태 수정 -->
+	<update id="updateEqpSts" parameterType="com.mandu.yamyam.pro.service.ProVO">
+		UPDATE e_eqp SET eqp_sts =
+		CASE 
+		    WHEN eqp_sts = 'EQP-STS1' THEN 'EQP-STS3'
+		    WHEN eqp_sts = 'EQP-STS3' THEN 'EQP-STS1'
+		    ELSE 'EQP-STS3'
+		END
+		WHERE eqp_cd = #{eqpCd}
+	</update>
+
+	<!-- 입고수량 수정 -->
+	<update id="updateProInAmt"  parameterType="com.mandu.yamyam.pro.service.ProVO">
+		UPDATE p_pro
+		SET ppro_in_amt = #{pproInAmt}
+		WHERE ppro_cd= #{pproCd}
 	</update>
 	
 	<!-- 공정관리 조회 -->
 	<select id="getProList" resultType="com.mandu.yamyam.common.LowerKeyMap">
 		SELECT p.ppro_sts, p.ppro_cd, p.ppro_name, p.eqp_cd, p.ppro_emp_name, e.eqp_nm, e.md_nm
-		FROM p_pro p join e_eqp e on p.eqp_cd = e.eqp_cd
+		FROM p_pro p JOIN e_eqp e ON p.eqp_cd = e.eqp_cd
 		<where>
 			<if test="eqpType != null and !eqpType.equals('')">
 				e.eqp_type = #{eqpType}
@@ -265,15 +290,9 @@
 		</where>
 	</select>
 	
-	<!-- 공정목록 조회 -->
-	<select id="flowProgress" resultType="com.mandu.yamyam.common.LowerKeyMap">
-		SELECT * FROM p_pro WHERE pline_cd = #{plineCd}
-	</select>
-	
-	
 	<!-- 제품 공정 흐름도 조회 -->
 	<select id="getFlowList" resultType="com.mandu.yamyam.common.LowerKeyMap">
-		SELECT p.pline_cd, p.prd_cd, c.prd_nm FROM p_line p join c_prd c on p.prd_cd = c.prd_cd
+		SELECT p.pline_cd, p.prd_cd, c.prd_nm FROM p_line p JOIN c_prd c ON p.prd_cd = c.prd_cd
 	</select>
 	
 	<!-- 제품 공정 흐름도 관리 -->

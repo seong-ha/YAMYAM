@@ -151,11 +151,16 @@ public class ProServiceImpl implements ProService {
 	}
 	
 	
-	// 생산공정 수정(투입량)
+	// 설비상태 수정, 입고량 수정
 	@Override
-	public int updateProInAmt(ProVO vo) {
-		return mapper.updateProInAmt(vo);
+	public int updateEqpSts(ProVO vo) {
+		int result = 0;
+		mapper.updateEqpSts(vo);
+		mapper.updateProInAmt(vo);
+		return result;
 	}
+	
+
 	
 	
 	/*---------------
@@ -189,6 +194,8 @@ public class ProServiceImpl implements ProService {
 	public List<ProVO> flowProgress(ProVO vo) {
 		return mapper.flowProgress(vo);
 	}
+	
+		
 	
 	
 	

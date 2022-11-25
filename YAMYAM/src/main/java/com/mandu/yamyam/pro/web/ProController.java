@@ -15,6 +15,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.mandu.yamyam.pro.service.ProService;
 import com.mandu.yamyam.pro.service.ProVO;
 
+/*
+ * 작성자 : 도소람 
+ * 작성내용 : 생산
+ * 작성일자 : 2022.11.25 
+ */
 @Controller
 public class ProController {
 	@Autowired
@@ -150,6 +155,15 @@ public class ProController {
 		return service.getOProList(vo);
 	}
 	
+	// 설비상태 수정
+	@PostMapping("/eqpUpdate")
+	@ResponseBody
+	public List<ProVO> proInUpdate(ProVO vo) {
+		 service.updateEqpSts(vo);
+		 return service.flowProgress(vo);
+	}
+
+	
 	// 공정목록 조회
 	@RequestMapping("/flowProgress")
 	@ResponseBody
@@ -157,12 +171,7 @@ public class ProController {
 		return service.flowProgress(vo);
 	}
 	
-	// 투입량 수정
-	@PostMapping("/proInUpdate")
-	@ResponseBody
-	public int proInUpdate(@RequestBody ProVO vo) {
-		return service.updateProInAmt(vo);
-	}
+		
 	
 	// 공정 실적 조회
 	@RequestMapping("/proResult")
