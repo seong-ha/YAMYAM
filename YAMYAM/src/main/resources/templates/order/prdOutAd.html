@@ -11,7 +11,7 @@
 #od-btn,#modalSaveBtn{
 	display: inline-block; margin: 0 5px; float: right;
 }
-#startpicker-input, #endpicker-input{
+#startpicker-input, #endpicker-input, #odCode, #prdName{
 text-align: center;
 }
 </style>
@@ -236,18 +236,19 @@ text-align: center;
 	----------------*/
 		grid.on('click',function(ev){
 			
-			let odCode = grid.getValue(ev.rowKey, 'prdCd');
+			let odCode = grid.getValue(ev.rowKey, 'odCd');
 			let prdName = grid.getValue(ev.rowKey, 'prdNm');
-			$('#odCode').val(odCd);
-			$('#prdName').val(prdNm);
+			let prdCd = grid.getValue(ev.rowKey, 'prdCd');
+			$('#odCode').val(odCode);
+			$('#prdName').val(prdName);
 			
-			let rowData = {odCode :'', prdName:'', prdLot:'', bamt :'', bdates : '', 
+			let rowData = {prdLot:'', bamt :'', bdates : '', 
 							podDate : '', edate : '', outEtc : ''};
 
 			$.ajax({
-				url : '/',
+				url : '/lotSListModal',
 				method: "GET",
-				data : {"odCd" : odCode},
+				data : {"odCd" : odCode, "prdCd" : prdCd},
 				contentType: 'application/json',
 				dataType : 'json',
 			}).then(res=>{
@@ -380,16 +381,6 @@ text-align: center;
 	    scrollY: true,
 	    columns: [
 	      {
-	        header: '주문 코드',
-	        align : 'center',
-	        name  : 'odCd'
-	      },
-	      {
-	        header: '제품명',
-	        align : 'center',
-	        name  : 'prdNm'
-	      },
-	      {
 	        header: '완제품LOT',
 	        align : 'center',
 	        name  : 'prdLot'
@@ -397,7 +388,12 @@ text-align: center;
 	      {
 	        header: '출고량',
 	        align : 'center',
-	        name  : 'bAmt'
+	        name  : 'bAmt',
+        	editor: 'text',
+			validation: {
+			     dataType: 'number',
+			     required: true
+			      }
 	      },
 	      {
 	        header: '출고 일자',
