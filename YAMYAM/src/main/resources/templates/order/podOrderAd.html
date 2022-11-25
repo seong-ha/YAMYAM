@@ -11,6 +11,9 @@
 #od-btn {
 	display: inline-block; margin: 0 5px; float: right;
 }
+#startpicker-input, #endpicker-input {
+text-align: center;
+}
 </style>
 </head>
 <body>
@@ -26,17 +29,17 @@
 	<tr>
 		<td>진행 상황</td>
 		<td>
-		  <input class="form-check-input" type="radio" name="flexRadioDefault" id="podAll" value="option1" checked>
+		  <input class="form-check-input" type="radio" name="flexRadioDefault" id="podAll" value="전체" checked>
 		  <label class="form-check-label" for="podAll">전체</label>
 		</td>
 	
 		<td>
-		  <input class="form-check-input" type="radio" name="flexRadioDefault" id="podNo" value="option2">
+		  <input class="form-check-input" type="radio" name="flexRadioDefault" id="podNo" value="미계획">
 		  <label class="form-check-label" for="podNo">미계획</label>
 		</td>
 		
 		<td>
-		  <input class="form-check-input" type="radio" name="flexRadioDefault" id="podIng" value="option3">
+		  <input class="form-check-input" type="radio" name="flexRadioDefault" id="podIng" value="계획완료">
 		  <label class="form-check-label" for="podIng">계획완료</label>
 		</td>
 
@@ -96,9 +99,13 @@
 	/*------------
 	// function
 	----------------*/
-	searchBtnHandler();
-	cancelBtnHandler();
-	deleteBtnHandler();
+	//getPodList();			// DB에서 생산요청목록 불러오기
+	
+	searchBtnHandler();		// 조회 버튼 핸들러
+	cancelBtnHandler();		// input 값 초기화 버튼
+	deleteBtnHandler();		// 삭제 버튼 핸들러
+	//SaveBtnHandler();		// 저장 버튼 핸들러
+	exportBtnHandler(); 	// 엑셀출력 버튼 핸들러
 	
 	let podListGrid = podListGridInit();
 	let orderModalGrid = orderGridInit();
@@ -111,7 +118,7 @@
 	
 	
 	/*------------
-	// 검색버튼 이벤트 핸들러
+	// 조회버튼 이벤트 핸들러
 	----------------*/
 	function searchBtnHandler(){
 		$('#searchBtn').on('click',function(){
@@ -197,11 +204,6 @@
 		      {
 		        header: '납기 일자',
 		        name: 'deDate',
-		        editor: 'datePicker',
-		        validation: {
-				     dataType: 'datePicker',
-				     required: true
-				      }
 		      },
 		      {
 		        header: '진행 상황',
@@ -327,16 +329,17 @@
 	/*------------
 	// 엑셀 내보내기
 	----------------*/
-   $('#exportBtn').on('click',function(){
-	   let options = {
-			     includeHeader : true,
-			     includeHiddenColumns : true,
-			     onlySelected : true,
-			     fileName: 'Pod Order List'
-			   };
-	 podListGrid.export('xlsx', options);
-   });
-	
+	function exportBtnHandler() {
+	   $('#exportBtn').on('click',function(){
+		   let options = {
+				     includeHeader : true,
+				     includeHiddenColumns : true,
+				     onlySelected : true,
+				     fileName: 'Pod Order List'
+				   };
+		 podListGrid.export('xlsx', options);
+	   });
+	 }
 </script>
 </div>
 </body>

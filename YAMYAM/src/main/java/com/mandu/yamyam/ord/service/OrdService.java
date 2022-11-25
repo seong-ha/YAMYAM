@@ -68,4 +68,18 @@ public interface OrdService {
 	// 출고 등록 리스트 삭제
 	public int deleteOutList(List<OrdVO> vo);
 	
+	
+	/*-----------------
+	// 완제품 반품 관리 Tab
+	-------------------*/
+	
+	
+	/*-----------------
+	// 생산 요청 관리 Tab
+	-------------------*/
+	// 생산 요청 관리 리스트 조회
+	public List<OrdVO> getPodList();
+	
+	// 생산 요청 관리 주문서 조건조회
+	public List<OrdVO> getPodDetailList(OrdVO vo);
 }
