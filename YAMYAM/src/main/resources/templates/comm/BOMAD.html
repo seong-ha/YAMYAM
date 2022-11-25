@@ -7,7 +7,7 @@
 
 	<br>
 	
-	<h2>BOM관리</h2>
+	<h3>BOM관리</h3>
 	
 	<hr>
 	
@@ -167,7 +167,7 @@
 		const grid = new tui.Grid({
 			el : document.getElementById('grid'),
 			scrollX : true,
-			scrollY : false,
+			scrollY : true,
 			bodyHeight : 500,
 			columns : [ {
 				header : 'No',
@@ -202,12 +202,9 @@
 		const grid2 = new tui.Grid({
 			el : document.getElementById('grid2'),
 			scrollX : true,
-			scrollY : false,
+			scrollY : true,
 			bodyHeight : 500,
-			columns : [ {
-				header : 'No',
-				name : 'bomNo'
-			}, {
+			columns : [{
 				header : '제품 코드',
 				name : 'prdCd'
 			}, {
@@ -221,10 +218,38 @@
 		});
 		
 		
-		//모달창 리프레시(모달창에 그리드 화면 띄울때 써야함!)
+		// 모달창 리프레시(모달창에 그리드 화면 띄울때 써야함!)
 	     exampleModal.addEventListener('shown.bs.modal', () => {
 	            grid2.refreshLayout(); //모달창 새로고침
-	       })
+	     })
+	     
+	     // BOM 정보 불러오기
+		$.ajax({
+			url : "ajax/selectBOM",
+			type : "get",
+			dataType: "json",
+			success : function(data){
+				console.log(data);
+				grid.resetData(data);
+			},
+			error : function(reject){
+				console.log(reject);
+			}
+		})
+		
+		// BOM 제품정보 모달 불러오기
+		$.ajax({
+			url : "ajax/selectModalBOM",
+			type : "get",
+			dataType: "json",
+			success : function(data){
+				console.log(data);
+				grid2.resetData(data);
+			},
+			error : function(reject){
+				console.log(reject);
+			}
+		})
 	       
 	    
     </script>

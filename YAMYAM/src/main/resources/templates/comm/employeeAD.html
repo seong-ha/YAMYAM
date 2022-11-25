@@ -7,7 +7,7 @@
 
 
 	<br>
-	<h2>직원관리</h2>
+	<h3>직원관리</h3>
 	<hr>
 	<br> <br>
 
@@ -55,14 +55,14 @@
 						  	<div class="mb-3 row">
 						    <label for="staticEmail" class="col-sm-3 col-form-label">비밀번호</label>
 						    <div class="col-sm-9">
-						      <input type="text" name="empPw" class="form-control" id="insertPw">
+						      <input type="password" name="empPw" class="form-control" id="insertPw">
 						    </div>
 						  </div>
 						  
 						  	<div class="mb-3 row">
 						    <label for="staticEmail" class="col-sm-3 col-form-label">비밀번호확인</label>
 						    <div class="col-sm-9">
-						      <input type="text" name="empPwcr" class="form-control" id="insertPwcr">
+						      <input type="password" name="empPwcr" class="form-control" id="insertPwcr">
 						    </div>
 						  </div>
 						  
@@ -347,7 +347,7 @@
 	    });
 	
 	
-		//회원 등록하기
+		// 회원 등록하기
 		
 		document.getElementById('insertBtn').addEventListener('click', function(){
 			sweetConfirm('C', function () {
@@ -408,8 +408,8 @@
 		 */
 		 
 		 updateId.value = rowData[0].empId;
-		 updatePw.value = rowData[0].empPw;
-		 updatePwcr.value = rowData[0].empPwcr;
+		 //updatePw.value = rowData[0].empPw;
+		 //updatePwcr.value = rowData[0].empPwcr;
 		 document.getElementById('updateEmpName').value = rowData[0].empNm;
 		 updateRole.value = rowData[0].empRole;
 		 });
@@ -469,8 +469,8 @@
 			
 			sweetConfirm('D', function () {
 				let data = grid.getCheckedRows(); 
-				// ajax 직원 정보 삭제
 				
+				// ajax 직원 정보 삭제
 				console.log(data);
 				
 				$.ajax({

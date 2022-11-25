@@ -15,17 +15,13 @@ width:80%;	display: inline;
 
 
 	<br>
-	<h2>자재 코드 관리</h2>
+	<h3>자재 코드 관리</h3>
 	<hr>
 
 	<br> <br> <br>
 
 	<div class="container">
 		<div class="row row-cols-2">
-			<div class="col"></div>
-
-			<div class="col"></div>
-
 			<div class="col-7">
 				<div id="grid"></div>
 			</div>
@@ -54,58 +50,32 @@ width:80%;	display: inline;
 					<!-- 히든값 보내는거 해봐야함 -->
 					<input type="hidden" name="mtrStd"  id="mtrStd">
 					<label class="col-sm-2">&nbsp;규격</label>
-					<span class="col-sm-4" style="width: 195px;" id="select-box"></span>
-					<label class="col-sm-2">작업단위</label>
-					<span class="col-sm-4" style="width: 185px;" id="select-box2"></span>
+					<span class="col-sm-4" style="width: 200px;" id="select-box"></span>
+					<input type="hidden" name="mtrUn" id="mtrUn">
+					<label class="col-sm-2">&nbsp;&nbsp;작업단위</label>
+					<span class="col-sm-4" style="width: 190px;" id="select-box2"></span>
 				</div>
 				<hr>
 				
 				<ul class="ul-style">
-					<li><label for="matNm">자재명</label><input id="matName" name="mtrNm" readonly>
+					<li><label for="matNm">거래처 코드</label><input id="actCode" name="actCd" readonly>
 						<img id="matNm" class="Magnifying-Glass-img" alt="image"
 							 data-bs-toggle="modal" data-bs-target="#exampleModal"
 							 src="../images/Magnifying_Glass.png" >
-						<input type="text" name="ACT_NM"readonly>
+						<input type="text" name="actNm" readonly>
 					</li>
 				</ul>
-				
-				<!-- Modal -->
-			      <div class="modal fade" id="exampleModal" tabindex="-1"
-			         aria-labelledby="exampleModalLabel" aria-hidden="true">
-			         <div class="modal-dialog">
-			            <div class="modal-content">
-			               <div class="modal-header">
-			                  <h4 class="modal-title" id="exampleModalLabel">거래처 코드 목록</h4>
-			                  <button type="button" class="btn-close" data-bs-dismiss="modal"
-			                     aria-label="Close"></button>
-			               </div>
-			               <div class="modal-body">
-			               <div id="actModalGrid"></div>
-			               <br>
-			               		<h4 align="center"><b>거래처 검색</b></h4>
-			               		<br>
-			               		
-			               		<div id="modalGrid1"></div>
-			               		
-			               		<br>
-			               		<div id="grid2"></div>
-			               			
-			               
-			               </div>
-			            </div>
-			         </div>
-			      </div>
-				
+			
 				<hr>
 
 				<div class="mb-3 row">
 					<label class="col-sm-2" style="width:100px">&nbsp;안전재고</label>&nbsp;
-					<span class="col-sm-4" style="width: 190px;"><input type="text" name="mtrSfamt"></span>
+					<span class="col-sm-4" style="width: 190px;"><input type="text" name="mtrSfamt" id="mtrSafeAmount"></span>
 				</div>
 				
 				<hr>
 					
-					<div align="right">
+				<div align="right">
 					<button type="button" class="btn btn-dark btn-sm">저장</button>&nbsp;
 					<input type="reset" class="btn btn-dark btn-sm" id="reset" name="reset">
 					</div>
@@ -113,18 +83,42 @@ width:80%;	display: inline;
 			</div>
 
 		</div>
-
-
 	</div>
 
-
+				
+<!-- Modal -->
+     <div class="modal fade" id="exampleModal" tabindex="-1"
+        aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+           <div class="modal-content">
+              <div class="modal-header">
+                 <h4 class="modal-title" id="exampleModalLabel">거래처 코드 목록</h4>
+                 <button type="button" class="btn-close" data-bs-dismiss="modal"
+                    aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+              <div id="actModalGrid"></div>
+              <br>
+              		<h4 align="center"><b>거래처 검색</b></h4>
+              		<br>
+              		
+              		<div id="modalGrid1"></div>
+              		
+              		<br>
+              		<div id="grid2"></div>
+              			
+              
+              </div>
+           </div>
+        </div>
+     </div>
 	<script>
 		
 		const grid = new tui.Grid({
 			el : document.getElementById('grid'),
 			bodyHeight : 550,
-			scrollX : true,
-			scrollY : false,
+			scrollX : false,
+			scrollY : true,
 			rowHeaders: ['rowNum'],
 			
 			columns : [ {
@@ -152,8 +146,8 @@ width:80%;	display: inline;
 		const grid2 = new tui.Grid({
 			el : document.getElementById('grid2'),
 			bodyHeight : 600,
-			scrollX : true,
-			scrollY : false,
+			scrollX : false,
+			scrollY : true,
 			rowHeaders: ['rowNum'],
 			columns : [ {
 				header : '거래처 코드',
@@ -176,53 +170,36 @@ width:80%;	display: inline;
 		var selectBox = new tui.SelectBox('#select-box', {
 			placeholder : '중량',
 			data : [ {
-				label : '10kg',
-				value : '10kg' // 코드 바꾸기
+				label : '1kg',
+				value : 'STD1' // 코드 바꾸기
 			}, {
-				label : '20kg',
-				value : '20kg'
+				label : 'STD2',
+				value : 'STD2'
 			}, {
-				label : '30kg',
-				value : '30kg'
+				label : 'STD5',
+				value : 'STD5'
 			}, {
-				label : '40kg',
-				value : '40kg'
+				label : 'STD10',
+				value : 'STD10'
 			}, {
-				label : '50kg',
-				value : '50kg'
+				label : 'STD13',
+				value : 'STD13'
 			}, {
-				label : '60kg',
-				value : '60kg'
-			}, {
-				label : '70kg',
-				value : '70kg'
-			}, {
-				label : '80kg',
-				value : '80kg'
-			}, {
-				label : '90kg',
-				value : '90kg'
-			}, {
-				label : '100kg',
-				value : '100kg'
-			} ],
+				label : 'STD20',
+				value : 'STD20'
+			}],
 			autofocus : true
 		});
 		
 		var selectBox2 = new tui.SelectBox('#select-box2', {
 			placeholder : '단위',
 			data : [ {
-				label : 'BOX',
-				value : 'BOX' // 코드 바꾸기
+				label : 'UNIT1',
+				value : 'UNIT1' // 코드 바꾸기
 			}, {
-				label : 'EA',
-				value : 'EA'
-			},
-			{
-				label : 'BUNDLE',
-				value : 'BUNDLE'
-			}
-			],
+				label : 'UNIT2',
+				value : 'UNIT2'
+			}],
 			autofocus : true
 		});
 		
@@ -253,8 +230,6 @@ width:80%;	display: inline;
 	            grid2.refreshLayout(); //모달창 새로고침
 	     })
 	     
-	     
-
 	      
 	     // 자재 코드 정보 불러오기
 	     
@@ -271,26 +246,40 @@ width:80%;	display: inline;
 			}
 		})
 		
-
-		// 거래처 검색 정보 불러오기
-	    
-/* 		$.ajax({
-			url : "ajax/selectAct",
+		// 자재 업체인 거래처 데이터만 가져와서 모달 grid에 resetData
+		
+		$.ajax({
+			url : "ajax/selectMtrModal",
 			type : "get",
 			dataType: "json",
 			success : function(data){
 				console.log(data);
-				grid.resetData(data);
+				grid2.resetData(data);
 			},
 			error : function(reject){
 				console.log(reject);
 			}
-		}) */
+		})
 		
-	     
-	     // 거래처 검색에서 데이터 가져오기
-	     
- 
+		// 자재 코드 칼럼 누르면 거기 정보가 나온다
+ 		
+		grid.on('click', function(ev){
+			let rowData = grid.getRow(ev.rowKey).mtrCd;
+			console.log(grid.getRow(ev.rowKey).mtrCd);
+			
+		// 클릭 후 자재 정보가 표시 됨
+		
+/* 		let rowData = {
+			mtrCd: document.getElementById('matCode').value,
+			mtrNm: document.getElementById('matName').value,
+			mtrStd: document.getElementById('mtrStd').value,
+			mtrUn: document.getElementById('mtrUn').value,
+			actCd: document.getElementById('actCode').value,
+			mtrSfamt: document.getElementById('mtrSafeAmount').value
+		}; */
+		
+		}) 
+		
 	</script>
 
 </div>
