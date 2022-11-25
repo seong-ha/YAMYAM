@@ -51,11 +51,23 @@ public class EqpRestController {
 	@GetMapping("/getUopList")
 	public List<UopVO> getUopList() {
 		return eqpService.getUopList();
-	};
+	}
+	
+	// 비가동 리스트 조건 조회
+	@PostMapping("/findUopList")
+	public List<UopVO> findUopList(UopVO uopVO) {
+		return eqpService.findUopList(uopVO);
+	}
 	
 	// 비가동 등록 및 수정
 	@PostMapping("/insertUpdateUop")
 	public int insertUpdateUop(UopVO uopVO) {
 		return eqpService.insertUpdateUop(uopVO);
+	}
+	
+	// 비가동 삭제
+	@PostMapping("/deleteUop")
+	public int deleteUop(UopVO uopVO) {
+		return eqpService.deleteUop(uopVO);
 	}
 }

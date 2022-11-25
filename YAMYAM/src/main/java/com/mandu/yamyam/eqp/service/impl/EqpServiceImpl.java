@@ -90,19 +90,33 @@ public class EqpServiceImpl implements EqpService {
 		return eqpMapper.getUopList();
 	}
 
-	// 비가동 등록
+	// 비가동 등록 및 수정
 	@Override
 	public int insertUpdateUop(UopVO uopVO) {
 		int insertResult = 0;
 		int updateResult = 10;
-		
-		if (uopVO.getUopCd() == null) {
-			insertResult += eqpMapper.insertUop(uopVO);
+
+		if (uopVO.getUopCd().equals("") || uopVO.getUopCd() == null) {
+			eqpMapper.insertUop(uopVO);
+			insertResult += uopVO.getResult();
 			return insertResult;
 		} else {
-			updateResult += eqpMapper.updateUop(uopVO);
+			eqpMapper.updateUop(uopVO);
+			updateResult += uopVO.getResult();
 			return	updateResult; 
 		}
+	}
+
+	// 비가동 삭제
+	@Override
+	public int deleteUop(UopVO uopVO) {
+		return eqpMapper.deleteUop(uopVO);
+	}
+
+	// 비가동 리스트 조건 조회
+	@Override
+	public List<UopVO> findUopList(UopVO uopVO) {
+		return eqpMapper.findUopList(uopVO);
 	}
 
 }

@@ -45,11 +45,11 @@ public class EqpInsertUpdateController {
                 long size = multi.getSize();
                 String saveFileName = genSaveFileName(extName);
                 
-                System.out.println("uploadpath : " + uploadpath);
-                System.out.println("originFilename : " + originFilename);
-                System.out.println("extensionName : " + extName);
-                System.out.println("size : " + size);
-                System.out.println("saveFileName : " + saveFileName);
+//                System.out.println("uploadpath : " + uploadpath);
+//                System.out.println("originFilename : " + originFilename);
+//                System.out.println("extensionName : " + extName);
+//                System.out.println("size : " + size);
+//                System.out.println("saveFileName : " + saveFileName);
             	
                 File file = new File(uploadpath, saveFileName);
                 multi.transferTo(file);

@@ -39,9 +39,15 @@ public interface EqpMapper {
 	// 비가동 리스트 조회
 	List<UopVO> getUopList();
 	
+	// 비가동 리스트 조건 조회
+	List<UopVO> findUopList(UopVO uopVO);
+	
 	// 비가동 등록
 	int insertUop(UopVO uopVO);
 	
-	// 비가동 등록
+	// 비가동 수정
 	int updateUop(UopVO uopVO);
+	
+	// 비가동 삭제
+	int deleteUop(UopVO uopVO);
 }
