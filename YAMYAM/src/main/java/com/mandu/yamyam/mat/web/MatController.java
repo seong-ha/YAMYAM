@@ -233,34 +233,79 @@ public class MatController {
 		return service.needMtrLotList(vo);
 	}
 	
+	// 출고처리 - 재고 마이너스 업데이트
+	@PostMapping("/matOut")
+	@ResponseBody
+	public int updateOutOd(@RequestBody List<MatVO> list) {
+		return service.updateOutOd(list);
+	}
+	
+	// 출고처리 - 완료로 업데이트
+	@PostMapping("/updateOutSts")
+	@ResponseBody
+	public int updateOutSts(@RequestBody MatVO vo) {
+		return service.updateOutSts(vo);
+	}
 	
 	//======================
 	// 6) 자재 입출고 조회
 	//======================
 	@RequestMapping("/matInOut")
 	public String matInOut(Model model) {
-		//model.addAttribute("matInList", service.matInAllList());// 입고 전체 조회 넣어야 함 matInAllList
-		//model.addAttribute("outOdList", service.matOutAllList());	// 출고전체조회
+		model.addAttribute("matInList", service.inOutAllList());    // 입고 전체조회
+		model.addAttribute("matOutList", service.outInAllList());    // 출고 전체조회
 		model.addAttribute("matList", service.matList());			// 자재목록
 		model.addAttribute("actList", service.actList());			// 업체목록
-		model.addAttribute("empList", service.empLookUp());			// 직원목록
 		return "mat/matInOut";
 	}
+	
+	// 입고 조건 조회
+	@PostMapping("/searchInOutList")
+	@ResponseBody
+	public List<Map<String, Object>> selectInOutAllList(@RequestBody MatVO vo){
+		return service.selectInOutAllList(vo);
+	};
+	
+	// 출고 조건 조회
+	@PostMapping("/searchOutInList")
+	@ResponseBody
+	public List<Map<String, Object>> selectOutInAllList(@RequestBody MatVO vo){
+		return service.selectOutInAllList(vo);
+	};
 	
 	//======================
 	// 7) 자재 재고 조회
 	//======================
 	@RequestMapping("/matStockLookup")
 	public String matStockLookup(Model model) {
+		model.addAttribute("matStList", service.matStockList());	// 재고 전체조회
+		model.addAttribute("holdAmt", service.getHoldAmt());		// 홀딩수량
 		model.addAttribute("matList", service.matList());			// 자재목록
 		model.addAttribute("actList", service.actList());			// 업체목록
 		return "mat/matStockLookup";
 	}
 	
+	@PostMapping("/matStockLookup")
+	@ResponseBody
+	public List<Map<String, Object>> matStockSelectList(@RequestBody MatVO vo) {
+		return service.matStockSelectList(vo);
+	}
+	
+	//======================
+	// 8) 자재 반품 조회
+	//======================
 	@RequestMapping("/matReturn")
 	public String matReturn(Model model) {
+		model.addAttribute("matList", service.matList());			// 자재목록
+		model.addAttribute("actList", service.actList());			// 업체목록
 		return "mat/matReturn";
 	}
+	
+	@PostMapping("/matReturn")
+	@ResponseBody
+	public List<Map<String, Object>> selectReList(@RequestBody MatVO vo){
+		return service.selectReList(vo);
+	};
 	
 	@RequestMapping("/matReturnLookup")
 	public String matReturnLookup(Model model) {
