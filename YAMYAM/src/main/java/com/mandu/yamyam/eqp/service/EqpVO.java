@@ -28,4 +28,12 @@ public class EqpVO {
 	private String eqpType;
 	private int highTemp;
 	private int lowTemp;
+	
+	// 가동여부 상세공통
+	private String commdCd;
+	private String commdNm;
+	
+	// 설비구분 상세공통
+	private String eqpTypeCd;
+	private String eqpTypeNm;
 }

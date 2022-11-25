@@ -14,14 +14,17 @@ public class EqpController {
 	
 	@RequestMapping("/eqpAd")
 	public String eqpAd(Model model) {
+		// 관리탭 입력폼 설비업체리스트 option태그
 		model.addAttribute("eqpActList", eqpService.getEqpActList());
-		// 가동비가동 가져오기
+		// 관리탭 입력폼 설비가동여부상태코드 option태그
+		model.addAttribute("eqpStsList", eqpService.getEqpStsList());
 		return "eqp/eqpAd";
 	}
 	
 
 	@RequestMapping("/uopAd")
-	public String uopAd() {
+	public String uopAd(Model model) {
+		model.addAttribute("uopTypeList", eqpService.getUopTypeList());
 		return "eqp/uopAd";
 	}
 	
@@ -30,4 +33,6 @@ public class EqpController {
 		// 설비구분 데이터들 가져와서 model로 내려주기
 		return "eqp/eqpChkAd";
 	}
+	
+	
 }

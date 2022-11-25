@@ -47,41 +47,43 @@
 		<hr>
 		
 		<div class="row">
-			<div class="col-5">
+			<div class="col-4">
 				<h3>설비목록</h3>
 				<div id="selectEqp"></div>
 			</div>
-			<div class="col-7">
+			<div class="col-8">
 				<h3>비가동 이력</h3>
-				<ul class="ul-style">
-					<li>
-						<label for="searchEqpCd">설비코드</label>
-						<input type="text" id="searchEqpCd" name="eqpCd" readonly>
-						<input type="text" id="searchEqpNm" name="eqpNm" readonly>
-					</li>
-
-					<!-- Date Picker -->
-					<li>
-						<label for="startpicker-input">비가동시작일</label>
-						<div class="tui-datepicker-input tui-datetime-input tui-has-focus">
-							<input id="startpicker-input" type="text" aria-label="Date">
-							<span class="tui-ico-date"></span>
-							<div id="startpicker-container" style="margin-left: -1px;"></div>
-						</div>
-						<span>-</span>
-						<div class="tui-datepicker-input tui-datetime-input tui-has-focus">
-							<input id="endpicker-input" type="text" aria-label="Date">
-							<span class="tui-ico-date"></span>
-							<div id="endpicker-container" style="margin-left: -1px;"></div>
-						</div>
-						<button id="uopRecordSearch" class="btn btn-dark btn-sm">조회</button>
-						<button id="clearSearchBox" class="btn btn-dark btn-sm">초기화</button>
-					</li>
-				</ul>
-				<div id="selectUop"></div>
+				<form action="" onsubmit="return false" id="searchForm">
+					<ul class="ul-style">
+						<li>
+							<label for="searchEqpCd">설비코드</label>
+							<input type="text" id="searchEqpCd" name="eqpCd" readonly>
+							<input type="text" id="searchEqpNm" name="eqpNm" readonly>
+						</li>
+	
+						<!-- Date Picker -->
+						<li>
+							<label for="startpicker-input">비가동시작일</label>
+							<div class="tui-datepicker-input tui-datetime-input tui-has-focus">
+								<input id="startpicker-input" name="startDate" type="text" aria-label="Date">
+								<span class="tui-ico-date"></span>
+								<div id="startpicker-container" style="margin-left: -1px;"></div>
+							</div>
+							<span>-</span>
+							<div class="tui-datepicker-input tui-datetime-input tui-has-focus">
+								<input id="endpicker-input" name="endDate" type="text" aria-label="Date">
+								<span class="tui-ico-date"></span>
+								<div id="endpicker-container" style="margin-left: -1px;"></div>
+							</div>
+							<button id="uopRecordSearch" class="btn btn-dark btn-sm">조회</button>
+							<button id="clearSearchBox" class="btn btn-dark btn-sm">초기화</button>
+						</li>
+					</ul>
+				</form>
+				<div id="selectUop" style="margin-bottom: 18px"></div>
 				<br>
 				<h3>비가동 등록</h3>
-				<form action="">
+				<form action="" onsubmit="return false" id="insertUpdateform">
 					<table>
 						<tr>
 							<th>설비코드</th>
@@ -94,19 +96,17 @@
 								<input type="text" id="eqpNm" name="eqpNm" readonly>
 							</td>
 							<td></td>
-							<th>비가동번호</th>
+							<th>비가동코드</th>
 							<td>
-								<input type="text" id="uopNo" name="uopNo" readonly>
+								<input type="text" id="uopCd" name="uopCd" readonly>
 							</td>
 						</tr>
 						<tr>
-							<th>비가동명</th>
+							<th>비가동구분</th>
 							<td>
-								<select name="uopNm" id="uopNm" class="form-select-sm">
+								<select name="uopType" id="uopType" class="form-select-sm">
 									<option class="form-select form-select-sm" value="" disabled selected>비가동명 선택</option>
-							        <option value="수리">수리</option>
-							        <option value="점검">점검</option>
-							        <option value="기타">기타</option>
+							        <option th:each="uopType : ${uopTypeList}" th:value="${uopType.commdCd}" th:text="${uopType.commdNm}">
 							    </select>
 							</td>
 							<td></td>
@@ -121,17 +121,18 @@
 						<tr>
 							<th colspan="8">
 								비가동시작시간&nbsp;
-								<input type="datetime-local" id="uopStime" name="uopStime">
-								<button type="button" class="btn btn-success btn-sm" id="start" style="margin-right: 40px">시작</button>
+								<input type="datetime-local" id="uopStime" name="uopStime" readonly>
+								<button type="button" class="btn btn-success btn-sm" id="start" style="margin-right: 40px" disabled>시작</button>
 								비가동종료시간&nbsp;
-								<input type="datetime-local" id="uopEtime" name="uopEtime">
-								<button type="button" class="btn btn-success btn-sm" id="end">종료</button>
+								<input type="datetime-local" id="uopEtime" name="uopEtime" readonly>
+								<button type="button" class="btn btn-success btn-sm" id="end" disabled>종료</button>
 							</th>
 						</tr>
 					</table>
 					
 					<!-- 등록 버튼 누르면 서버에서 전체VO로 받아서 서비스단에서 uopEtime이 없으면 insert. uopEtime이 있으면 update -->
 					<button type="button" class="btn btn-dark btn-sm" id="uopInsertUpdate">비가동 등록/해제</button>
+					<button type="button" class="btn btn-dark btn-sm" id="uopDelete">삭제</button>
 					<button type="reset" class="btn btn-dark btn-sm" id="reset">초기화</button>
 				</form>
 			</div>
@@ -140,6 +141,8 @@
 		<script>
 			let selectEqpGrid = selectEqpGridInit();	// 설비목록 grid 초기화
 			let selectUopGrid = selectUopGridInit();	// 비가동 이력 grid 초기화
+			getEqpGridData();							// 설비 목록 초기화
+			getUopGridData();							// 비가동 목록 데이터 초기화
 			
 			datePickerInit();							// 비가돟 이력쪽 datepicker
 			uopRecordSearch();							// 비가동 이력쪽 조회버튼 누르면 결과값 가져와서 selectUopGrid에 뿌려주기
@@ -147,7 +150,9 @@
 			
 			uopStartBtn();								// 비가동 폼의 비가동시작시간버튼 입력 이벤트
 			uopEndBtn();								// 비가동 폼의 비가동종료시간버튼 입력 이벤트
-			
+			uopEndBtnUnact();							// 비가동 폼의 비가동종료시간버튼 활성화 이벤트
+			uopInsertUpdateBtn();							// 비가동 등록/해제 버튼 이벤트(비가동 등록 및 수정)
+			uopDeleteBtn();								// 비가동 이력 삭제
 			
 			// toastr
 			toastr.options = {
@@ -168,20 +173,6 @@
 				let selectEqpGrid = new tui.Grid({
 				      el: document.getElementById('selectEqp'),
 				      bodyHeight: 600, // 스크롤
-				      data: [
-				    	{
-				    		eqpCd: 'eqp-20221104-001',
-				    		eqpNm: '만두소 배합기1',
-				    		eqpType: '대기',
-				    		eqpSts: '가동'
-					    },
-				    	{
-				    		eqpCd: 'eqp-20221104-002',
-				    		eqpNm: '만두소 배합기2',
-				    		eqpType: '대기',
-				    		eqpSts: '가동'
-					    }
-					  ],
 				      rowHeaders: ['rowNum'],
 				      scrollX: false,
 				      scrollY: true,
@@ -223,20 +214,31 @@
 				
 				selectEqpGrid.on('click', function (ev) {
 					let clickedRow = selectEqpGrid.getRow(ev.rowKey);
-	
+					
+					// 시작버튼 활성화 및 종료버튼 비활성화
+					document.getElementById('start').removeAttribute('disabled');
+					document.getElementById('end').setAttribute('disabled', 'true');
+					
+					// 등록폼 비가동구분, 작업내용 활성화
+					document.getElementById('uopType').removeAttribute('disabled');
+					document.getElementById('uopInfo').removeAttribute('readonly');
+					
 					// 비가동 등록폼쪽
-					if (clickedRow.eqpSts != 'N') {
+					if (clickedRow.eqpSts == '대기') {
 						// 이전에 적혀있는것들 지워주고
 						document.getElementById('reset').click();
 						
 						document.getElementById('eqpCd').value = clickedRow.eqpCd;
 						document.getElementById('eqpNm').value = clickedRow.eqpNm;
+					} else if (clickedRow.eqpSts == '비가동') {
+						// ajax
+					} else {
+						document.getElementById('reset').click();
 					}
 					
 					// 비가동 이력 검색쪽
 					document.getElementById('searchEqpCd').value = clickedRow.eqpCd;
 					document.getElementById('searchEqpNm').value = clickedRow.eqpNm;
-					
 				});
 				
 				return selectEqpGrid;
@@ -247,33 +249,13 @@
 				let selectUopGrid = new tui.Grid({
 				      el: document.getElementById('selectUop'),
 				      bodyHeight: 200, // 스크롤
-				      data: [
-				    	{
-				    		uopNo: '1',
-				    		eqpCd: 'eqp-20221104-001',
-				    		eqpNm: '만두소 배합기1',
-				    		uopNm: '수리',
-				    		uopInfo: '부품교체',
-				    		uopStime: '2022-11-17 22:22',
-				    		uopEtime: ''
-					    },
-				    	{
-				    		uopNo: '2',
-				    		eqpCd: 'eqp-20221104-002',
-				    		eqpNm: '만두소 배합기2',
-				    		uopNm: '점검',
-				    		uopInfo: '부품교체',
-				    		uopStime: '2022-11-17 22:22',
-				    		uopEtime: '2022-11-17 22:23'
-					    }
-					  ],
 				      rowHeaders: ['rowNum'],
 				      scrollX: false,
 				      scrollY: true,
 				      columns: [
 				        {
-				          header: '비가동번호',
-				          name: 'uopNo',
+				          header: '비가동코드',
+				          name: 'uopCd',
 					      sortable: true,
 					      align: 'center'
 				        },
@@ -290,13 +272,21 @@
 					      align: 'left'
 				        },
 				        {
-				          header: '비가동명',
-				          name: 'uopNm',
+				          header: '비가동구분코드',
+				          name: 'uopType',
 					      align: 'left',
 					      filter: {
-					    	  type: 'select'
+					    	  type: 'center'
 					      }
 				        },
+				        {
+					          header: '비가동구분',
+					          name: 'uopTypeNm',
+						      align: 'left',
+						      filter: {
+						    	  type: 'center'
+						      }
+					        },
 				        {
 				          header: '작업내용',
 				          name: 'uopInfo',
@@ -321,18 +311,28 @@
 				--------------- */
 				selectUopGrid.on('click', function (ev) {
 					document.getElementById('reset').click();
-					
+					document.getElementById('end').setAttribute('disabled', 'true');
+					document.getElementById('start').setAttribute('disabled', 'true');
 					let clickedRow = selectUopGrid.getRow(ev.rowKey);
+					
+					document.getElementById('uopType').removeAttribute('disabled');
+					document.getElementById('uopInfo').removeAttribute('readonly');
 					
 					if (clickedRow.uopEtime == '' || clickedRow.uopEtime == null) {
 						// 이전에 적혀있는것들 지워주고
 						
-						document.getElementById('uopNo').value = clickedRow.uopNo;
+						document.getElementById('uopCd').value = clickedRow.uopCd;
 						document.getElementById('eqpCd').value = clickedRow.eqpCd;
 						document.getElementById('eqpNm').value = clickedRow.eqpNm;
-						document.getElementById('uopNm').value = clickedRow.uopNm;
+						document.getElementById('uopType').value = clickedRow.uopType;
+						document.getElementById('uopType').setAttribute('disabled', 'true');
 						document.getElementById('uopInfo').value = clickedRow.uopInfo;
+						document.getElementById('uopInfo').setAttribute('readonly', 'true');
 						document.getElementById('uopStime').value = clickedRow.uopStime;
+						
+						document.getElementById('uopCd').click();
+					} else {
+						document.getElementById('uopCd').value = clickedRow.uopCd;
 					}
 				});
 				
@@ -350,19 +350,63 @@
 			}
 			
 			
+			/* ---------------
+			설비 목록 초기화
+			--------------- */
+			function getEqpGridData() {
+				$.ajax({
+					url:'/getEqpList',
+					dataType: 'json',
+					success: function (data) {
+						selectEqpGrid.resetData(data);
+					},
+					error: function (reject) {
+						console.log(reject);
+					}
+				});
+			}
+			
+			
+			/*------------
+			비가동 목록 데이터 초기화
+			----------------*/
+			function getUopGridData() {
+				$.ajax({
+					url: '/getUopList',
+					dataType: "json",
+					success: function (data) {
+						selectUopGrid.resetData(data);
+					},
+					error: function (reject) {
+						console.log(reject);
+					}
+				});
+			}
+			
+			
 			
 			/* ---------------
 			비가동 이력쪽 조회버튼 누르면 결과값 가져와서 selectUopGrid에 뿌려주기
 			--------------- */
 			function uopRecordSearch() {
 				document.getElementById('uopRecordSearch').addEventListener('click', function () {
-					let eqpCd = document.getElementById('searchEqpCd').value;
-					let startDay = document.getElementById('startpicker-input').value;
-					let endDay = document.getElementById('startpicker-input').value;
+					let form = document.getElementById('searchForm');
+					let formData = new FormData(form);
 					
-					console.log(eqpCd, startDay, endDay);
-					
-					
+					$.ajax({
+						url:'/findUopList',
+						type : "post",
+			            processData : false,
+			            contentType : false,
+			            data: formData,
+						success: function (data) {
+							document.getElementById('reset').click();
+							selectUopGrid.resetData(data);
+						},
+						error: function (reject) {
+							console.log(reject);
+						}
+					});
 					// ajax로 해당 설비의 시작일과 마지막일을 들고가서 결과값 가져온 뒤에 selectUopGrid에 resetData()해준다.
 				});
 			}
@@ -379,6 +423,8 @@
 					
 					document.getElementById('startpicker-input').value = today;
 					document.getElementById('endpicker-input').value = today;
+					
+					getUopGridData();
 				});
 			}
 			
@@ -390,7 +436,6 @@
 			function uopStartBtn() {
 				document.getElementById('start').addEventListener('click', function () {
 					
-					console.log('2017-06-01T08:30');
 					let date = new Date();
 					
 					let year = date.getFullYear() 
@@ -401,7 +446,7 @@
 					
 					date = year + '-' + month + '-' + day + ' ' + hour + ':' + minute;
 					
-					document.getElementById('UOP_STIME').value = date;
+					document.getElementById('uopStime').value = date;
 				});
 			}
 			
@@ -412,12 +457,6 @@
 			--------------- */
 			function uopEndBtn() {
 				document.getElementById('end').addEventListener('click', function () {
-					
-					if (document.getElementById('uopStime').value == '' || document.getElementById('uopStime').value == null) {
-						alert('시작버튼을 눌러서 시작시간부터 입력해주세요');
-						return;
-					}
-					
 					let date = new Date();
 					
 					let year = date.getFullYear() 
@@ -435,34 +474,112 @@
 			
 			
 			/* ---------------
+			비가동 폼의 비가동종료시간버튼 비활성화 이벤트
+			--------------- */
+			function uopEndBtnUnact() {
+				document.getElementById('uopCd').addEventListener('click', function () {
+					if (document.getElementById('uopCd').value != '' || document.getElementById('uopCd').value != null ) {
+						document.getElementById('end').removeAttribute('disabled');
+						document.getElementById('start').setAttribute('disabled', 'true');
+					} else {
+						document.getElementById('start').removeAttribute('disabled');
+						document.getElementById('end').setAttribute('disabled', 'true');
+					}
+				})
+				
+			}
+			
+			/* ---------------
 			비가동 등록/해제 버튼 누를시 종료시간이 없으면 insert, 있으면 update
 			--------------- */
-			function uopEndBtn() {
+			function uopInsertUpdateBtn() {
 				document.getElementById('uopInsertUpdate').addEventListener('click', function () {
+					let form = document.getElementById('insertUpdateform');
+					let formData = new FormData(form);
 					
-					// 종료시간 없으면 insert ajax
-					/*
-					sweetConfirm('', function () {
-						// ajax success
-						toastr.success('정상적으로 등록되었습니다.');
-						document.getElementById('reset').click();
-						// ajax fail
-						toastr.error('등록에 실패했습니다.');  
-					});
-					*/
+					for (let key of formData.keys()) {
+						console.log(key, ":", formData.get(key));
+					}
 					
-					// 종료시간 있으면 update ajax
-					/*
-						sweetConfirm('', function () {
-						// ajax success
-						toastr.success('정상적으로 수정되었습니다.');
-						selectEqpGrid.removeCheckedRows();
-						document.getElementById('reset').click();
-						// ajax fail
-						toastr.error('수정에 실패했습니다.');  
+					
+					let dmlType = 'U';
+					if (document.getElementById('uopCd').value == ''
+							|| document.getElementById('uopCd').value == null) {
+						dmlType = 'C';
+					}
+					
+					sweetConfirm(dmlType, function () {
+						$.ajax({
+							url:'/insertUpdateUop',
+							type : "post",
+				            processData : false,
+				            contentType : false,
+				            data: formData,
+							success: function (data) {
+								console.log(typeof data, data);
+								if (data == 0) {
+									toastr.error('등록에 실패했습니다.');
+								} else if (0 < data && data < 10) {
+									toastr.success('정상적으로 등록되었습니다.');	
+								} else if (data == 10) {
+									toastr.error('수정에 실패했습니다.');
+								} else {
+									toastr.success('정상적으로 수정되었습니다.');
+								}
+								
+								document.getElementById('reset').click();
+								document.getElementById('uopType').removeAttribute('disabled');
+								document.getElementById('uopInfo').removeAttribute('readonly');
+								getEqpGridData();	// resetData
+								getUopGridData();
+							},
+							error: function (reject) {
+								console.log(reject);
+							}
+						});
+						  
 					});
-					*/
+					
+					
 				});
+			}
+			
+			
+			/* ---------------
+			비가동 삭제버튼
+			--------------- */
+			function uopDeleteBtn() {
+				document.getElementById('uopDelete').addEventListener('click', function () {
+					if (document.getElementById('uopCd').value != '' || document.getElementById('uopCd').value != null) {
+						let form = document.getElementById('insertUpdateform');
+						let formData = new FormData(form);
+						
+						sweetConfirm('D', function () {
+							$.ajax({
+								url:'/deleteUop',
+								type : "post",
+					            processData : false,
+					            contentType : false,
+					            data: formData,
+								success: function (data) {
+									if (data > 0) {
+										toastr.success('정상적으로에 삭제되었습니다.');
+									} else {
+										toastr.error('삭제에 실패했습니다.');
+									}
+									
+									document.getElementById('reset').click();
+									getEqpGridData();	// resetData
+									getUopGridData();
+								},
+								error: function (reject) {
+									console.log(reject);
+								}
+							});
+							  
+						});	
+					}
+				})
 			}
 		
 		</script>

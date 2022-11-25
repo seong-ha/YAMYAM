@@ -14,7 +14,7 @@
 		height: 230px;
 	}
 	
-	#eqpTable th {
+	#eqpTable .th {
 		width: 90px;
 	}
 	
@@ -32,6 +32,11 @@
 		border-bottom: 1px #C9BABA solid;
 		border-top: 1px #C9BABA solid;
 	}
+	
+	select option[value=""][disabled] {
+		display: none;
+	}
+	
 </style>
 </head>
 
@@ -69,7 +74,7 @@
 									<label for="eName" style="margin-left:20px; margin-right:20px;">설비명</label>
 									<input type="text" name="eqpNm" id="searchedEqpNm">
 									<button type="button" class="btn btn-dark btn-sm" id="searchBtn">검색</button>
-									<button type="reset" class="btn btn-dark btn-sm">초기화</button>
+									<button type="reset" class="btn btn-dark btn-sm" id="resetFilter">초기화</button>
 								</form>
 								<button type="button" class="btn btn-dark btn-sm me-md-2" style="float:right" id="deleteBtn">삭제</button>
 							</li>
@@ -83,7 +88,7 @@
 				<!-- 관리탭 본문 start -->
 				<div class="tab-pane" id="manage" role="tabpanel"
 					aria-labelledby="manage-tab">
-					<form action="#">
+					<form action="#" id="form">
 						<div style="margin: 15px;">
 							<div class="d-md-flex justify-content-md-end">
 								<button type="button" class="btn btn-dark btn-sm me-md-2" data-bs-toggle="modal"
@@ -99,62 +104,71 @@
 								<div class="col-9">
 									<table id="eqpTable">
 										<tr>
-											<th>설비코드</th>
+											<th class="th">설비코드</th>
 											<td>
 												<input type="text" id="eqpCd" name="eqpCd" readonly>
 											</td>
-											<th>업체코드</th>
+											<th class="th">설비업체</th>
 											<td>
 												<select class="form-select form-select-sm" name="actCd" id="actCd" style="width:200px">
+													<option value="" disabled selected>설비업체선택</option>
 											        <option th:each="act : ${eqpActList}" th:value="${act.actCd}" th:text="${act.actNm}">
 											    </select>
 											</td>
-											<th>가동여부</th>
+											<th class="th">가동여부</th>
 											<td>
 								  			    <select class="form-select form-select-sm" name="eqpSts" id="eqpSts">
-											        <option value="가동">가동</option>
-											        <option value="비가동">비가동</option>
+								  			    	<option value="" disabled selected>가동여부선택</option>
+								  			    	<option th:each="sts : ${eqpStsList}" th:value="${sts.commdCd}" th:text="${sts.commdNm}">
 											    </select>
 											</td>
 										</tr>
 										<tr>
-											<th>설비명</th>
+											<th class="th">설비명</th>
 											<td>
 												<input type="text" id="eqpNm" name="eqpNm">
 											</td>
-											<th>제작일자</th>
+											<th class="th">제작일자</th>
 											<td>
-												<input type="text" id="mkDate" name="mkDate">
+												<div class="tui-datepicker-input tui-datetime-input tui-has-focus">
+													<input type="text" id="datepicker-input1" name="mkDate" aria-label="Date-Time">
+													<span class="tui-ico-date"></span>
+												</div>
+												<div id="wrapper1"></div>
 											</td>
-											<th>UPH</th>
+											<th class="th">UPH</th>
 											<td>
-												<input type="text" id="uph" name="uph">
+												<input type="number" id="uph" name="uph">
 											</td>
 										</tr>
 										<tr>
-											<th>모델명</th>
+											<th class="th">모델명</th>
 											<td>
 												<input type="text" id="mdNm" name="mdNm">
 											</td>
-											<th>구매일자</th>
+											<th class="th">구매일자</th>
 											<td>
-												<input type="text" id="buyDate" name="buyDate">
+												<div class="tui-datepicker-input tui-datetime-input tui-has-focus">
+													<input type="text" id="datepicker-input2" name="buyDate" aria-label="Date-Time">
+													<span class="tui-ico-date"></span>
+												</div>
+												<div id="wrapper2"></div>
 											</td>
-											<th>온도</th>
+											<th class="th">온도</th>
 											<td>
-												<input type="text" id="highTemp" name="highTemp" style="margin-right: 0; width: 90px;"> - 
-												<input type="text" id="lowTemp" name="lowTemp" style="width: 90px; margin-right: 0;"> ℃
+												<input type="number" id="lowTemp" name="lowTemp" style="width: 90px; margin-right: 0;"> -
+												<input type="number" id="highTemp" name="highTemp" style="margin-right: 0; width: 90px;"> ℃ 
 											</td>
 										</tr>
 										<tr>
-											<th>점검주기</th>
+											<th class="th">점검주기</th>
 											<td>
-												<input type="text" id="chkCycle" name="chkCycle">
+												<input type="number" id="chkCycle" name="chkCycle">
 											</td>
-											<th>설비구분</th>
+											<th class="th">설비구분</th>
 											<td colspan="1">
 												<!-- 설비구분 공통상세코드 및 코드명을 name과 id에 넣어주기 -->
-												<input type="text" id="eqpTypeCd" name="eqpTypeCd" style="margin-right: 0;" readonly>
+												<input type="text" id="eqpTypeCd" name="eqpType" style="margin-right: 0;" readonly>
 												<img class="Magnifying-Glass-img" alt="image" data-bs-toggle="modal"
 													data-bs-target="#eqpTypeModal" src="../images/Magnifying_Glass.png">
 												<input type="text" id="eqpTypeNm" name="eqpTypeNm" readonly>
@@ -164,9 +178,9 @@
 								</div>
 								<div class="col-3">
 									<div id="imgDiv" width=" 300px" height="300px">
-										<img id="imgTag" name="imgTag" alt="설비사진" src="">
+										<img id="imgTag" name="imgTag" alt="설비사진" src="" width=" 300px" height="300px">
 									</div>
-									<input type="file" id="img" name="img">
+									<input type="file" id="img" name="multi">
 								</div>
 							</div>
 							<!-- 테이블과 사진 배치 end -->
@@ -196,13 +210,13 @@
 			</div>
 		</div>
 		
-		<!-- 설비목록 modal -->
+		<!-- 설비업체 modal -->
 		<div class="modal" id="actListModal" tabindex="-1"
 			aria-labelledby="#actListModalLabel" aria-hidden="true">
 			<div class="modal-dialog modal-dialog-centered">
 				<div class="modal-content">
 					<div class="modal-header">
-						<h5 class="modal-title" id="actListModalLabel">설비 목록</h5>
+						<h5 class="modal-title" id="actListModalLabel">설비업체 목록</h5>
 						<button type="button" class="btn-close" data-bs-dismiss="modal"
 							aria-label="Close"></button>
 					</div>
@@ -230,22 +244,27 @@
 				</div>
 			</div>
 		</div>
+		
 		<script type="text/javascript">
 			let selectEqpGrid = selectTabInit(); 		// 조회탭 그리드 초기화
+			getSelectEqpData();							// 조회탭 그리드 정보 초기화
 			let eqpListModalGrid = eqpListModalInit();	// 관리탭 설비목록 모달 그리드 초기화
+			getEqpListModalData();						// 설비 목록 정보 가져오기
 			let eqpTypeModalGrid = eqpTypeModalInit();	// 관리탭 설비구분 모달 그리드 초기화
 			
+			tabBtnHandler();							// 조회탭 버튼 클릭 이벤트(정보최신화 및 refresh)
 			searchBtn();								// 조회탭 검색버튼
+			searchResetBtn();							// 조회탭 검색 초기화 버튼
 			deleteBtn();								// 조회탭 선택 삭제 버튼
 			
 			eqpTypeSelect();							// 관리탭 설비구분 선택 모달창 refresh
-			eqpListSelect();							// 관리탭 설비목록 모달 조회 
+			eqpListSelect();							// 관리탭 설비목록 모달 시 refresh 
 			insertUpdateBtn();							// 관리탭 form태그 내용으로 insert OR update 하는 버튼
-			eqpTypeInsertInput();						// 관리탭 설비구분 돋보기 모달에서 하나 클릭시, 설비구분 input태그에 값 넣어주고 모달창 닫기
-			eqpListInsertInput();						// 관리탭 설비목록 모달에서 하나 클릭시, 설비전체 input태그에 값 넣어주고 모달창 닫기
-			inputImgInteract();							// 관리탭 input#IMG에 값 들어오면 img태그 만들어서 사진 나오는 이벤트
 			imgTagReset();								// 관리탭 초기화 버튼 눌렀을때 img태그 src도 같이 초기화
-			
+			previewFile();								// input file change 이벤트 시 사진미리보기
+			pickerInit('#wrapper1', '#datepicker-input1');	// 구매날짜 datepicker
+			pickerInit('#wrapper2', '#datepicker-input2');  // 제작날짜 datepicker
+			reset.click();									// 등록폼 지우기
 			
 			
 			// toastr
@@ -257,9 +276,6 @@
 				    "extendedTimeOut" : 1500, 
 				    "timeOut" : 2500
 			}
-			
-			
-			
 			
 			/* ---------------
 			조회탭 그리드
@@ -296,7 +312,7 @@
 				        },
 				        {
 				          header: '설비업체명',
-				          name: 'actCd',
+				          name: 'actNm',
 					      sortable: true,
 					      align: 'left'
 				        },
@@ -355,19 +371,6 @@
 				      ]
 				});
 				
-				// 설비 리스트 전제 조회
-				$.ajax({
-					url:'/getEqpList',
-					dataType: 'json',
-					success: function (data) {
-						console.log(data);
-						selectEqpGrid.resetData(data);
-					},
-					error: function (reject) {
-						console.log(reject);
-					}
-				})
-				
 				return selectEqpGrid;
 			}
 			
@@ -380,16 +383,6 @@
 				let eqpListModalGrid = new tui.Grid({
 					el: document.getElementById('eqpListModalGrid'),
 					bodyHeight: 400,
-					data: [{
-						eqpCd: 'eqpCode-001',
-						eqpNm: '만두 배합',
-						proName: '혼합'
-					},
-					{
-						eqpCd: 'eqpCode-002',
-						eqpNm: '만두 성형',
-						proName: '성형'
-					}],
 					rowHeaders: ['rowNum'],
 					scrollX: false,
 					scrollY: true,
@@ -404,11 +397,44 @@
 				          align: 'left'
 				        },
 				        {
-				          header: '공정명',
-				          name: 'proName',
+				          header: '설비구분',
+				          name: 'eqpType',
 				          align: 'left'
 					    }
-			      ] 
+			      	] 
+				});
+				
+				
+				
+				// 관리탭 설비목록 모달에서 하나 클릭시, 설비전체 input태그에 값 넣어주고 모달창 닫기
+				eqpListModalGrid.on('click', function (ev) {
+					let rowData = eqpListModalGrid.getRow(ev.rowKey);
+					$.ajax({
+						url: '/getEqp',
+						type: 'post',
+						data: {eqpCd : rowData.eqpCd},
+						success: function (data) {
+							document.getElementById('eqpCd').value = data.eqpCd;
+							document.getElementById('eqpNm').value = data.eqpNm;
+							document.getElementById('mdNm').value = data.mdNm;
+							document.getElementById('chkCycle').value = data.chkCycle;
+							document.getElementById('actCd').value = data.actCd;
+							document.getElementById('datepicker-input1').value = data.mkDate;
+							document.getElementById('datepicker-input2').value = data.buyDate;
+							document.getElementById('eqpTypeCd').value = data.eqpTypeCd;
+							document.getElementById('eqpTypeNm').value = data.eqpTypeNm;
+							document.getElementById('eqpSts').value = data.eqpSts;
+							document.getElementById('uph').value = data.uph;
+							document.getElementById('highTemp').value = data.highTemp;
+							document.getElementById('lowTemp').value = data.lowTemp;
+							document.getElementById('imgTag').src = '/download?fileNm=' + data.img;
+							
+							document.querySelector('#eqpListModal button.btn-close').click();
+						},
+						error: function (reject) {
+							console.log(reject);
+						}
+					});
 				});
 				
 				return eqpListModalGrid;
@@ -423,46 +449,51 @@
 				let eqpTypeModalGrid = new tui.Grid({
 					el: document.getElementById('eqpTypeModalGrid'),
 					bodyHeight: 250,
-					data: [
-						{
-							code: 'eqptype-01',
-							name: '만두 배합'
-						},
-						{
-							code: 'eqptype-02',
-							name: '만두 성형',
-						},
-						{
-							code: 'eqptype-01',
-							name: '만두 배합'
-						},
-						{
-							code: 'eqptype-02',
-							name: '만두 성형',
-						},
-						{
-							code: 'eqptype-02',
-							name: '만두 성형',
-						},
-						{
-							code: 'eqptype-02',
-							name: '만두 성형',
-						}
-					],
 					rowHeaders: ['rowNum'],
 					scrollX: false,
 					scrollY: true,
 					columns: [{
 				          header: '설비구분코드',
-				          name: 'code',
+				          name: 'eqpTypeCd',
 				          align: 'center'
 				        },
 				        {
 				          header: '설비구분명',
-				          name: 'name',
+				          name: 'eqpTypeNm',
 				          align: 'left'
 				        },
 			      ] 
+				});
+				
+				
+				
+				// 상세공통의 설비구분코드 설비구분명 eqpTypeModalGrid에 set
+				$.ajax({
+					url: '/eqpTypeListModal',
+					dataType: "json",
+					success: function (data) {
+						eqpTypeModalGrid.resetData(data);
+					},
+					error: function (reject) {
+						console.log(reject);
+					}
+				});
+				
+				
+				
+				/* ---------------
+				관리탭 설비구분 돋보기 모달에서 하나 클릭시, 설비구분 input태그에 값 넣어주고 모달창 닫기
+				--------------- */
+				eqpTypeModalGrid.on('click',function(ev){
+					
+					let data = eqpTypeModalGrid.getRow(ev.rowKey);
+					let eqpTypeCode = data.eqpTypeCd; // 선택된 설비 구분 코드
+					let eqpTypeName = data.eqpTypeNm; // 선택된 설비 구분명
+					
+					document.getElementById('eqpTypeCd').value = eqpTypeCode;
+					document.getElementById('eqpTypeNm').value = eqpTypeName;
+					
+					document.querySelector('#eqpTypeModal button.btn-close').click();
 				});
 				
 				return eqpTypeModalGrid;
@@ -473,6 +504,7 @@
 			----------------*/
 			function tabBtnHandler(){
 				document.getElementById('select-tab').addEventListener('click', function () {
+					getSelectEqpData();	// 정보 최신화
 					selectEqpGrid.refreshLayout();
 				});	
 			}
@@ -499,19 +531,66 @@
 			}
 			
 			
+			/* ---------------
+			조회탭 검색 초기화 버튼
+			--------------- */
+			function searchResetBtn() {
+				document.getElementById('resetFilter').addEventListener('click', function () {
+					selectEqpGrid.unfilter('eqpNm');
+					selectEqpGrid.unfilter('eqpType');
+					selectEqpGrid.unfilter('eqpSts');
+				})
+			}
+			
+			
+			
+			/* ---------------
+			설비 리스트 전제 조회
+			--------------- */
+			function getSelectEqpData() {
+				$.ajax({
+					url:'/getEqpList',
+					dataType: 'json',
+					success: function (data) {
+						selectEqpGrid.resetData(data);
+					},
+					error: function (reject) {
+						console.log(reject);
+					}
+				});
+			}
+			
+			
 			
 			/* ---------------
 			조회탭 체크 삭제 버튼
 			--------------- */
 			function deleteBtn() {
 				document.getElementById('deleteBtn').addEventListener('click', function () {
+					let data = selectEqpGrid.getCheckedRows();
 					
 					sweetConfirm('D', function () {
-						// ajax success
-						toastr.success('정상적으로 삭제되었습니다.');
-						selectEqpGrid.removeCheckedRows();
-						// ajax fail
-						toastr.error('삭제에 실패했습니다.');  
+						$.ajax({
+							url: '/eqpDelete',
+							type: 'post',
+							contentType: 'application/json',
+							data: JSON.stringify(data),
+							success: function (data) {
+								if (data > 0) {
+									// ajax success
+									toastr.success('정상적으로 삭제되었습니다.');
+									selectEqpGrid.removeCheckedRows();
+								} else {
+									// ajax fail
+									toastr.error('삭제에 실패했습니다.');  
+								}								
+							},
+							error: function (reject) {
+								console.log(reject);
+							}
+						});	
+						
+						
 					});
 				});
 				
@@ -520,40 +599,31 @@
 			
 			
 			/* ---------------
-			관리탭 설비목록 모달 조회
+			관리탭 설비목록 모달 시 refresh
 			--------------- */
 			function eqpListSelect() {
 				
 				document.addEventListener('shown.bs.modal', function (){
 					eqpListModalGrid.refreshLayout();
 				});
-				/* 
-					팝업창띄우고
-					설비 목록들 가져와서 띄워주고
-					선택하면 input태그들에 데이터 들어가게
-					설비구분 공통상세코드와 이름도 들고와야함
-				*/
 			}
 			
 			
 			
 			/* ---------------
-			관리탭 설비목록 모달에서 하나 클릭시, 설비전체 input태그에 값 넣어주고 모달창 닫기
+			설비 목록 정보 가져오기
 			--------------- */
-			function eqpListInsertInput() {
-				eqpListModalGrid.on('click',function(ev){
-					
-					let data = eqpListModalGrid.getRow(ev.rowKey);
-					let eqpListCode = data.code; // 선택된 설비 구분 코드
-					
-					
-					// 해당 코드 가지고 ajax로 설비 정보 다 불러와서 input태그들에 다 넣어주기.
-					
-					// document.getElementById('eqpTypeCode').value = eqpTypeCode;
-					// document.getElementById('eqpTypeName').value = eqpTypeName;
-					
-					document.querySelector('#eqpListModal button.btn-close').click();
-				});	
+			function getEqpListModalData() {
+				$.ajax({
+					url: '/getEqpListModal',
+					dataType: "json",
+					success: function (data) {
+						eqpListModalGrid.resetData(data);
+					},
+					error: function (reject) {
+						console.log(reject);
+					}
+				});
 			}
 			
 			
@@ -570,22 +640,7 @@
 			
 			
 			
-			/* ---------------
-			관리탭 설비구분 돋보기 모달에서 하나 클릭시, 설비구분 input태그에 값 넣어주고 모달창 닫기
-			--------------- */
-			function eqpTypeInsertInput() {
-				eqpTypeModalGrid.on('click',function(ev){
-					
-					let data = eqpTypeModalGrid.getRow(ev.rowKey);
-					let eqpTypeCode = data.code; // 선택된 설비 구분 코드
-					let eqpTypeName = data.name; // 선택된 설비 구분명
-					
-					document.getElementById('eqpTypeCd').value = eqpTypeCode;
-					document.getElementById('eqpTypeNm').value = eqpTypeName;
-					
-					document.querySelector('#eqpTypeModal button.btn-close').click();
-				});
-			}
+			
 			
 			
 			
@@ -595,64 +650,109 @@
 			function insertUpdateBtn() {
 				
 				document.getElementById('insertUpdateBtn').addEventListener('click', function () {
+					// <유효성 체크>
+					// 유효성 체크1: 값 입력했는지, 숫자자리에 숫자입력했는지 확인
+					let eqpNm = document.getElementById('eqpNm');
+					let mdNm = document.getElementById('mdNm');
+					let chkCycle = document.getElementById('chkCycle');
+					let actCd = document.getElementById('actCd');
+					let mkDate = document.getElementById('datepicker-input1');
+					let buyDate = document.getElementById('datepicker-input2');
+					let eqpType = document.getElementById('eqpTypeCd');
+					let eqpSts = document.getElementById('eqpSts');
+					let uph = document.getElementById('uph');
+					let highTemp = document.getElementById('highTemp');
+					let lowTemp = document.getElementById('lowTemp');
 					
-				});
-				/* 
-					저장 누르면 정보 들고 db 가서
-					서비스 단에서 해당 정보로 설비코드로 설비 검색해와서 없으면 insert시키고
-					이미 있어서 정보를 return해주면 가져온 정보로 update
-		
-					insert든 update든 완료되면 알림 띄워주고
-					화면단에 적힌거 reset버튼 타겟팅 후 click으로 지워준다.
+					let inputChk = [eqpNm, mdNm, chkCycle, actCd, mkDate, buyDate, eqpType, eqpSts, uph, highTemp, lowTemp];
 					
-					설비코드가 비워져있으면 insert => sweetConfirm('C', function() {})
-					설비코드가 비워져있으면 update => sweetConfirm('U', function() {})
-					
-					sweetConfirm('', function () {
-						// ajax success
-						toastr.success('정상적으로 저장되었습니다.');
-						toastr.success('정상적으로 수정되었습니다.');
-						selectEqpGrid.removeCheckedRows();
-						// ajax fail
-						toastr.error('저장에 실패했습니다.');  
-						toastr.error('수정에 실패했습니다.');  
-					});
-				*/
-			}
-			
-			
-			
-			/* ---------------
-			input#IMG에 값 들어오면 img태그 만들어서 사진 나오는 이벤트
-			--------------- */
-			function inputImgInteract() {
-				img.addEventListener('change', function (event) {
-					// 파일명 가져오기
-					let index = document.getElementById('img').value.lastIndexOf('\\');
-					let fileStr = document.getElementById('img').value.substring(index + 1);
-					
-					// img태그 생성
-					let newImgTag = document.createElement('img');
-					newImgTag.setAttribute('id', 'imgTag');
-					newImgTag.setAttribute('name', 'imgTag');
-					newImgTag.setAttribute('alt', '설비사진');
-					newImgTag.setAttribute('width', '300px');
-					newImgTag.setAttribute('height', '300px');
-					
-					// 이미 document에 img태그 존재시 삭제. 미존재시 src 속성 만들어 넣기
-					if (document.getElementById('imgTag') != null) {
-						document.getElementById('imgTag').remove();
-						
-						// 새 파일을 고른 경우
-						if (fileStr != '') {
-							newImgTag.setAttribute('src', 'images/' + fileStr);
+					for (let i = 0; i < inputChk.length; i++) {
+						if (inputChk[i].value == '') {
+							toastr.warning('값을 입력하지 않았거나 숫자로 입력하지 않았습니다.');
+							inputChk[i].focus();
+							return false;
 						}
-					} else {
-						newImgTag.setAttribute('src', 'images/' + fileStr);
 					}
 					
-					// document에 삽입
-					imgDiv.prepend(newImgTag);
+					// 유효성 체크2: 최저 최고 온도 적합성 체크
+					if (parseInt(lowTemp.value) >= parseInt(highTemp.value)) {
+						toastr.warning('최저/최고 온도가 맞지 않습니다.');
+						highTemp.focus();
+						return false;
+					}
+					
+					
+					// 설비코드 값이 없으면 'empty' 주고 서버가서 insert. 있으면 그대로 서버가서 update
+					if (document.getElementById('eqpCd').value == '') {
+						document.getElementById('eqpCd').value = 'empty';
+														
+						// 업로드할 파일 데이터
+						let form = document.getElementById('form');
+						let formData = new FormData(form);
+				        
+						sweetConfirm('C', function () {
+							$.ajax({
+					             url : "/eqpInsertUpdate",
+					             type : "post",
+					             processData : false,
+					             contentType : false,
+					             data : formData,
+					             success:function(data) {
+									 // ajax success
+									 if (data.result == 'success') {
+									 	 toastr.success('정상적으로 저장되었습니다.');
+										 document.getElementById('reset').click();
+										 getEqpListModalData();	// 정보 최신화
+					            	 } else if (data.result == '예외발생') {
+					            		 toastr.error('예외가 발생하여 저장에 실패했습니다.');
+					            	 } else {
+					            		 toastr.error('저장에 실패했습니다.');
+					            	 }
+					             },
+					             error: function (reject) {
+					            	 console.log(reject);
+					             }
+					        });
+						});
+						
+						
+					} else {
+						// 업로드할 파일 데이터
+						let form = document.getElementById('form');
+						let formData = new FormData(form);
+				        
+				        /* for (let [key, value] of formData) {
+				          console.log(`${key}: ${value}\n`);
+				        } */
+						
+						sweetConfirm('U', function () {
+							$.ajax({
+					             url : "/eqpInsertUpdate",
+					             type : "post",
+					             processData : false,
+					             contentType : false,
+					             data : formData,
+					             success:function(data) {
+					            	 console.log(data);
+									 // ajax success
+									 if (data.result == 'success') {
+									 	 toastr.success('정상적으로 수정되었습니다.');
+										 document.getElementById('reset').click();
+					            	  } else if (data.result == '예외발생') {
+					            		 toastr.error('예외가 발생하여 수정에 실패했습니다.');
+					            	  } else {
+					            		 toastr.error('수정에 실패했습니다.');
+					            	  }
+					             },
+					             error: function (reject) {
+					            	 console.log(reject);
+					             }
+					        });
+							
+						});
+						
+					}
+					
 				});
 				
 			}
@@ -666,6 +766,27 @@
 				reset.addEventListener('click', function () {
 					document.getElementById('imgTag').src = '';
 				});
+			}
+			
+			
+
+			/* ---------------
+			input file change 이벤트 시 사진미리보기 
+			--------------- */
+			function previewFile() {
+				document.getElementById('img').addEventListener('change', function (ev) {
+					if (ev.target.files && ev.target.files[0]) {
+					    let reader = new FileReader();
+					    
+					    reader.onload = function(e) {
+					        document.getElementById('imgTag').src = e.target.result;
+					    };
+					    
+					    reader.readAsDataURL(ev.target.files[0]);
+					} else {
+					      document.getElementById('imgTag').src = "";
+					}	
+				})
 			}
 			
 			
