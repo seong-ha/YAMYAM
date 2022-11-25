@@ -18,7 +18,7 @@ public interface CommMapper {
 	public List<CommdVO> ajaxSelectDetailComm(CommdVO commdVO);
 
 	// ajax 상세 공통 코드 등록
-	public List<CommdVO> ajaxInsertDetailComm(List<CommdVO> commdVO);
+	public int ajaxInsertDetailComm(CommdVO commdVO);
 	
 	// ajax 자재 코드 불러오기
 	public List<MtrVO> ajaxSelectMat();

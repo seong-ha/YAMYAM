@@ -72,8 +72,10 @@
 
 <select id="ajaxSelectBOM" resultType="com.mandu.yamyam.common.LowerKeyMap">
 
-	SELECT * 
-	FROM C_BOM
+	SELECT B.BOM_NO, P.PPRO_NAME, B.BOM_CD, B.PRD_CD, B.MTR_CD, C.MTR_NM, B.BOM_AMT, B.BOM_USE
+	FROM C_BOM B, P_PRO P, C_MTR C
+	WHERE  B.PPRO_CD = P.PPRO_CD
+	AND B.MTR_CD = C.MTR_CD;
 	
 </select>
 	

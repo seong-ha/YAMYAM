@@ -37,6 +37,14 @@ public class CommServiceImpl implements CommService {
 	// ajax 상세 공통 코드 등록
 	@Override
 	public List<CommdVO> ajaxInsertDetailComm(List<CommdVO> commdVO) {
+		int result = 0;
+		for(int i=0; i<commdVO.size(); i++) {
+			result += commMapper.ajaxInsertDetailComm(commdVO.get(i));
+		}
+		if(result == commdVO.size()) {
+			return commdVO;
+		}
+		
 		return null;
 	}
 

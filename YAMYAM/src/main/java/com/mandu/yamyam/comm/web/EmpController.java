@@ -115,6 +115,7 @@ public class EmpController {
 	@PostMapping("ajax/insertCommd")
 	@ResponseBody
 	public List<CommdVO> ajaxInsertCommd(@RequestBody List<CommdVO> commdVO) {
+		
 		return commService.ajaxInsertDetailComm(commdVO);
 	}
 	
