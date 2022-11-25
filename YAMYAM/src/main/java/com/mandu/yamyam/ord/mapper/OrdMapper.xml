@@ -47,6 +47,11 @@
 		FROM B_IN BIN 
 		JOIN B_OUT BOT
 		  ON BIN.PRD_LOT = BOT.PRD_LOT
+		  <!-- 
+		JOIN C_PRD P
+		  ON P.PRD_CD = BIN.PRD_CD
+		WHERE P.PRD_CD = #{prdCd}
+		 -->
 	</select>
 	
 		<!-- 주문서 관리 모달 -->
