@@ -24,6 +24,8 @@ public interface CommService {
 	public List<MtrVO> ajaxSelectMat();
 	// ajax 자재탭 - 거래처 코드(모달) 불러오기
 	public List<ActVO> ajaxSelectModalAct();
+	// ajax 자재 - 자재 단건 정보 가져오기
+	public MtrVO ajaxSelectMtrInfo(MtrVO mtrVO);
 	
 	
 	// ajax 거래처 코드 불러오기

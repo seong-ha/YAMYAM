@@ -71,6 +71,12 @@ public class CommServiceImpl implements CommService {
 	public List<ActVO> ajaxSelectModalAct() {
 		return commMapper.ajaxSelectModalAct();
 	}
+	
+	// ajax 자재 - 자재 단건 정보 가져오기
+	@Override
+	public MtrVO ajaxSelectMtrInfo(MtrVO mtrVO) {
+		return commMapper.ajaxSelectMtrInfo(mtrVO);
+	}
 
 	// ajax 거래처 코드 불러오기
 	@Override
@@ -91,10 +97,13 @@ public class CommServiceImpl implements CommService {
 		return commMapper.ajaxSelectBOM();
 	}
 
+	// ajax BOM 제품목록(모달) 불러오기
 	@Override
 	public List<PrdVO> ajaxSelectModalBOM() {
 		return commMapper.ajaxSelectModalBOM();
 	}
+
+
 	
 	
 

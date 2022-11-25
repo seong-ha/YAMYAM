@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mandu.yamyam.comm.service.ActVO;
 import com.mandu.yamyam.comm.service.BOMVO;
 import com.mandu.yamyam.comm.service.CommService;
@@ -164,6 +163,13 @@ public class EmpController {
 		return commService.ajaxSelectModalAct();
 	}
 	
+	// ajax 자재 - 자재 단건 정보 가져오기
+	@PostMapping("ajax/selectMtrInfo")
+	@ResponseBody
+	public MtrVO ajaxSelectMtrInfo(MtrVO mtrVO) {
+		
+		return commService.ajaxSelectMtrInfo(mtrVO);
+	}
 	
 	/*
 	 *  actCodeAD.html에 관한 컨트롤러
@@ -223,7 +229,7 @@ public class EmpController {
 	}
 	
 	// BOM 제품 목록 모달 불러오기
-	@GetMapping
+	@GetMapping("ajax/selectModalBOM")
 	@ResponseBody
 	public List<PrdVO> ajaxSelectModalBOM(){
 		

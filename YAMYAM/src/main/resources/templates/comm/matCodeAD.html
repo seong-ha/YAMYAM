@@ -137,7 +137,7 @@ width:80%;	display: inline;
 				header : '안전 재고 수량',
 				name : 'mtrSfamt'
 			}, {
-				header : '제품구분',
+				header : '사용여부',
 				name : 'mtrSts'
 			} ],
 			showDummyRows : true
@@ -267,16 +267,30 @@ width:80%;	display: inline;
 			let rowData = grid.getRow(ev.rowKey).mtrCd;
 			console.log(grid.getRow(ev.rowKey).mtrCd);
 			
+			$.ajax({
+				url : "ajax/selectMtrInfo",
+				type : "post",
+				data : {'mtrCd' : rowData}, 
+				dataType: "json",
+				success : function(data){
+					console.log(data);					
+				},
+				error : function(reject){
+					console.log(reject);
+				}
+			})
+			
 		// 클릭 후 자재 정보가 표시 됨
 		
-/* 		let rowData = {
+/*  		let rowData = {
 			mtrCd: document.getElementById('matCode').value,
 			mtrNm: document.getElementById('matName').value,
 			mtrStd: document.getElementById('mtrStd').value,
 			mtrUn: document.getElementById('mtrUn').value,
 			actCd: document.getElementById('actCode').value,
 			mtrSfamt: document.getElementById('mtrSafeAmount').value
-		}; */
+			
+		};  */
 		
 		}) 
 		
