@@ -3,6 +3,7 @@ package com.mandu.yamyam.eqp.mapper;
 import java.util.List;
 
 import com.mandu.yamyam.eqp.service.EqpVO;
+import com.mandu.yamyam.eqp.service.UopVO;
 
 public interface EqpMapper {
 	// 설비전체조회
@@ -32,6 +33,15 @@ public interface EqpMapper {
 	// 설비 삭제
 	int eqpDelete(EqpVO eqpVO);
 	
-	// 비가동명 리스트 조회
+	// 비가동구분 리스트 조회
 	List<EqpVO> getUopTypeList();
+	
+	// 비가동 리스트 조회
+	List<UopVO> getUopList();
+	
+	// 비가동 등록
+	int insertUop(UopVO uopVO);
+	
+	// 비가동 등록
+	int updateUop(UopVO uopVO);
 }

@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.mandu.yamyam.eqp.mapper.EqpMapper">
 
-	<!-- 설비관리 - 설비전체조회 -->
+	<!-- 설비관리/비가동 - 설비전체조회 -->
 	<select id="getEqpList" resultType="com.mandu.yamyam.common.LowerKeyMap"> 
 		SELECT e.eqp_cd,
 		       e.eqp_nm,
@@ -131,16 +131,53 @@
 		 WHERE comm_cd = 'EQP-TYPE'
 	</select>
 	
-	<!-- 설비 삭제 -->
+	<!-- 설비관리 - 설비 삭제 -->
 	<delete id="eqpDelete" parameterType="com.mandu.yamyam.eqp.service.EqpVO">
 		DELETE FROM e_eqp
 		WHERE eqp_cd = #{eqpCd}
 	</delete>
 	
-	<!-- 비가동명 리스트 조회 -->
+	<!-- 공통 - 비가동구분 리스트 조회 -->
 	<select id="getUopTypeList" resultType="com.mandu.yamyam.eqp.service.EqpVO">
 		select commd_cd, commd_nm
 		from   c_commd
 		where  comm_cd = 'UOP-TYPE'
 	</select>
+	
+	<!-- 비가동 - 비가동 리스트 조회 -->
+	<select id="getUopList" resultType="com.mandu.yamyam.common.LowerKeyMap">
+		SELECT uop_cd,
+		       eqp_cd,
+		       find_eqp_name(eqp_cd) AS eqp_nm,
+		       uop_type,
+		       find_code_name(uop_type) AS uop_type_nm,
+		       uop_info,
+		       to_char(uop_stime, 'yyyy-mm-dd hh24:mm') AS uop_stime,
+		       to_char(uop_etime, 'yyyy-mm-dd hh24:mm') AS uop_etime
+		FROM e_uop
+	</select>
+	
+	<!-- 비가동 - 비가동 등록 -->
+	<insert id="insertUop" parameterType="com.mandu.yamyam.eqp.service.UopVO" statementType="CALLABLE">
+		<selectKey keyProperty="uopCd" resultType="String" order="BEFORE">
+			SELECT mk_uop_cd FROM dual
+		</selectKey>
+		{ CALL INSERT_UOP(
+		                 #{uopCd},
+		                 #{eqpCd},
+		                 #{uopType},
+		                 #{uopInfo},
+		                 #{uopStime},
+		                 #{result, mode=OUT, jdbcType=NUMBER, javaType=int, resultMap=test},
+		                 )
+		
+		#{result, mode=OUT, jdbcType=CURSOR, javaType=ResultSet, resultMap=test},
+                #{year},
+                #{term},
+                #{no}
+	</insert>
+	
+	<update id="updateUop" parameterType="com.mandu.yamyam.eqp.service.UopVO" statementType="CALLABLE">
+		CALL UPDATE_UOP(#{uopCd}, #{eqpCd}, #{uopEtime})
+	</update>
 </mapper>

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import com.mandu.yamyam.eqp.mapper.EqpMapper;
 import com.mandu.yamyam.eqp.service.EqpService;
 import com.mandu.yamyam.eqp.service.EqpVO;
+import com.mandu.yamyam.eqp.service.UopVO;
 
 @Service
 public class EqpServiceImpl implements EqpService {
@@ -77,10 +78,31 @@ public class EqpServiceImpl implements EqpService {
 		return result;
 	}
 
-	// 비가동명 리스트 조회
+	// 비가동구분 리스트 조회
 	@Override
 	public List<EqpVO> getUopTypeList() {
 		return eqpMapper.getUopTypeList();
+	}
+
+	// 비가동 리스트 조회
+	@Override
+	public List<UopVO> getUopList() {
+		return eqpMapper.getUopList();
+	}
+
+	// 비가동 등록
+	@Override
+	public int insertUpdateUop(UopVO uopVO) {
+		int insertResult = 0;
+		int updateResult = 10;
+		
+		if (uopVO.getUopCd() == null) {
+			insertResult += eqpMapper.insertUop(uopVO);
+			return insertResult;
+		} else {
+			updateResult += eqpMapper.updateUop(uopVO);
+			return	updateResult; 
+		}
 	}
 
 }

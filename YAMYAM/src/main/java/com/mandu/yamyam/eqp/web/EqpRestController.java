@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.mandu.yamyam.eqp.service.EqpService;
 import com.mandu.yamyam.eqp.service.EqpVO;
+import com.mandu.yamyam.eqp.service.UopVO;
 
 @RestController
 public class EqpRestController {
@@ -44,5 +45,17 @@ public class EqpRestController {
 	@PostMapping("/eqpDelete")
 	public int eqpDelete(@RequestBody List<EqpVO> list) {
 		return eqpService.eqpDelete(list);
+	}
+	
+	// 비가동 리스트 조회
+	@GetMapping("/getUopList")
+	public List<UopVO> getUopList() {
+		return eqpService.getUopList();
+	};
+	
+	// 비가동 등록 및 수정
+	@PostMapping("/insertUpdateUop")
+	public int insertUpdateUop(UopVO uopVO) {
+		return eqpService.insertUpdateUop(uopVO);
 	}
 }

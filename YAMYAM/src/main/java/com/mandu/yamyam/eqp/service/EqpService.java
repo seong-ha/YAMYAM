@@ -27,6 +27,12 @@ public interface EqpService {
 	// 설비 삭제
 	int eqpDelete(List<EqpVO> list);
 	
-	// 비가동명 리스트 조회
+	// 비가동구분 리스트 조회
 	List<EqpVO> getUopTypeList();
+	
+	// 비가동 리스트 조회
+	List<UopVO> getUopList();
+	
+	// 비가동 등록
+	int insertUpdateUop(UopVO uopVO);
 }
