@@ -74,7 +74,7 @@
 
 <!-- 상세 공통 코드, 이름 불러오기(성하) -->
 
-<select id="getCommdCdNm" resultType="com.mandu.yamyam.common.LowerKeyMap">
+<select id="getCommdCdNm" parameterType="String" resultType="com.mandu.yamyam.common.LowerKeyMap">
 
 	SELECT COMMD_CD, COMMD_NM
 	FROM   C_COMMD
