@@ -35,10 +35,10 @@ width:80%;	display: inline;
 				<div id="input-group">
 					<ul class="ul-style">
 						<li><label for="matCode">자재코드</label>
-						<input id="matCode" name="mtrCd">
+						<input id="mtrCode" name="mtrCd">
 						&nbsp;&nbsp;&nbsp;
 						<label for="matCode" style="width:80px">자재명</label>
-						<input id="matName" name="mtrNm">
+						<input id="mtrName" name="mtrNm">
 						</li>
 					</ul>
 					
@@ -72,6 +72,10 @@ width:80%;	display: inline;
 					<label class="col-sm-2" style="width:100px">&nbsp;안전재고</label>&nbsp;
 					<span class="col-sm-4" style="width: 190px;"><input type="text" name="mtrSfamt" id="mtrSafeAmount"></span>
 				</div>
+				
+				<input type="hidden" name="mtrUn" id="mtrUn">
+					<label class="col-sm-2">&nbsp;&nbsp;사용여부</label>
+					<span class="col-sm-4" style="width: 190px;" id="select-box3"></span>
 				
 				<hr>
 					
@@ -172,22 +176,84 @@ width:80%;	display: inline;
 			data : [ {
 				label : '1kg',
 				value : 'STD1' // 코드 바꾸기
-			}, {
-				label : 'STD2',
+			}, 
+			{
+				label : '2kg',
 				value : 'STD2'
-			}, {
-				label : 'STD5',
+			}, 
+			{
+				label : '3kg',
+				value : 'STD3'
+			}, 
+			{
+				label : '4kg',
+				value : 'STD4'
+			}, 
+			{
+				label : '5kg',
 				value : 'STD5'
-			}, {
-				label : 'STD10',
+			}, 
+			{
+				label : '6kg',
+				value : 'STD6'
+			},
+			{
+				label : '7kg',
+				value : 'STD7' // 코드 바꾸기
+			}, 
+			{
+				label : '8kg',
+				value : 'STD8'
+			}, 
+			{
+				label : '9kg',
+				value : 'STD9'
+			}, 
+			{
+				label : '10kg',
 				value : 'STD10'
-			}, {
-				label : 'STD13',
-				value : 'STD13'
-			}, {
-				label : 'STD20',
+			}, 
+			{
+				label : '11kg',
+				value : 'STD11'
+			}, 
+			{
+				label : '12kg',
+				value : 'STD12'
+			},
+			{
+				label : '13kg',
+				value : 'STD13' // 코드 바꾸기
+			}, 
+			{
+				label : '14kg',
+				value : 'STD14'
+			}, 
+			{
+				label : '15kg',
+				value : 'STD15'
+			}, 
+			{
+				label : '16kg',
+				value : 'STD16'
+			}, 
+			{
+				label : '17kg',
+				value : 'STD17'
+			}, 
+			{
+				label : '18kg',
+				value : 'STD18'
+			}, 
+			{
+				label : '19kg',
+				value : 'STD19'
+			},  
+			{
+				label : '20kg',
 				value : 'STD20'
-			}],
+			}
+			],
 			autofocus : true
 		});
 		
@@ -266,7 +332,7 @@ width:80%;	display: inline;
 		grid.on('click', function(ev){
 			let rowData = grid.getRow(ev.rowKey).mtrCd;
 			console.log(grid.getRow(ev.rowKey).mtrCd);
-			
+		
 			$.ajax({
 				url : "ajax/selectMtrInfo",
 				type : "post",
@@ -280,18 +346,8 @@ width:80%;	display: inline;
 				}
 			})
 			
-		// 클릭 후 자재 정보가 표시 됨
-		
-/*  		let rowData = {
-			mtrCd: document.getElementById('matCode').value,
-			mtrNm: document.getElementById('matName').value,
-			mtrStd: document.getElementById('mtrStd').value,
-			mtrUn: document.getElementById('mtrUn').value,
-			actCd: document.getElementById('actCode').value,
-			mtrSfamt: document.getElementById('mtrSafeAmount').value
 			
-		};  */
-		
+			
 		}) 
 		
 	</script>
