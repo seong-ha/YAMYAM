@@ -292,28 +292,67 @@ public class MatController {
 	}
 	
 	//======================
-	// 8) 자재 반품 조회
+	// 8) 자재 반품 관리
 	//======================
 	@RequestMapping("/matReturn")
 	public String matReturn(Model model) {
-		model.addAttribute("matList", service.matList());			// 자재목록
-		model.addAttribute("actList", service.actList());			// 업체목록
+		model.addAttribute("returnMtrList", service.returnMtrList());	// 반품예정목록
+		model.addAttribute("mtrReList", service.mtrReturnAllList());	// 반품목록
 		return "mat/matReturn";
 	}
 	
-	@PostMapping("/matReturn")
+	// 전체리스트 행 클릭시 조회
+	@PostMapping("/matReturnLookup")
 	@ResponseBody
-	public List<Map<String, Object>> selectReList(@RequestBody MatVO vo){
-		return service.selectReList(vo);
-	};
+	public List<Map<String, Object>> returnInfo(@RequestBody MatVO vo){
+		return service.returnInfo(vo);
+	}
 	
+	// insert
+	@PostMapping("/insertRt")
+	@ResponseBody
+	public int insertReturnOd(@RequestBody MatVO vo) {
+		return service.insertRtOd(vo);
+	}
+	
+	// update
+	@PostMapping("/updateRt")
+	@ResponseBody
+	public int updateReturnOd(@RequestBody MatVO vo) {
+		return service.updateRtOd(vo);
+	}
+	
+	//======================
+	// 9) 자재 반품 조회
+	//======================
 	@RequestMapping("/matReturnLookup")
 	public String matReturnLookup(Model model) {
+		model.addAttribute("mtrReList", service.mtrReturnAllList());	// 전체리스트
+		model.addAttribute("matList", service.matList());				// 자재목록
+		model.addAttribute("actList", service.actList());				// 업체목록
 		return "mat/matReturnLookup";
 	}
 	
+	// 조건조회
+	@PostMapping("/matReturnSearch")
+	@ResponseBody
+	public List<Map<String, Object>> matReturnSearch(@RequestBody MatVO vo) {
+		return service.matReturnSearch(vo);
+	}
+	//======================
+	// 10) 안전 재고 관리
+	//======================
 	@RequestMapping("/matSafe")
 	public String matSafe(Model model) {
+		model.addAttribute("matStList", service.matStockList());	// 재고 전체조회
+		model.addAttribute("holdAmt", service.getHoldAmt());		// 홀딩수량
 		return "mat/matSafe";
+	}
+	
+	// 안전재고 수정
+	@PostMapping("/matSafe")
+	@ResponseBody
+	public int mtrSfUpdate(@RequestBody MatVO vo) {
+		return service.mtrSfUpdate(vo);
 	}
 }

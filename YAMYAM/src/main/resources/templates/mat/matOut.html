@@ -442,12 +442,16 @@
 									dataType: 'JSON',
 									data: JSON.stringify(oddCd[0]),
 									success: function(result){
-										Swal.fire('출고가 완료되었습니다.');
+										Swal.fire({
+											icon: 'success',
+											title :'출고가 완료되었습니다.'});
 										setTimeout(() => location.reload(),500);
 									},
 									error: function(reject){
 										console.log(reject);
-										Swal.fire('출고에 실패하였습니다.');
+										Swal.fire({
+											icon: 'error',
+											title :'출고에 실패하였습니다.'});
 									}
 								})
 								
