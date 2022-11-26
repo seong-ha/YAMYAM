@@ -187,7 +187,7 @@
 	function gridInit(){
 		let grid = new tui.Grid({
 			el: document.getElementById('grid'),
-			// 임시 데이터
+			/* // 임시 데이터
 			data: [{
 				podCd : '',
 				pplnCd : '',
@@ -202,16 +202,7 @@
 				pproETime : '',
 				pproEmpName : '',
 				podDate : ''
-			}],
-			// data 가져오는 법
-			// data: {
-			// 	api: {
-			// 		readData: {
-			// 			url: '/api/readData',
-			// 			method: 'GET'
-			// 		}
-			// 	}
-			// },
+			}], */
 			scrollX: false,
 			scrollY: false,
 			rowHeaders: ['rowNum'],
@@ -222,7 +213,7 @@
 				},
 				{
 					header: '생산코드',
-					name: 'pplnCd'
+					name: 'pproCd'
 				},
 				{
 					header: '설비코드',

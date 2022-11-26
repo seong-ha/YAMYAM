@@ -160,7 +160,17 @@ public class ProServiceImpl implements ProService {
 		return result;
 	}
 	
+	// 제품 공정 목록 조회
+	@Override
+	public List<ProVO> flowProgress(ProVO vo) {
+		return mapper.flowProgress(vo);
+	}
 
+	// 제품 공정 목록 조회 (생산시작후)
+	@Override
+	public List<ProVO> afterProgress(ProVO vo) {
+		return mapper.afterProgress(vo);
+	}
 	
 	
 	/*---------------
@@ -188,15 +198,12 @@ public class ProServiceImpl implements ProService {
 	public List<ProVO> noUseEqp() {
 		return mapper.noUseEqp();
 	}
-	
-	// 제품 공정 목록 조회
+
+	// 공정실적조회
 	@Override
-	public List<ProVO> flowProgress(ProVO vo) {
-		return mapper.flowProgress(vo);
+	public List<ProVO> getResultList(ProVO vo) {
+		return null;
 	}
-	
-		
-	
 	
 	
 }

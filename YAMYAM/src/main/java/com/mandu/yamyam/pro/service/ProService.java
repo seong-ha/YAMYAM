@@ -80,6 +80,10 @@ public interface ProService {
 	// 제품 공정 목록 조회
 	public List<ProVO> flowProgress(ProVO vo);
 	
+	// 제품 공정 목록 조회 (생산시작후)
+	public List<ProVO> afterProgress(ProVO vo);
+	
+	
 	/*---------------
 	// 생산 관리
 	----------------*/
@@ -88,5 +92,11 @@ public interface ProService {
 	
 	// 생산공정 수정(설비상태, 입고량 수정)
 	public int updateEqpSts(ProVO vo);
+	
+	
+	/*---------------
+	// 공정 실적 조회
+	----------------*/
+	public List<ProVO> getResultList(ProVO vo);
 		
 }

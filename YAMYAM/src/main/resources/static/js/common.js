@@ -8,7 +8,7 @@
 	
 	function getTimeStr(){
 		let today = new Date();
-		today = today.getFullYear() +"." + ("00"+ (today.getMonth()+1)).slice(-2) +"." + ("00"+ today.getDate()).slice(-2)+" "+
+		today = today.getFullYear() +"-" + ("00"+ (today.getMonth()+1)).slice(-2) +"-" + ("00"+ today.getDate()).slice(-2)+" "+
 		('0' + today.getHours()).slice(-2) + ":" +  ('0'+today.getMinutes()).slice(-2) + ":" + ('0'+today.getSeconds()).slice(-2);
 		return today;
 	}
