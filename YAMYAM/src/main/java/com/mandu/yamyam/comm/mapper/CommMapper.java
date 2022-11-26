@@ -41,6 +41,8 @@ public interface CommMapper {
 	
 	// ajax 거래처 코드 불러오기
 	public List<ActVO> ajaxSelectAct();
+	// ajax 구매 거래처 등록하기
+	public int ajaxInsertAct(ActVO actVO);
 	
 	
 	// ajax 완제품 코드 불러오기

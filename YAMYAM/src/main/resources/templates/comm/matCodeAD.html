@@ -48,10 +48,11 @@ width:80%;	display: inline;
 				
 				<div class="mb-3 row">
 					<!-- 히든값 보내는거 해봐야함 -->
-					<input type="hidden" name="mtrStd"  id="mtrStd">
+					<input type="hidden" name="mtrStd"  id="mtrStandard">
 					<label class="col-sm-2">&nbsp;규격</label>
 					<span class="col-sm-4" style="width: 200px;" id="select-box"></span>
-					<input type="hidden" name="mtrUn" id="mtrUn">
+					
+					<input type="hidden" name="mtrUn" id="mtrUnit">
 					<label class="col-sm-2">&nbsp;&nbsp;작업단위</label>
 					<span class="col-sm-4" style="width: 190px;" id="select-box2"></span>
 				</div>
@@ -62,7 +63,7 @@ width:80%;	display: inline;
 						<img id="matNm" class="Magnifying-Glass-img" alt="image"
 							 data-bs-toggle="modal" data-bs-target="#exampleModal"
 							 src="../images/Magnifying_Glass.png" >
-						<input type="text" name="actNm" readonly>
+						<input type="text" id="actName" name="actNm" readonly>
 					</li>
 				</ul>
 			
@@ -71,12 +72,13 @@ width:80%;	display: inline;
 				<div class="mb-3 row">
 					<label class="col-sm-2" style="width:100px">&nbsp;안전재고</label>&nbsp;
 					<span class="col-sm-4" style="width: 190px;"><input type="text" name="mtrSfamt" id="mtrSafeAmount"></span>
-				</div>
 				
-				<input type="hidden" name="mtrUn" id="mtrUse">
-					<label class="col-sm-2">&nbsp;&nbsp;사용여부</label>
+			
+			
+				<input type="hidden" name="mtrSts" id="mtrStatus">
+					<label class="col-sm-2" style="width:130px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;사용여부</label>
 					<span class="col-sm-4" style="width: 190px;" id="select-box3"></span>
-				
+				</div>
 				<hr>
 					
 				<div align="right">
@@ -98,7 +100,7 @@ width:80%;	display: inline;
               <div class="modal-header">
                  <h4 class="modal-title" id="exampleModalLabel">거래처 코드 목록</h4>
                  <button type="button" class="btn-close" data-bs-dismiss="modal"
-                    aria-label="Close"></button>
+                    aria-label="Close" id="insertModalClose"></button>
               </div>
               <div class="modal-body">
               <div id="actModalGrid"></div>
@@ -175,7 +177,7 @@ width:80%;	display: inline;
 			placeholder : '중량',
 			data : [ {
 				label : '1kg',
-				value : 'STD1' // 코드 바꾸기
+				value : 'STD1', // 코드 바꾸기
 			}, 
 			{
 				label : '2kg',
@@ -254,7 +256,8 @@ width:80%;	display: inline;
 				value : 'STD20'
 			}
 			],
-			autofocus : true
+			autofocus : true,
+			selected: true
 		});
 		
 		var selectBox2 = new tui.SelectBox('#select-box2', {
@@ -269,16 +272,37 @@ width:80%;	display: inline;
 			autofocus : true
 		});
 		
-		//grid select box change
+		var selectBox3 = new tui.SelectBox('#select-box3', {
+			placeholder : '단위',
+			data : [ {
+				label : 'MAT-STS1',
+				value : 'MAT-STS1' // 코드 바꾸기
+			}, {
+				label : 'MAT-STS2',
+				value : 'MAT-STS2'
+			}],
+			autofocus : true
+		});
+		
+		// bind 'change' event
 		selectBox.on('change', ev => {
-			mtrStd.value=ev.curr.value;
-			  console.log(ev);
-			});
+		  console.log(` ${ev.curr.getLabel()}    ${ev.curr.getValue()}`);
+		  $('#mtrStandard').val(ev.curr.getValue());
+		  console.log($('#mtrStandard').val(ev.curr.getValue()));
+		  
+		});
+		
 		
 		selectBox2.on('change', ev => {
-			mtrStd.value=ev.curr.value;
-			  console.log(ev);
-			});
+			  console.log(` ${ev.curr.getLabel()}    ${ev.curr.getValue()}`);
+			  $('#mtrUnit').val(ev.curr.getValue());
+		});
+		
+		
+		selectBox3.on('change', ev => {
+			  console.log(` ${ev.curr.getLabel()}    ${ev.curr.getValue()}`);
+			  $('#mtrStatus').val(ev.curr.getValue());
+		});
 		
 		/*
 		1. 초기화 버튼에 클릭이벤트를 건다.
@@ -332,13 +356,26 @@ width:80%;	display: inline;
 		grid.on('click', function(ev){
 			let rowData = grid.getRow(ev.rowKey).mtrCd;
 			console.log(grid.getRow(ev.rowKey).mtrCd);
+			$('#select-box').val(grid.getRow(ev.rowKey).mtrStd);
 		
+		// 칼럼 클릭시 거기에 맞는 정보 출력
 			$.ajax({
 				url : "ajax/selectMtrInfo",
 				type : "post",
 				data : {'mtrCd' : rowData}, 
 				dataType: "json",
 				success : function(data){
+					mtrCode.value = data.mtrCd;
+					mtrName.value = data.mtrNm; 
+					//mtrStandard.value = data.mtrStd;
+					selectBox.select(data.mtrStd)
+					//mtrUnit.value = data.mtrUn;
+					selectBox2.select(data.mtrUn)
+					actCode.value = data.actCd;
+					actName.value = data.actNm;
+					mtrSafeAmount.value = data.mtrSfamt;
+					//mtrStatus.value = data.mtrSts;
+					selectBox3.select(data.mtrSts)
 					console.log(data);					
 				},
 				error : function(reject){
@@ -346,16 +383,21 @@ width:80%;	display: inline;
 				}
 			})
 			
-			mtrCode.value = rowData[0].mtrCd;
-			mtrName.value = rowData[0].mtrNm; 
-			mtrStandard.value = rowData[0].mtrStd;
-			mtrUnit.value = rowData[0].mtrUn;
-			actCode.value = rowData[0].actCd;
-			mtrSafeAmount.value = rowData[0].mtrSfamt;
-			mtrUse.value = rowData[0].mtrUn;
+		})
+		
+		// 거래처 코드(모달) 클릭시 안에 값이 들어감
+		
+		grid2.on('click', function(ev){
+			let rowData = grid2.getRow(ev.rowKey);
+			console.log(grid2.getRow(ev.rowKey).actCd);
+		
+			actCode.value = rowData.actCd;
+			actName.value = rowData.actNm;
+			insertModalClose.click();
 			
 			
-		}) 
+			
+		});
 		
 	</script>
 

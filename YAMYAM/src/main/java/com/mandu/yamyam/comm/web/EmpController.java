@@ -190,6 +190,17 @@ public class EmpController {
 		return commService.ajaxSelectAct();
 	}
 	
+	// ajax 직원 정보 등록
+	@PostMapping("ajax/insertAct")
+	@ResponseBody
+	public int ajaxInsertAct(@RequestBody ActVO actVO) {
+		int result = commService.ajaxInsertAct(actVO);
+		
+		return result;
+	}
+	
+	
+	
 	/*
 	 *  pdtCodeAD.html에 관한 컨트롤러
 	 */

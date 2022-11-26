@@ -125,6 +125,30 @@
 	
 </select>
 
+<!-- ajax 구매 거래처 등록하기 -->
+<insert id="ajaxInsertAct" parameterType="com.mandu.yamyam.comm.service.ActVO">
+	
+	INSERT INTO C_ACT
+	(
+	ACT_NM, 
+	ACT_CD, 
+	ACT_NUM, 
+	ACT_TEL, 
+	ACT_DIV, 
+	ACT_STS
+	)
+	VALUES
+	(
+	#{actNm},
+	#{actCd},
+	#{actNum},
+	#{actTel},
+	#{actDiv},
+	#{actSts}
+	)
+
+</insert>
+
 <!-- ajax 완제품코드 불러오기 -->
 <select id="ajaxSelectPrd" resultType="com.mandu.yamyam.common.LowerKeyMap">
 	

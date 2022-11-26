@@ -89,8 +89,13 @@ public class CommServiceImpl implements CommService {
 	public List<ActVO> ajaxSelectAct() {
 		return commMapper.ajaxSelectAct();
 	}
-
 	
+	// 구매 거래처 등록하기
+	@Override
+	public int ajaxInsertAct(ActVO actVO) {
+		return commMapper.ajaxInsertAct(actVO);
+	}
+
 	// ajax 완제품 코드 불러오기
 	@Override
 	public List<PrdVO> ajaxSelectPrd(PrdVO prdVO) {
@@ -108,10 +113,6 @@ public class CommServiceImpl implements CommService {
 	public List<PrdVO> ajaxSelectModalBOM() {
 		return commMapper.ajaxSelectModalBOM();
 	}
-
-
-
-	
 	
 
 	
