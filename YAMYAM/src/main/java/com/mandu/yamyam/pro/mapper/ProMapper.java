@@ -106,6 +106,15 @@ public interface ProMapper {
 	
 	// 설비상태 수정(대기->가동)
 	public int updateEqpSts(ProVO vo);
+
+	// 제품 공정 목록 조회 (생산시작후)
+	public List<ProVO> afterProgress(ProVO vo);
+	
+	
+	/*---------------
+	// 공정 실적 조회
+	----------------*/
+	public List<ProVO> getResultList(ProVO vo);
 	
 	
 	/*---------------

@@ -116,7 +116,7 @@
 				},
 				{
 					header: '수량',
-					name: 'poddAmt'
+					name: 'poddAmt' 
 				},
 				{
 					header: '라인코드',
@@ -343,139 +343,6 @@
 		});
 	}
 	
-	
-	
-	/*------------
-	// 시작 버튼 이벤트 핸들러
-	----------------*/
-	function startBtnHandler(){
-
-		$('#startBtn').on('click',function(){
-			// sweetalert2
-			sweetConfirm('S', 'success',function(){
-				// 생산시작
-				// 설비상태 : 가동으로 업데이트 ajax : update
-
-				let eqpCd = proGrid.getValue(0,'eqpCd');
-				let plineCd = proGrid.getValue(0,'plineCd');
-				let pproCd = proGrid.getValue(0,'pproCd');
-				let pproInAmt = proGrid.getValue(0,'pproInAmt');
-				
-				// 설비 -> 가동으로 변경.
-				/* $.ajax({
-					url : '/eqpUpdate',
-					method: 'POST',
-					data :  {"eqpCd" : eqpCd, "plineCd" : plineCd, "pproCd" : pproCd, "pproInAmt": pproInAmt},
-					dataType : 'json',
-					success : function(data){
-							// grid에서 수정
-							proGrid.resetData(data);
-							proGrid.refreshLayout();
-							},
-					error : function(reject){
-							console.log(reject);
-							// 실패
-					}			 		  
-				}); */
-				/* // 설비 -> 대기로 변경.
-				$.ajax({
-					url : '/eqpUpdate',
-					method: 'POST',
-					data :  {"eqpCd" : eqpCd},
-					dataType : 'json',
-					success : function(data){
-							// grid에서 수정
-							proGrid.resetData(data);
-							proGrid.refreshLayout();
-							},
-					error : function(reject){
-							console.log(reject);
-							// 실패
-					}			 		  
-				}); */
-				
-				let date = dayjs();
-				let time = date.format("YYYY-MM-DD HH:mm:ss");
-				
-				var am = 0;
-				var interval = setInterval(viewProgress(),1000); // 변수를 선언해줄경우 1번 실행
-				
-				function viewProgress(){
-					
-					proGrid.setValue(am,'pproSTime', time);
-					
-					setInterval(function(){
-						let time = date.add(40,"second").format("YYYY-MM-DD HH:mm:ss");
-						let pproInAmt = proGrid.getValue(am,'pproInAmt');
-						let pproErAmt = proGrid.getValue(am,'pproErAmt');
-						let amt = pproInAmt-pproErAmt;
-						proGrid.setValue(am,'pproOtAmt',amt);
-						proGrid.setValue(am,'pproErAmt',0)
-						proGrid.setValue(am,'pproETime', time);
-						am++;
-						proGrid.setValue(am,'pproInAmt', amt);
-						time = date.add(40,"second").format("YYYY-MM-DD HH:mm:ss");
-						proGrid.setValue(am,'pproSTime', time);
-						proGrid.refreshLayout();
-					},1000)
-				}
-				
-
-				
-				
-				/* setTimeout(function(){
-					proGrid.setValue(0,'pproSTime', time);
-					proGrid.refreshLayout();
-					},100)
-					
-				setTimeout(function(){
-					let time = date.add(40,"second").format("YYYY-MM-DD HH:mm:ss");
-					//time = (time + ":30"); 
-					let pproInAmt = proGrid.getValue(0,'pproInAmt');					
-					proGrid.setValue(0,'pproErAmt',0)
-					let pproErAmt = proGrid.getValue(0,'pproErAmt');
-					let amt = pproInAmt-pproErAmt;
-					proGrid.setValue(0,'pproOtAmt',amt);
-					proGrid.setValue(0,'pproETime', time);
-					proGrid.setValue(1,'pproInAmt', amt);					
-					proGrid.refreshLayout();
-					},1000)
-				// 상태가 대기면 -> update p_pro 테이블
-				
-				let sts = proGrid.getValue(0,'eqpSts');
-				console.log(sts); */
-				
-				
-				
-				
-			})
-
-			// 설비의 상태가 가동중이면 ajax update
-			
-		})
-	}
-	
-	/*------------
-	// 긴급중지 버튼 이벤트 핸들러
-	----------------*/
-	function stopBtnHandler(){
-
-		$('#stopBtn').on('click',function(){
-			// sweetalert2
-			sweetConfirm('T', 'error', function(){
-				clearInterval(interval);
-				
-			})
-
-			// 갖고온 start, end 값을 넘겨서 select 해오기
-			// ajax 받아오고
-			// success : function(data){manageGrid.resetData(data);}
-			
-		})
-	}
-	
-	
-	
 	/*------------
 	// 재시작 버튼 이벤트 핸들러
 	----------------*/
@@ -484,16 +351,196 @@
 		$('#restartBtn').on('click',function(){
 			// sweetalert2
 			sweetConfirm('R', 'info', function(){
-				
+				//변수 = setInterval(콜백함수, 시간);
+				//interval = setInterval(viewProgress,1000); 
 				
 			})
+		})
+	}
+	
+	/*------------
+	// 시작 버튼 이벤트 핸들러
+	----------------*/
+	function startBtnHandler(){
 
-			// 갖고온 start, end 값을 넘겨서 select 해오기
-			// ajax 받아오고
-			// success : function(data){manageGrid.resetData(data);}
+		$('#startBtn').on('click',function(){
+			// sweetalert2
+			sweetConfirm('S', 'success', sweetC);
+			// ajax (b-in[완제품재고] table insert)
+			
+			/* $.ajax({
+				url : '/eqpUpdate',
+				method: 'POST',
+				data :  {"eqpCd" : eqpCd, "plineCd" : plineCd, "pproCd" : pproCd, "pproInAmt": pproInAmt, "pproSTime" : pproSTime},
+				dataType : 'json',
+				success : function(data){
+						// grid에서 수정
+						proGrid.resetData(data);
+						proGrid.refreshLayout();
+						},
+				error : function(reject){
+						console.log(reject);
+						// 실패
+				}			 		  
+			}); */
 			
 		})
 	}
+	
+	
+	var n = 0;
+	var interval ;
+	function sweetC(){
+	
+		// 첫번째 설비 시작
+		startEqp(n,getTimeStr());
+		interval = setInterval(viewProgress,1000);  // 변수를 선언해줄경우 1번 실행
+		//setTimeout(()=>{Swal.fire('완료되었습니다');},6000);
+	
+		function viewProgress(){
+			
+			// 설비상태 : 가동으로 업데이트 ajax : update
+			// 설비 가동 -> 시작시간
+			let time = getTimeStr();
+			stopEqp(n,time)
+			n++;
+			
+			if(n>=6){	// 공정이 끝나면 interval끝
+				clearInterval(interval);
+			}
+			
+			startEqp(n,time);
+			
+		}
+		
+		
+		// 설비 시작
+		function startEqp(n,time){
+			// 처음이면
+			let pG = pOrderGrid.getFocusedCell().rowKey;
+	
+			let pproInAmt;
+			if(n==0){
+				pproInAmt = pOrderGrid.getValue(pG,'poddAmt');
+				
+			}else {
+				pproInAmt = proGrid.getValue(n-1,'pproOtAmt');
+			}
+			// 중지 -> 다음꺼 시작
+			
+			let pproSTime = time;
+			
+			let eqpCd = proGrid.getValue(n,'eqpCd');
+			let plineCd = proGrid.getValue(n,'plineCd');
+			let pproCd = proGrid.getValue(n,'pproCd');	
+			let eqpSts = proGrid.getValue(n,'eqpSts'); // 0번째 설비 상태 (현재 가동중)
+		 
+			if(eqpSts == '대기'){
+				console.log(pproInAmt);
+				// 대기 -> 가동
+				 $.ajax({
+					url : '/eqpUpdate',
+					method: 'POST',
+					async : false,
+					data :  {"eqpCd" : eqpCd, "plineCd" : plineCd, "pproCd" : pproCd, "pproInAmt": pproInAmt, "pproSTime" : pproSTime},
+					dataType : 'json',
+					success : function(data){
+							// grid에서 수정
+							proGrid.resetData(data);
+							proGrid.refreshLayout();
+							},
+					error : function(reject){
+							console.log(reject);
+							// 실패
+					}			 		  
+				});
+			}
+		}
+		
+		// 설비 중지
+		function stopEqp(n,time){
+			let eqpCd = proGrid.getValue(n,'eqpCd');
+			let plineCd = proGrid.getValue(n,'plineCd');
+			let eqpSts = proGrid.getValue(n,'eqpSts');
+			let pproCd = proGrid.getValue(n,'pproCd');
+			let pproInAmt = proGrid.getValue(n,'pproInAmt');
+			
+			let pproETime = time;
+			let pproErAmt = 0;	
+			let pproOtAmt = pproInAmt - pproErAmt; 
+			
+			if(eqpSts == "가동"){
+				// 설비상태 업데이트
+				$.ajax({
+					url : '/eqpUpdate',
+					method: 'POST',
+					data : {"eqpCd" : eqpCd, "plineCd" : plineCd, "pproETime" : pproETime, "pproCd" : pproCd, "pproErAmt" : pproErAmt, "pproOtAmt" : pproOtAmt},
+					dataType : 'json',
+					async : false,
+					success : function(data){
+							// grid에서 수정
+							proGrid.resetData(data);
+							proGrid.refreshLayout();
+							},
+					error : function(reject){
+							console.log(reject);
+							// 실패
+					}			 		  
+				});	// end of ajax 
+			}
+
+		} 
+		
+		
+	}
+
+	/*------------
+	// 긴급중지 버튼 이벤트 핸들러
+	----------------*/
+	function stopBtnHandler(){
+	
+		$('#stopBtn').on('click',function(){
+			// sweetalert2
+			sweetConfirm('T', 'error', function(){
+				clearInterval(interval);
+				
+				let data = proGrid.getData();
+				for(let i = 0; i< data.length; i++){
+					let eqpSts = data[i].eqpSts;
+					console.log(eqpSts);
+					if(eqpSts == "가동"){
+					let eqpCd = data[i].eqpCd;
+					let plineCd = data[i].plineCd;
+					// 설비상태 업데이트
+					$.ajax({
+						url : '/eqpUpdate',
+						method: 'POST',
+						data : {"eqpCd" : eqpCd, "plineCd" : plineCd},
+						dataType : 'json',
+						success : function(data){
+								// grid에서 수정
+								proGrid.resetData(data);
+								proGrid.refreshLayout();
+								},
+						error : function(reject){
+								console.log(reject);
+								// 실패
+						}			 		  
+					});	// end of ajax
+				}	 
+					
+				}
+				
+				
+				
+			})
+			
+		})
+	}
+	
+	
+	
+
 	
 </script>		
 </div>

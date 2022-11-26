@@ -160,7 +160,7 @@ public class ProController {
 	@ResponseBody
 	public List<ProVO> proInUpdate(ProVO vo) {
 		 service.updateEqpSts(vo);
-		 return service.flowProgress(vo);
+		 return service.afterProgress(vo);
 	}
 
 	
@@ -171,6 +171,17 @@ public class ProController {
 		return service.flowProgress(vo);
 	}
 	
+	
+	/*---------------
+	// 공정실적조회
+	----------------*/
+	// 공정목록 조회
+	@RequestMapping("/getProResult")
+	@ResponseBody
+	public List<ProVO> getProResult(ProVO vo){
+		return service.getResultList(vo);
+	}
+		
 		
 	
 	// 공정 실적 조회
