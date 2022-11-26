@@ -59,6 +59,12 @@ public class CommServiceImpl implements CommService {
 	public int ajaxInsertComm(CommVO commVO) {
 		return commMapper.ajaxInsertComm(commVO);
 	}
+	
+	// 상세 공통 코드, 이름 불러오기(성하)
+	@Override
+	public List<CommdVO> getCommdCdNm(String commCd) {
+		return commMapper.getCommdCdNm(commCd);
+	}
 
 	// ajax 자재코드 불러오기
 	@Override
@@ -102,6 +108,7 @@ public class CommServiceImpl implements CommService {
 	public List<PrdVO> ajaxSelectModalBOM() {
 		return commMapper.ajaxSelectModalBOM();
 	}
+
 
 
 	

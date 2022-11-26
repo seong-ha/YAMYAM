@@ -72,6 +72,17 @@
 
 </insert>
 
+<!-- 상세 공통 코드, 이름 불러오기(성하) -->
+
+<select id="getCommdCdNm" resultType="com.mandu.yamyam.common.LowerKeyMap">
+
+	SELECT COMMD_CD, COMMD_NM
+	FROM   C_COMMD
+	WHERE  COMM_CD = #{value}
+
+
+</select>
+
 <!-- ajax 자재코드 불러오기 -->
 <select id="ajaxSelectMat" resultType="com.mandu.yamyam.common.LowerKeyMap">
 	

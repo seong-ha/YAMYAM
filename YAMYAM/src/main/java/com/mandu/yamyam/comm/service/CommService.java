@@ -7,6 +7,7 @@ public interface CommService {
 	// ajax 공통코드 불러오기
 	public List<CommVO> ajaxSelectComm();
 
+	
 	// ajax 상세 공통 코드 불러오기
 	public List<CommdVO> ajaxSelectDetailComm(CommdVO commdVO);
 
@@ -18,6 +19,10 @@ public interface CommService {
 	
 	// ajax 공통 코드 등록
 	public int ajaxInsertComm(CommVO commVO);
+	
+	// 상세 공통 코드, 이름 불러오기(성하)
+	public List<CommdVO> getCommdCdNm(String commCd);
+
 	
 	
 	// ajax 자재 코드 불러오기

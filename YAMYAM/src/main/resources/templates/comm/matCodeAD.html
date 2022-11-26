@@ -73,7 +73,7 @@ width:80%;	display: inline;
 					<span class="col-sm-4" style="width: 190px;"><input type="text" name="mtrSfamt" id="mtrSafeAmount"></span>
 				</div>
 				
-				<input type="hidden" name="mtrUn" id="mtrUn">
+				<input type="hidden" name="mtrUn" id="mtrUse">
 					<label class="col-sm-2">&nbsp;&nbsp;사용여부</label>
 					<span class="col-sm-4" style="width: 190px;" id="select-box3"></span>
 				
@@ -346,6 +346,13 @@ width:80%;	display: inline;
 				}
 			})
 			
+			mtrCode.value = rowData[0].mtrCd;
+			mtrName.value = rowData[0].mtrNm; 
+			mtrStandard.value = rowData[0].mtrStd;
+			mtrUnit.value = rowData[0].mtrUn;
+			actCode.value = rowData[0].actCd;
+			mtrSafeAmount.value = rowData[0].mtrSfamt;
+			mtrUse.value = rowData[0].mtrUn;
 			
 			
 		}) 
