@@ -5,7 +5,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.mandu.yamyam.comm.service.CommdVO;
 import com.mandu.yamyam.comm.service.EmpVO;
 import com.mandu.yamyam.eqp.mapper.EqpMapper;
 import com.mandu.yamyam.eqp.service.ChkVO;
@@ -52,22 +51,10 @@ public class EqpServiceImpl implements EqpService {
 		return eqpMapper.getEqpActList();
 	}
 
-	// 설비상태 리스트 조회
-	@Override
-	public List<CommdVO> getEqpStsList() {
-		return eqpMapper.getEqpStsList();
-	}
-
 	// 설비목록 모달 조회
 	@Override
 	public List<EqpVO> getEqpListModal() {
 		return eqpMapper.getEqpListModal();
-	}
-
-	// 상세공통 설비구분 코드/명 조회
-	@Override
-	public List<EqpVO> getEqpTypeListModal() {
-		return eqpMapper.getEqpTypeListModal();
 	}
 
 	// 설비 삭제
@@ -79,12 +66,6 @@ public class EqpServiceImpl implements EqpService {
 			result += eqpMapper.eqpDelete(list.get(i));
 		}
 		return result;
-	}
-
-	// 비가동구분 리스트 조회
-	@Override
-	public List<CommdVO> getUopTypeList() {
-		return eqpMapper.getEqpStsList();
 	}
 
 	// 비가동 리스트 조회(일주일치)
@@ -128,12 +109,6 @@ public class EqpServiceImpl implements EqpService {
 		return eqpMapper.getUop(eqpCd);
 	}
 
-	// 설비 구분 전체 조회
-	@Override
-	public List<CommdVO> getEqpTypeList() {
-		return eqpMapper.getEqpTypeList();
-	}
-	
 	// 설비 점검 전체 조회(일주일치)
 	@Override
 	public List<ChkVO> getChkList() {
