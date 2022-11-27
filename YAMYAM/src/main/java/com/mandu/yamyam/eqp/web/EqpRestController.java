@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.mandu.yamyam.comm.service.CommService;
+import com.mandu.yamyam.comm.service.CommdVO;
 import com.mandu.yamyam.comm.service.EmpVO;
 import com.mandu.yamyam.eqp.service.ChkVO;
 import com.mandu.yamyam.eqp.service.EqpService;
@@ -18,6 +20,8 @@ import com.mandu.yamyam.eqp.service.UopVO;
 public class EqpRestController {
 	@Autowired
 	EqpService eqpService;
+	@Autowired
+	CommService commService;
 	
 	// 설비 리스트 전체 조회
 	@GetMapping("/getEqpList")
@@ -39,8 +43,8 @@ public class EqpRestController {
 
 	// 상세공통 설비구분 코드/명 조회
 	@GetMapping("/eqpTypeListModal")
-	public List<EqpVO> getEqpTypeListModal() {
-		return eqpService.getEqpTypeListModal();
+	public List<CommdVO> getEqpTypeListModal() {
+		return  commService.getCommdCdNm("EQP-TYPE");
 	}
 	
 	// 설비 삭제

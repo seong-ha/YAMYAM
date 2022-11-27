@@ -2,7 +2,6 @@ package com.mandu.yamyam.eqp.service;
 
 import java.util.List;
 
-import com.mandu.yamyam.comm.service.CommdVO;
 import com.mandu.yamyam.comm.service.EmpVO;
 
 public interface EqpService {
@@ -18,20 +17,11 @@ public interface EqpService {
 	// 설비업체 전체 조회
 	List<EqpVO> getEqpActList();
 	
-	// 설비가동여부 리스트 조회
-	List<CommdVO> getEqpStsList();
-
 	// 설비목록 모달 조회
 	List<EqpVO> getEqpListModal();
 	
-	// 상세공통 설비구분 코드/명 조회
-	List<EqpVO> getEqpTypeListModal();
-	
 	// 설비 삭제
 	int eqpDelete(List<EqpVO> list);
-	
-	// 설비상태 리스트 조회
-	List<CommdVO> getUopTypeList();
 	
 	// 비가동 리스트 조회(일주일치)
 	List<UopVO> getUopList();
@@ -47,9 +37,6 @@ public interface EqpService {
 	
 	// 비가동중인 설비 비가동 정보 가져오기
 	UopVO getUop(String eqpCd);
-	
-	// 설비 구분 전체 조회
-	List<CommdVO> getEqpTypeList();
 	
 	// 설비 점검 전체 조회(일주일치)
 	List<ChkVO> getChkList();

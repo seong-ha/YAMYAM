@@ -110,25 +110,10 @@
 		WHERE act_div = 'ACT-TYPE3'
 	</select>
 	
-	<!-- 공통 - 설비 상태 전체조회  -->
-	<select id="getEqpStsList" resultType="com.mandu.yamyam.common.LowerKeyMap">
-		SELECT commd_cd, commd_nm
-		FROM c_commd
-		WHERE comm_cd = 'EQP-STS'
-	</select>
-	
 	<!-- 설비관리 - 설비목록 모달 조회 -->
 	<select id="getEqpListModal" resultType="com.mandu.yamyam.common.LowerKeyMap">
 		SELECT eqp_cd, eqp_nm, find_code_name(eqp_type) AS "eqp_type" 
 		FROM e_eqp
-	</select>
-	
-	<!-- 공통 - 상세공통 설비구분 코드/명 조회 -->
-	<select id="getEqpTypeListModal" resultType="com.mandu.yamyam.common.LowerKeyMap">
-		SELECT commd_cd AS "eqp_type_cd",
-		       commd_nm AS "eqp_type_nm"
-		 FROM c_commd
-		 WHERE comm_cd = 'EQP-TYPE'
 	</select>
 	
 	<!-- 설비관리 - 설비 삭제 -->
@@ -136,13 +121,6 @@
 		DELETE FROM e_eqp
 		WHERE eqp_cd = #{eqpCd}
 	</delete>
-	
-	<!-- 공통 - 비가동구분 리스트 조회 -->
-	<select id="getUopTypeList" resultType="com.mandu.yamyam.eqp.service.EqpVO">
-		select commd_cd, commd_nm
-		from   c_commd
-		where  comm_cd = 'UOP-TYPE'
-	</select>
 	
 	<!-- 비가동 - 비가동 리스트 조회 -->
 	<select id="getUopList" resultType="com.mandu.yamyam.common.LowerKeyMap">
@@ -224,13 +202,6 @@
 		FROM e_uop
 		WHERE eqp_cd = #{value}
 		  AND uop_etime IS NULL
-	</select>
-	
-	<!-- 공통 - 설비 구분 전체조회  -->
-	<select id="getEqpTypeList" resultType="com.mandu.yamyam.common.LowerKeyMap">
-		SELECT commd_cd, commd_nm
-		FROM c_commd
-		WHERE comm_cd = 'EQP-TYPE'
 	</select>
 	
 	<!-- 설비점검 - 설비 점검 전체 조회(일주일치) -->
