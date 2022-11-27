@@ -30,6 +30,7 @@
 				<td style="width: 140px;">불량분류 &nbsp;</td>
 				<td>
 					<select id="errPro" name="errPro">
+					<option>선택</option>
 					<option th:each="eCode : ${eCode}" th:text="${eCode.commdNm}" th:value="${eCode.commdCd}"></option>								
 					</select>
 				</td>
@@ -115,16 +116,14 @@
 						<tr>
 							<td style="width: 80px">공정 분류 &nbsp;</td>
 							<td>
-								<select id="eqpType" name="eqpType">
-							    <option value="eqpType1" selected>혼합</option>
-							    <option value="eqpType2">성형</option>
-							    <option value="eqpType3">증숙</option>
-							    <option value="eqpType4">냉동</option>	
-							    <option value="eqpType5">포장</option>		
-							    <option value="eqpType6">박스</option>							
+								<select id="pList" name="pList">
+							    <option th:each="pCode : ${pCode}" th:text="${pCode.commdNm}" th:value="${pCode.commdCd}"></option>						
 								</select>
 							</td>
-							<td><button type="button" id="pSBtn" class="btn btn-dark btn-sm">검색</button></td>
+							<td>
+								<button type="button" id="pSBtn" class="btn btn-dark btn-sm">검색</button>
+								<button type="button" id="pRBtn" class="btn btn-dark btn-sm">초기화</button>
+							</td>
 						</tr>
 					</table>
 						
@@ -137,7 +136,7 @@
 	</div>
 	
 	
-	<!-- 불량코드 모달 -->
+	<!-- 불량코드 모달
 	<div class="modal" id="eModal" tabindex="-1">
 		<div class="modal-dialog" >
 			<div class="modal-content">
@@ -152,13 +151,13 @@
 				</div>
 			</div>
 		</div>
-	</div>
+	</div> -->
 <script>
 
 	let grid = gridInit()					// 실적조회 grid 초기화
 	let orModalGrid = orModalGridInit();	// 생산지시목록 모달 grid
 	let pModalGrid = pModalGridInit();		// 공정목록 모달 grid
-	let eModalGrid = eModalGridInit(); 		// 불량코드 모달 grid
+	//let eModalGrid = eModalGridInit(); 		// 불량코드 모달 grid
 	
 	cancelBtnHandler();  	  // date picker input 값 초기화 버튼
 	searchBtnHandler();	 	  // date picker input 값 조회 버튼
@@ -168,9 +167,10 @@
 	mCBtnHandler();			  // date picker 값 초기화 버튼 (생산지시모달 그리드)
 	orModalClickHandler(); 	  // 생산지시목록 모달 grid 클릭 이벤트
 	pSBtnHandler();			  // 공정분류 선택 클릭 이벤트
+	pRBtnHandler();			  // 공정분류 선택 초기화 이벤트
 	pModalClickHandler();	  // 공정목록 모달 grid 클릭 이벤트
-	gridClick(); 			  // 생산지시 그리드 클릭 이벤트(불량코드 모달 오픈)
-	eModalClickHandler();	  // 불량코드 모달 그리드 클릭 이벤트
+	//gridClick(); 			  // 생산지시 그리드 클릭 이벤트(불량코드 모달 오픈)
+	//eModalClickHandler();	  // 불량코드 모달 그리드 클릭 이벤트
 	
 	/*------------
 	// date-picker
@@ -181,30 +181,19 @@
 	rangeDatepickerInit('#startpicker-i', '#startpicker-c','#endpicker-i','#endpicker-c')
 	
 	/*------------
-	// 진행생산지시 grid
+	// 공정실적조회 grid
 	----------------*/
 	
 	function gridInit(){
 		let grid = new tui.Grid({
 			el: document.getElementById('grid'),
-			/* // 임시 데이터
-			data: [{
-				podCd : '',
-				pplnCd : '',
-				eqpCd : '',
-				plineCd : '',
-				pproInAmt : '',
-				pproOtAmt : '',
-				pproErAmt : '',
-				pproErCd : '',
-				pproErDtl : '',
-				pproSTime : '',
-				pproETime : '',
-				pproEmpName : '',
-				podDate : ''
-			}], */
 			scrollX: false,
 			scrollY: false,
+			pageOptions: {
+			    useClient: true,	// front에서만 페이징 하는 속성
+			    perPage: 8
+			  },
+			pagination : true,
 			rowHeaders: ['rowNum'],
 			columns: [
 				{
@@ -212,12 +201,13 @@
 					name: 'podCd'
 				},
 				{
-					header: '생산코드',
+					header: '생산공정코드',
 					name: 'pproCd'
 				},
 				{
 					header: '설비코드',
-					name: 'eqpCd'
+					name: 'eqpCd',
+					width : '90'
 				},
 				{
 					header: '설비명',
@@ -225,15 +215,18 @@
 				},
 				{
 					header: '투입량',
-					name: 'pproInAmt'
+					name: 'pproInAmt',
+					width : '80'
 				},
 				{
 					header: '생산량',
-					name: 'pproOtAmt'
+					name: 'pproOtAmt',
+					width : '80'
 				},
 				{
 					header: '불량량',
-					name: 'pproErAmt'
+					name: 'pproErAmt',
+					width : '80'
 				},
 				{
 					header: '불량코드',
@@ -245,22 +238,33 @@
 				},
 				{
 					header: '시작시간',
-					name: 'pproSTime'
+					name: 'pproSTime',
+					width : '150'
 				},
 				{
 					header: '종료시간',
-					name: 'pproETime'
+					name: 'pproETime',
+					width : '150'
 				},
 				{
 					header: '담당자',
-					name: 'pproEmpName'
+					name: 'pproEmpName',
+					width : '70'
 				},
 				{
 					header: '지시일자',
-					name: 'podDates'
+					name: 'podDates',
+					width : '90'
 				}
 			]
 		});
+		
+		$.ajax({
+			url : '/getProResult',
+			method: "GET",			
+		}).then(res=>{
+			grid.resetData(res);
+		})
 		return grid;
 	}
 	
@@ -283,28 +287,22 @@
 	function orModalGridInit(){
 		let orModalGrid = new tui.Grid({
 			el: document.getElementById('orModalGrid'),
-			// 임시 데이터
-			data: [{
-				podCd : 'PID-20221117-001',
-				prdNm : '얇은피 고기만두',
-				poddAmt : '500'
-			}],
-			// data 가져오는 법
-			// data: {
-			// 	api: {
-			// 		readData: {
-			// 			url: '/api/readData',
-			// 			method: 'GET'
-			// 		}
-			// 	}
-			// },
 			scrollX: false,
 			scrollY: false,
+			pageOptions: {
+			    useClient: true,	// front에서만 페이징 하는 속성
+			    perPage: 8
+			  },
+			pagination : true,
 			rowHeaders: ['rowNum'],
 			columns: [
 				{
 					header: '생산지시코드',
 					name: 'podCd'
+				},
+				{
+					header: '상세지시코드',
+					name: 'poddCd'
 				},
 				{
 					header: '제품명',
@@ -313,9 +311,20 @@
 				{
 					header: '생산량',
 					name: 'poddAmt'
-				}
+				},
+				{
+					header: '지시등록일자',
+					name: 'podDates'
+				},
 			]
 		});
+		$.ajax({
+			url : '/viewOrderList',
+			method: "GET",			
+		}).then(res=>{
+			orModalGrid.resetData(res);
+		})
+
 		return orModalGrid;
 	}
 	
@@ -327,22 +336,13 @@
 	function pModalGridInit(){
 		let pModalGrid = new tui.Grid({
 			el: document.getElementById('pModalGrid'),
-			// 임시 데이터
-			data: [{
-				pproCd : 'PRO-BLEN-001',
-				pproName : '혼합 공정',
-				eqpCd : 'LHS-0001',
-				eqpName : '만두머신-1'
-			},
-			{
-				pproCd : 'PRO-SHAP-001',
-				pproName : '성형 공정',
-				eqpCd : 'LHS-0002',
-				eqpName : '만두머신-2'
-			}
-			],
 			scrollX: false,
 			scrollY: false,
+			pageOptions: {
+			    useClient: true,	// front에서만 페이징 하는 속성
+			    perPage: 8
+			  },
+			pagination : true,
 			rowHeaders: ['rowNum'],
 			columns: [
 				{
@@ -359,7 +359,7 @@
 				},
 				{
 					header: '설비명',
-					name: 'eqpName'
+					name: 'eqpNm'
 				}
 			]
 		});
@@ -405,7 +405,10 @@
 	
 			let podCd = orModalGrid.getValue(ev.rowKey, 'podCd')
 			$('#orderCd').attr("value",podCd);
-			$('#orderModal').modal('hide');
+			if(podCd != null){
+					$('#orderModal').modal('hide');
+			}	
+			
 		
 		});
 	}
@@ -419,8 +422,10 @@
 	
 			let pproName = pModalGrid.getValue(ev.rowKey, 'pproName')
 			$('#prName').attr("value",pproName);
-			$('#pModal').modal('hide');
-		
+			
+			if(pproName != null){
+				$('#pModal').modal('hide');
+			}		
 		});
 	}
 	
@@ -431,20 +436,36 @@
 
 		$('#searchBtn').on('click',function(){
 			// 지시코드
-			let orderCd = $('#orderCd').val();
+			let podCd = $('#orderCd').val();
 			// 공정명
-			let prName = $('#prName').val();
+			let pproName = $('#prName').val().substr(0, 2);
 			// 불량분류
-			let eName = $('select[name=errPro] option:selected').val();
+			let pproErCd = $('select[name=errPro] option:selected').val();
 			// 계획일자
 			let getStartDay = $("#startpicker-input").val();
 			let getEndDay = $("#endpicker-input").val();
-			console.log('지시코드 : ' + orderCd + '공정명 : ' + prName + '불량분류 : ' + eName)
-			console.log('계획일자 : ' + getStartDay,getEndDay);
+			if(pproErCd == '선택'){
+				$.ajax({
+					url : '/getProResult',
+					method: "GET",
+					contentType: 'application/json',
+					dataType : 'json',
+					data : {"podCd" : podCd, "pproName" : pproName, "startDate" : getStartDay, "endDate" : getEndDay}
+					}).then(res=>{
+					grid.resetData(res);
+					})
+			}else {
+				$.ajax({
+					url : '/getProResult',
+					method: "GET",
+					contentType: 'application/json',
+					dataType : 'json',
+					data : {"podCd" : podCd, "pproName" : pproName, "pproErCd" : pproErCd, "startDate" : getStartDay, "endDate" : getEndDay}
+					}).then(res=>{
+					grid.resetData(res);
+					})
+			}
 			
-			// 갖고온 start, end 값을 넘겨서 select 해오기
-			// ajax 받아오고
-			// success : function(data){manageGrid.resetData(data);}
 			
 		})
 	}
@@ -455,14 +476,36 @@
 	function pSBtnHandler(){
 
 		$('#pSBtn').on('click',function(){
-			let pName = $('select[name=eqpType] option:selected').val(); // 공정분류 선택값
+			let pproSts = $('select[name=pList] option:selected').val(); // 공정분류 선택값
+			
+			$.ajax({
+				url : '/flowProgress',
+				contentType: 'application/json',
+				dataType : 'json',
+				data : {"pproSts" : pproSts},
+				method: "GET",
+				success : function(data){pModalGrid.resetData(data);},
+				error : function(reject){console.log(reject);}				
+			})
+		})
+	}
+	
+	
+	/*------------
+	// 공정분류 선택 초기화 핸들러
+	----------------*/
+	function pRBtnHandler(){
 
-			console.log('공정분류 : ' + pName);
+		$('#pRBtn').on('click',function(){
 			
-			// 갖고온 start, end 값을 넘겨서 select 해오기
-			// ajax 받아오고
-			// success : function(data){manageGrid.resetData(data);}
-			
+			$.ajax({
+				url : '/flowProgress',
+				contentType: 'application/json',
+				dataType : 'json',
+				method: "GET",
+				success : function(data){pModalGrid.resetData(data);},
+				error : function(reject){console.log(reject);}				
+			})
 		})
 	}
 	
@@ -475,6 +518,12 @@
 
 			$("#startpicker-input").val(today);
 			$("#endpicker-input").val(today);
+			$.ajax({
+				url : '/getProResult',
+				method: "GET",			
+			}).then(res=>{
+				grid.resetData(res);
+			})
 		});	
 	}
 	
@@ -505,7 +554,15 @@
 		$('#prName').on('click',function(){
 	
 			 $("#pModal").modal("show");
-
+			// flowProgress
+			$.ajax({
+				url : '/flowProgress',
+				contentType: 'application/json',
+				dataType : 'json',
+				method: "GET",
+				success : function(data){pModalGrid.resetData(data);},
+				error : function(reject){console.log(reject);}				
+			})
 			// 모달이 로드 되는데 시간이 걸리므로 인터벌 걸어주기
 			setInterval(function(){
 				pModalGrid.refreshLayout()
@@ -539,12 +596,16 @@
 			// 계획일자
 			let getStartDay = $("#modalDate div #startpicker-i").val();
 			let getEndDay = $("#modalDate div #endpicker-i").val();
-			console.log('계획일자 : ' + getStartDay,getEndDay);
 			
-			// 갖고온 start, end 값을 넘겨서 select 해오기
-			// ajax 받아오고
-			// success : function(data){manageGrid.resetData(data);}
-			
+			$.ajax({
+				url : '/viewOrderList',
+				data : {"startDate" : getStartDay, "endDate" : getEndDay},
+				contentType: 'application/json',
+				dataType : 'json',
+				method: "GET",
+				success : function(data){orModalGrid.resetData(data);},
+				error : function(reject){console.log(reject);}				
+			})
 		})
 	}
 	

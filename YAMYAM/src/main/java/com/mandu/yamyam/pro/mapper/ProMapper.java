@@ -6,17 +6,7 @@ import java.util.Map;
 import com.mandu.yamyam.pro.service.ProVO;
 
 public interface ProMapper {
-	/*---------------
-	// 공통코드
-	----------------*/
-	// 공정분류
-	public List<ProVO> getCommP();
 	
-	// 에러코드
-	public List<ProVO> getCommE();
-	
-	// 입력될 생산 우선순위 조회
-	public int getPrioNo();
 	/*---------------
 	// 생산 계획 관리(관리탭)
 	----------------*/
@@ -110,6 +100,8 @@ public interface ProMapper {
 	// 제품 공정 목록 조회 (생산시작후)
 	public List<ProVO> afterProgress(ProVO vo);
 	
+	// 완제품 재고 생성
+	public int insertBIn(ProVO vo);
 	
 	/*---------------
 	// 공정 실적 조회
@@ -122,6 +114,17 @@ public interface ProMapper {
 	----------------*/
 	public List<ProVO> getProList(ProVO vo);
 	
+	// 미사용 설비 조회
+	public List<ProVO> noUseEqp();
+
+	// 공정 등록
+	public int insertProManage(ProVO vo);
+	
+	// 공정 삭제
+	public int updateProManage(ProVO vo);
+	
+	// 공정 삭제
+	public int deleteProManage(ProVO vo);
 	
 	/*---------------
 	// 제품 공정 흐름도
@@ -132,6 +135,4 @@ public interface ProMapper {
 	// 제품 공정 흐름도 관리
 	public List<ProVO> flowManage(ProVO vo);
 	
-	// 미사용 설비 조회
-	public List<ProVO> noUseEqp();
 }

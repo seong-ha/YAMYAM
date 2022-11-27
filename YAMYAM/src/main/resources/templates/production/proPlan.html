@@ -129,7 +129,6 @@
 								</tr>
 								<tr>
 									<td style="text-align: left;" colspan="2">
-										<!-- 모달버튼 -->
 										<button type="button" id="showBtn"
 											class="btn btn-dark btn-sm"
 											data-bs-toggle="modal" data-bs-target="#requestModal">생산요청서
@@ -251,6 +250,11 @@
 	function tab1GridInit(){
 			let manageGrid = new tui.Grid({
 			el : document.getElementById('manageGrid'),
+			pageOptions: {
+				    useClient: true,	// front에서만 페이징 하는 속성
+				    perPage: 5
+				  },
+			pagination : true,
 			scrollX : false,
 			scrollY : false,
 			rowHeaders: ['rowNum'],
@@ -272,7 +276,7 @@
 				header : '진행구분',
 				name : 'pplndSts',
 				filter: {
-			        type: 'select'			  
+			        type: 'select'  
 			      }
 			}]
 		});
@@ -284,7 +288,7 @@
 		})
 		return manageGrid;	
 	}
-
+	
 	
 	/*------------
 	// 생산계획 관리 탭(상세계획)
@@ -358,8 +362,8 @@
 	function getDetailBtnhandler(){
 	// 계획 관리 그리드 클릭시 상세계획그리드에 출력
 	manageGrid.on('click', function(ev) {
-		let pplnCd = manageGrid.getRow(ev.rowKey).pplnCd;
-		//detailGrid.resetData(data);
+		let data = manageGrid.getRow(ev.rowKey);
+		let pplnCd = data.pplnCd;
 		$.ajax({
 		url : '/plandList',
 		method: "GET",
@@ -620,9 +624,9 @@
 	function insertClickHandler(){
 		// 빈창 클릭시 데이터
 		insertGrid.on('click', (ev) => {
-			if(!ev.rowKey){
+			/* if(!ev.rowKey){
 				return;
-			}
+			} */
 			let prdNm = insertGrid.getValue(ev.rowKey, 'prdNm')
 				
 			if(prdNm == null){
@@ -647,15 +651,6 @@
 	function materialGridInit(){
 		let materialGrid = new tui.Grid({
 			el : document.getElementById('materialGrid'),
-			// data 가져오는 법
-			// data: {
-			// 	api: {
-			// 		readData: {
-			// 			url: '/api/readData',
-			// 			method: 'GET'
-			// 		}
-			// 	}
-			// },
 			scrollX : false,
 			scrollY : false,
 			rowHeaders: ['rowNum'],
@@ -831,27 +826,13 @@
 									// 실패
 									Swal.fire('등록에 실패했습니다.');	
 									}			 		  
-									});	
-							}) // sweetconfirm 끝
+							});	
+					 }) // sweetconfirm 끝
 
-			} // else
+				} // else
 			}
-			// toastr
-			/* toastr.options = {
-					  "closeButton": true,
-					  "newestOnTop": true,
-					  "positionClass": "toast-top-center",
-					  "preventDuplicates": true,
-					  "extendedTimeOut" : 0, 
-					  "timeOut" : 0
-					} */
-			// if() insert 성공시 -> 
-			//toastr.success('성공');
-			// toastr.warning('경고');
-			// toastr.error('실패'); 
-			//console.log(data);
 
-			});
+		});
 	}
 	
 	</script>

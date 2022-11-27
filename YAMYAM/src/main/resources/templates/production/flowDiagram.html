@@ -27,9 +27,9 @@
 					</tr>
 					<tr>
 						<td>제품코드 : </td>
-						<td><input type="text" id="pName" name="pName" readonly="readonly"></td>
+						<td><input type="text" id="pName" name="pName"></td>
 						<td>라인코드 : </td>
-						<td><input type="text" id="lineName" name="lineName" readonly="readonly"></td>
+						<td><input type="text" id="lineName" name="lineName"></td>
 					</tr>
 						 
 				 </table>
@@ -50,7 +50,7 @@
 		<div class="modal-dialog" >
 			<div class="modal-content">
 				<div class="modal-header">
-					<h4 class="modal-title">미사용 설비 목록</h4>
+					<h4 class="modal-title">공정 목록</h4>
 					<button type="button" class="btn-close" data-bs-dismiss="modal"	aria-label="Close" id="close_modal"></button>
 				</div>
 				<div class="modal-body">					
@@ -68,7 +68,7 @@
 		let listModalGrid = listModalGridInit();	// 공정목록 모달 그리드
 
 		
-		flowGridClick();		  //공정흐름도 그리드 클릭 이벤트
+		flowGridClick();		  // 공정흐름도 그리드 클릭 이벤트
 		flowManageClick();  	  // 흐름도 관리 그리드 클릭 이벤트
 		listModalGridClick();	  // 공정목록 모달 그리드 클릭 이벤트
 		deleteBtnHandler();  	  // 그리드 행 삭제버튼 이벤트
@@ -145,25 +145,6 @@
 		function listModalGridInit(){
 			let listModalGrid = new tui.Grid({
 				el: document.getElementById('listModalGrid'),
-				// 임시 데이터
-				data: [
-				{
-					pproCd:'PRO-BLEN-001',
-					pproName : '혼합 공정',
-					eqpCd : 'LHS-001',
-					eqpNm : '만두머신-1'
-				},{
-					pproCd:'PRO-SHAP-001',
-					pproName : '성형 공정',
-					eqpCd : 'LHS-002',
-					eqpNm : '만두머신-2'
-				},{
-					pproCd:'PRO-FREZ-001',
-					pproName : '냉동 공정',
-					eqpCd : 'LHS-003',
-					eqpNm : '만두머신-3'
-				}
-				],
 				scrollX: false,
 				scrollY: false,
 				rowHeaders: ['rowNum'],
@@ -223,11 +204,19 @@
 			flowManage.on('focusChange',function(ev){
 				
 				let code = flowManage.getValue(ev.rowKey, 'pproCd')
-				console.log(code);
-	
+				let prdCd = $('#pName').val();
+
+				$.ajax({
+					url : '/flowProgress',
+					method: "GET",
+					data : {"prdCd" : prdCd}
+				}).then(res=>{
+					listModalGrid.resetData(res);
+				})
+				
 	   			$('#listModal').modal('show');
 	   			listModalGrid.refreshLayout();
-
+				
 			})
 		}
 		
@@ -270,11 +259,6 @@
 			$('#deleteBtn').on('click',function(){
 				// sweetalert2
 				sweetConfirm('D', function(){
-					
-					// DB delete
-					//ajax 
-					// 성공
-
 					Swal.fire('삭제가 완료되었습니다');
 					// grid에서 삭제
 					flowManage.removeCheckedRows();
@@ -306,8 +290,8 @@
 							
 							// DB delete
 							// ajax 받아오고
-							// success : function(data){insertGrid.resetData(data);}
-			
+							// success : function(data){console.log(data);}
+							// 생산공정(라인코드_업데이트) / 생산라인 (insert)
 							Swal.fire('등록이 완료되었습니다');
 							// grid에서 등록
 							// insertGrid.resetData(data);

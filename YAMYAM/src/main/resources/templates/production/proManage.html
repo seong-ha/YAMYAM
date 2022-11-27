@@ -35,7 +35,8 @@
 					<td colspan="3" style="text-align: right;">
 						<button type="button" id="plusBtn" class="btn btn-dark btn-sm">행 추가</button>
 						<button type="button" id="removeBtn" class="btn btn-dark btn-sm">행 삭제</button>
-						<button type="button" id="insertBtn" class="btn btn-dark btn-sm">저장</button>
+						<button type="button" id="insertBtn" class="btn btn-dark btn-sm">입력</button>
+						<button type="button" id="updateBtn" class="btn btn-dark btn-sm">수정</button>
 					</td>
 				</tr>
 			</table>
@@ -62,11 +63,11 @@
 		let grid = gridInit();				    // 공정관리 그리드
 		let eqModalGrid = eqModalGridInit();	// 미사용 설비 모달 그리드
 
-		
 		searchBtnHandler();	 	// 검색 버튼 이벤트 핸들러
 		plusBtnHandler(); 	 	// 그리드 행 추가 이벤트 핸들러
 		removeBtnHandler();  	// 그리드 행 삭제 이벤트 핸들러
-		insertBtnHandler();		// 그리드 행 저장 이벤트 핸들러
+		insertBtnHandler();		// 그리드 행 입력 이벤트 핸들러
+		updateBtnHandler();		// 그리드 행 수정 이벤트 핸들러
 		gridClick(); 			// 공정관리 그리드 클릭 이벤트
 		eqModalGridClick();		// 미사용 설비 모달  그리드 클릭 이벤트
 		cancelBtnHandler();     // 값 초기화 버튼
@@ -77,9 +78,13 @@
 		function gridInit(){
 			let grid = new tui.Grid({
 				el : document.getElementById('grid'),
-				bodyHeight: 510,
+				pageOptions: {
+				    useClient: true,	// front에서만 페이징 하는 속성
+				    perPage: 10
+				  },
+				pagination : true,
 				scrollX : false,
-				scrollY : true,
+				scrollY : false,
 				rowHeaders: ['checkbox','rowNum'],				
 				columns : [ 
 				{
@@ -93,12 +98,12 @@
 					      type: 'select',
 					      options: {
 					        listItems: [
-					          {text: '혼합', value: '혼합'},
-					          {text: '성형', value: '성형'},
-					          {text: '증숙', value: '증숙'},
-					          {text: '냉동', value: '냉동'},
-					          {text: '포장', value: '포장'},
-				          	  {text: '박스', value: '박스'}]
+					          {text: '혼합', value: 'EQP-TYPE1'},
+					          {text: '성형', value: 'EQP-TYPE2'},
+					          {text: '증숙', value: 'EQP-TYPE3'},
+					          {text: '냉동', value: 'EQP-TYPE4'},
+					          {text: '포장', value: 'EQP-TYPE5'},
+				          	  {text: '박스', value: 'EQP-TYPE6'}]
 					      }
 					}
 				}, {
@@ -107,10 +112,11 @@
 					editor : 'text'
 				}, {
 					header : '설비명',
-					name : 'eqpNm'				
+					name : 'eqpNm',
+					editor : 'text'
 				}, {
 					header : '설비코드',
-					name : 'eqpCd',
+					name : 'eqpCd'
 				}, {
 					header : '모델명',
 					name : 'mdNm',
@@ -171,7 +177,7 @@
 					},
 					{
 						header: '관리자',
-						name: 'pproEmpName'
+						name: 'chkEmp'
 					}
 				]
 			});
@@ -184,11 +190,10 @@
 		----------------*/
 		function gridClick(){
 			grid.on('click',function(ev){
-				if(!ev.rowKey){
-					return;
-				}
-				let name = grid.getValue(ev.rowKey, 'eqpNm')
-				if(name == null){
+				let rk = grid.getFocusedCell().rowKey;
+				let val = grid.getRow(rk).eqpNm;
+				console.log(val);
+				if(rk != null && val == null || val == ''){
 					$.ajax({
 						url : '/noUseEqp',
 						method: "GET",			
@@ -208,7 +213,6 @@
 		function eqModalGridClick(){
 			eqModalGrid.on('click',function(ev){
 				let data = eqModalGrid.getRow(ev.rowKey);
-
 				let eqpCd = data.eqpCd;
 				let eqpNm = data.eqpNm;
 				let mdNm = data.mdNm;
@@ -261,6 +265,7 @@
 			});	
 		}
 		
+		
 		/*------------
 		// 그리드 행 추가 버튼 이벤트 핸들러
 		----------------*/
@@ -269,10 +274,11 @@
 			$('#plusBtn').on('click',function(){
 		
 				let rowData = [{pproCd : '',pproSts : '',pproName : '', eqpNm : '',	eqpCd : '',	mdName : '', pproEmpName : ''}]
-				grid.appendRow(rowData);
+				grid.appendRow(rowData,{at : 0});
 			});
 
 		}
+		
 		
 		/*------------
 		// 삭제 버튼 클릭(그리드행 삭제)
@@ -283,14 +289,32 @@
 				// sweetalert2
 				sweetConfirm('D', function(){
 					
-					// DB delete
-					//ajax 
-					// 성공
+					let data = grid.getCheckedRows();
+					console.log(data);
+					let dataList = [];
+					
+					for(let i=0; i<data.length;i++){
+						let pproCd = data[i].pproCd;
+						dataList.push({pproCd})
+					}
 
-					Swal.fire('삭제가 완료되었습니다');
-					// grid에서 삭제
-					grid.removeCheckedRows();
-					// 실패
+					$.ajax({
+						url : '/deleteProManage',
+						method: 'POST',
+						contentType : 'application/json',
+						data : JSON.stringify(dataList),
+						dataType : 'json',
+						success : function(data){
+								  Swal.fire('삭제 완료되었습니다');
+								  grid.removeCheckedRows();
+								  grid.refreshLayout();
+								},
+						error : function(reject){
+								console.log(reject);
+								// 실패
+								Swal.fire('삭제 실패했습니다.');	
+						}			 		  
+					});	 
 				})
 				
 			});	
@@ -302,18 +326,75 @@
 		// 저장 버튼 클릭 이벤트 핸들러 (수행시 공정테이블에 insert)
 		----------------*/	
 		function insertBtnHandler(){
-			// grid 선택 행 삭제
 			$('#insertBtn').on('click',function(){
 				// sweetalert2
 				sweetConfirm('C', function(){
+					let data = grid.getCheckedRows();
+					let dataList = [];
+					let moData = grid.getModifiedRows().updatedRows;
+					for(let i=0; i<data.length;i++){
+						let pproCd = data[i].pproCd;
+						let eqpCd = data[i].eqpCd;
+						let pproName = data[i].pproName;
+						let pproEmpName = data[i].pproEmpName;
+						let pproSts = data[i].pproSts;
+						dataList.push({pproCd, eqpCd, pproName, pproEmpName, pproSts})
+						
+					}
 					
-					// DB delete
-					//ajax 
-					// 성공
-
-					Swal.fire('저장이 완료되었습니다');
+					$.ajax({
+						url : '/deleteProManage',
+						method: 'POST',
+						contentType : 'application/json',
+						data : JSON.stringify(dataList),
+						dataType : 'json',
+						success : function(data){
+								 Swal.fire('저장 완료되었습니다');
+								// grid에서 수정
+								  grid.refreshLayout();
+								},
+						error : function(reject){
+								console.log(reject);
+								// 실패
+								Swal.fire('저장 실패했습니다.');	
+						}			 		  
+					});	 	
 					
-					// 실패
+				})
+				
+			});	
+		}
+		
+		
+		/*------------
+		// 수정 버튼 클릭 이벤트 핸들러 (수행시 공정테이블에 update)
+		----------------*/	
+		function updateBtnHandler(){
+			$('#updateBtn').on('click',function(){
+				// sweetalert2
+				sweetConfirm('U', function(){
+					let data = grid.getCheckedRows();
+					let moData = grid.getModifiedRows().updatedRows;
+					let pproCd = moData[0].pproCd;
+					let eqpCd = moData[0].eqpCd;
+					
+					$.ajax({
+						url : '/updateProManage',
+						method: 'POST',
+						dataType : 'json',
+						data : {"pproCd" : pproCd, "eqpCd" : eqpCd},
+						success : function(data){
+								 Swal.fire('수정 완료되었습니다');
+								// grid에서 수정
+								  grid.refreshLayout();
+								},
+						error : function(reject){
+								console.log(reject);
+								// 실패
+								Swal.fire('수정 실패했습니다.');	
+						}			 		  
+					});		
+					
 				})
 				
 			});	
