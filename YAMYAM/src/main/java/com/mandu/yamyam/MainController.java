@@ -8,8 +8,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class MainController {
 
 	// 첫 화면
-	@RequestMapping("/")
+	@RequestMapping("/main")
 	public String main(Model model) {
 		return "layout/main";
+	}
+	
+	@RequestMapping("/")
+	public String login(Model model) {
+		return "login";
 	}
 }
