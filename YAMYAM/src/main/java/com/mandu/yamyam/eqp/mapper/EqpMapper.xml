@@ -110,7 +110,7 @@
 		WHERE act_div = 'ACT-TYPE3'
 	</select>
 	
-	<!-- 공통 - 설비 상태코드 전체조회  -->
+	<!-- 공통 - 설비 상태 전체조회  -->
 	<select id="getEqpStsList" resultType="com.mandu.yamyam.common.LowerKeyMap">
 		SELECT commd_cd, commd_nm
 		FROM c_commd
@@ -167,8 +167,8 @@
 		       uop_type,
 		       find_code_name(uop_type) AS uop_type_nm,
 		       uop_info,
-		       to_char(uop_stime, 'yyyy-mm-dd hh24:mm') AS uop_stime,
-		       to_char(uop_etime, 'yyyy-mm-dd hh24:mm') AS uop_etime
+		       to_char(uop_stime, 'yyyy-mm-dd hh24:mi') AS uop_stime,
+		       to_char(uop_etime, 'yyyy-mm-dd hh24:mi') AS uop_etime
 		FROM e_uop
 		
 		<where>
@@ -208,9 +208,133 @@
 	</update>
 	
 	<!-- 비가동 - 비가동 삭제 -->
-	<delete id="deleteUop" parameterType="com.mandu.yamyam.eqp.service.UopVO">
+	<delete id="deleteUop" parameterType="String">
 		DELETE FROM e_uop
-		WHERE uop_cd = #{uopCd}
+		WHERE uop_cd = #{value}
 	</delete>
 	
+	<!-- 비가동 비가동 리스트 전체조회(일주일치) -->
+	<select id="getUop" parameterType="String" resultType="com.mandu.yamyam.eqp.service.UopVO">
+		SELECT uop_cd,
+		       eqp_cd,
+		       find_eqp_name(eqp_cd) AS eqp_nm,
+		       uop_type,
+		       uop_info,
+		       to_char(uop_stime + 9/24, 'yyyy-mm-dd hh24:mi:ss') AS uop_stime
+		FROM e_uop
+		WHERE eqp_cd = #{value}
+		  AND uop_etime IS NULL
+	</select>
+	
+	<!-- 공통 - 설비 구분 전체조회  -->
+	<select id="getEqpTypeList" resultType="com.mandu.yamyam.common.LowerKeyMap">
+		SELECT commd_cd, commd_nm
+		FROM c_commd
+		WHERE comm_cd = 'EQP-TYPE'
+	</select>
+	
+	<!-- 설비점검 - 설비 점검 전체 조회(일주일치) -->
+	<select id="getChkList" resultType="com.mandu.yamyam.common.LowerKeyMap">
+		SELECT  e.eqp_cd,
+		        find_eqp_name(e.eqp_cd) AS eqp_nm,
+		        find_code_name(e.eqp_type) AS eqp_type,
+		        e.chk_cycle,
+		        TO_CHAR(c.chk_date, 'yyyy-MM-dd') AS chk_date,
+		        TO_CHAR(c.chk_date + e.chk_cycle, 'yyyy-MM-dd') AS next_chk_date,
+		        find_code_name(c.chk_rst) AS chk_rst,
+		        c.chk_record,
+		        c.chk_emp,
+		        find_emp_name(c.chk_emp) as chk_emp_nm
+		FROM e_eqp e JOIN e_chk c
+		  ON e.eqp_cd = c.eqp_cd
+		WHERE c.chk_date BETWEEN TRUNC(CURRENT_DATE - 7) AND (CURRENT_DATE + 1)
+		ORDER BY c.chk_date
+	</select>
+	
+	<!-- 설비 직원 리스트 조회 -->
+	<select id="getEqpEmpList" resultType="com.mandu.yamyam.common.LowerKeyMap">
+		SELECT emp_no as chk_emp,
+		       emp_nm as chk_emp_nm
+		FROM c_emp
+		WHERE dept_cd = 104
+	</select>
+	
+	<!-- 점검 대상 설비 조회 -->
+	<select id="getEqpToChkList" parameterType="int" resultType="com.mandu.yamyam.common.LowerKeyMap">
+		SELECT e.eqp_cd,
+		       find_eqp_name(e.eqp_cd) AS eqp_nm,
+		       find_code_name(e.eqp_type) AS eqp_type,
+		       to_char(c.chk_date, 'yyyy-MM-dd') AS chk_date,
+		       to_char(c.chk_date + e.chk_cycle, 'yyyy-MM-dd') AS next_chk_date,
+		       e.chk_cycle
+		FROM   e_chk c RIGHT OUTER JOIN e_eqp e
+		  ON   c.eqp_cd = e.eqp_cd
+		 
+		WHERE  c.chk_date IS NULL
+		  OR   ((c.chk_date + e.chk_cycle) - CURRENT_DATE) &lt;= #{value}
+		ORDER BY ((c.chk_date + e.chk_cycle) - CURRENT_DATE)
+	</select>
+	
+	<!-- 설비 점검 등록 -->
+	<insert id="insertEqpChk" parameterType="com.mandu.yamyam.eqp.service.ChkVO">
+		INSERT INTO e_chk(
+                  chk_date,
+                  eqp_cd,
+                  chk_rst,
+                  chk_record,
+                  chk_emp
+                  )
+           VALUES (
+                   #{chkDate},
+                   #{eqpCd},
+                   name_to_code(#{chkRst}),
+                   #{chkRecord},
+                   #{chkEmp}
+                   )
+	</insert>
+	
+	<!-- 설비 점검 수정 -->
+	<update id="updateEqpChk" parameterType="com.mandu.yamyam.eqp.service.ChkVO">
+		UPDATE e_chk
+		SET    chk_rst = name_to_code(#{chkRst}),
+		       chk_record = #{chkRecord},
+		       chk_emp = #{chkEmp}
+		WHERE  chk_date = #{chkDate}
+		  AND  eqp_cd = #{eqpCd}
+	</update>
+	
+	<!-- 설비 점검 조건 조회 -->
+	<select id="findEqpChkList" parameterType="com.mandu.yamyam.eqp.service.ChkVO" resultType="com.mandu.yamyam.common.LowerKeyMap">
+		SELECT  e.eqp_cd,
+		        find_eqp_name(e.eqp_cd) AS eqp_nm,
+		        find_code_name(e.eqp_type) AS eqp_type,
+		        e.chk_cycle,
+		        TO_CHAR(c.chk_date, 'yyyy-MM-dd') AS chk_date,
+		        TO_CHAR(c.chk_date + e.chk_cycle, 'yyyy-MM-dd') AS next_chk_date,
+		        find_code_name(c.chk_rst) AS chk_rst,
+		        c.chk_record,
+		        c.chk_emp,
+		        find_emp_name(c.chk_emp) as chk_emp_nm
+		FROM e_eqp e JOIN e_chk c
+		  ON e.eqp_cd = c.eqp_cd
+		
+			<choose>
+				<when test="eqpType.equals('eqpType')">
+					WHERE e.eqp_type = e.eqp_type
+			  		AND c.chk_date BETWEEN TRUNC(#{startDate}) AND TRUNC(#{endDate})
+				</when>
+				<otherwise>
+					WHERE e.eqp_type = #{eqpType}
+			  		AND c.chk_date BETWEEN TRUNC(#{startDate}) AND TRUNC(#{endDate})
+				</otherwise>
+			</choose>
+		
+		ORDER BY c.chk_date
+	</select>
+	
+	<delete id="deleteEqpChk" parameterType="com.mandu.yamyam.eqp.service.ChkVO">
+		DELETE FROM e_chk
+		WHERE chk_date = #{chkDate}
+		  AND eqp_cd = #{eqpCd}
+	</delete>
 </mapper>

@@ -230,8 +230,33 @@
 						
 						document.getElementById('eqpCd').value = clickedRow.eqpCd;
 						document.getElementById('eqpNm').value = clickedRow.eqpNm;
+						
 					} else if (clickedRow.eqpSts == '비가동') {
-						// ajax
+						console.log(clickedRow.eqpCd);
+						$.ajax({
+							url:'/getUop',
+							type: 'post',
+							data: {eqpCd: clickedRow.eqpCd},
+							success: function (data) {
+								// 가져온 값 입력폼에 넣기
+								document.getElementById('uopCd').value = data.uopCd;
+								document.getElementById('eqpCd').value = data.eqpCd;
+								document.getElementById('eqpNm').value = data.eqpNm;
+								document.getElementById('uopType').value = data.uopType;
+								document.getElementById('uopInfo').value = data.uopInfo;
+								document.getElementById('uopStime').value = data.uopStime;
+								
+								// uopType과 uopInfo를 입력을 비활성화
+								document.getElementById('uopType').setAttribute('disabled', 'true');
+								document.getElementById('uopInfo').setAttribute('readonly', 'true');
+								
+								// 입력폼의 비가동코드 클릭이벤트를 이용해서 종료버튼만 활성화
+								document.getElementById('uopCd').click();
+							},
+							error: function (reject) {
+								console.log(reject);
+							}
+						});
 					} else {
 						document.getElementById('reset').click();
 					}
@@ -310,28 +335,36 @@
 				비가동이력 grid 클릭 시 비가동 폼에 종료시간을 제외한 정보 전부 입력 이벤트
 				--------------- */
 				selectUopGrid.on('click', function (ev) {
+					// 이전에 적혀있는것들 지워주고
 					document.getElementById('reset').click();
+					
+					// 일단 버튼들을 비활성화
 					document.getElementById('end').setAttribute('disabled', 'true');
 					document.getElementById('start').setAttribute('disabled', 'true');
 					let clickedRow = selectUopGrid.getRow(ev.rowKey);
 					
+					// uopType과 uopInfo를 입력을 활성화
 					document.getElementById('uopType').removeAttribute('disabled');
 					document.getElementById('uopInfo').removeAttribute('readonly');
 					
 					if (clickedRow.uopEtime == '' || clickedRow.uopEtime == null) {
-						// 이전에 적혀있는것들 지워주고
-						
+						// 클릭한 행의 종료시간이 없으면(비가동중이면)
+						// 해당 행 정보를 입력폼에 다 넣어주고 
 						document.getElementById('uopCd').value = clickedRow.uopCd;
 						document.getElementById('eqpCd').value = clickedRow.eqpCd;
 						document.getElementById('eqpNm').value = clickedRow.eqpNm;
 						document.getElementById('uopType').value = clickedRow.uopType;
-						document.getElementById('uopType').setAttribute('disabled', 'true');
 						document.getElementById('uopInfo').value = clickedRow.uopInfo;
-						document.getElementById('uopInfo').setAttribute('readonly', 'true');
 						document.getElementById('uopStime').value = clickedRow.uopStime;
 						
+						// uopType과 uopInfo를 입력을 비활성화
+						document.getElementById('uopType').setAttribute('disabled', 'true');
+						document.getElementById('uopInfo').setAttribute('readonly', 'true');
+						
+						// 입력폼의 비가동코드 클릭이벤트를 이용해서 종료버튼만 활성화
 						document.getElementById('uopCd').click();
 					} else {
+						// 비가동종료시간이 있다면 비가동 삭제를 할 수 있도록 입력폼에 비가동코드만 넣어준다.
 						document.getElementById('uopCd').value = clickedRow.uopCd;
 					}
 				});
@@ -497,15 +530,16 @@
 					let form = document.getElementById('insertUpdateform');
 					let formData = new FormData(form);
 					
-					for (let key of formData.keys()) {
+					/* for (let key of formData.keys()) {
 						console.log(key, ":", formData.get(key));
-					}
-					
+					} */
 					
 					let dmlType = 'U';
-					if (document.getElementById('uopCd').value == ''
-							|| document.getElementById('uopCd').value == null) {
+					if (document.getElementById('uopCd').value == '') {
 						dmlType = 'C';
+					} else if (document.getElementById('uopEtime').value == '') {
+						toastr.warning('종료시간을 입력해주세요.');
+						return;
 					}
 					
 					sweetConfirm(dmlType, function () {
@@ -516,7 +550,6 @@
 				            contentType : false,
 				            data: formData,
 							success: function (data) {
-								console.log(typeof data, data);
 								if (data == 0) {
 									toastr.error('등록에 실패했습니다.');
 								} else if (0 < data && data < 10) {
@@ -551,16 +584,13 @@
 			function uopDeleteBtn() {
 				document.getElementById('uopDelete').addEventListener('click', function () {
 					if (document.getElementById('uopCd').value != '' || document.getElementById('uopCd').value != null) {
-						let form = document.getElementById('insertUpdateform');
-						let formData = new FormData(form);
+						let uopCd = document.getElementById('uopCd').value;
 						
 						sweetConfirm('D', function () {
 							$.ajax({
 								url:'/deleteUop',
 								type : "post",
-					            processData : false,
-					            contentType : false,
-					            data: formData,
+					            data: {'uopCd': uopCd},
 								success: function (data) {
 									if (data > 0) {
 										toastr.success('정상적으로에 삭제되었습니다.');

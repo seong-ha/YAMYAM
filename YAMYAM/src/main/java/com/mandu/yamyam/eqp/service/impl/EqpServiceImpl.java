@@ -5,7 +5,10 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.mandu.yamyam.comm.service.CommdVO;
+import com.mandu.yamyam.comm.service.EmpVO;
 import com.mandu.yamyam.eqp.mapper.EqpMapper;
+import com.mandu.yamyam.eqp.service.ChkVO;
 import com.mandu.yamyam.eqp.service.EqpService;
 import com.mandu.yamyam.eqp.service.EqpVO;
 import com.mandu.yamyam.eqp.service.UopVO;
@@ -49,9 +52,9 @@ public class EqpServiceImpl implements EqpService {
 		return eqpMapper.getEqpActList();
 	}
 
-	// 설비가동여부 리스트 조회
+	// 설비상태 리스트 조회
 	@Override
-	public List<EqpVO> getEqpStsList() {
+	public List<CommdVO> getEqpStsList() {
 		return eqpMapper.getEqpStsList();
 	}
 
@@ -80,11 +83,11 @@ public class EqpServiceImpl implements EqpService {
 
 	// 비가동구분 리스트 조회
 	@Override
-	public List<EqpVO> getUopTypeList() {
-		return eqpMapper.getUopTypeList();
+	public List<CommdVO> getUopTypeList() {
+		return eqpMapper.getEqpStsList();
 	}
 
-	// 비가동 리스트 조회
+	// 비가동 리스트 조회(일주일치)
 	@Override
 	public List<UopVO> getUopList() {
 		return eqpMapper.getUopList();
@@ -109,14 +112,89 @@ public class EqpServiceImpl implements EqpService {
 
 	// 비가동 삭제
 	@Override
-	public int deleteUop(UopVO uopVO) {
-		return eqpMapper.deleteUop(uopVO);
+	public int deleteUop(String uopCd) {
+		return eqpMapper.deleteUop(uopCd);
 	}
 
 	// 비가동 리스트 조건 조회
 	@Override
 	public List<UopVO> findUopList(UopVO uopVO) {
 		return eqpMapper.findUopList(uopVO);
+	}
+
+	// 비가동중인 설비 비가동 정보 가져오기
+	@Override
+	public UopVO getUop(String eqpCd) {
+		return eqpMapper.getUop(eqpCd);
+	}
+
+	// 설비 구분 전체 조회
+	@Override
+	public List<CommdVO> getEqpTypeList() {
+		return eqpMapper.getEqpTypeList();
+	}
+	
+	// 설비 점검 전체 조회(일주일치)
+	@Override
+	public List<ChkVO> getChkList() {
+		return eqpMapper.getChkList();
+	}
+
+	// 설비 직원 리스트 조회
+	@Override
+	public List<EmpVO> getEqpEmpList() {
+		return eqpMapper.getEqpEmpList();
+	}
+
+	// 점검 대상 설비 조회
+	@Override
+	public List<ChkVO> getEqpToChkList(int days) {
+		if (days == -100) {	// 기본은 차기점검일이 7일 이하로 남은 것들
+			return eqpMapper.getEqpToChkList(7);
+		} else {
+			return eqpMapper.getEqpToChkList(days);
+		}
+	}
+
+	// 설비 점검 등록
+	@Override
+	public int insertEqpChk(List<ChkVO> list) {
+		int result = 0;
+		
+		for (int i = 0; i < list.size(); i++) {
+			result += eqpMapper.insertEqpChk(list.get(i));
+		}
+		
+		return result;
+	}
+
+	// 설비 점검 수정
+	@Override
+	public int updateEqpChk(List<ChkVO> list) {
+		int result = 0;
+		
+		for (int i = 0; i < list.size(); i++) {
+			result += eqpMapper.updateEqpChk(list.get(i));
+		}
+		
+		return result;
+	}
+
+	// 설비 점검 조건 조회
+	@Override
+	public List<ChkVO> findEqpChkList(ChkVO chkVO) {
+		return eqpMapper.findEqpChkList(chkVO);
+	}
+
+	// 설비 점검 삭제
+	@Override
+	public int deleteEqpChk(List<ChkVO> list) {
+		int result = 0;
+		
+		for (int i = 0; i < list.size(); i++) {
+			result += eqpMapper.deleteEqpChk(list.get(i));
+		}
+		return result;
 	}
 
 }
