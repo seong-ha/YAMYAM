@@ -156,8 +156,31 @@ public interface MatOdService {
 	//===============================================
 	// 8) 자재 반품 관리
 	//===============================================
-	// 조건조회
-	public List<Map<String, Object>> selectReList(MatVO vo);
+	// 반품리스트
+	public List<Map<String, Object>> returnMtrList();
 	
+	// 전체리스트 상세정보
+	public List<Map<String, Object>> returnInfo(MatVO vo);
+	
+	// insert
+	public int insertRtOd(MatVO vo);
+	
+	// update
+	public int updateRtOd(MatVO vo);
+	
+	//===============================================
+	// 9) 자재 반품 조회
+	//===============================================
+	// 전체리스트
+	public List<Map<String, Object>> mtrReturnAllList();
+	
+	// 조건조회
+	public List<Map<String, Object>> matReturnSearch(MatVO vo);
+	
+	//===============================================
+	// 10) 안전 재고 관리
+	//===============================================
+	// 안전 재고 관리
+	public int mtrSfUpdate(MatVO vo);
 	
 }

@@ -318,8 +318,47 @@ public class MatOdServiceImpl implements MatOdService {
 	//===============================================
 	// 8) 자재 반품 관리
 	//===============================================
+	//  전체리스트 상세정보
 	@Override
-	public List<Map<String, Object>> selectReList(MatVO vo) {
-		return mapper.selectReList(vo);
+	public List<Map<String, Object>> returnInfo(MatVO vo) {
+		return mapper.returnInfo(vo);
 	}
+
+	// 반품 리스트
+	@Override
+	public List<Map<String, Object>> returnMtrList() {
+		return mapper.returnMtrList();
+	}
+
+	// insert
+	@Override
+	public int insertRtOd(MatVO vo) {
+		return mapper.insertRtOd(vo);
+	}
+	
+	// update
+	@Override
+	public int updateRtOd(MatVO vo) {
+		return mapper.updateRtOd(vo);
+	}
+	//===============================================
+	// 9) 자재 반품 조회
+	//===============================================
+	// 전체리스트
+	@Override
+	public List<Map<String, Object>> mtrReturnAllList() {
+		return mapper.mtrReturnAllList();
+	}
+
+	// 조건조회
+	@Override
+	public List<Map<String, Object>> matReturnSearch(MatVO vo) {
+		return mapper.matReturnSearch(vo);
+	}
+
+	@Override
+	public int mtrSfUpdate(MatVO vo) {
+		return mapper.mtrSfUpdate(vo);
+	}
+
 }

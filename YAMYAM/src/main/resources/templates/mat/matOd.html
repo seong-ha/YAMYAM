@@ -881,10 +881,14 @@
 						success: function(result){
 							console.log(result);
 							if(result >= 2){
-					        	Swal.fire('저장이 완료되었습니다.');
+								Swal.fire({
+									icon: 'success',
+									title :'저장이 완료되었습니다!'});
 								setTimeout(() => location.reload(),400);
 							} else {
-								Swal.fire('저장에 실패하였습니다.');
+								Swal.fire({
+									icon: 'error',
+									title :'저장에 실패하였습니다!'});
 							}
 						},
 						error: function(reject){
@@ -931,10 +935,14 @@
 							success: function(result){
 								console.log(result);
 								if(result == 1 || result == -1){
-						        	Swal.fire('삭제가 완료되었습니다.');
+									Swal.fire({
+										icon: 'sussecc',
+										title :'삭제에 완료되었습니다!'});
 						        	odLookUp.removeCheckedRows();
 								} else {
-									Swal.fire('삭제에 실패하였습니다.');
+									Swal.fire({
+										icon: 'error',
+										title :'삭제에 실패하였습니다!'});
 								}
 							},
 							error: function(reject){
@@ -953,7 +961,9 @@
 							success: function(result){
 								console.log(result);
 								if(result != 1 && result != -1 && result != 0){
-						        	Swal.fire('삭제가 완료되었습니다.');
+									Swal.fire({
+										icon: 'sussecc',
+										title :'삭제에 완료되었습니다!'});
 						        	odLookUp.removeCheckedRows();
 						        	// 자재발주상세코드 삭제 ajax
 						        	$.ajax({
@@ -973,7 +983,9 @@
 						        	})
 						        	odLookUp.removeCheckedRows();
 								} else {
-									Swal.fire('삭제에 실패하였습니다.');
+									Swal.fire({
+										icon: 'error',
+										title :'삭제에 실패하였습니다!'});
 								}
 							},
 							error: function(reject){
@@ -1033,10 +1045,14 @@
 						success: function(result){
 							console.log(result);
 							if(result >= 1){
-					        	Swal.fire('출고가 완료되었습니다.');
+								Swal.fire({
+									icon: 'success',
+									title :'출고가 완료되었습니다!'});
 								setTimeout(() => location.reload(),400);
 							} else {
-								Swal.fire('출고에 실패하였습니다.');
+								Swal.fire({
+									icon: 'error',
+									title :'출고에 실패했습니다!'});
 							}
 						}, // success end
 						error: function(reject){

@@ -9,44 +9,26 @@
 		<h3>자재 반품 관리</h3>
 	</div>
 	<hr>
-	<ul class="ul-style">
-		<li><label for="matNm">자재명</label><input id="matNm"
-			data-bs-toggle="modal" data-bs-target="#matModal" readonly> <img
-			class="Magnifying-Glass-img" alt="image" data-bs-toggle="modal"
-			data-bs-target="#matModal" src="../images/Magnifying_Glass.png">
-			<input type="text" id="matCd" data-bs-toggle="modal"
-			data-bs-target="#matModal" readonly></li>
-		<li><label for="actNm">업체명</label><input id="actNm"
-			data-bs-toggle="modal" data-bs-target="#actModal" readonly> <img
-			class="Magnifying-Glass-img" alt="image" data-bs-toggle="modal"
-			data-bs-target="#actModal" src="../images/Magnifying_Glass.png">
-			<input type="text" id="actCd" data-bs-toggle="modal"
-			data-bs-target="#actModal" readonly></li>
-			
-		<!-- Date Picker -->
-		<li><label for="startpicker-input">반품요청일</label>
-			<div class="tui-datepicker-input tui-datetime-input tui-has-focus">
-				<input id="startpicker-input" type="text" aria-label="Date">
-				<span class="tui-ico-date"></span>
-				<div id="startpicker-container" style="margin-left: -1px;"></div>
-			</div> <span>-</span>
-			<div class="tui-datepicker-input tui-datetime-input tui-has-focus">
-				<input id="endpicker-input" type="text" aria-label="Date"> <span
-					class="tui-ico-date"></span>
-				<div id="endpicker-container" style="margin-left: -1px;"></div>
-			</div>
-			<button class="btn btn-dark btn-sm">조회</button>
-			<button class="btn btn-dark btn-sm">초기화</button></li>
-	</ul>
 
-	<div style="text-align: right;">
-		<button class="btn btn-dark btn-sm" data-bs-toggle="modal"
-			data-bs-target="#addModal">추가</button>
-		<button class="btn btn-dark btn-sm">삭제</button>
-		<button class="btn btn-dark btn-sm">저장</button>
+	<div class="row" style="margin-top: 75px;">
+		<div class="col-6">
+			<h3>반품 예정 목록</h3>
+			<div id="grid"></div>
+		</div>
+		<div class="col-6">
+			<div>
+				<h3>반품 신청</h3>
+				<div id="grid2"></div>
+				<div align="right"><button class="btn btn-dark btn-sm" id="saveBtn">반품요청</button></div>
+			</div>
+			<div>
+				<h3>반품 목록</h3>
+				<div id="grid3"></div>
+			</div>
+		</div>
 	</div>
 
-	<div id="grid"></div>
+
 
 	<!-- 추가 버튼 모달 -->
 	<div class="modal" id="addModal" tabindex="-1"
@@ -68,249 +50,287 @@
 		</div>
 	</div>
 
-	<!-- 자재 목록 모달 -->
-	<div class="modal" id="matModal" tabindex="-1"
-		aria-labelledby="matModalLabel" aria-hidden="true">
-		<div class="modal-dialog modal-xl">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h5 class="modal-title" id="matModalLabel">자재 목록</h5>
-					<button type="button" class="btn-close" data-bs-dismiss="modal"
-						aria-label="Close"></button>
-				</div>
-				<div class="modal-body">
-					<div>
-						<div id="modalGrid2"></div>
-					</div>
-				</div>
-
-			</div>
-		</div>
-	</div>
-	<!-- 업체 목록 모달 -->
-	<div class="modal" id="actModal" tabindex="-1"
-		aria-labelledby="actModalLabel" aria-hidden="true">
-		<div class="modal-dialog modal-xl">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h5 class="modal-title" id="actModalLabel">업체 목록</h5>
-					<button type="button" class="btn-close" data-bs-dismiss="modal"
-						aria-label="Close"></button>
-				</div>
-				<div class="modal-body">
-					<div>
-						<div id="modalGrid3"></div>
-					</div>
-				</div>
-
-			</div>
-		</div>
-	</div>
 
 	<script th:inline="javascript">
 	let grid = matReList();				// 반품재고리스트 그리드
+	let grid2 = returnList();			// 반품 그리드
+	let grid3 = rtOdList();				// 반품 목록 그리드
 	
-	let modalGrid = matList();			// 자재목록리스트 모달
-	let modalGrid2 = actList();			// 자재목록리스트 모달
-	let modalGrid3 = addPlan();			// 추가버튼 모달
-	
-	modalRef();							// 모달 리프레쉬
-	datePicker();
+	saveBtnFn();						// 반품요청버튼 이벤트
 	
 	/*------------------------------
-	// 반품재고 리스트 그리드
+	// 반품 예정 목록 그리드
 	--------------------------------*/
 	function matReList(){
 		let grid = new tui.Grid({
 		      el: document.getElementById('grid'),
-		      bodyHeight: 500,
-		      data: null,
-		      rowHeaders: ['checkbox', 'rowNum'],
+		      bodyHeight: 520,
+		      data: [[${returnMtrList}]],
+		      rowHeaders: ['rowNum'],
 		      scrollX: false,
 		      scrollY: true,
 		      columns: [
 		        {
 		          header: '발주코드',
-		          name: 'matOdCd'
+		          name: 'matOdCd',
+		          sortable: true,
+			      filter: {
+			    	  type: 'text'
+			      }
 		        },
 		        {
-		          header: '자재코드',
-		          name: 'mtrCd'
-		        },
-		        {
-		          header: '자재명',
-		          name: 'mtrNm'
-		        },
-		        {
-		          header: '업체명',
-		          name: 'actNm'
-		        },
-		        {
-		          header: '반품수량',
-		          name: 'rCount'
-		        },
-		        {
-		          header: '반품요청일',
-		          name: 'rDate'
-		        },
-		        {
-		          header: '검사일자',
-		          name: 'eDate'
-		        },
-		        {
-		            header: '불량코드',
-		            name: 'erCd'
-		        },
-		        {
-		            header: '불량내용',
-		            name: 'erInfo'
-		        }
-		      ]
-		    });
-		
-		    return grid;
-		}
-
-	/*------------------------------
-	// 자재목록 모달 그리드
-	--------------------------------*/
-	function addPlan() {
-		let modalGrid = new tui.Grid({
-			el: document.getElementById('modalGrid'),
-			bodyHeight: 400,
-			data: null,
-			rowHeaders: ['checkbox'],
-			scrollX: false,
-			scrollY: true,
-			columns: [{
-		          header: '발주코드',
-		          name: 'matCode'
-		        },
-		        {
-		          header: '자재코드',
-		          name: 'maCode'
-		        },
-		        {
-		          header: '자재명',
-		          name: 'maNm'
-		        },
-		        {
-			      header: '업체명',
-			      name: 'actNm'
-			    },
-		        {
-				  header: '불합격량',
-				  name: 'count'
-				},
-			    {
-				  header: '검사일자',
-				  name: 'date'
-				}
-	      ] 
-		});
-		return modalGrid;
-	}
-	
-	/*------------------------------
-	// 자재 목록 모달
-	--------------------------------*/
-	function matList(){
-		let modalGrid = new tui.Grid({
-			el: document.getElementById('modalGrid'),
-			bodyHeight: 250,
-			data: [[${matList}]],
-			rowHeaders: ['rowNum'],
-			scrollX: false,
-			scrollY: true,
-			columns: [{
 		          header: '자재코드',
 		          name: 'mtrCd',
-				  filter: {
-						 type: 'select'			  
-						 }
+		          sortable: true,
+			      filter: {
+			    	  type: 'text'
+			      }
 		        },
 		        {
 		          header: '자재명',
 		          name: 'mtrNm',
-				  filter: {
-						 type: 'select'			  
-						 }
+		          sortable: true,
+			      filter: {
+			    	  type: 'text'
+			      }
+		        },
+		        {
+		          header: '업체명',
+		          name: 'actNm',
+		          sortable: true,
+			      filter: {
+			    	  type: 'text'
+			      }
+		        },
+		        {
+		          header: '불량수량',
+		          name: 'erAmt',
+		          sortable: true,
+			      filter: {
+			    	  type: 'text'
+			      }
 		        }
-	      	] 
-		});
-			return modalGrid;
-	}
+		      ]
+		    });
+		
+			// 행 클릭 시 반품 신청으로 데이터 뜨도록
+			grid.on('click', function(ev){
+				let data = grid.getRow(ev.rowKey);
+				
+				// 행에서 지울 데이터
+				//let idx = grid.getFocusedCell().rowKey;
+				
+				//matOdCd 넘겨서 조회해오기.
+				$.ajax({
+					url: '/matReturnLookup',
+					method: 'POST',
+					contentType: 'application/JSON',
+					dataType: 'JSON',
+					data: JSON.stringify(data),
+					success: function(result){
+						grid2.resetData(result);
+						//grid.removeRow(idx); // 저장할때지울데이터
+					},
+					error: function(reject){
+						console.log(reject);
+					}
+				})
+			})
+		
+		    return grid;
+		}
 	
 	/*------------------------------
-	// 자재 목록 모달
+	// 반품 신청 그리드
 	--------------------------------*/
-	function actList(){
-		let modalGrid2 = new tui.Grid({
-			el: document.getElementById('modalGrid2'),
-			bodyHeight: 250,
-			data: [[${actList}]],
-			rowHeaders: ['rowNum'],
-			scrollX: false,
-			scrollY: true,
-			columns: [
-				{
-					header: '업체 코드',
-					name: 'actCd',
-					  filter: {
-							 type: 'select'			  
-							 }
-				},
-				{
-					header: '업체명',
-					name: 'actNm',
-					  filter: {
-							 type: 'select'			  
-							 }
-				}
-			]
-		});
-		return modalGrid2;
-	}
+	function returnList(){
+		let grid2 = new tui.Grid({
+		      el: document.getElementById('grid2'),
+		      bodyHeight: 200,
+		      data: null,
+		      rowHeaders: ['rowNum'],
+		      scrollX: false,
+		      scrollY: true,
+		      columns: [
+				        {
+			            header: '불량코드',
+			            name: 'erCd',
+				          sortable: true,
+					      filter: {
+					    	  type: 'text'
+					      	}
+			        	},
+			        	{
+			            header: '불량내용',
+			            name: 'erInfo',
+				          sortable: true,
+					      filter: {
+					    	  type: 'text'
+					      	}
+				        },			        
+				        {
+				          header: '검사일자',
+				          name: 'matChkDate',
+				          sortable: true,
+					      filter: {
+					    	  type: 'text'
+					      }
+				        },
+				        {
+				          header: '반품요청일',
+				          name: 'matRtDate',
+				          sortable: true,
+					      editor: {
+					    	  type: 'datePicker',
+					    	  options: {
+					    		  format: 'yyyy-MM-dd',
+					    		  language: 'ko'
+					    	  }
+					      },
+					      validation: {
+						     dataType: 'datePicker',
+						     required: true
+							      },
+					      	filter: {
+					    	  type: 'text'
+					      }
+				        },
+		      ]
+		    });
+		
+		    return grid2;
+		}
 	
 	/*------------------------------
-	// 모달 그리드 리프레쉬
+	// 반품 목록 그리드
 	--------------------------------*/
-	function modalRef(){
-		document.addEventListener('shown.bs.modal', function (){
-			modalGrid.refreshLayout();
-		}, '.modal');
+	function rtOdList(){
+		let grid3 = new tui.Grid({
+		      el: document.getElementById('grid3'),
+		      bodyHeight: 200,
+		      data: [[${mtrReList}]],
+		      rowHeaders: ['rowNum'],
+		      scrollX: false,
+		      scrollY: true,
+		      columns: [
+			        {
+				          header: '발주코드',
+				          name: 'matOdCd',
+				          sortable: true,
+					      filter: {
+					    	  type: 'text'
+					      }
+				        },
+				        {
+				          header: '자재명',
+				          name: 'mtrNm',
+				          sortable: true,
+					      filter: {
+					    	  type: 'text'
+					      }
+				        },
+				        {
+				          header: '업체명',
+				          name: 'actNm',
+				          sortable: true,
+					      filter: {
+					    	  type: 'text'
+					      }
+				        },
+				        {
+				            header: '불량내용',
+				            name: 'erInfo',
+					          sortable: true,
+						      filter: {
+						    	  type: 'text'
+						      }
+				        },
+				        {
+				          header: '반품수량',
+				          name: 'matRtAmt',
+				          sortable: true,
+					      filter: {
+					    	  type: 'text'
+					      }
+				        },
+				        {
+				          header: '반품요청일',
+				          name: 'matRtDate',
+				          sortable: true,
+					      filter: {
+					    	  type: 'text'
+					      }
+				        }
+				      ]
+		    });
 		
-		document.addEventListener('shown.bs.modal', function (){
-			modalGrid2.refreshLayout();
-		}, '.modal');
-		
-		document.addEventListener('shown.bs.modal', function (){
-			modalGrid3.refreshLayout();
-		}, '.modal');
-	}
-	
-	/*------------
-	// datepicker
-	----------------*/
-	 function datePicker() {
-		 rangeDatepickerInit('#startpicker-input', '#startpicker-container','#endpicker-input','#endpicker-container');
-			document.getElementById('startpicker-input').value = null;
-			document.getElementById('endpicker-input').value = null;
-	   }
-	
+		    return grid3;
+		}
 	/*------------------------
-	// 초기화버튼 이벤트
+	// 반품요청버튼 이벤트
 	--------------------------*/
-	function resetBtnEvent() {
-		document.getElementById('resetBtn').addEventListener('click',function(){
-			document.getElementById('startpicker-input').value = null;
-			document.getElementById('endpicker-input').value = null;
+	function saveBtnFn(){
+		document.getElementById('saveBtn').addEventListener('click', function(){
+			let data = grid2.getData();
 			
-			document.getElementById('matCd').value = '';
-			document.getElementById('matNm').value = '';
-			document.getElementById('actNm').value = '';
-			document.getElementById('actCd').value = '';
-		});	
-	}
+			let data2 = grid.getData();
+			let idx = grid.getFocusedCell().rowKey;
+			
+			let rowData = {matOdCd: data2[idx].matOdCd,
+				            matRtDate: data[0].matRtDate}
+			
+			Swal.fire({
+			      title: '반품요청 하시겠습니까?',
+			      icon: 'warning',
+			      showCancelButton: true,
+			      confirmButtonColor: '#3085d6',
+			      cancelButtonColor: '#d33',
+			      confirmButtonText: '승인',
+			      cancelButtonText: '취소',
+			      
+			    }).then((result) => {
+			      if (result.isConfirmed) {
+						$.ajax({
+							url: '/insertRt',
+							method: 'POST',
+							contentType: 'application/JSON',
+							dataType: 'JSON',
+							data: JSON.stringify(rowData),
+							success: function(result){
+								
+								Swal.fire({
+									icon: 'success',
+									title :'반품요청에 성공하였습니다!'});
+								
+								// 반품한 자재는 검수 테이블에서 불량코드 XXXX로 업데이트
+								$.ajax({
+									url: '/updateRt',
+									method: 'POST',
+									contentType: 'application/JSON',
+									dataType: 'JSON',
+									data: JSON.stringify(rowData),
+									success: function(result){
+										console.log(result);
+									},
+									error: function(reject){
+										console.log(reject);
+									}
+								})
+								
+								// 초기화
+								setTimeout(() => location.reload(),500);
+							},
+							error: function(reject){
+								Swal.fire({
+									icon: 'error',
+									title :'반품요청에 실패했습니다!'});
+								console.log(reject)
+							}
+						})
+			      	}
+			  	})
+			})
+		}
+	
 	</script>
 </div>
