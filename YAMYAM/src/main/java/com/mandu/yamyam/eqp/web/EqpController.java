@@ -29,8 +29,9 @@ public class EqpController {
 	}
 	
 	@RequestMapping("/eqpChkAd")
-	public String eqpChkAd() {
-		// 설비구분 데이터들 가져와서 model로 내려주기
+	public String eqpChkAd(Model model) {
+		// 비가동중인 설비 비가동 정보 가져오기
+		model.addAttribute("eqpTypeList", eqpService.getEqpTypeList());
 		return "eqp/eqpChkAd";
 	}
 	
