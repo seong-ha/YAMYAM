@@ -53,11 +53,13 @@
 						data-bs-target="#select" type="button" role="tab"
 						aria-controls="select" aria-selected="true">조회</button>
 				</li>
-				<li class="nav-item" role="presentation">
-					<button class="nav-link" id="manage-tab" data-bs-toggle="tab"
-						data-bs-target="#manage" type="button" role="tab"
-						aria-controls="manage" aria-selected="false">관리</button>
-				</li>
+				<th:block sec:authorize="hasAnyRole('JOB_GRD2','JOB-GRD1')">
+					<li class="nav-item" role="presentation">
+						<button class="nav-link" id="manage-tab" data-bs-toggle="tab"
+							data-bs-target="#manage" type="button" role="tab"
+							aria-controls="manage" aria-selected="false">관리</button>
+					</li>
+				</th:block>
 			</ul>
 			<!-- 탭 목록 end -->
 			

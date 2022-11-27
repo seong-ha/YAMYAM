@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<html xmlns:th="http://www.thymeleaf.org"  
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 <head>
   <title>YAMYAM</title>
   <meta charset="utf-8">
@@ -49,8 +51,16 @@
       <!-- Navbar Brand-->
       <a class="navbar-brand ps-3 font-NSEB logo-size" href="/" onclick="tabInfoDelete()"><span
          class="col-green">YAM</span>YAM</a>
+      <th:block sec:authorize="isAuthenticated()">
+          <form action="logout" method="post" style="margin-left:76%" id="logout">
+		      <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+		      <input class="login-menu font-NSEB" type="submit" value="logout">
+          </form>   
+      </th:block>
       <!-- 로그인 유무에 따라 Login/LogOut로 다르게 보이도록 -->
-      <a class="login-menu font-NSEB" href="index.html">Login</a>
+      <th:block sec:authorize="!isAuthenticated()">
+          <a class="login-menu font-NSEB" href="/login">Login</a>
+      </th:block>
    </nav>
 
    <div layout:fragment="sidebar" id="layoutSidenav">
@@ -59,10 +69,18 @@
             id="sidenavAccordion">
             <div class="sb-sidenav-menu" style="background-color: white">
                <div>
-                  <p class="username font-NSEB">unknown</p>
-                  <p class="log-sts font-NSEB">
-                     <small class="small-font">●</small> offline
-                  </p>
+               	  <th:block sec:authorize="isAuthenticated()">
+	                  <p class="username font-NSEB" th:text="${session.empNm}">EMP_NM</p>
+	                  <p class="log-sts-on font-NSEB">
+	                     <small class="small-font">●</small> online
+	                  </p>
+	              </th:block>
+	              <th:block sec:authorize="!isAuthenticated()">
+	                  <p class="username font-NSEB">unknown</p>
+	                  <p class="log-sts-off font-NSEB">
+	                     <small class="small-font">●</small> offline
+	                  </p>
+	              </th:block>
                   <hr class="col-black">
                </div>
                <div class="accordion accordion-flush" id="accordionFlushExample">
@@ -208,6 +226,10 @@
          sessionStorage.removeItem('tabIdNum');
       }
    
+      function logout() {
+    	  document.getElementById('logout').submit();
+      }
+      
       document.addEventListener('DOMContentLoaded', function () {
          
          /* 
@@ -243,4 +265,3 @@
       });
    </script>
 </body>
-</html>

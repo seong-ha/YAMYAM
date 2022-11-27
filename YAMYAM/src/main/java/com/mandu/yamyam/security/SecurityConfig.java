@@ -39,18 +39,16 @@ public class SecurityConfig {
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 		http.authorizeHttpRequests((requests) -> 
 							requests
-							.antMatchers("/", "/login", "/accountform", "/idCheck", "/newCpAccount").permitAll()
-							.antMatchers("/orlist", "/user/**", "/error").hasAnyAuthority("ROLE_COMPANY", "ROLE_ADMIN")
-							.antMatchers("/**").hasAuthority("ROLE_ADMIN")
+							.antMatchers("/", "/login").permitAll()
+							.antMatchers("/**").hasAnyAuthority("JOB-GRD1", "JOB-GRD2", "JOB-GRD3")
 							.anyRequest().authenticated())
 				.formLogin().loginPage("/login")
 							.usernameParameter("userId")
 							.loginProcessingUrl("/login")
 							.successHandler(successHandler())
-//							.defaultSuccessUrl("/dashboard")
 							.and()
 				.logout().logoutUrl("/logout")
-					      .logoutSuccessUrl("/login")
+					     .logoutSuccessUrl("/")
 						 .invalidateHttpSession(true)
 						 .deleteCookies("JSESSIONID")
 						 .and()
@@ -68,13 +66,13 @@ public class SecurityConfig {
 	
 	@Bean
 	public WebSecurityCustomizer webSecurityCustomizer() {
-		return (web) -> web.ignoring().antMatchers("/assets/**", "/bootstrap/**");
+		return (web) -> web.ignoring().antMatchers("/css/**", "/fonts/**", "/images/**", "/js/**");
 	}
 
 	@Autowired
 	public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-		String loginSql = "select ID, PASSWORD, 1 from LOGIN where ID = ?";
-		String authSql = "select ID, AUTH from LOGIN where ID = ?";		
+		String loginSql = "select EMP_ID, EMP_PW, 1 from C_EMP where EMP_ID = ?";
+		String authSql = "select EMP_ID, EMP_ROLE from C_EMP where EMP_ID = ?";
 		auth.jdbcAuthentication()
 		    .dataSource(dataSource)
 		    .usersByUsernameQuery(loginSql)
