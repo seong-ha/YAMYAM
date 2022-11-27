@@ -61,6 +61,7 @@ public class ProVO {
 	private String mdNm;		// 설비 모델이름
 	private String pproName;	// 공정명
 	private String pproEmpName; // 담당자
+	private String chkEmp;		// 설비담당자 이름
 	private Integer pproInAmt;		// 투입량
 	private Integer pproErAmt;		// 불량량
 	private Integer pproOtAmt;		// 생산량
@@ -88,4 +89,13 @@ public class ProVO {
 	private String mtrNm;	// 자재이름
 	private int matOutAmt;	// 자재 출고 수량
 	private String matLot;	// 자재LOT
+	
+	// 완제품 재고 테이블
+	private String prdLot; // 완제품 LOt 번호
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	private Date podDate;
+	private Integer binAmt;
+	private Integer samt;
+	private Date edate;
+	
 }

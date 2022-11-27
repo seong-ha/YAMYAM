@@ -6,14 +6,6 @@ import java.util.Map;
 
 public interface ProService {
 
-	// 공통코드 (공정분류)
-	public List<ProVO> getCommP();
-	
-	// 공통코드 (에러코드)
-	public List<ProVO> getCommE();
-	
-	// 입력될 생산 우선순위 조회
-	public int getPrioNo();
 	/*---------------
 	// 생산 계획 관리(관리탭)
 	----------------*/
@@ -63,26 +55,6 @@ public interface ProService {
 	public List<ProVO> getOrderList(ProVO vo);
 	
 	
-	/*---------------
-	// 공정 관리
-	----------------*/
-	public List<ProVO> getProList(ProVO vo);
-	
-	// 제품 공정 흐름도 조회
-	public List<ProVO> getFlowList(ProVO vo);
-	
-	// 제품 공정 흐름도 관리
-	public List<ProVO> flowManage(ProVO vo);
-	
-	// 미사용 설비 조회
-	public List<ProVO> noUseEqp();
-	
-	// 제품 공정 목록 조회
-	public List<ProVO> flowProgress(ProVO vo);
-	
-	// 제품 공정 목록 조회 (생산시작후)
-	public List<ProVO> afterProgress(ProVO vo);
-	
 	
 	/*---------------
 	// 생산 관리
@@ -93,10 +65,49 @@ public interface ProService {
 	// 생산공정 수정(설비상태, 입고량 수정)
 	public int updateEqpSts(ProVO vo);
 	
+	// 완제품 재고 생성
+	public int insertBIn(ProVO vo);
+	
+	// 제품 공정 목록 조회
+	public List<ProVO> flowProgress(ProVO vo);
+	
+	// 제품 공정 목록 조회 (생산시작후)
+	public List<ProVO> afterProgress(ProVO vo);
+
 	
 	/*---------------
 	// 공정 실적 조회
 	----------------*/
 	public List<ProVO> getResultList(ProVO vo);
+	
+	
+	/*---------------
+	// 공정 관리
+	----------------*/
+	public List<ProVO> getProList(ProVO vo);
+	
+	// 미사용 설비 조회
+	public List<ProVO> noUseEqp();
+	
+	// 공정 등록
+	public int insertProManage(List<ProVO> vo);
+	
+	// 공정 수정
+	public int updateProManage(ProVO vo);
+	
+	// 공정 삭제
+	public int deleteProManage(List<ProVO> vo);
+	
+
+	/*---------------
+	// 제품 공정 흐름도
+	----------------*/
+	// 제품 공정 흐름도 조회
+	public List<ProVO> getFlowList(ProVO vo);
+	
+	// 제품 공정 흐름도 관리
+	public List<ProVO> flowManage(ProVO vo);
+	
+	
 		
 }

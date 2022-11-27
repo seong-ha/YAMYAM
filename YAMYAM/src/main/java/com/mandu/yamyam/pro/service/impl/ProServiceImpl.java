@@ -16,19 +16,6 @@ public class ProServiceImpl implements ProService {
 	@Autowired
 	ProMapper mapper;
 
-	// 공통코드(공정분류)
-	@Override
-	public List<ProVO> getCommP() {
-		return mapper.getCommP();
-	}
-	
-	// 공통코드(에러코드)
-	@Override
-	public List<ProVO> getCommE() {
-		return mapper.getCommE();
-	}
-	
-	
 	// 생산계획 조회
 	@Override
 	public List<ProVO> getPlan(ProVO vo) {
@@ -94,11 +81,6 @@ public class ProServiceImpl implements ProService {
 		return mapper.materialList();
 	}
 	
-	// 입력될 생산 우선순위 조회
-	@Override
-	public int getPrioNo() {
-		return mapper.getPrioNo();
-	}
 	
 	/*---------------
 	// 생산 지시 관리
@@ -156,7 +138,10 @@ public class ProServiceImpl implements ProService {
 	public int updateEqpSts(ProVO vo) {
 		int result = 0;
 		mapper.updateEqpSts(vo);
-		mapper.updateProInAmt(vo);
+		String pproCd = vo.getPproCd();
+		if(pproCd != null) {
+			mapper.updateProInAmt(vo);
+		}
 		return result;
 	}
 	
@@ -181,6 +166,38 @@ public class ProServiceImpl implements ProService {
 		return mapper.getProList(vo);
 	}
 	
+	// 미사용설비 조회
+	@Override
+	public List<ProVO> noUseEqp() {
+		return mapper.noUseEqp();
+	}
+	
+	// 공정 등록
+	@Override
+	public int insertProManage(List<ProVO> vo) {
+		int result = 0;
+		for(int i=0; i<vo.size(); i++) {
+			result += mapper.insertProManage(vo.get(i));
+		}
+		return result;
+	}
+	
+	// 공정 수정
+	@Override
+	public int updateProManage(ProVO vo) {
+		return mapper.updateProManage(vo);
+	}
+	
+	// 공정 삭제
+	@Override
+	public int deleteProManage(List<ProVO> vo) {
+		int result = 0;
+		for(int i=0; i<vo.size(); i++) {
+			result += mapper.deleteProManage(vo.get(i));
+		}
+		return result;
+	}
+	
 	// 제품공정 흐름도 조회
 	@Override
 	public List<ProVO> getFlowList(ProVO vo) {
@@ -193,16 +210,16 @@ public class ProServiceImpl implements ProService {
 		return mapper.flowManage(vo);
 	}
 
-	// 미사용설비 조회
-	@Override
-	public List<ProVO> noUseEqp() {
-		return mapper.noUseEqp();
-	}
-
 	// 공정실적조회
 	@Override
 	public List<ProVO> getResultList(ProVO vo) {
-		return null;
+		return mapper.getResultList(vo);
+	}
+	
+	// 완제품 재고 등록
+	@Override
+	public int insertBIn(ProVO vo) {
+		return mapper.insertBIn(vo);
 	}
 	
 	

@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.mandu.yamyam.comm.service.CommService;
+import com.mandu.yamyam.comm.service.CommdVO;
 import com.mandu.yamyam.pro.service.ProService;
 import com.mandu.yamyam.pro.service.ProVO;
 
@@ -25,13 +27,28 @@ public class ProController {
 	@Autowired
 	ProService service;
 	
+	@Autowired
+	CommService commservice;
+	
+	// 상세 공통코드 불러오기(공정구분)
+	@GetMapping("/getProComm")
+	public List<CommdVO> getProComm() {
+	    return commservice.getCommdCdNm("EQP-TYPE");
+	}
+	
+	// 상세 공통코드 불러오기(불량분류)
+	@GetMapping("/getErrComm")
+	public List<CommdVO> getErrComm() {
+	    return commservice.getCommdCdNm("ERR-PRO");
+	}
+
+	
 	/*---------------
 	// 생산 계획 관리(관리탭)
 	----------------*/
 	// 생산계획
 	@RequestMapping("/proPlan")
 	public String plan(Model model) {
-		model.addAttribute("prioNo", service.getPrioNo());
 		return "production/proPlan";
 	}
 	
@@ -162,13 +179,27 @@ public class ProController {
 		 service.updateEqpSts(vo);
 		 return service.afterProgress(vo);
 	}
-
+	
+	// 완제품 재고 등록
+	@PostMapping("/insertBIn")
+	@ResponseBody
+	public int insertBIn(ProVO vo) {
+		return service.insertBIn(vo);
+	}
 	
 	// 공정목록 조회
 	@RequestMapping("/flowProgress")
 	@ResponseBody
 	public List<ProVO> flowProgress(ProVO vo){
 		return service.flowProgress(vo);
+	}
+	
+	// 공정이동표 조회
+	// 제품 공정 목록 조회 (생산시작후)
+	@RequestMapping("/afterProgress")
+	@ResponseBody
+	public List<ProVO> afterProgress(ProVO vo){
+		return service.afterProgress(vo);
 	}
 	
 	
@@ -181,48 +212,72 @@ public class ProController {
 	public List<ProVO> getProResult(ProVO vo){
 		return service.getResultList(vo);
 	}
-		
-		
 	
 	// 공정 실적 조회
 	@RequestMapping("/proResult")
 	public String proResult(Model model) {
-		model.addAttribute("eCode", service.getCommE());
+		model.addAttribute("eCode", commservice.getCommdCdNm("ERR-PRO"));
+		model.addAttribute("pCode", commservice.getCommdCdNm("EQP-TYPE"));
 		return "production/proResult";
 	}
+
 	
+	/*---------------
+	// 공정 관리
+	----------------*/
 	// 공정 관리
 	@RequestMapping("/proManage")
 	public String proManage(Model model) {
-		model.addAttribute("pCode", service.getCommP());
+		model.addAttribute("pCode", commservice.getCommdCdNm("EQP-TYPE"));
 		return "production/proManage";
 	}
 	
-	// 제품공정흐름도 조회
+	// 공정관리 조회
 	@RequestMapping("/getProList")
 	@ResponseBody
 	public List<ProVO> getProList(ProVO vo){
 		return service.getProList(vo);
 	}
 	
-	// 제품공정흐름도 조회
+	// 미사용설비 조회
 	@RequestMapping("/noUseEqp")
 	@ResponseBody
 	public List<ProVO> noUseEqp(ProVO vo){
 		return service.noUseEqp();
 	}
+
+	// 공정 등록
+	@PostMapping("/insertProManage")
+	@ResponseBody
+	public int insertProManage(@RequestBody List<ProVO> vo) {
+		return service.insertProManage(vo);
+	}
 	
+	// 공정 수정
+	@PostMapping("/updateProManage")
+	@ResponseBody
+	public int updateProManage(ProVO vo) {
+		return service.updateProManage(vo);
+	}
+	
+	// 공정 삭제
+	@PostMapping("/deleteProManage")
+	@ResponseBody
+	public int deleteProManage(@RequestBody List<ProVO> vo) {
+		return service.deleteProManage(vo);
+	}
+		
+
 	/*---------------
 	// 공정 흐름도
 	----------------*/
-	
 	// 공정 흐름도
 	@RequestMapping("/flowDiagram")
 	public String flowDiagram(Model model) {
 		return "production/flowDiagram";
 	}
 	
-	// 제품공정흐름도 조회
+	// 제품공정흐름도 그리드 조회
 	@RequestMapping("/getFlow")
 	@ResponseBody
 	public List<ProVO> getFlow(ProVO vo){
