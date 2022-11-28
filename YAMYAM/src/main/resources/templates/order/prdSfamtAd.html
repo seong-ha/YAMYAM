@@ -54,19 +54,24 @@ text-align: center;
 	
 <div id="prdListGrid"></div>
 
-<script>
+<script type="text/javascript">
+
+/* token */
+var token = $("meta[name='_csrf']").attr("content");
+var header = $("meta[name='_csrf_header']").attr("content");
 
 	/*------------
 	// function
-	----------------*/
-	searchBtnHandler();
-	cancelBtnHandler();
-
-	let prdListGrid = prdListGridInit();
-	let prdModalGrid = prdGridInit();
+	----------------*/	
+	getPrdList();							// DB에서 제품목록 불러오기 - 조회용
+	getList();								// DB에서 안전재고 리스트 불러오기
 	
-	getPrdList();
-	getList();
+	searchBtnHandler();						// 조회 버튼 핸들러
+	cancelBtnHandler();						// input 값 초기화 버튼
+
+	let prdListGrid = prdListGridInit();	// 안전재고 리스트 Grid
+	let prdModalGrid = prdGridInit();		// 제품 Modal Grid
+
 	
 	
 	/*------------
@@ -74,7 +79,7 @@ text-align: center;
 	----------------*/
 	function searchBtnHandler(){
 		$('#searchBtn').on('click',function(){
-			let getPrdCd = $("prdCd").val();
+			let getPrdCd = $("#prdCd").val();
 			$.ajax({
 				 url : '/getSfamtList',
 				 contentType: 'application/json',
@@ -99,8 +104,8 @@ text-align: center;
 	----------------*/
 	function cancelBtnHandler(){
 		$('#cancelBtn').on('click',function(){
-			$("prdCd").val("");
-			$("prdCd2").val("");
+			$("#prdCd").val("");
+			$("#prdCd2").val("");
 			
 			$.ajax({
 				   url:'/getSfamtList',

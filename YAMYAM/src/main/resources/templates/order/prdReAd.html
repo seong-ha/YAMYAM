@@ -65,15 +65,22 @@
 
 
 	<div id="od-btn">
+	<th:block sec:authorize="hasAnyAuthority('JOB-GRD1', 'JOB-GRD2')">
 	<button class="btn btn-dark btn-sm" id="insertBtn">행추가</button>
 	<button class="btn btn-dark btn-sm" id="deleteBtn">행삭제</button>
 	<button class="btn btn-dark btn-sm" id="saveBtn">저장</button>
+	</th:block>
 	<button class="btn btn-dark btn-sm" id="exportBtn">엑셀 파일 출력</button>
 	</div>
 	
 <div id="grid"></div>
 
 <script>
+
+/* token */
+var token = $("meta[name='_csrf']").attr("content");
+var header = $("meta[name='_csrf_header']").attr("content");
+
 
 	/*------------
 	// function
@@ -84,6 +91,7 @@
 	cancelBtnHandler();				// 날짜값 초기화 버튼
 	SaveBtnHandler();				// 저장 버튼 핸들러
 	exportBtnHandler(); 			// 엑셀출력 버튼 핸들러
+	deleteBtnHandler(); 			// 행삭제 버튼 핸들러
 	
 	let grid = mainGridInit();		// 주문서 출력 Grid
 	let lotOutModalGrid = lotOutGridInit();
@@ -238,7 +246,25 @@
 	function deleteBtnHandler(){
 		// grid 선택 행 삭제
 		$('#deleteBtn').on('click',function(){
-	        grid.removeCheckedRows();		
+			Swal.fire({
+			      title: '정말로 삭제 하시겠습니까?',
+			      //text: "다시 되돌릴 수 없습니다. 신중하세요.",
+			      icon: 'warning',
+			      showCancelButton: true,
+			      confirmButtonColor: '#3085d6',
+			      cancelButtonColor: '#d33',
+			      confirmButtonText: '승인',
+			      cancelButtonText: '취소',
+			      //reverseButtons: true, // 버튼 순서 거꾸로
+			      
+			    }).then((result) => {
+			      if (result.isConfirmed) {
+			        Swal.fire(
+			          '삭제가 완료되었습니다.'		          
+			        )
+			        grid.removeCheckedRows();
+			      }
+			    })
 		});	
 	}
    
@@ -273,6 +299,9 @@
 								contentType: 'application/json',
 								data: JSON.stringify(list),
 								dataType : 'json',
+								beforeSend : function (xhr) {
+								    xhr.setRequestHeader(header, token);
+								},
 								 success : function(result) {
 					                 if(result > 0){
 					                	 Swal.fire(

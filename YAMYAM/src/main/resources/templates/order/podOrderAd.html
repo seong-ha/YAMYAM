@@ -86,15 +86,22 @@ text-align: center;
 	      
 	      
 	<div id="od-btn">
-	<button class="btn btn-dark btn-sm" id="insertBtn">추가</button>
-	<button class="btn btn-dark btn-sm" id="deleteBtn">선택삭제</button>
-	<button class="btn btn-dark btn-sm" id="saveBtn">저장</button>
+	<th:block sec:authorize="hasAnyAuthority('JOB-GRD1', 'JOB-GRD2')">
+		<button class="btn btn-dark btn-sm" id="insertBtn">추가</button>
+		<button class="btn btn-dark btn-sm" id="deleteBtn">선택삭제</button>
+		<button class="btn btn-dark btn-sm" id="saveBtn">저장</button>
+	</th:block>
 	<button class="btn btn-dark btn-sm" id="exportBtn">엑셀 파일 출력</button>
 	</div>
 	
 <div id="podListGrid"></div>
 
 <script>
+
+/* token */
+var token = $("meta[name='_csrf']").attr("content");
+var header = $("meta[name='_csrf_header']").attr("content");
+
 
 	/*------------
 	// function
@@ -355,6 +362,9 @@ text-align: center;
 								contentType: 'application/json',
 								data: JSON.stringify(podList),
 								dataType : 'json',
+								beforeSend : function (xhr) {
+								    xhr.setRequestHeader(header, token);
+								},
 								 success : function(result) {
 					                 if(result > 0){
 					                	 Swal.fire(
@@ -378,6 +388,9 @@ text-align: center;
 						contentType: 'application/json',
 						data: JSON.stringify(podList),
 						dataType : 'json',
+						beforeSend : function (xhr) {
+						    xhr.setRequestHeader(header, token);
+						},
 						 success : function(result) {
 			                 if(result > 0){
 			                	 Swal.fire(
