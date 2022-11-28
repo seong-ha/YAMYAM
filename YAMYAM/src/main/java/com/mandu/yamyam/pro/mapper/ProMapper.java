@@ -135,4 +135,13 @@ public interface ProMapper {
 	// 제품 공정 흐름도 관리
 	public List<ProVO> flowManage(ProVO vo);
 	
+	// 제품 공정 목록 조회
+	public List<ProVO> viewProgress(ProVO vo);
+	
+	// 생산라인 저장
+	public int insertPline(ProVO vo);
+	
+	// 생산공정 테이블 생산라인 업데이트
+	public int updatePline(ProVO vo);
+	
 }
