@@ -69,6 +69,10 @@
 		</div>
 		
 	<script th:inline="javascript">
+	/* token */
+	var token = $("meta[name='_csrf']").attr("content");
+	var header = $("meta[name='_csrf_header']").attr("content");
+	
 		let grid = pOdList();				 // 생산지시 그리드
 		let matNeed = matNeedGridInit();	 // 필요자재 grid 
 		let matLot = matLotGridInit(); 		 // 필요자재 LOT grid 
@@ -187,6 +191,9 @@
 					contentType: 'application/JSON',
 					dataType: 'JSON',
 					data: JSON.stringify(data),
+					beforeSend : function (xhr) {
+					    xhr.setRequestHeader(header, token);
+					},
 					success: function(result){
 						matLotGrid2.resetData(result);
 					},
@@ -334,6 +341,9 @@
 					contentType: 'application/JSON',
 					dataType: 'JSON',
 					data: JSON.stringify(data[0]),
+					beforeSend : function (xhr) {
+					    xhr.setRequestHeader(header, token);
+					},
 					success: function(result){
 						matNeed.resetData(result);
 					},
@@ -444,6 +454,9 @@
 						contentType: 'application/JSON',
 						dataType: 'JSON',
 						data: JSON.stringify(rowData),
+						beforeSend : function (xhr) {
+						    xhr.setRequestHeader(header, token);
+						},
 						success: function(result) {
 							
 							var result = updateAmt(data)
@@ -473,6 +486,9 @@
 				contentType: 'application/JSON',
 				dataType: 'JSON',
 				data: JSON.stringify(oddCd[0]),
+				beforeSend : function (xhr) {
+				    xhr.setRequestHeader(header, token);
+				},
 				success: function(result){
 					Swal.fire({
 						icon: 'success',
@@ -498,6 +514,9 @@
 				contentType: 'application/JSON',
 				dataType: 'JSON',
 				data: JSON.stringify(data),
+				beforeSend : function (xhr) {
+				    xhr.setRequestHeader(header, token);
+				},
 				success:function(result){
 					r = result;
 				},

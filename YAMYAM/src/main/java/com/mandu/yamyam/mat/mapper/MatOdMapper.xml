@@ -910,6 +910,8 @@
 		  
 		 JOIN C_ACT A
 		  ON A.ACT_CD = T.ACT_CD
+		  
+		WHERE T.MAT_RT_AMT > 0
 	</select>
 	
 	<!-- 조건조회 -->
@@ -943,6 +945,7 @@
 	         <if test = "matEdate != null and !matEdate.equals('')">
 	         	AND MAT_RT_DATE <![CDATA[<=]]> #{matEdate}
 	         </if>
+	         AND T.MAT_RT_AMT > 0
          </where>
 	</select>
 	

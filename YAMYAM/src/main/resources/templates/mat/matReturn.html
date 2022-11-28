@@ -52,6 +52,10 @@
 
 
 	<script th:inline="javascript">
+	/* token */
+	var token = $("meta[name='_csrf']").attr("content");
+	var header = $("meta[name='_csrf_header']").attr("content");
+	
 	let grid = matReList();				// 반품재고리스트 그리드
 	let grid2 = returnList();			// 반품 그리드
 	let grid3 = rtOdList();				// 반품 목록 그리드
@@ -127,6 +131,9 @@
 					contentType: 'application/JSON',
 					dataType: 'JSON',
 					data: JSON.stringify(data),
+					beforeSend : function (xhr) {
+					    xhr.setRequestHeader(header, token);
+					},
 					success: function(result){
 						grid2.resetData(result);
 						//grid.removeRow(idx); // 저장할때지울데이터
@@ -296,6 +303,9 @@
 							contentType: 'application/JSON',
 							dataType: 'JSON',
 							data: JSON.stringify(rowData),
+							beforeSend : function (xhr) {
+							    xhr.setRequestHeader(header, token);
+							},
 							success: function(result){
 								
 								Swal.fire({
@@ -309,6 +319,9 @@
 									contentType: 'application/JSON',
 									dataType: 'JSON',
 									data: JSON.stringify(rowData),
+									beforeSend : function (xhr) {
+									    xhr.setRequestHeader(header, token);
+									},
 									success: function(result){
 										console.log(result);
 									},

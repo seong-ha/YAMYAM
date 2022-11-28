@@ -105,6 +105,10 @@
 
 
 	<script th:inline="javascript">
+	/* token */
+	var token = $("meta[name='_csrf']").attr("content");
+	var header = $("meta[name='_csrf_header']").attr("content");
+	
 	let grid = matAll(); 		// 자재전체목록 그리드
 	let grid2 = odDateList(); 	// 발주신청일목록 그리드
 	let grid3 = odActList();	// 자재업체명목록 그리드
@@ -339,6 +343,9 @@
 					method: 'POST',
 					contentType: 'application/json',					
 					data: JSON.stringify(list),
+					beforeSend : function (xhr) {
+					    xhr.setRequestHeader(header, token);
+					},
 					success: function(result){
 						console.log(result);
 						grid2.resetData(result);
@@ -361,6 +368,9 @@
 					method : 'POST',
 					contentType : 'application/JSON',
 					data : JSON.stringify(data),
+					beforeSend : function (xhr) {
+					    xhr.setRequestHeader(header, token);
+					},
 					success : function(result){
 						grid3.resetData(result);
 					},

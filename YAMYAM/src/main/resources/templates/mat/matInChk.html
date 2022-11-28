@@ -146,6 +146,10 @@
 	</div>
 	
 	<script th:inline="javascript">
+	// token
+	var token = $("meta[name='_csrf']").attr("content");
+	var header = $("meta[name='_csrf_header']").attr("content");
+	
 		let grid = chkMatList();			// 자재전체조회 그리드
 		SearchBtnFn();						// 조회버튼 클릭시 전체조회 그리드 등장
 		
@@ -287,6 +291,9 @@
 					method: 'POST',
 					contentType: 'application/JSON',
 					data: JSON.stringify(data),
+					beforeSend : function (xhr) {
+					    xhr.setRequestHeader(header, token);
+					},
 					success: function(result){
 						grid.resetData(result)
 					},
@@ -538,6 +545,9 @@
 			        	method: 'POST',
 			        	contentType: 'application/JSON',
 						data: JSON.stringify(data),
+						beforeSend : function (xhr) {
+						    xhr.setRequestHeader(header, token);
+						},
 						success: function(result){
 							if(result >= 1){
 					        	Swal.fire('저장이 완료되었습니다.');
@@ -549,6 +559,9 @@
 					        		contentType: 'application/JSON',
 					        		dataType: 'JSON',
 					        		data: JSON.stringify(data),
+					        		beforeSend : function (xhr) {
+					        		    xhr.setRequestHeader(header, token);
+					        		},
 					        		sussecc: function(result){
 					        			if(result >= 1) {
 					        				console.log('검수상태 update 완료.')

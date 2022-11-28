@@ -68,6 +68,10 @@
 
 
 	<script th:inline="javascript">
+	/* token */
+	var token = $("meta[name='_csrf']").attr("content");
+	var header = $("meta[name='_csrf_header']").attr("content");
+	
 	let grid = matSafeList();			// 자재 재고 조회 그리드
 	let grid2 = safeList();				// 홀딩 수량 조회 그리드
 	
@@ -241,6 +245,9 @@
 							contentType: 'application/JSON',
 							dataType: 'JSON',
 							data: JSON.stringify(data[0]),
+							beforeSend : function (xhr) {
+							    xhr.setRequestHeader(header, token);
+							},
 							success: function(result){
 								Swal.fire({
 									icon: 'success',
