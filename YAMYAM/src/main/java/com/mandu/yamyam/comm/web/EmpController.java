@@ -135,11 +135,32 @@ public class EmpController {
 	// ajax 공통 코드 등록
 	@PostMapping("ajax/insertComm")
 	@ResponseBody
-	public int ajaxInsertComm(@RequestBody CommVO commVO) {
+	public int ajaxInsertComm(CommVO commVO) {
 		int result = commService.ajaxInsertComm(commVO);
 		return result;
 	}
 	
+	// ajax 공통 코드 단건 조회 ajaxFindComm
+	@PostMapping("ajax/findComm")
+	@ResponseBody
+	public CommVO ajaxFindComm(String commCd) {
+		return commService.ajaxFindComm(commCd);
+	}
+	
+	// ajax 공통 코드 수정
+	@PostMapping("ajax/updateComm")
+	@ResponseBody
+	public int ajaxUpdateComm(CommVO commVO) {
+		return commService.ajaxUpdateComm(commVO);
+	}
+	
+	// ajax 공통 코드 삭제
+	@PostMapping("ajax/deleteComm")
+	@ResponseBody
+	public int ajaxDeleteComm(CommVO commVO) {
+		return commService.ajaxDeleteComm(commVO);
+	}
+		
 	
 	/*
 	 *  matCodeAD.html에 관한 컨트롤러

@@ -25,6 +25,12 @@ public interface CommMapper {
 	public int ajaxInsertComm(CommVO commVO);
 	// 상세 공통 코드, 이름 불러오기(성하)
 	public List<CommdVO> getCommdCdNm(String commCd);
+	// ajax 공통 코드 단건 조회
+	CommVO ajaxFindComm(String commCd);
+	// ajax 공통 코드 수정
+	int ajaxUpdateComm(CommVO commVO);
+	// ajax 공통 코드 삭제
+	int ajaxDeleteComm(CommVO commVO);
 	
 	
 	// ajax 자재 코드 불러오기
