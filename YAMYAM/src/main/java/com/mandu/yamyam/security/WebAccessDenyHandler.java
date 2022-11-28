@@ -16,7 +16,7 @@ public class WebAccessDenyHandler implements AccessDeniedHandler {
 		AccessDeniedException accessDeniedException) throws IOException, ServletException {
 //		System.out.println(accessDeniedException.getMessage());
 //		System.out.println(accessDeniedException.getCause());
-		request.getRequestDispatcher("/error403").forward(request, response);
+		request.getRequestDispatcher("/error").forward(request, response);
 	}
 
 }

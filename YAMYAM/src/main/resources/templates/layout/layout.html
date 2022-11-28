@@ -6,6 +6,8 @@
   <title>YAMYAM</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta id="_csrf" name="_csrf" th:content="${_csrf.token}"/>
+  <meta id="_csrf_header" name="_csrf_header" th:content="${_csrf.headerName}"/>
   <link href="css/styles.css" rel="stylesheet" />
   <link href="css/bootstrap.min.css" rel="stylesheet">
   <link href="css/tui-grid.css" rel="stylesheet">
@@ -214,11 +216,11 @@
 
    </div>
 
-   <div>
-      <input type="hidden" id="currentLi" name="currentLi" value="${}">
-   </div>
-   
    <script type="text/javascript">
+   
+      /* token */
+	  var token = $("meta[name='_csrf']").attr("content");
+	  var header = $("meta[name='_csrf_header']").attr("content");
    
       // 회사 로고 누르면 하위탭 안 나오게 sessionStorage 해당 부분 날려주기
       function tabInfoDelete() {

@@ -131,14 +131,20 @@
 					</table>
 					
 					<!-- 등록 버튼 누르면 서버에서 전체VO로 받아서 서비스단에서 uopEtime이 없으면 insert. uopEtime이 있으면 update -->
-					<button type="button" class="btn btn-dark btn-sm" id="uopInsertUpdate">비가동 등록/해제</button>
-					<button type="button" class="btn btn-dark btn-sm" id="uopDelete">삭제</button>
+					<th:block sec:authorize="hasAnyAuthority('JOB-GRD1', 'JOB-GRD2')">
+						<button type="button" class="btn btn-dark btn-sm" id="uopInsertUpdate">비가동 등록/해제</button>
+						<button type="button" class="btn btn-dark btn-sm" id="uopDelete">삭제</button>
+					</th:block>
 					<button type="reset" class="btn btn-dark btn-sm" id="reset">초기화</button>
 				</form>
 			</div>
 		</div>
 		
 		<script>
+			/* token */
+			var token = $("meta[name='_csrf']").attr("content");
+			var header = $("meta[name='_csrf_header']").attr("content");	
+		
 			let selectEqpGrid = selectEqpGridInit();	// 설비목록 grid 초기화
 			let selectUopGrid = selectUopGridInit();	// 비가동 이력 grid 초기화
 			getEqpGridData();							// 설비 목록 초기화
@@ -232,11 +238,13 @@
 						document.getElementById('eqpNm').value = clickedRow.eqpNm;
 						
 					} else if (clickedRow.eqpSts == '비가동') {
-						console.log(clickedRow.eqpCd);
 						$.ajax({
 							url:'/getUop',
 							type: 'post',
 							data: {eqpCd: clickedRow.eqpCd},
+							beforeSend : function(xhr){
+				           		xhr.setRequestHeader(header, token);
+				           	},
 							success: function (data) {
 								// 가져온 값 입력폼에 넣기
 								document.getElementById('uopCd').value = data.uopCd;
@@ -432,6 +440,9 @@
 			            processData : false,
 			            contentType : false,
 			            data: formData,
+			            beforeSend : function(xhr){
+			           		xhr.setRequestHeader(header, token);
+			           	},
 						success: function (data) {
 							document.getElementById('reset').click();
 							selectUopGrid.resetData(data);
@@ -549,6 +560,9 @@
 				            processData : false,
 				            contentType : false,
 				            data: formData,
+				            beforeSend : function(xhr){
+				           		xhr.setRequestHeader(header, token);
+				           	},
 							success: function (data) {
 								if (data == 0) {
 									toastr.error('등록에 실패했습니다.');
@@ -591,6 +605,9 @@
 								url:'/deleteUop',
 								type : "post",
 					            data: {'uopCd': uopCd},
+					            beforeSend : function(xhr){
+					           		xhr.setRequestHeader(header, token);
+					           	},
 								success: function (data) {
 									if (data > 0) {
 										toastr.success('정상적으로에 삭제되었습니다.');
