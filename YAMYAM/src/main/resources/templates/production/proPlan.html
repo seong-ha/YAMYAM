@@ -90,10 +90,12 @@
 									<td></td>
 									<td></td>
 									<td style="text-align: right;">
+									<th:block sec:authorize="hasAnyAuthority('JOB-GRD2')">
 										<button type="button" id="updateBtn"
 											class="btn btn-dark btn-sm">계획수정</button>
 										<button type="button" id="deleteBtn"
 											class="btn btn-dark btn-sm">계획취소</button>
+									</th:block>
 									</td>
 								</tr>
 							</table>
@@ -186,7 +188,11 @@
 	</div>
 
 <script>
-	
+	/* token */
+	var token = $("meta[name='_csrf']").attr("content");
+	var header = $("meta[name='_csrf_header']").attr("content");
+
+
 	//date picker 초기화
 	searchInit();  
 	
@@ -390,35 +396,37 @@
 				let pplndDays = ckRow[i].pplndDays;
 				let pplndCd = ckRow[i].pplndCd;
 				let pplndSts = ckRow[i].pplndSts
+				console.log(pplndSts);
 				list.push({pplndPrio,pplndDays,pplndCd})
-				if(pplndSts == '지시완료'){
-					let messeage = `지시완료된 상태는<br> 수정할 수 없습니다.`
-					Swal.fire({icon: 'error',title:messeage});
-				}else{
-				sweetConfirm('U', function(){
-				// DB update
-				//ajax 
-				// 성공
-					$.ajax({
-					url : '/planUpdate',
-					method: 'POST',
-					contentType : 'application/json',
-					data :  JSON.stringify(list),
-					dataType : 'json',
-					success : function(data){
-							  Swal.fire('수정이 완료되었습니다');
-							// grid에서 수정
-							  detailPGrid.refreshLayout();
-							},
-					error : function(reject){
-							console.log(reject);
-							// 실패
-							Swal.fire('수정이 실패했습니다.');	
-							}			 		  
-							});	
-					})
-				}
-			} 
+			 
+			if(pplndSts == '완료'){
+				let messeage = `지시완료된 상태는<br> 수정할 수 없습니다.`
+				Swal.fire({icon: 'error',title:messeage});
+			}else{
+			sweetConfirm('U', function(){
+				$.ajax({
+				url : '/planUpdate',
+				method: 'POST',
+				contentType : 'application/json',
+				data :  JSON.stringify(list),
+				dataType : 'json',
+				beforeSend : function (xhr) {
+				    xhr.setRequestHeader(header, token);
+				},
+				success : function(data){
+						  Swal.fire('수정이 완료되었습니다');
+						// grid에서 수정
+						  detailPGrid.refreshLayout();
+						},
+				error : function(reject){
+						console.log(reject);
+						// 실패
+						Swal.fire('수정이 실패했습니다.');	
+				}			 		  
+				});	
+			})
+			}
+			}
 		});	
 	}
 
@@ -439,38 +447,36 @@
 				let pplndSts = ckRow[i].pplndSts;
 				let pplnCd = ckRow[i].pplnCd;
 				list.push({pplndCd,pplnCd});
-				console.log(list);
-				if(pplndSts == '지시완료'){
-					let messeage = `지시완료된 상태는<br> 삭제할 수 없습니다.`
-					Swal.fire({icon: 'error',title:messeage});
-				}else{
-				sweetConfirm('D', function(){
-				// DB delete
-				//ajax 
-				// 성공
-					$.ajax({
-					url : '/deleteDetail',
-					method: 'POST',
-					contentType : 'application/json',
-					data :  JSON.stringify(list),
-					dataType : 'json',
-					success : function(data){
-							  Swal.fire('삭제가 완료되었습니다');
-							// grid에서 수정
-							  detailPGrid.removeCheckedRows();
-							  detailPGrid.refreshLayout();
-							  manageGrid.refreshLayout();
-							},
-					error : function(reject){
-							console.log(reject);
-							// 실패
-							Swal.fire('삭제에 실패했습니다.');	
-							}			 		  
-							});	
-					})
-				}
+			if(pplndSts == '완료'){
+				let messeage = `지시완료된 상태는<br> 삭제할 수 없습니다.`
+				Swal.fire({icon: 'error',title:messeage});
+			}else{
+			sweetConfirm('D', function(){
+				$.ajax({
+				url : '/deleteDetail',
+				method: 'POST',
+				contentType : 'application/json',
+				data :  JSON.stringify(list),
+				dataType : 'json',
+				beforeSend : function (xhr) {
+				    xhr.setRequestHeader(header, token);
+				},
+				success : function(data){
+						  Swal.fire('삭제가 완료되었습니다');
+						// grid에서 수정
+						  detailPGrid.removeCheckedRows();
+						  detailPGrid.refreshLayout();
+						  manageGrid.refreshLayout();
+						},
+				error : function(reject){
+						console.log(reject);
+						// 실패
+						Swal.fire('삭제에 실패했습니다.');	
+						}			 		  
+						});	
+				})
 			}
-		
+			}
 		})
 	};
 			
@@ -595,7 +601,6 @@
 	function rModalGridClickHandler(){
 
 		requestModalGrid.on('click',function(ev){
-			//console.log(ev.rowKey); 선택한 행의 row번호
 			// 클릭한 행의 자재명, 자재코드 
 			let val = requestModalGrid.getRow(ev.rowKey);
 			let RMCode = val.odCd;
@@ -610,7 +615,6 @@
 					}
 				}
 			}
-				 
 				insertGrid.appendRow(val);
 				insertGrid.setValue(ev.rowKey,'pplndAmt',pplndAmt)
 				$('#requestModal').modal("hide");	
@@ -699,9 +703,6 @@
 		$('#searchBtn').on('click',function(){
 			let getStartDay = $("#startpicker-input").val();
 			let getEndDay = $("#endpicker-input").val();
-			console.log(getStartDay);
-			console.log(getEndDay);
-			// 갖고온 start, end 값을 넘겨서 select 해오기
 			
 			$.ajax({
 				url : '/planList',
@@ -789,7 +790,6 @@
 			// grid 데이터
 			let data = insertGrid.getCheckedRows();
 			let dataList = [];
-
 			for(let i=0; i<data.length;i++){
 				let pplndPrio = data[i].pplndPrio;
 				let pplndDays = data[i].pplndDays;
@@ -797,41 +797,42 @@
 				let odCd = data[i].odCd;
 				let odAmt = data[i].rqtAmt;
 				dataList.push({pplnDate,pplnName,odCd,pplndPrio,pplndDays,prdCd,odAmt})
-				if(pplnName == ''){
-					Swal.fire({
-						icon: 'error',
-						title :'생산계획명을 입력하세요!!'});
-
-				}else if(pplndPrio == null || pplndDays == null){
-					 Swal.fire({
-						icon: 'error',
-						title :'생산일수 혹은 작업우선순위를 입력하세요!!'});
-
-				}else{
-					
-					sweetConfirm('C', function(){
-						$.ajax({
-							url : '/planInsert',
-							method: 'POST',
-							contentType : 'application/json',
-							data : JSON.stringify(dataList),
-							dataType : 'json',
-							success : function(data){
-									 Swal.fire('등록이 완료되었습니다');
-									// grid에서 수정
-									  insertGrid.refreshLayout();
-									},
-							error : function(reject){
-									console.log(reject);
-									// 실패
-									Swal.fire('등록에 실패했습니다.');	
-									}			 		  
-							});	
-					 }) // sweetconfirm 끝
-
-				} // else
 			}
+			if(pplnName == ''){
+				Swal.fire({
+					icon: 'error',
+					title :'생산계획명을 입력하세요!!'});
 
+			}else if(pplndPrio == null || pplndDays == null){
+				 Swal.fire({
+					icon: 'error',
+					title :'생산일수 혹은 작업우선순위를 입력하세요!!'});
+
+			}else{
+				
+				sweetConfirm('C', function(){
+					$.ajax({
+						url : '/planInsert',
+						method: 'POST',
+						contentType : 'application/json',
+						data : JSON.stringify(dataList),
+						dataType : 'json',
+						beforeSend : function (xhr) {
+						    xhr.setRequestHeader(header, token);
+						},
+						success : function(data){
+								 Swal.fire('등록이 완료되었습니다');
+								// grid에서 수정
+								  insertGrid.refreshLayout();
+								},
+						error : function(reject){
+								console.log(reject);
+								// 실패
+								Swal.fire('등록에 실패했습니다.');
+								}			 		  
+						});	
+				 }) // sweetconfirm 끝
+			} 
 		});
 	}
 	

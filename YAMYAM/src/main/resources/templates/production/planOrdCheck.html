@@ -104,6 +104,12 @@
 			</div>
 		</div>
 	<script>
+	/* token */
+	var token = $("meta[name='_csrf']").attr("content");
+	var header = $("meta[name='_csrf_header']").attr("content");
+		
+	
+		//let datePicker = pickerInit();
 		
 		//date picker 초기화
 		searchInit(); 
@@ -281,14 +287,14 @@
 						editor: {
 				            type: 'datePicker',
 				            options: {
-				              format: 'yyyy-MM-dd',
-				              language : 'ko'
+				               format: 'yyyy-MM-dd', 
+				               language : 'ko'
 				            }
 				          },
 				        validation: {
 						        dataType: 'datePicker',
 						        required: true
-						      }  
+						      } 
 					},
 					{
 						header: '작업수량(BOX)',
@@ -336,10 +342,9 @@
 		}
 		planOrder.hideColumn('pplndCd');
 		planOrder.hideColumn('prdCd');
+
 		
 		
-		
-			
 			/*------------
 			// datepicker
 			----------------*/	
@@ -591,6 +596,9 @@
 								method: 'POST',
 								contentType : 'application/json',
 								data : JSON.stringify(dataList),
+								beforeSend : function (xhr) {
+								    xhr.setRequestHeader(header, token);
+								},
 								dataType : 'json',
 								success : function(data){
 									Swal.fire('생산지시가 등록되었습니다.'); console.log(data);

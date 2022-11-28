@@ -11745,7 +11745,7 @@ body {
 }
 
 .log-sts-on {
-	color: yellow;
+	color: #87C77D;
 	padding-left: 20px; 
 }
 
@@ -11759,6 +11759,7 @@ body {
 
 .login-menu {
   color: #fff;
+  background-color: #963446;
   position: relative;
   display: flex;
   flex-wrap: wrap;

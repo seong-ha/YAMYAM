@@ -59,6 +59,10 @@
 	</div>
 	
 	<script>
+	/* token */
+	var token = $("meta[name='_csrf']").attr("content");
+	var header = $("meta[name='_csrf_header']").attr("content");
+
 		let grid = gridInit();				    // 공정관리 그리드
 		let eqModalGrid = eqModalGridInit();	// 미사용 설비 모달 그리드
 

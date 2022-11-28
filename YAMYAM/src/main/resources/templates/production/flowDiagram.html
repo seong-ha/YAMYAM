@@ -76,6 +76,10 @@
 	</div>
 	
 	<script>
+	/* token */
+	var token = $("meta[name='_csrf']").attr("content");
+	var header = $("meta[name='_csrf_header']").attr("content");
+
 		let flowGrid = flowGridInit();			// 공정흐름도 그리드
 		let flowManage = flowManageInit();		// 공정흐름도관리 그리드
 		let listModalGrid = listModalGridInit();	// 공정목록 모달 그리드

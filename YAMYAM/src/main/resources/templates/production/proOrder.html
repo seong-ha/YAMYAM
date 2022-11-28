@@ -47,6 +47,10 @@ text-align: center;
 
 		
 		<script>
+		/* token */
+		var token = $("meta[name='_csrf']").attr("content");
+		var header = $("meta[name='_csrf_header']").attr("content");
+
 		// 그리드 초기화
 	
 		let matLot = matLotGridInit(); 		 // 필요자재 LOT grid 
