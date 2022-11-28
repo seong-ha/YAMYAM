@@ -539,9 +539,26 @@
 			        	contentType: 'application/JSON',
 						data: JSON.stringify(data),
 						success: function(result){
-							console.log(result);
 							if(result >= 1){
 					        	Swal.fire('저장이 완료되었습니다.');
+					        	
+					        	// M_OD테이블의 검수상태 Y로 업데이트
+					        	$.ajax({
+					        		url: '/updateChk',
+					        		method: 'POST',
+					        		contentType: 'application/JSON',
+					        		dataType: 'JSON',
+					        		data: JSON.stringify(data),
+					        		sussecc: function(result){
+					        			if(result >= 1) {
+					        				console.log('검수상태 update 완료.')
+					        			}
+					        		},
+					        		error: function(reject){
+					        			console.log(reject);
+					        		}
+					        	})
+					        	
 								setTimeout(() => location.reload(),400);
 							} else {
 								Swal.fire('저장에 실패하였습니다.');

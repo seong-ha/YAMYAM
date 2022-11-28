@@ -49,9 +49,6 @@ public interface MatOdMapper {
 	// 필요자재조회(생산계획 탭)
 	public List<Map<String, Object>> needMatList(String prdCd);
 	
-	// 자재발주 리스트(생산계획 탭)
-	public List<Map<String, Object>> chkMatList(String mtrCd);
-	
 	// 신규 생산 계획서 리스트 조회버튼(자재 발주 - 생산계획 탭)
 	public List<Map<String, Object>> newPlanLookUpBtn(MatVO vo);
 	
@@ -91,6 +88,9 @@ public interface MatOdMapper {
 	// 자재 입고 검수 관리 - insert
 	public int insertChkOd(MatVO vo);
 	
+	// 자재 입고 검수 관리 - update
+	public int updateMatOdSts(MatVO vo);
+	
 	// 자재 입고 검수 관리 - delete
 	public int deletetChkOd(MatVO vo);
 	
@@ -106,6 +106,9 @@ public interface MatOdMapper {
 	// insert
 	public int inManageSave(MatVO vo);
 	
+	// update
+	public int updateMatInsts(MatVO vo);
+	
 	// delete
 	public int inManageDelete(MatVO vo);
 	
@@ -120,6 +123,9 @@ public interface MatOdMapper {
 	
 	// 필요자재LOT목록
 	public List<Map<String, Object>> needMtrLotList(MatVO vo);
+	
+	// 출고테이블로 insert
+	public int insertMatOut(MatVO vo);
 	
 	// 출고처리 - 자재 마이너스 업데이트
 	public int updateOutOd(MatVO vo);

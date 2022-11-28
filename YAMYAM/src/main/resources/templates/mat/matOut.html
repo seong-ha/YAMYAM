@@ -412,6 +412,18 @@
 				let oddCd = grid.getCheckedRows();
 				let count = matNeed.getRowCount();
 				
+				let rowData = [];
+				
+				for(let i=0; i<data.length; i++){
+					let arData = {
+							podCd:oddCd[0].podCd,
+							mtrNm:data[i].mtrNm,
+							matLot:data[i].matLot,
+							matOutAmt:data[i].amt
+					}
+					rowData.push(arData);
+				}
+				
 				Swal.fire({
 				      title: '저장 하시겠습니까?',
 				      icon: 'warning',
@@ -425,52 +437,78 @@
 				    	
 				// 필요자재 그리드에 아무것도 남지 않으면 출고처리
 				if(count == 0){
-					// 재고 - 출고량 업데이트
+					// insert
 					$.ajax({
-						url: '/matOut',
+						url: '/insertOut',
 						method: 'POST',
 						contentType: 'application/JSON',
 						dataType: 'JSON',
-						data: JSON.stringify(data),
-						success: function(result){
-							if(result = 1) {
-								// 진행구분 자재팀확인->완료 업데이트
-								$.ajax({
-									url: 'updateOutSts',
-									method: 'POST',
-									contentType: 'application/JSON',
-									dataType: 'JSON',
-									data: JSON.stringify(oddCd[0]),
-									success: function(result){
-										Swal.fire({
-											icon: 'success',
-											title :'출고가 완료되었습니다.'});
-										setTimeout(() => location.reload(),500);
-									},
-									error: function(reject){
-										console.log(reject);
-										Swal.fire({
-											icon: 'error',
-											title :'출고에 실패하였습니다.'});
-									}
-								})
-								
+						data: JSON.stringify(rowData),
+						success: function(result) {
+							
+							var result = updateAmt(data)
+							
+							if(result >= 1) {										
+								updateSts(oddCd);
 							}
 						},
-						error: function(reject){
+						error: function(reject) {
 							console.log(reject);
 						}
-						
 					})
 				} else {
 					Swal.fire({
 						icon: 'error',
 						title :'필요자재를 확인하세요!!'});
-					}
+					} // end if
 				})
 			})
 		}
 	
+		// 진행구분 자재팀확인->완료 업데이트 (ajax 분리)
+		function updateSts(oddCd) {
+			 $.ajax({
+				url: '/updateOutSts',
+				method: 'POST',
+				contentType: 'application/JSON',
+				dataType: 'JSON',
+				data: JSON.stringify(oddCd[0]),
+				success: function(result){
+					Swal.fire({
+						icon: 'success',
+						title :'출고가 완료되었습니다.'});
+					setTimeout(() => location.reload(),500);
+				},
+				error: function(reject){
+					console.log(reject);
+					Swal.fire({
+						icon: 'error',
+						title :'출고에 실패하였습니다.'});
+				}
+			})
+		}
+		
+		// 재고 - 출고량 업데이트 (ajax 분리)
+		function updateAmt(data) {
+			var r ;
+			 $.ajax({
+				url: '/matOut',
+				method: 'POST',
+				async: false,
+				contentType: 'application/JSON',
+				dataType: 'JSON',
+				data: JSON.stringify(data),
+				success:function(result){
+					r = result;
+				},
+				error: function(reject){
+					console.log("===============",reject);
+				}
+				
+			}) // 재고 - 출고량 업데이트 ajxa end
+			console.log(r);
+			return r;
+		}
 		
 		// 생산지시 언체크 이벤트
 		function gridUnCheckedFn() {
