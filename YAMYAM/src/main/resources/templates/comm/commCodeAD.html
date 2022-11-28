@@ -33,7 +33,7 @@
 						role="tab" aria-controls="pills-home" aria-selected="true">
 						코드 조회</button>
 				</li>
-				<li class="nav-item" role="presentation">
+				<li class="nav-item" role="presentation" id="commRegTabLi">
 					<button class="nav-link" id="pills-profile-tab"
 						data-bs-toggle="pill" data-bs-target="#pills-profile"
 						type="button" role="tab" aria-controls="pills-profile"
@@ -92,7 +92,7 @@
 					
 					사용 여부&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 					<div class="form-check form-check-inline">
-					  <input class="form-check-input" type="radio" name="commUse" id="useRadio1" value="YES">
+					  <input class="form-check-input" type="radio" name="commUse" id="useRadio1" value="YES" checked>
 					  <label class="form-check-label" for="useRadio1">YES</label>
 					</div>
 					<div class="form-check form-check-inline">
@@ -102,7 +102,10 @@
 					
 				
 					<div align="right">
-					<button type="button" class="btn btn-dark btn-sm" id="updateBtn">등록</button>
+						<button type="button" class="btn btn-dark btn-sm" id="insertBtn">등록</button>
+						<button type="button" class="btn btn-dark btn-sm" id="updateBtn">수정</button>
+						<button type="button" class="btn btn-dark btn-sm" id="deleteBtn">삭제</button>
+						<button type="button" class="btn btn-dark btn-sm" id="resetBtn" style="margin-left:5px">초기화</button>
 					</div>
 					
 					</div>
@@ -126,10 +129,20 @@
 
 	
 	<script>
-	/* token */
-	var token = $("meta[name='_csrf']").attr("content");
-	var header = $("meta[name='_csrf_header']").attr("content");
-
+		/* token */
+		var token = $("meta[name='_csrf']").attr("content");
+		var header = $("meta[name='_csrf_header']").attr("content");
+	
+		// toastr
+		toastr.options = {
+			    "closeButton": false,
+			    "newestOnTop": true,
+			    "positionClass": "toast-top-center",
+			    "preventDuplicates": true,
+			    "extendedTimeOut" : 1500, 
+			    "timeOut" : 2500
+		}
+	
 		const grid = new tui.Grid({
 			
 			el : document.getElementById('grid'),
@@ -232,21 +245,24 @@
 				}
 			],
 		});
-		
+	    selectComm();
+	    
 		// ajax 공통코드 불러오기
+		function selectComm() {
+			$.ajax({
+				url : "ajax/selectComm",
+				type : "get",
+				dataType: "json",
+				success : function(data){
+					console.log(data);
+					grid.resetData(data);
+				},
+				error : function(reject){
+					console.log(reject);
+				}
+			})	
+		}
 		
-		$.ajax({
-			url : "ajax/selectComm",
-			type : "get",
-			dataType: "json",
-			success : function(data){
-				console.log(data);
-				grid.resetData(data);
-			},
-			error : function(reject){
-				console.log(reject);
-			}
-		})
 		
 		/* // ajax 공통 상세 코드 불러오기
 		$.ajax({
@@ -294,17 +310,32 @@
 		grid2.appendRow(rowData);
 		});
 		
+		// 공통 코드 등록 input 부분 비워주기
+		function resetCommRegInput() {
+			document.getElementById('commCode').removeAttribute('readonly');
+            document.getElementById('commCode').value = '';
+            document.getElementById('commCodeName').value = '';
+            document.getElementById('commCodeInfo').value = '';
+            document.getElementById('useRadio1').checked = true;
+		}
+		
+		
+		// 공통 코드 탭 누르면 공통코드등록 input 비워주기
+		document.getElementById('commRegTabLi').addEventListener('click', function () {
+			resetCommRegInput();
+		});
 		
 		// 현재 선택한 공통코드
 		let selectedComm = '';
 		
 		
-		// 공통코드 칼럼 누르면 거기에 맞는 상세코드 나옴
+		// 공통코드 컬럼 누르면 거기에 맞는 상세코드 나옴. 공통코드 내용도 가져와서 공통코드 등록 input에 넣어주기
   		grid.on('click', function (ev) {
 			let commCd = grid.getRow(ev.rowKey).commCd;
 			console.log(grid.getRow(ev.rowKey).commCd);
 			selectedComm = commCd;
 			
+			// 상세코드 가져와서 넣어주기
 			$.ajax({
 				url : "ajax/selectCommd",
 				type : "post",
@@ -314,13 +345,37 @@
 				    xhr.setRequestHeader(header, token);
 				},
 				success : function(data){
-					console.log(data);
 					grid2.resetData(data);
 				},
 				error : function(reject){
 					console.log(reject);
 				}
 			})
+			
+			// 공통코드 가져와서 넣어주기
+			$.ajax({
+				url : "ajax/findComm",
+				type : "post",
+				data: {'commCd' : commCd},
+				async: false,
+				beforeSend : function (xhr) {
+				    xhr.setRequestHeader(header, token);
+				},
+				success : function(data){
+					document.getElementById('commCode').setAttribute('readonly', 'true');
+					document.getElementById('commCode').value = data.commCd
+					document.getElementById('commCodeName').value = data.commNm;
+					document.getElementById('commCodeInfo').value = data.commInfo;
+					if (data.commUse == 'YES') {
+						document.getElementById('useRadio1').checked = true;
+					} else {
+						document.getElementById('useRadio2').checked = true;
+					}
+				},
+				error : function(reject){
+					console.log(reject);
+				}
+			});
 			
 		})  
 		
@@ -415,24 +470,64 @@
 		
 		// 공통 코드 등록
 		
-		document.getElementById('updateBtn').addEventListener('click', function(){
-			sweetConfirm('C', function () {
-				
-				let data = {
-					
-					commCd : document.getElementById('commCode').value,
-					commNm : document.getElementById('commCodeName').value,
-					commInfo : document.getElementById('commCodeInfo').value,
-					commUse : document.querySelector('input[name=commUse]:checked').value
+		document.getElementById('insertBtn').addEventListener('click', function(){
+			let commCd = document.getElementById('commCode');
+			let commNm = document.getElementById('commCodeName');
+			let commInfo = document.getElementById('commCodeInfo');
+			let commUse = document.querySelector('input[name=commUse]:checked');
+			
+			// 값 입력했는지 체크
+			if (commCd.value == '') {
+				toastr.warning('공통코드를 입력해주세요.');
+				commCd.focus();
+				return;
+			} else if (commNm.value == '') {
+				toastr.warning('공통코드이름을 입력해주세요.');
+				commNm.focus();
+				return;
+			} else if (commInfo.value == '') {
+				toastr.warning('공통코드내용을 입력해주세요.');
+				commInfo.focus();
+				return;
+			}
+			
+			// 공통 코드 중복 체크
+			let chkCommCd='';
+			$.ajax({
+				url : "ajax/findComm",
+				type : "post",
+				data: {'commCd' : commCd.value},
+				async: false,
+				beforeSend : function (xhr) {
+				    xhr.setRequestHeader(header, token);
+				},
+				success : function(data){
+					chkCommCd = data.commCd;
+				},
+				error : function(reject){
+					console.log(reject);
 				}
-				console.log(data);
-				
-				grid.appendRow(data);
+			});
+			
+			if (chkCommCd == commCd.value) {
+				toastr.warning('이미 존재하는 공통코드 입니다.');
+				commCd.focus();
+				return;
+			}
+			
+
+			let data = {
+					'commCd' : commCd.value,
+					'commNm' : commNm.value,
+					'commInfo' : commInfo.value,
+					'commUse' : commUse.value
+			}
+			
+			sweetConfirm('C', function () {
 				$.ajax({
 					url : "ajax/insertComm",
 					type : "post",
-					data: JSON.stringify(data),
-					contentType: "application/json",
+					data: data,
 					beforeSend : function (xhr) {
 					    xhr.setRequestHeader(header, token);
 					},
@@ -440,7 +535,9 @@
 						if (data > 0) {
 							// ajax success
 				            toastr.success('정상적으로 등록되었습니다.');
+				            selectComm();
 				            //setTimeout(() => {location.reload(), 3000});
+				            resetCommRegInput(); // 등록 input 비워주기
 						} else {
 							// ajax fail
 				            toastr.error('등록에 실패했습니다.');	
@@ -454,6 +551,110 @@
 			})
 		})
 		
+		
+		// 공통코드 수정
+		document.getElementById('updateBtn').addEventListener('click', function () {
+			let commCd = document.getElementById('commCode');
+			let commNm = document.getElementById('commCodeName');
+			let commInfo = document.getElementById('commCodeInfo');
+			let commUse = document.querySelector('input[name=commUse]:checked');
+			
+			// 값 입력했는지 체크
+			if (commCd.value == '') {
+				toastr.warning('공통코드를 입력해주세요.');
+				commCd.focus();
+				return;
+			} else if (commNm.value == '') {
+				toastr.warning('공통코드이름을 입력해주세요.');
+				commNm.focus();
+				return;
+			} else if (commInfo.value == '') {
+				toastr.warning('공통코드내용을 입력해주세요.');
+				commInfo.focus();
+				return;
+			}
+			
+			let data = {
+					'commCd' : commCd.value,
+					'commNm' : commNm.value,
+					'commInfo' : commInfo.value,
+					'commUse' : commUse.value
+			}
+			
+			sweetConfirm('U', function () {
+				$.ajax({
+					url : "ajax/updateComm",
+					type : "post",
+					data: data,
+					beforeSend : function (xhr) {
+					    xhr.setRequestHeader(header, token);
+					},
+					success : function(data){
+						if (data > 0) {
+							// ajax success
+				            toastr.success('정상적으로 수정되었습니다.');
+				            selectComm();
+				            //setTimeout(() => {location.reload(), 3000});
+				            resetCommRegInput(); // 등록 input 비워주기
+						} else {
+							// ajax fail
+				            toastr.error('수정에 실패했습니다.');	
+						}
+					},
+					error : function(reject){
+						console.log(reject);
+					}
+				
+				});
+			})
+		});
+		
+		// 공통 코드 삭제
+		document.getElementById('deleteBtn').addEventListener('click', function () {
+			let commCd = document.getElementById('commCode');
+			
+			// 값 입력했는지 체크
+			if (commCd.value == '') {
+				toastr.warning('삭제할 공통코드를 선택해주세요.');
+				commCd.focus();
+				return;
+			}
+			
+			sweetConfirm('D', function () {
+				$.ajax({
+					url : "ajax/deleteComm",
+					type : "post",
+					data: {'commCd': commCd.value },
+					beforeSend : function (xhr) {
+					    xhr.setRequestHeader(header, token);
+					},
+					success : function(data){
+						if (data > 0) {
+							// ajax success
+				            toastr.success('정상적으로 삭제되었습니다.');
+				            selectComm();
+				            //setTimeout(() => {location.reload(), 3000});
+				            resetCommRegInput(); // 등록 input 비워주기
+						} else {
+							// ajax fail
+				            toastr.error('삭제에 실패했습니다.');	
+						}
+					},
+					error : function(reject){
+						console.log(reject);
+					}
+				
+				});
+			})
+		});
+		
+		
+		
+		
+		// 공통 코드 input 초기화
+		document.getElementById('resetBtn').addEventListener('click', function () {
+			resetCommRegInput(); // 등록 input 비워주기
+		});
 		
 			
 	</script>

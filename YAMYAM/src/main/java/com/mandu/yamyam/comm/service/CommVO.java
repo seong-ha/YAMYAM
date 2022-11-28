@@ -10,5 +10,7 @@ public class CommVO {
 	private String commNm; // 공통 코드 이름
 	private String commInfo; // 공통 코드 내용
 	private String commUse; // 사용 여부
-	
+
+	// 프로시저 결과값
+	private int result;
 }

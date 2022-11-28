@@ -343,19 +343,21 @@
 	
 		
 		// ajax 직원 정보 불러오기
-		$.ajax({
-			url : "ajax/selectEmp",
-			type : "get",
-			dataType: "json",
-			success : function(data){
-				console.log(data);
-				grid.resetData(data);
-			},
-			error : function(reject){
-				console.log(reject);
-			}
-		})
-		
+		function selectEmps() {
+			$.ajax({
+				url : "ajax/selectEmp",
+				type : "get",
+				dataType: "json",
+				success : function(data){
+					console.log(data);
+					grid.resetData(data);
+				},
+				error : function(reject){
+					console.log(reject);
+				}
+			})
+		}
+		selectEmps();	
 	
 		// 체크박스
 		 grid.on('check', function(ev) {
@@ -438,7 +440,7 @@
 						if (result > 0) {
 							// ajax success
 				            toastr.success('정상적으로 등록되었습니다.');
-				            location.reload();
+				            selectEmps();
 							insertModalClose.click(); // 모달 닫기
 				            //setTimeout(() => {location.reload(), 3000});
 						} else {
@@ -512,7 +514,7 @@
 						if (data > 0) {
 							// ajax success
 				            toastr.success('정상적으로 수정되었습니다.');
-				            location.reload();
+				            selectEmps();
 				            updateModalClose.click(); // 모달창 닫기
 						} else {
 							// ajax fail

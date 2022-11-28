@@ -83,6 +83,33 @@
 
 </select>
 
+<!-- ajax 공통 코드 단건 조회 -->
+<select id="ajaxFindComm" parameterType="String" resultType="com.mandu.yamyam.comm.service.CommVO">
+	SELECT comm_cd,
+	       comm_nm,
+	       comm_info,
+	       comm_use
+	FROM   c_comm
+	WHERE  comm_cd = #{value}
+</select>
+
+<!-- ajax 공통 코드 수정 -->
+<update id="ajaxUpdateComm" parameterType="com.mandu.yamyam.comm.service.CommVO">
+	UPDATE c_comm
+	SET    comm_nm = #{commNm},
+	       comm_info = #{commInfo},
+	       comm_use = #{commUse}
+	WHERE  comm_cd = #{commCd}
+
+</update>
+
+<!-- ajax 공통 코드 삭제 -->
+<delete id="ajaxDeleteComm" parameterType="com.mandu.yamyam.comm.service.CommVO" statementType="CALLABLE">
+	{CALL DELETE_COMM(#{commCd, mode=IN, jdbcType=VARCHAR, javaType=java.lang.String},
+		                 #{result, mode=OUT, jdbcType=NUMERIC, javaType=int}
+		                 )}
+</delete>
+
 <!-- ajax 자재코드 불러오기 -->
 <select id="ajaxSelectMat" resultType="com.mandu.yamyam.common.LowerKeyMap">
 	

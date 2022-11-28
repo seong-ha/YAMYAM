@@ -66,6 +66,25 @@ public class CommServiceImpl implements CommService {
 		return commMapper.getCommdCdNm(commCd);
 	}
 
+	// ajax 공통 코드 단건 조회
+	@Override
+	public CommVO ajaxFindComm(String commCd) {
+		return commMapper.ajaxFindComm(commCd);
+	}
+
+	// ajax 공통 코드 수정
+	@Override
+	public int ajaxUpdateComm(CommVO commVO) {
+		return commMapper.ajaxUpdateComm(commVO);
+	}
+
+	// ajax 공통 코드 삭제
+	@Override
+	public int ajaxDeleteComm(CommVO commVO) {
+		commMapper.ajaxDeleteComm(commVO);
+		return commVO.getResult();
+	}
+	
 	// ajax 자재코드 불러오기
 	@Override
 	public List<MtrVO> ajaxSelectMat() {
@@ -160,9 +179,5 @@ public class CommServiceImpl implements CommService {
 	public List<PrdVO> ajaxSelectModalBOM() {
 		return commMapper.ajaxSelectModalBOM();
 	}
-	
 
-	
-
-	
 }
