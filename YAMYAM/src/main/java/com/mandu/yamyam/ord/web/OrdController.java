@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.mandu.yamyam.ord.service.OrdService;
 import com.mandu.yamyam.ord.service.OrdVO;
+import com.mandu.yamyam.pro.service.ProVO;
 
 @Controller
 public class OrdController {
@@ -51,6 +52,13 @@ public class OrdController {
 	@ResponseBody
 	public List<OrdVO> lotSList() {
 		return service.lotSList();
+	}
+	
+	// 완제품LOT 출고 현황 모달
+	@GetMapping("lotOutListModal")
+	@ResponseBody
+	public List<OrdVO> lotOutList() {
+		return service.lotOutList();
 	}
 	
 	// 주문서 관리 모달
@@ -157,6 +165,51 @@ public class OrdController {
 	}
 	
 	/*-----------------
+	// 완제품 반품 관리 Tab
+	-------------------*/
+	// 완제품 반품 관리 리스트 조회
+	@GetMapping("reList")
+	@ResponseBody
+	public List<OrdVO> getReList(OrdVO vo) {
+		return service.getReList(vo);
+	}
+	
+	// 완제품 반품 관리 리스트 등록
+	@PostMapping("insertReList")
+	@ResponseBody
+	public int insertReList(@RequestBody List<OrdVO> vo) {
+	return service.insertReList(vo);
+	}
+	
+	
+	/*-----------------
+	// 완제품 재고 조회 Tab
+	-------------------*/
+	// 완제품 재고 리스트 조회
+	@GetMapping("getLotList")
+	@ResponseBody
+	public List<OrdVO> getLotList(OrdVO vo) {
+		return service.getLotList(vo);
+	}
+	
+	/*-----------------
+	// 완제품 재고 관리 Tab
+	-------------------*/
+	// 완제품 유통기한 현황 리스트 조회
+	@GetMapping("getEdateList")
+	@ResponseBody
+	public List<OrdVO> getEdateList(OrdVO vo) {
+		return service.getEdateList(vo);
+	}
+	
+	@PostMapping("insertEdateList")
+	@ResponseBody
+	// 완제품 반품 관리 리스트 등록
+	public int insertEdateList(@RequestBody List<OrdVO> vo) {
+		return service.insertEdateList(vo);
+	}
+	
+	/*-----------------
 	// 생산 요청 관리 Tab
 	-------------------*/
 	
@@ -174,6 +227,29 @@ public class OrdController {
 		return service.getPodDetailList(vo);
 	}
 	
+	// 생산 요청 관리 리스트 등록
+	@PostMapping("insertPodList")
+	@ResponseBody
+	public int insertPodList(@RequestBody List<OrdVO> vo) {
+		int result =  service.insertPodOrd(vo);
+		return result;
+	}
+	
+	// 생산 요청 관리 리스트 수정
+	@PostMapping("updatePodList")
+	@ResponseBody
+	public int updatePodList(@RequestBody List<OrdVO> vo) {
+		int result =  service.updatePodOrd(vo);	
+		return result;
+	}
+	
+	// 생산 요청 관리 리스트 삭제
+	@DeleteMapping("deletePodList")
+	@ResponseBody
+	public int deletePodList(@RequestBody List<OrdVO> vo) {
+		int result = service.deletePodOrd(vo);
+		return result;
+	}
 	
 	/*-----------------
 	// 영업 관리 layout

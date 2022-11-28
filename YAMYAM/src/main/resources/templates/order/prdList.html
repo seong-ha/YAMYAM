@@ -10,6 +10,9 @@
 #od-btn {
 	display: inline-block; margin: 0 5px; float: right;
 }
+#prdCd, #prdCd2, #lot, #lot2, #startpicker-input, #endpicker-input {
+text-align: center;
+}
 </style>
 </head>
 <body>
@@ -21,35 +24,15 @@
 	<div id="odAd-content">
       <div id="input-group">
          <ul class="ul-style">
-      <li><table id="form-check">
-	<tr>
-		<td>재고 분류</td>
-		<td>
-		  <input class="form-check-input" type="radio" name="flexRadioDefault" id="odAll" value="option1" checked>
-		  <label class="form-check-label" for="odAll">전체</label>
-		</td>
-	
-		<td>
-		  <input class="form-check-input" type="radio" name="flexRadioDefault" id="odOFF" value="option2">
-		  <label class="form-check-label" for="odOFF">소진된 재고</label>
-		</td>
-	
-		<td>
-		  <input class="form-check-input" type="radio" name="flexRadioDefault" id="odON" value="option13">
-		  <label class="form-check-label" for="odON">출고 가능한 재고</label>
-		</td>
-	</tr>
-		</table>
-			</li>
 
 	<li><label for="prdCd">제품명</label><input type="text" 
           data-bs-toggle="modal" data-bs-target="#prdModal" id="prdCd">
-          <img class="Magnifying-Glass-img" alt="image" src="../images/Magnifying_Glass.png">
+          <img class="Magnifying-Glass-img" alt="image" src="../images/Magnifying_Glass.png" id="prdImg">
           <input type="text" class="back" readonly id="prdCd2"><br></li>
 
          <li><label for="lot">완제품LOT</label><input type="text" 
             data-bs-toggle="modal" data-bs-target="#lotModal" id="lot">
-            <img class="Magnifying-Glass-img" alt="image" src="../images/Magnifying_Glass.png">
+            <img class="Magnifying-Glass-img" alt="image" src="../images/Magnifying_Glass.png" id="lotImg">
             <input type="text" class="back" readonly id="lot2">
             
                <button class="btn btn-dark btn-sm" id="searchBtn">조회</button>
@@ -106,21 +89,40 @@
 	/*------------
 	// function
 	----------------*/
-	searchBtnHandler();
-	cancelBtnHandler();
+	getLotList();			// 완제품 재고 리스트 불러오기
+	getPrdModal();			// 제품 모달 리스트 불러오기
+	getLotModal();			// 완제품LOT 모달 리스트 불러오기
 	
-	let grid = mainGridInit();
-	let prdModalGrid = prdGridInit();
-	let lotModalGrid = lotGridInit();
+	searchBtnHandler();		// 조회버튼 이벤트 핸들러
+	cancelBtnHandler();		// 초기화버튼 이벤트 핸들러
+	
+	let grid = mainGridInit();			// 완제품 재고 리스트 Grid
+	let prdModalGrid = prdGridInit();	// 제품 모달 Grid
+	let lotModalGrid = lotGridInit();	// lot 모달 Grid
 	
 	
 	 /*------------
-	// 검색버튼 이벤트 핸들러
+	// 조회버튼 이벤트 핸들러
 	----------------*/
 	function searchBtnHandler(){
 		$('#searchBtn').on('click',function(){
-			let getprdName = $("prdCd").val();
-			let getlot = $("lot").val();
+			let getPrdCd = $("prdCd").val();
+			let getLot = $("lot").val();
+			$.ajax({
+				   url:'/getLotList',
+				   contentType: 'application/json',
+				   dataType: "json",
+				   method: "GET",
+				   data : {
+					   "prdCd" : getPrdCd, "prdLot" : getLot
+				   },
+				   success : function(data) {
+					   grid.resetData(data);
+				   },
+				   error : function(reject) {
+					   console.log(reject);
+				   }
+			   })
 		});
 	}
    
@@ -134,53 +136,75 @@
 			$("#prdCd2").val("");
 			$("#lot").val("");
 			$("#lot2").val("");
+			
+			$.ajax({
+				url : '/getLotList',
+				method: "GET",			
+			}).then(res=>{
+				grid.resetData(res);
+				return res;
+			})
 		});	
 	}
    
    
 	/*------------
-	// 주문서 리스트 그리드
+	// 완제품 재고 리스트 그리드
 	----------------*/
 	function mainGridInit(){
 		let grid = new tui.Grid({
 		    el: document.getElementById('grid'),
-		    data: [
-		        {
-		        	podDate : '2022-11-08',
-		        	lot : 'LOT-PRO-221108-111',
-		        	prdCd : 'MD-00100',
-		        	prdNm : '얇은피 고기만두',
-		        	sAmt : 500
-		        }
-		        ],
 		    rowHeaders: ['rowNum'],
 		    scrollX: false,
 		    scrollY: false,
 		    columns: [
 		      {
 		        header: '생산 일자',
-		        name: 'podDate'
+		        align : 'center',
+		        name  : 'podDate'
 		      },
 		      {
 		        header: '완제품LOT',
-		        name: 'lot'
+		        align : 'center',
+		        name  : 'prdLot'
 		      },
 		      {
 		        header: '제품 코드',
-		        name: 'prdCd'
+		        align : 'center',
+		        name  : 'prdCd'
 		      },
 		      {
 		        header: '제품명',
-		        name: 'prdNm'
+		        align : 'center',
+		        name  : 'prdNm'
 		      },
 		      {
 		        header: '재고 수량',
-		        name: 'sAmt'
+		        align : 'center',
+		        name  : 'samt'
 		      }
 		    ]
 		  });
 		  	return grid;
 		}
+	
+	
+	/*------------
+	// 완제품 재고 리스트 가져오기
+	----------------*/
+	  function getLotList() {
+          $.ajax({
+             url : '/getLotList',
+             dataType : "json",
+             success : function(data) {
+                grid.resetData(data);
+             },
+             error : function(reject) {
+                console.log(reject);
+             }
+          })
+       }
+	
 
 	/*------------
 	// 제품명 Modal
@@ -188,28 +212,21 @@
 	function prdGridInit() {
 		let prdModalGrid = new tui.Grid({
 		    el: document.getElementById('prdModalGrid'),
-		    data: [
-		        {
-		        	prdCd : 'MD-00100',
-		        	prdNm : '얇은피 고기만두',
-		        	won : '1000'
-		        }
-		        ],
+		    bodyHeight: 500,
 		    rowHeaders: ['rowNum'],
 		    scrollX: false,
-		    scrollY: false,
+		    scrollY: true,
 		    columns: [
 		      {
 		        header: '제품코드',
+		        align : 'center',
 		        name: 'prdCd'
 		      },
 		      {
 		        header: '제품명',
-		        name: 'prdNm'
-		      },
-		      {
-		        header: '단가 (원)',
-		        name: 'won'
+		        align : 'center',
+		        name: 'prdNm',
+		        filter: {type: 'select'}
 		      }
 		    ]
 		  });
@@ -218,12 +235,23 @@
 	
 	
 	/*------------
-	// 제품명 모달 클릭
+	// 제품명 모달 클릭 (DB에서 데이터 가져오기) - 조회용
 	----------------*/
+	function getPrdModal() {
 	$('#prdCd').on('click',function(){
+		 $.ajax({
+			   url:'/prdListModal',
+			   dataType: "json",
+			   success : function(data) {
+				   prdModalGrid.resetData(data);
+			   },
+			   error : function(reject) {
+				   console.log(reject);
+			   }
+		   })
 		prdModalGrid.refreshLayout();
-	});
-
+		});
+	}
 	
 
 	 /*------------
@@ -248,28 +276,24 @@
 	function lotGridInit() {
 		let lotModalGrid = new tui.Grid({
 		    el: document.getElementById('lotModalGrid'),
-		    data: [
-		        {
-		        	lot : 'LOT-PRO-221104-620',
-		        	prdNm : '얇은피 고기만두',
-		        	eDate : '2023-10-04'
-		        }
-		        ],
 		    rowHeaders: ['rowNum'],
 		    scrollX: false,
 		    scrollY: false,
 		    columns: [
 		      {
 		        header: '완제품LOT',
-		        name: 'lot'
+		        align : 'center',
+		        name: 'prdLot'
 		      },
 		      {
 		        header: '제품명',
+		        align : 'center',
 		        name: 'prdNm'
 		      },
 		      {
 		        header: '유통기한',
-		        name: 'eDate'
+		        align : 'center',
+		        name: 'edate'
 		      }
 		    ]
 		  });
@@ -280,10 +304,21 @@
 	/*------------
 	// lot 모달 클릭
 	----------------*/
+	function getLotModal() {
 	$('#lot').on('click',function(){
+		 $.ajax({
+			   url:'/lotListModal',
+			   dataType: "json",
+			   success : function(data) {
+				   lotModalGrid.resetData(data);
+			   },
+			   error : function(reject) {
+				   console.log(reject);
+			   }
+		   })
 		lotModalGrid.refreshLayout();
-	});
-
+		});
+	}
 	
 	
 	 /*------------
@@ -292,7 +327,7 @@
    		lotModalGrid.on('click', ev => {
 	   let rowData = lotModalGrid.getRow(ev.rowKey);
 	   
-	   let cdVal = rowData['lot'];
+	   let cdVal = rowData['prdLot'];
 	   let nmVal = rowData['prdNm'];
 	   
 	   $('#lot').val(cdVal);

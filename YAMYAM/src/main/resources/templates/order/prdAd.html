@@ -14,6 +14,10 @@
 #exportBtn {
 	display: inline-block; margin: 0 5px; float: right;
 }
+
+#prdCd, #prdCd2 {
+text-align: center;
+}
 </style>
 </head>
 <body>
@@ -64,7 +68,7 @@
 		<h3>폐기 등록 현황 리스트</h3>
 
 	<div id="od-btn">
-	<button class="btn btn-dark btn-sm" id="deleteBtn">선택삭제</button>
+	<button class="btn btn-dark btn-sm" id="deleteBtn">행삭제</button>
 	<button class="btn btn-dark btn-sm" id="saveBtn">저장</button>
 	</div>
 	<div id="AbrogateGrid"></div>
@@ -76,12 +80,16 @@
 	/*------------
 	// function
 	----------------*/
+	//getEdateList();
+	getPrdList();
+	
 	let expirationDateGrid = eDateGridInit();
 	let AbrogateGrid = AbrogateGridInit();
 	let prdModalGrid = prdGridInit();
 	
 	deleteBtnHandler();
-	
+	searchBtnHandler();
+	cancelBtnHandler();
 	
 	/*------------
 	// 검색버튼 이벤트 핸들러
@@ -89,8 +97,21 @@
 	function searchBtnHandler(){
 		$('#searchBtn').on('click',function(){
 			let getprdName = $("prdCd").val();
+			$.ajax({
+				 url : '/getEdateList',
+				 contentType: 'application/json',
+	             dataType : "json",
+	             method: "GET",
+	             success : function(data) {
+	            	 expirationDateGrid.resetData(data);
+	             },
+	             error : function(reject) {
+	                console.log(reject);
+	             }
+			})
 		});
 	}
+	
 	
     /*------------
 	// 주문 조회 초기화 버튼
@@ -99,6 +120,19 @@
 		$('#cancelBtn').on('click',function(){
 			$("#prdCd").val("");
 			$("#prdCd2").val("");
+			
+			$.ajax({
+				 url : '/getEdateList',
+				 contentType: 'application/json',
+	             dataType : "json",
+	             method: "GET",
+	             success : function(data) {
+	            	 expirationDateGrid.resetData(data);
+	             },
+	             error : function(reject) {
+	                console.log(reject);
+	             }
+			})
 		});	
 	}
     
@@ -109,38 +143,41 @@
 	function eDateGridInit(){
 		let expirationDateGrid = new tui.Grid({
 		    el: document.getElementById('expirationDateGrid'),
-		    data: [
-		        {
-		        	podDate : '2021-12-11',
-		        	lot : 'LOT-PRO-211211-600',
-		        	prdCd : 'MD-00200',
-		        	prdNm : '얇은피 김치만두',
-		        	eDate : '2022-11-11'
-		        }
-		        ],
 		    rowHeaders: ['rowNum'],
 		    scrollX: false,
 		    scrollY: false,
+		    data : [{
+		    		podDate : '2022-11-28',
+		    		prdLot : 'PRD-11111',
+		    		prdCd : 'PRD-더미더미',
+		    		prdNm : '고기만두',
+		    		edate : '2022-12-28'
+		    }],
 		    columns: [
 		      {
 		        header: '생산 일자',
+		        align : 'center',
 		        name: 'podDate'
 		      },
 		      {
 		        header: '완제품LOT',
-		        name: 'lot'
+		        align : 'center',
+		        name: 'prdLot'
 		      },
 		      {
 		        header: '제품 코드',
+		        align : 'center',
 		        name: 'prdCd'
 		      },
 		      {
 		        header: '제품명',
+		        align : 'center',
 		        name: 'prdNm'
 		      },
 		      {
 		        header: '유통기한',
-		        name: 'eDate'
+		        align : 'center',
+		        name: 'edate'
 		      }
 		    ]
 		  	});
@@ -149,43 +186,117 @@
 	
 	
 	/*------------
+	// 유통기한 현황 리스트 가져오기
+	----------------*/
+	  function getEdateList() {
+          $.ajax({
+             url : '/getEdateList',
+             dataType : "json",
+             success : function(data) {
+            	 expirationDateGrid.resetData(data);
+             },
+             error : function(reject) {
+                console.log(reject);
+             }
+          })
+       }
+	
+
+		/*------------
+		// 유통기한 행 클릭 핸들러
+		----------------*/
+		expirationDateGrid.on('click',function(ev){
+				
+				let podDate = expirationDateGrid.getRow(ev.rowKey).podDate;
+				let prdLot = expirationDateGrid.getRow(ev.rowKey).prdLot;
+				let prdCd = expirationDateGrid.getRow(ev.rowKey).prdCd;
+				let prdNm = expirationDateGrid.getRow(ev.rowKey).prdNm;
+				let edate = expirationDateGrid.getRow(ev.rowKey).edate;
+				
+				let rowData = [{podDate:podDate, prdLot:prdLot, prdCd:prdCd,
+								prdNm : prdNm, edate : edate}];
+				AbrogateGrid.resetData(rowData);
+				
+		})
+		
+		
+		/*------------
+	// 저장 버튼 클릭
+	----------------*/
+	function SaveBtnHandler(){
+		$('#saveBtn').on('click',function(){
+			let rowData = AbrogateGrid.getCheckedRows();
+			let List = [];
+			for (let i=0; i<rowData.length; i++) {
+				let podDate = rowData[i].podDate;
+				let prdCd = rowData[i].prdCd;
+				let prdLot = rowData[i].prdLot;
+				let agAmt = rowData[i].agAmt;
+				let edate = rowData[i].edate;
+				List.push({podDate,prdCd,prdLot,agAmt,edate});
+			}
+			
+				sweetConfirm('C', function(){
+							$.ajax({
+								url : '/insertEdateList',
+								type : 'post',
+								contentType: 'application/json',
+								data: JSON.stringify(List),
+								dataType : 'json',
+								 success : function(result) {
+					                 if(result > 0){
+					                	 Swal.fire(
+					       			          '등록이 완료되었습니다.'	);
+					                	 getOrdList();
+					                 }else {
+					                	 Swal.fire(
+					                			 '등록이 실패하였습니다.');
+					                 }
+					              },
+					              error : function(reject) {
+					                 console.log(reject);
+					              }
+							})
+				})
+			
+			
+		})
+		
+   }
+	
+	/*------------
 	// 폐기 등록 리스트 grid
 	----------------*/
 	function AbrogateGridInit(){	
 	let AbrogateGrid = new tui.Grid({
 	    el: document.getElementById('AbrogateGrid'),
-	    data: [
-	        {
-	        	podDate : '2021-12-11',
-	        	lot : 'LOT-PRO-211211-600',
-	        	prdCd : 'MD-00200',
-	        	prdNm : '얇은피 김치만두',
-	        	agAmt :'100',
-	        	eDate : '2022-11-11'
-	        }
-	        ],
 	    rowHeaders: ['checkbox','rowNum'],
 	    scrollX: false,
 	    scrollY: false,
 	    columns: [
 	      {
 	        header: '생산 일자',
+	        align : 'center',
 	        name: 'podDate'
 	      },
 	      {
 	        header: '완제품LOT',
-	        name: 'lot'
+	        align : 'center',
+	        name: 'prdLot'
 	      },
 	      {
 	        header: '제품 코드',
+	        align : 'center',
 	        name: 'prdCd'
 	      },
 	      {
 	        header: '제품명',
+	        align : 'center',
 	        name: 'prdNm'
 	      },
 	      {
 	        header: '폐기량',
+	        align : 'center',
 	        name: 'agAmt',
 	        editor: 'text',
 			// 필수 입력 값
@@ -196,7 +307,8 @@
 	      },
 	      {
 	        header: '유통기한',
-	        name: 'eDate'
+	        align : 'center',
+	        name: 'edate'
 	      }
 	    ]
 	  	});
@@ -241,18 +353,6 @@
 	function prdGridInit() {
 	let prdModalGrid = new tui.Grid({
 	    el: document.getElementById('prdModalGrid'),
-	    data: [
-	        {
-	           prdCd : 'MD-00100',
-	           prdNm : '얇은피 고기만두',
-	           won : '1000'
-	        },
-	        {
-	           prdCd : 'MD-00200',
-	           prdNm : '얇은피 김치만두',
-	           won : '2000'
-	        }
-	        ],
 	    rowHeaders: ['rowNum'],
 	    scrollX: false,
 	    scrollY: false,
@@ -265,10 +365,6 @@
 	        header: '제품명',
 	        name: 'prdNm',
 	        filter: {type: 'select'}
-	      },
-	      {
-	        header: '단가 (원)',
-	        name: 'won'
 	      }
 	    ]
 	  });
@@ -280,10 +376,21 @@
 	/*------------
 	// 제품명 모달 클릭
 	----------------*/
+	function getPrdList() {
 	   $('#prdCd').on('click',function(){
+		   $.ajax({
+			   url:'/prdListModal',
+			   dataType: "json",
+			   success : function(data) {
+				   prdModalGrid.resetData(data);
+			   },
+			   error : function(reject) {
+				   console.log(reject);
+			   }
+		   })
 	    	prdModalGrid.refreshLayout();
 	   });
-
+	}
 
    /*------------
 	// 제품명 모달 데이터 가져오기
