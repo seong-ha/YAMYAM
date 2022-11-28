@@ -126,7 +126,9 @@
 
 	
 	<script>
-
+	/* token */
+	var token = $("meta[name='_csrf']").attr("content");
+	var header = $("meta[name='_csrf_header']").attr("content");
 
 		const grid = new tui.Grid({
 			
@@ -308,6 +310,9 @@
 				type : "post",
 				data: {'commCd': commCd},
 				dataType: "json",
+				beforeSend : function (xhr) {
+				    xhr.setRequestHeader(header, token);
+				},
 				success : function(data){
 					console.log(data);
 					grid2.resetData(data);
@@ -347,6 +352,9 @@
 					contentType: "application/json",
 					data: JSON.stringify(insertList),
 					dataType: "json",
+					beforeSend : function (xhr) {
+					    xhr.setRequestHeader(header, token);
+					},
 					success : function(data){
 						console.log(data);
 						if (data > 0) {
@@ -380,6 +388,9 @@
 					data: JSON.stringify(data),
 					contentType: "application/json",
 					dataType: "json",
+					beforeSend : function (xhr) {
+					    xhr.setRequestHeader(header, token);
+					},
 					success : function(data){
 						if (data > 0) {
 							// ajax success
@@ -422,6 +433,9 @@
 					type : "post",
 					data: JSON.stringify(data),
 					contentType: "application/json",
+					beforeSend : function (xhr) {
+					    xhr.setRequestHeader(header, token);
+					},
 					success : function(data){
 						if (data > 0) {
 							// ajax success

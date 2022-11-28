@@ -63,6 +63,10 @@
 	<br>
 	
 	<script>
+	
+	/* token */
+	var token = $("meta[name='_csrf']").attr("content");
+	var header = $("meta[name='_csrf_header']").attr("content");
 		
 		// 렌더링 에디터 (라디오박스)
 		
@@ -211,6 +215,9 @@
 				type : "post",
 				data: data,
 				dataType: "json",
+				beforeSend : function (xhr) {
+				    xhr.setRequestHeader(header, token);
+				},
 				success : function(data){
 					if (data > 0) {
 						// ajax success
@@ -266,6 +273,9 @@
 						type : "post",
 						data: data,
 						dataType: "json",
+						beforeSend : function (xhr) {
+						    xhr.setRequestHeader(header, token);
+						},
 						success : function(data){
 							if (data > 0) {
 								// ajax success

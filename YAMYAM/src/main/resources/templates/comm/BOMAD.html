@@ -12,18 +12,25 @@
 	<hr>
 	
 	<br> <br>
-	
-	<ul class="ul-style">
-			<li><label for="prdCodeLabel">제품 코드</label><input id="prdCode" name="prdCd" readonly>
-				<img id="prdCodeLabel" class="Magnifying-Glass-img" alt="image"
-					data-bs-toggle="modal" data-bs-target="#exampleModal"
-					src="../images/Magnifying_Glass.png" >
-				<input type="text" name="prdNm" id="prdName" readonly>
-			</li>
-			
-			
-	</ul>
-	
+	<form id="frm">
+		<ul class="ul-style">
+				<li><label for="prdCodeLabel">제품 코드</label><input id="prdCode" name="prdCd" readonly>
+					<img id="prdCodeLabel" class="Magnifying-Glass-img" alt="image"
+						data-bs-toggle="modal" data-bs-target="#exampleModal"
+						src="../images/Magnifying_Glass.png" >
+					<input type="text" name="prdNm" id="prdName" readonly>
+				</li>
+				
+				
+		</ul>
+		
+			<div align="right">
+			<button type="button" class="btn btn-dark btn-sm" onclick="resetf()" id="selectBtn">조회</button>
+			<button type="button" class="btn btn-dark btn-sm" id="insertBtn">추가</button>
+			<button type="button" class="btn btn-dark btn-sm" id="saveBtn">저장</button>
+			<button type="reset" class="btn btn-dark btn-sm">초기화</button>
+	</div>
+	</form>
 	<!-- Modal -->
 		<div class="modal" id="exampleModal" tabindex="-1"
 			aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -48,18 +55,8 @@
 			 </div>
 	    </div>
 		
-	<div align="right">
-			<button type="button" class="btn btn-dark btn-sm">조회</button>
-			<button type="button" class="btn btn-dark btn-sm">초기화</button>
-			<button type="button" class="btn btn-dark btn-sm">추가</button>
 			
-			
-			<button type="button" class="btn btn-dark btn-sm"
-			data-bs-toggle="modal" data-bs-target="#exampleModal2">저장</button>
-			
-			
-			
-					<div class="modal fade" id="exampleModal2" tabindex="-1"
+					<!-- <div class="modal fade" id="exampleModal2" tabindex="-1"
 					aria-labelledby="exampleModalLabel" aria-hidden="true">
 						<div class="modal-dialog">
 							<div class="modal-content">
@@ -81,7 +78,7 @@
 						 </div>
 			         </div>
 		         
-	         								<!-- Modal -->
+	         								Modal
 											<div class="modal fade" id="exampleModal3" tabindex="-1"
 												aria-labelledby="exampleModalLabel" aria-hidden="true">
 												<div class="modal-dialog">
@@ -100,64 +97,21 @@
 												     	    </div>
 												     </div>
 												 </div>
-										    </div>
+										    </div> -->
 			
 			
-	</div>
+	
 	
 	<br>
 	
 	<div id="grid"></div>
 
 	<script>
-	  
-	  
-	  
-	/*   const gridData3 = [{
-		  BOM_NO: '1',
-		  PPRO_CD: 'LHS-0001',
-		  PPRO_NAME: '혼합 공정',
-		  },
-		  {
-		  BOM_NO: '2',
-		  PPRO_CD: 'LHS-0002',
-		  PPRO_NAME: '성형 공정',
-		  },
-		  {
-		  BOM_NO: '3',
-		  PPRO_CD: 'LHS-0003',
-		  PPRO_NAME: '냉동 공정',
-		  },
-		  {
-		  BOM_NO: '4',
-		  PPRO_CD: 'LHS-0004',
-		  PPRO_NAME: '포장 공정',
-		  }
-	  ];
-	  
-	  const gridData4 = [{
-		  BOM_NO: '1',
-		  MTR_CD: 'WJJ-06',
-		  MTR_NM: '밀가루',
-		  },
-		  {
-		  BOM_NO: '2',
-		  MTR_CD: 'WJJ-05',
-		  MTR_NM: '혼합 야채',
-		  },
-		  {
-		  BOM_NO: '3',
-		  MTR_CD: 'WJJ-03',
-		  MTR_NM: '당면',
-		  },
-		  {
-		  BOM_NO: '4',
-		  MTR_CD: 'WJJ-01',
-		  MTR_NM: '고기',
-		  }
-	  ]; */
+	
+	/* token */
+	var token = $("meta[name='_csrf']").attr("content");
+	var header = $("meta[name='_csrf_header']").attr("content");
 
-	  
 		const grid = new tui.Grid({
 			el : document.getElementById('grid'),
 			scrollX : true,
@@ -183,7 +137,8 @@
 				name : 'mtrNm'
 			}, {
 				header : '소모량',
-				name : 'bomAmt'
+				name : 'bomAmt',
+				editor : 'text'
 			}],
 			showDummyRows : true
 		});
@@ -203,6 +158,43 @@
 			}, {
 				header : '규격',
 				name : 'prdStd'
+			}
+			],
+		});
+		
+		const grid3 = new tui.Grid({
+			el : document.getElementById('grid3'),
+			scrollX : false,
+			scrollY : true,
+			bodyHeight : 500,
+			columns : [{
+				header : '사용 공정명',
+				name : 'pproName'
+			}],
+		});
+		
+		const grid4 = new tui.Grid({
+			el : document.getElementById('grid4'),
+			scrollX : false,
+			scrollY : true,
+			bodyHeight : 500,
+			columns : [{
+				header : '제품 코드',
+				name : 'prdCd'
+			}],
+		});
+		
+		const grid5 = new tui.Grid({
+			el : document.getElementById('grid5'),
+			scrollX : false,
+			scrollY : true,
+			bodyHeight : 500,
+			columns : [{
+				header : '자재 코드',
+				name : 'mtrCd'
+			}, {
+				header : '자재명',
+				name : 'mtrNm'
 			}
 			],
 		});
@@ -227,7 +219,8 @@
 	     })
 	     
 	     // BOM 정보 불러오기
-		$.ajax({
+
+	     $.ajax({
 			url : "ajax/selectBOM",
 			type : "get",
 			dataType: "json",
@@ -255,7 +248,12 @@
 			prdModalClose.click();
 			
 		})
-	       
+	      
+		
+		function resetf(){
+			 $('#prdCode').val("")
+			 $('#prdName').val("")
+		}
 	    
     </script>
     
