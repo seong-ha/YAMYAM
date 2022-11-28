@@ -34,8 +34,8 @@ text-align: center;
 		          data-bs-toggle="modal" data-bs-target="#prdModal" id="prdCd">
 		          <img class="Magnifying-Glass-img" alt="image" src="../images/Magnifying_Glass.png">
 		          <input type="text" class="back" readonly id="prdCd2">
-			<button class="btn btn-dark btn-sm">조회</button>
-			<button  class="btn btn-dark btn-sm">초기화</button></li>
+			<button class="btn btn-dark btn-sm" id="searchBtn">조회</button>
+			<button  class="btn btn-dark btn-sm" id="cancelBtn">초기화</button></li>
           </ul>
           
           <!-- 제품명 Modal -->
@@ -80,8 +80,9 @@ text-align: center;
 	/*------------
 	// function
 	----------------*/
-	//getEdateList();
+	getEdateList();
 	getPrdList();
+	getAgAmtList();
 	
 	let expirationDateGrid = eDateGridInit();
 	let AbrogateGrid = AbrogateGridInit();
@@ -92,23 +93,27 @@ text-align: center;
 	cancelBtnHandler();
 	
 	/*------------
-	// 검색버튼 이벤트 핸들러
-	----------------*/
+	// 조회버튼 이벤트 핸들러
+	----------------*/	
 	function searchBtnHandler(){
 		$('#searchBtn').on('click',function(){
-			let getprdName = $("prdCd").val();
-			$.ajax({
-				 url : '/getEdateList',
-				 contentType: 'application/json',
-	             dataType : "json",
-	             method: "GET",
-	             success : function(data) {
-	            	 expirationDateGrid.resetData(data);
-	             },
-	             error : function(reject) {
-	                console.log(reject);
-	             }
-			})
+			let getPrdCd = $("#prdCd").val();
+				$.ajax({
+				   url:'/getEdateList',
+				   contentType: 'application/json',
+				   dataType: "json",
+				   method: "GET",
+				   data : {
+					   "prdCd" : getPrdCd
+				   },
+				   success : function(data) {
+					   expirationDateGrid.resetData(data);
+					   console.log(getPrdCd);
+				   },
+				   error : function(reject) {
+					   console.log(reject);
+				   }
+			   })
 		});
 	}
 	
@@ -146,39 +151,50 @@ text-align: center;
 		    rowHeaders: ['rowNum'],
 		    scrollX: false,
 		    scrollY: false,
-		    data : [{
-		    		podDate : '2022-11-28',
-		    		prdLot : 'PRD-11111',
-		    		prdCd : 'PRD-더미더미',
-		    		prdNm : '고기만두',
-		    		edate : '2022-12-28'
-		    }],
 		    columns: [
 		      {
 		        header: '생산 일자',
 		        align : 'center',
-		        name: 'podDate'
+		        name  : 'podDate'
 		      },
 		      {
 		        header: '완제품LOT',
 		        align : 'center',
-		        name: 'prdLot'
+		        name  : 'prdLot'
 		      },
 		      {
 		        header: '제품 코드',
 		        align : 'center',
-		        name: 'prdCd'
+		        name  : 'prdCd'
 		      },
 		      {
 		        header: '제품명',
 		        align : 'center',
-		        name: 'prdNm'
+		        name  : 'prdNm'
+		      },
+		      {
+		        header: '재고량',
+		        align : 'center',
+		        name  : 'samt'
 		      },
 		      {
 		        header: '유통기한',
 		        align : 'center',
-		        name: 'edate'
-		      }
+		        name  : 'edate'
+		      },
+		      {
+		        header: '유통기한 수준',
+		        align : 'center',
+		        name  : 'edateYn',
+		        renderer: {
+	               styles: {
+	                    fontWeight: 'bold',
+	                    color: (props) => 
+	                    	props.value = '경고' ? '#FF4500' : '	#0000CD'
+	                 }
+		            }
+	        
+		      },
 		    ]
 		  	});
 		  		return expirationDateGrid;
@@ -200,6 +216,8 @@ text-align: center;
              }
           })
        }
+	
+	
 	
 
 		/*------------
@@ -314,6 +332,22 @@ text-align: center;
 	  	});
 	  		return AbrogateGrid;
 	}  
+	
+	/*------------
+	// 폐기 등록 리스트 가져오기
+	----------------*/
+	  function getAgAmtList() {
+          $.ajax({
+             url : '/getAgAmtList',
+             dataType : "json",
+             success : function(data) {
+            	 AbrogateGrid.resetData(data);
+             },
+             error : function(reject) {
+                console.log(reject);
+             }
+          })
+       }
 	
 	
 	 /*------------

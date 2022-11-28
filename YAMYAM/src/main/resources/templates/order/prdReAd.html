@@ -171,7 +171,7 @@
 	        name: 'prdNm'
 	      },
 	      {
-	        header: '거래처코ㄷ',
+	        header: '거래처코드',
 	        align : 'center',
 	        name: 'actCd'
 	      },
@@ -245,7 +245,7 @@
    
 	 /*------------
 	// 저장 버튼 클릭
-	----------------*/ // 컨트롤러에서 if문으로 나눠주기
+	----------------*/
 	function SaveBtnHandler(){
 		$('#saveBtn').on('click',function(){
 			let rowData = grid.getCheckedRows();
@@ -254,11 +254,13 @@
 			let reCd = '';
 			let actCd = '';
 			let reAmt = '';
+			let odAmt = '';
 			for (let i=0; i<rowData.length; i++) {
 				prdLot = rowData[i].prdLot;
 				reCd = rowData[i].reCd;
 				actCd = rowData[i].actCd;
 				reAmt = rowData[i].reAmt;
+				odAmt = rowData[i].odAmt;
 				list.push({reCd,prdLot,actCd,reAmt});
 				console.log(rowData[i].prdLot);
 			}

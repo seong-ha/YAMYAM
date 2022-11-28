@@ -385,26 +385,39 @@
 		)
 	</insert>
 	
+	<!-- 완제품 반품 후, 재고 수정 -->
+	<update id="updateReList" parameterType="com.mandu.yamyam.ord.service.OrdVO">
+			UPDATE B_IN I
+		<if test="reAmt != null">
+		<set>
+			I.SAMT = (SELECT ABS(OD.OD_AMT - R.RE_AMT) 
+					    FROM B_OD OD, B_RT R 
+					    WHERE R.PRD_LOT = I.PRD_LOT 
+					      AND I.PRD_CD = OD.PRD_CD)
+		</set>
+			WHERE I.PRD_LOT = #{prdLot}
+		</if>
+	</update>
+	
 	<!--
 		완제품 재고 조회 Tab
 							 -->
+							 
 	<!-- 완제품 재고 리스트 조회 -->
 	<select id="getLotList" resultType="com.mandu.yamyam.common.LowerKeyMap">
 		SELECT TO_CHAR(POD.PODD_DATES,'yyyy-MM-dd') AS POD_DATE, 
 		I.PRD_LOT, 
 		P.PRD_CD, 
-		P.PRD_NM,ABS(I.BIN_AMT - OU.BAMT) AS SAMT
+		P.PRD_NM,
+		I.SAMT
 		
 		FROM B_IN I
 		
 		JOIN P_ODD POD
-		  ON POD.PRD_LOT = I.PRD_LOT
+		  ON POD.PODD_CD = I.PODD_CD
 		  
 		JOIN C_PRD P
 		  ON P.PRD_CD = I.PRD_CD
-		  
-		JOIN B_OUT OU
-		  ON I.PRD_LOT = OU.PRD_LOT
 		  
         <if test="prdCd != null and !prdCd.equals('')">
         WHERE P.PRD_CD = #{prdCd}
@@ -421,19 +434,44 @@
 	<select id="getEdateList" resultType="com.mandu.yamyam.common.LowerKeyMap">
 		SELECT TO_CHAR(POD.PODD_DATES,'yyyy-MM-dd') AS POD_DATE, 
 			   I.PRD_LOT, 
-			   P.PRD_CD, P.PRD_NM,
-			   I.EDATE
+			   P.PRD_CD, 
+			   P.PRD_NM,
+			   I.SAMT,
+			   TO_CHAR(I.EDATE,'yyyy-MM-dd') AS EDATE,
+			   CASE WHEN I.EDATE + 3 > CURRENT_DATE THEN '경고' ELSE '양호' END AS EDATE_YN
 			   
 		  FROM B_IN I
 		  
 		  JOIN P_ODD POD
-			ON POD.PRD_LOT = I.PRD_LOT
+			ON POD.PODD_CD = I.PODD_CD
 			
 		  JOIN C_PRD P
 			ON P.PRD_CD = I.PRD_CD
+		 WHERE I.SAMT > 0
+		<if test="prdCd != null and !prdCd.equals('')">
+         WHERE P.PRD_CD = #{prdCd}
+        </if>
 	  ORDER BY I.EDATE
 	</select>
 				 
+	<!-- 완제품 재고 관리 폐기 등록 현황 리스트 조회 -->
+	<select id="getAgAmtList" resultType="com.mandu.yamyam.common.LowerKeyMap">
+		SELECT TO_CHAR(POD.PODD_DATES,'yyyy-MM-dd') AS POD_DATE, 
+			   I.PRD_LOT, 
+			   P.PRD_CD, 
+			   P.PRD_NM,
+			   I.AG_AMT,
+			   TO_CHAR(I.EDATE,'yyyy-MM-dd') AS EDATE
+			   
+		FROM B_IN I
+		
+		JOIN P_ODD POD
+			ON POD.PODD_CD = I.PODD_CD
+			
+		  JOIN C_PRD P
+			ON P.PRD_CD = I.PRD_CD
+	</select>
+	
 	<!-- 완제품 재고 관리 폐기 현황 리스트 등록 -->
 	<insert id="insertEdateList" parameterType="com.mandu.yamyam.ord.service.OrdVO">
 		INSERT INTO 
@@ -453,7 +491,18 @@
 			,#{edate}
 		)
 	</insert>
-					 
+
+	<!-- 완제품 재고 관리 폐기 등록 후, 재고 수정 -->
+	<update id="updateEdateList" parameterType="com.mandu.yamyam.ord.service.OrdVO">
+			UPDATE B_IN
+		<if test="agAmt != null">
+		<set>
+			SAMT = ABS(#{samt} - #{agAmt}) 
+		</set>
+			WHERE PRD_LOT = #{prdLot}
+		</if>
+	</update>
+	
 	<!--
 		생산 요청 관리 Tab
 							 -->
@@ -461,6 +510,7 @@
 	<!-- 생산 요청 관리 리스트 조회 -->	
 	<select id="getPodList" resultType="com.mandu.yamyam.common.LowerKeyMap">
 		SELECT TO_CHAR(D.RQT_DATE,'yyyy-MM-dd') AS RQT_DATE,
+				D.RQT_NO,
 		      	O.OD_CD,
 		      	P.PRD_CD,
 		      	P.PRD_NM,
@@ -563,5 +613,35 @@
         	WHERE RQT_NO = #{rqtNo}
         </if>
 	</delete>
+	
+	
+	<!--
+		제품 안전 재고 관리 Tab
+							 -->
+							 
+	<!-- 안전 재고 관리 리스트 조회 -->
+	<select id="getSfamtList" resultType="com.mandu.yamyam.common.LowerKeyMap">
+		SELECT C.PRD_CD,
+      		   C.PRD_NM,
+       		   B.SAMT,
+      		   C.PRD_SFAMT,
+       		   CASE WHEN (C.PRD_SFAMT * 0.7)  >= B.SAMT THEN '위험'
+            		WHEN (C.PRD_SFAMT * 0.8)  >= B.SAMT THEN '경고'
+           			WHEN (C.PRD_SFAMT * 0.9)  >= B.SAMT THEN '관심' 
+           			ELSE '정상' END AS PRD_SFAMT_STS
+           			
+	FROM (SELECT I.PRD_CD,
+             	 P.PRD_NM,
+             	 SUM(I.SAMT) AS SAMT
+      	  FROM B_IN I 
+      	  
+      	  JOIN C_PRD P
+        	ON I.PRD_CD = P.PRD_CD
+        	 	
+      GROUP BY I.PRD_CD, P.PRD_NM) B
+      
+      	  JOIN C_PRD C
+        	ON B.PRD_CD = C.PRD_CD
+	</select>
 	
 </mapper>

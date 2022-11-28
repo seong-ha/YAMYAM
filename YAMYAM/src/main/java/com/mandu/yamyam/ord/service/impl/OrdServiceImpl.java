@@ -165,12 +165,14 @@ public class OrdServiceImpl implements OrdService {
 
 	// 완제품 반품 관리 리스트 등록
 	@Override
-	public int insertReList(List<OrdVO> vo) {
-		int result = 0;
-		for(int i=0; i<vo.size(); i++) {
-			result += map.insertReList(vo.get(i));
-		}
-		return result;
+	public int insertReList(OrdVO vo) {
+		return map.insertReList(vo);
+	}
+	
+	@Override
+	// 완제품 반품 관리 리스트 수정
+	public int updateReList(OrdVO vo) {
+		return map.updateReList(vo);
 	}
 
 	/*-----------------
@@ -191,14 +193,22 @@ public class OrdServiceImpl implements OrdService {
 		return map.getEdateList(vo);
 	}
 	
-	// 완제품 반품 관리 리스트 등록
+	// 완제품 폐기 등록 현황 리스트 조회
 	@Override
-	public int insertEdateList(List<OrdVO> vo) {
-		int result = 0;
-		for(int i=0; i<vo.size(); i++) {
-			result += map.insertEdateList(vo.get(i));
-		}
-		return result;
+	public List<OrdVO> getAgAmtList(OrdVO vo) {
+		return map.getAgAmtList(vo);
+	}
+	
+	// 완제품 폐기 리스트 등록
+	@Override
+	public int insertEdateList(OrdVO vo) {
+		return map.insertEdateList(vo);
+	}
+	
+	// 완제품 폐기 리스트 수정
+	@Override
+	public int updateEdateList(OrdVO vo) {
+		return map.updateEdateList(vo);
 	}
 	
 	/*-----------------
@@ -247,5 +257,15 @@ public class OrdServiceImpl implements OrdService {
 		return result;
 	}
 
+	
+	/*-------------------
+	// 제품 안전 재고 관리 Tab
+	---------------------*/
+	
+	// 안전 재고 관리 리스트 조회
+	@Override
+	public List<OrdVO> getSfamtList(OrdVO vo) {
+		return map.getSfamtList(vo);
+	}
 
 }

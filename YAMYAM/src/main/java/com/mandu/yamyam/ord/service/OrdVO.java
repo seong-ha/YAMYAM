@@ -62,7 +62,10 @@ public class OrdVO {
 	private Date reDate;	// 반품일자
 	
 	
-	// Modal 참고 테이블
-	private String prdNm;	// 완제품명
-	private String actNm;	// 거래처명
+	// 참고 테이블
+	private String prdNm;		// 완제품명
+	private String actNm;		// 거래처명
+	private String edate_Yn;	// 유통기한 경고표시
+	private int prdSfamt;		// 안전 재고량
+	private String prdSfamtSts; // 안전재고 경고표시
 }
