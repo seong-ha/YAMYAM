@@ -194,6 +194,7 @@ public class ProController {
 		return service.flowProgress(vo);
 	}
 	
+	
 	// 공정이동표 조회
 	// 제품 공정 목록 조회 (생산시작후)
 	@RequestMapping("/afterProgress")
@@ -274,6 +275,7 @@ public class ProController {
 	// 공정 흐름도
 	@RequestMapping("/flowDiagram")
 	public String flowDiagram(Model model) {
+		model.addAttribute("pCode", commservice.getCommdCdNm("EQP-TYPE"));
 		return "production/flowDiagram";
 	}
 	
@@ -291,6 +293,20 @@ public class ProController {
 		return service.flowManage(vo);
 	}
 	
+	// 공정목록 조회
+	@RequestMapping("/viewProgress")
+	@ResponseBody
+	public List<ProVO> viewProgress(ProVO vo){
+		return service.viewProgress(vo);
+	}
+	
+	// 생산라인 입력
+	@PostMapping("/insertPline")
+	@ResponseBody
+	public int insertPline(@RequestBody List<ProVO> vo) {
+		return service.insertPline(vo);
+	}
+
 	
 	// 공정 모니터링
 	@RequestMapping("/monitoring")

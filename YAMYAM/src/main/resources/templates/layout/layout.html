@@ -41,11 +41,29 @@
 
   <style type="text/css">
      .tui-datepicker {
-      z-index: 1001;
+      	z-index: 1001;
      }
      .tui-select-box {
-     z-index : 1001;
+     	z-index : 1001;
      }
+     
+     .tui-pagination .tui-first-child.tui-is-selected {
+     	 border-left: 1px solid #963446;
+     }
+     .tui-pagination .tui-last-child.tui-is-selected {
+         border-right: 1px solid #963446;
+     
+     }
+     
+     .tui-pagination .tui-is-selected, .tui-pagination strong {
+	     background : #963446;
+	     border-color : #963446;
+     }
+     
+      .tui-pagination .tui-grid-pagination .tui-page-btn a:hover {
+	     background : #963446;
+     }
+     
   </style>
 </head>
 

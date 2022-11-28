@@ -198,6 +198,20 @@ public class ProServiceImpl implements ProService {
 		return result;
 	}
 	
+	// 완제품 재고 등록
+		@Override
+		public int insertBIn(ProVO vo) {
+			return mapper.insertBIn(vo);
+		}
+		
+
+	// 공정실적조회
+	@Override
+	public List<ProVO> getResultList(ProVO vo) {
+		return mapper.getResultList(vo);
+	}
+	
+	
 	// 제품공정 흐름도 조회
 	@Override
 	public List<ProVO> getFlowList(ProVO vo) {
@@ -209,17 +223,24 @@ public class ProServiceImpl implements ProService {
 	public List<ProVO> flowManage(ProVO vo) {
 		return mapper.flowManage(vo);
 	}
-
-	// 공정실적조회
+	
+	// 공정 목록 조회
 	@Override
-	public List<ProVO> getResultList(ProVO vo) {
-		return mapper.getResultList(vo);
+	public List<ProVO> viewProgress(ProVO vo) {
+		return mapper.viewProgress(vo);
 	}
 	
-	// 완제품 재고 등록
+	// 생산라인 저장
 	@Override
-	public int insertBIn(ProVO vo) {
-		return mapper.insertBIn(vo);
+	public int insertPline(List<ProVO> vo) {
+		int result = 0;
+		// 생산라인 1건 저장
+		mapper.insertPline(vo.get(0));
+		// 생산공정 해당하는건수만큼 수정
+		for(int i=0; i<vo.size(); i++) {
+			result += mapper.updatePline(vo.get(i));
+		}
+		return result;
 	}
 	
 	

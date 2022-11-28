@@ -55,6 +55,19 @@
 				</div>
 				<div class="modal-body">					
 					<div>
+						<table>
+						<tr>
+							<td style="width: 80px">공정 분류 &nbsp;</td>
+							<td>
+								<select id="pList" name="pList">
+							    <option th:each="pCode : ${pCode}" th:text="${pCode.commdNm}" th:value="${pCode.commdCd}"></option>						
+								</select>
+							</td>
+							<td>
+								<button type="button" id="pRBtn" class="btn btn-dark btn-sm">초기화</button>
+							</td>
+						</tr>
+					</table>
 						<div id="listModalGrid"></div>
 					</div>
 				</div>
@@ -74,6 +87,10 @@
 		deleteBtnHandler();  	  // 그리드 행 삭제버튼 이벤트
 		plusBtnHandler(); 	 	  // 그리드 행 추가 이벤트 핸들러
 		insertBtnHandler();  	  // 등록버튼 이벤트 핸들러
+		//pSBtnHandler();			  // 공정분류 선택 클릭 이벤트
+		pRBtnHandler();			  // 공정분류 선택 초기화 이벤트
+		selectChange();			  // select 옵션 변경시 조회
+		
 		
 		/*------------
 		// 공정흐름도 그리드 초기화
@@ -147,6 +164,11 @@
 				el: document.getElementById('listModalGrid'),
 				scrollX: false,
 				scrollY: false,
+				pageOptions: {
+				    useClient: true,	// front에서만 페이징 하는 속성
+				    perPage: 8
+				  },
+				pagination : true,
 				rowHeaders: ['rowNum'],
 				columns: [
 					{
@@ -207,7 +229,7 @@
 				let prdCd = $('#pName').val();
 
 				$.ajax({
-					url : '/flowProgress',
+					url : '/viewProgress',
 					method: "GET",
 					data : {"prdCd" : prdCd}
 				}).then(res=>{
@@ -277,30 +299,80 @@
 			$('#insertBtn').on('click',function(){
 				// 라인코드 이름
 				let lineName = $('#lineName').val();
-
+				
 				// grid 데이터
-				let data = flowManage.getCheckedRows();
-
 					if(lineName == ''){
 						Swal.fire({
 							icon: 'error',
 							title :'라인코드를 입력하세요!!'});
 					}else{
+						let data = flowManage.getCheckedRows();
+						let dataList = [];
+					 	for(let i=0; i<data.length;i++){
+							let plineCd = lineName;
+							let pproCd = data[i].pproCd;
+							let prdCd = $('#pName').val();
+							dataList.push({plineCd, pproCd, prdCd});
+					 	}
 						sweetConfirm('C', function(){
-							
-							// DB delete
-							// ajax 받아오고
-							// success : function(data){console.log(data);}
-							// 생산공정(라인코드_업데이트) / 생산라인 (insert)
-							Swal.fire('등록이 완료되었습니다');
-							// grid에서 등록
-							// insertGrid.resetData(data);
-							// 실패
+							$.ajax({
+								url : '/insertPline',
+								method: 'POST',
+								contentType : 'application/json',
+								data : JSON.stringify(dataList),
+								dataType : 'json',
+								success : function(data){
+										 Swal.fire('저장 완료되었습니다');
+										 flowManage.refreshLayout();
+										},
+								error : function(reject){
+										console.log(reject);
+										// 실패
+										Swal.fire('저장 실패했습니다.');	
+								}			 		  
+							});	 	
 						})
 					}
 			});
 		}
 		
+		
+		
+		/*------------
+		// 공정분류 선택 초기화 핸들러
+		----------------*/
+		function pRBtnHandler(){
+
+			$('#pRBtn').on('click',function(){
+				
+				$.ajax({
+					url : '/viewProgress',
+					contentType: 'application/json',
+					dataType : 'json',
+					method: "GET",
+					success : function(data){listModalGrid.resetData(data);},
+					error : function(reject){console.log(reject);}				
+				})
+			})
+		}
+		
+		/*------------
+		// select 옵션 변경시 조회
+		----------------*/
+		function selectChange(){
+			$('#pList').on('change',function(){
+				let pproSts = $('select[name=pList] option:selected').val(); // 공정분류 선택값
+				$.ajax({
+					url : '/viewProgress',
+					contentType: 'application/json',
+					dataType : 'json',
+					data : {"pproSts" : pproSts},
+					method: "GET",
+					success : function(data){listModalGrid.resetData(data);},
+					error : function(reject){console.log(reject);}				
+				})
+			});
+		}
 	</script>
 
 	</div>

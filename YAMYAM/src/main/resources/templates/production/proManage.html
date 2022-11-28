@@ -22,7 +22,6 @@
 					<select id="pList" name="pList">
 					<option th:each="pCode : ${pCode}" th:text="${pCode.commdNm}" th:value="${pCode.commdCd}"></option>			
 					</select>
-						<button type="button" id="searchBtn" class="btn btn-dark btn-sm">검색</button>
 						<button type="button" id="cancelBtn" class="btn btn-dark btn-sm">초기화</button>
 					</td>
 				</tr>
@@ -63,7 +62,6 @@
 		let grid = gridInit();				    // 공정관리 그리드
 		let eqModalGrid = eqModalGridInit();	// 미사용 설비 모달 그리드
 
-		searchBtnHandler();	 	// 검색 버튼 이벤트 핸들러
 		plusBtnHandler(); 	 	// 그리드 행 추가 이벤트 핸들러
 		removeBtnHandler();  	// 그리드 행 삭제 이벤트 핸들러
 		insertBtnHandler();		// 그리드 행 입력 이벤트 핸들러
@@ -71,6 +69,7 @@
 		gridClick(); 			// 공정관리 그리드 클릭 이벤트
 		eqModalGridClick();		// 미사용 설비 모달  그리드 클릭 이벤트
 		cancelBtnHandler();     // 값 초기화 버튼
+		selectChange();			  // select 옵션 변경시 조회
 		
 		/*------------
 		// grid 초기화
@@ -228,12 +227,12 @@
 			})
 		}
 		
+		
 		/*------------
-		// 검색버튼 이벤트 핸들러
+		// select 옵션 변경시 조회
 		----------------*/
-		function searchBtnHandler(){
-
-			$('#searchBtn').on('click',function(){
+		function selectChange(){
+			$('#pList').on('change',function(){
 				let eqpType = $('select[name=pList] option:selected').val();
 				
 				$.ajax({
@@ -245,9 +244,9 @@
 					success : function(data){grid.resetData(data);},
 					error : function(reject){console.log(reject);}				
 				})
-			})
+			});
 		}
-
+		
 		/*------------
 		// 초기화버튼 이벤트 핸들러
 		----------------*/
@@ -331,7 +330,7 @@
 				sweetConfirm('C', function(){
 					let data = grid.getCheckedRows();
 					let dataList = [];
-					let moData = grid.getModifiedRows().updatedRows;
+
 					for(let i=0; i<data.length;i++){
 						let pproCd = data[i].pproCd;
 						let eqpCd = data[i].eqpCd;
@@ -343,7 +342,7 @@
 					}
 					
 					$.ajax({
-						url : '/deleteProManage',
+						url : '/insertProManage',
 						method: 'POST',
 						contentType : 'application/json',
 						data : JSON.stringify(dataList),
