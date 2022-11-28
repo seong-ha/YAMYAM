@@ -11,15 +11,15 @@
 	
 	<br>
 	<form id="frm">
-	    <input type = "hidden" name="prdStd" id="standard">
-	    <input type = "hidden" name="prdUn" id="unit">
+	    <!-- <input type = "hidden" name="prdStd" id="standard">
+	    <input type = "hidden" name="prdUn" id="unit"> -->
 		<table>
 			<tr>
 				<td>
 					<ul class="ul-style">
-					<li><label for="matCode" style="width:130px">제품 코드</label><input id="matCode" name="prdCd">
+					<li><label for="matCode" style="width:130px">제품 코드</label><input id="prdCode" name="prdCd">
 					&nbsp;&nbsp;&nbsp;
-					<label for="matCode">제품명</label><input id="matCode" name="prdNm">
+					<label for="matCode">제품명</label><input id="prdName" name="prdNm">
 					</li>
 					</ul>
 				</td>
@@ -29,9 +29,11 @@
 				<td>
 					<ul class="ul-style">
 						<li class="d-flex">
+							<input type="hidden" name="prdStd"  id="prdStatus">
 							<label style="width:110px">규격</label>&nbsp;&nbsp;&nbsp;
 							<div style="width: 190px;" id="select-box"></div>
 							
+							<input type="hidden" name="prdUn" id="prdUnit">
 							<label style="width:100px">
 							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;단위</label>&nbsp;&nbsp;&nbsp;&nbsp;
 							<div style="width: 190px;" id="select-box2"></div>&nbsp;
@@ -57,7 +59,7 @@
 		
 		<!-- 삭제 모달! -->
 		<button type="button" class="btn btn-dark btn-sm" 
-		data-bs-toggle="modal" data-bs-target="#exampleModal2">삭제</button>
+		data-bs-toggle="modal" data-bs-target="#exampleModal2" id="deleteBtn">삭제</button>
 		
 		<!-- 등록 Modal -->
 		<div align="center">
@@ -70,36 +72,39 @@
 			      </div>
 			      <div class="modal-body">
 			        
-				        <div class="mb-3 row">
-							    <label for="staticEmail" class="col-sm-3 col-form-label">완제품 코드</label>
-							    <div class="col-sm-9">
-							      <input type="text" name="prdCd" class="form-control" id="prdCode">
-							    </div>
-						</div>
 				        
 				        <div class="mb-3 row">
 							    <label for="staticEmail" class="col-sm-3 col-form-label">완제품 명</label>
 							    <div class="col-sm-9">
-							      <input type="text" name="prdNm" class="form-control" id="prdName">
+							      <input type="text" name="prdNm" class="form-control" id="prdNameModal">
 							    </div>
 						</div>
 				        
-				        <div class="mb-3 row">
-							    <label for="staticEmail" class="col-sm-3 col-form-label">규격</label>
+						
+						<div class="mb-3 row">
+							    <label for="staticEmail" class="col-sm-3 col-form-label">안전재고수량</label>
 							    <div class="col-sm-9">
-							      <input type="text" name="prdStd" class="form-control" id="prdStandard">
+							      <input type="text" name="prdSfamt" class="form-control" id="prdSafeAmountModal">
 							    </div>
 						</div>
 						
 						<div class="mb-3 row" style="padding-left: 46px;">
 								
-							    단위<div style="width: 190px; padding-left: 56px;
+								<input type="hidden" name="prdUn" id="prdStandardModal">
+							    규격<div style="width: 190px; padding-left: 56px;
 							    text-align: left;" id="select-box3"></div>
+						</div>
+						
+						<div class="mb-3 row" style="padding-left: 46px;">
+								
+								<input type="hidden" name="prdUn" id="prdUnitModal">
+							    단위<div style="width: 190px; padding-left: 56px;
+							    text-align: left;" id="select-box4"></div>
 						</div>
 				        
 			      </div>
 			      <div class="modal-footer">
-			        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">등록</button>
+			        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="insertBtn">등록</button>
 			        <button type="button" class="btn btn-primary">취소</button>
 			      </div>
 			    </div>
@@ -108,7 +113,7 @@
 		</div>	
 	
 		<!-- 삭제 Modal -->
-			<div class="modal fade" id="exampleModal2" tabindex="-1" aria-labelledby="exampleModalLabel2" aria-hidden="true">
+	<!-- 		<div class="modal fade" id="exampleModal2" tabindex="-1" aria-labelledby="exampleModalLabel2" aria-hidden="true">
 			  <div class="modal-dialog">
 			    <div class="modal-content">
 			      <div class="modal-header">
@@ -119,12 +124,12 @@
 			        <div align="center">정말 해당 완제품 코드를 삭제 하시겠습니까?</div>
 			      </div>
 			      <div class="modal-footer">
-			        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">확인</button>
+			        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="deleteBtn">확인</button>
 			        <button type="button" class="btn btn-primary">취소</button>
 			      </div>
 			    </div>
 			  </div>
-			</div>
+			</div> -->
 	</div>
 
 	<script>
@@ -143,14 +148,14 @@
 				header : '완제품명',
 				name : 'prdNm'
 			}, {
+				header : '안전재고수량',
+				name : 'prdSfamt'
+			}, {
 				header : '규격',
 				name : 'prdStd'
 			}, {
 				header : '단위',
-				name : 'prdUn'
-			}, {
-				header : '안전재고수량',
-				name : 'prdSfamt' 
+				name : 'prdUn' 
 			} ],
 			showDummyRows : true
 		});
@@ -171,28 +176,28 @@
 					value : 'STD30' // 코드 바꾸기
 				}, {
 					label : '40kg',
-					value : '40kg'
+					value : 'STD40'
 				},
 				{
 					label : '50kg',
-					value : '50kg' // 코드 바꾸기
+					value : 'STD50' // 코드 바꾸기
 				}, {
 					label : '60kg',
-					value : '60kg'
+					value : 'STD60'
 				},
 				{
 					label : '70kg',
-					value : '70kg' // 코드 바꾸기
+					value : 'STD70' // 코드 바꾸기
 				}, {
 					label : '80kg',
-					value : '80kg'
+					value : 'STD80'
 				},
 				{
 					label : '90kg',
-					value : '90kg' // 코드 바꾸기
+					value : 'STD90' // 코드 바꾸기
 				}, {
 					label : '100kg',
-					value : '100kg'
+					value : 'STD100'
 				}],
 				autofocus : true
 			});	
@@ -201,35 +206,70 @@
 			placeholder : '단위',
 			data : [ {
 				label : 'BOX',
-				value : 'BOX' // 코드 바꾸기
+				value : 'UNIT1' // 코드 바꾸기
 			}, {
 				label : 'EA',
-				value : 'EA'
-			},
-			{
-				label : 'BUNDLE',
-				value : 'BUNDLE'
+				value : 'UNIT2'
 			}
 			],
 			autofocus : true
 		});	
 		
+		
 		var selectBox3 = new tui.SelectBox('#select-box3', {
+			placeholder : '규격',
+			data : [ {
+				label : '10kg',
+				value : 'STD10' // 코드 바꾸기
+			}, {
+				label : '20kg',
+				value : 'STD20'
+			},
+			{
+				label : '30kg',
+				value : 'STD30' // 코드 바꾸기
+			}, {
+				label : '40kg',
+				value : 'STD40'
+			},
+			{
+				label : '50kg',
+				value : 'STD50' // 코드 바꾸기
+			}, {
+				label : '60kg',
+				value : 'STD60'
+			},
+			{
+				label : '70kg',
+				value : 'STD70' // 코드 바꾸기
+			}, {
+				label : '80kg',
+				value : 'STD80'
+			},
+			{
+				label : '90kg',
+				value : 'STD90' // 코드 바꾸기
+			}, {
+				label : '100kg',
+				value : 'STD100'
+			}],
+			autofocus : true
+		});	
+		
+		var selectBox4 = new tui.SelectBox('#select-box4', {
 			placeholder : '단위',
 			data : [ {
 				label : 'BOX',
-				value : 'BOX' // 코드 바꾸기
+				value : 'UNIT1' // 코드 바꾸기
 			}, {
 				label : 'EA',
-				value : 'EA'
-			},
-			{
-				label : 'BUNDLE',
-				value : 'BUNDLE'
+				value : 'UNIT2'
 			}
 			],
 			autofocus : true
 		});	
+		
+		
 		
 		
 		//셀렉트 박스 초기화
@@ -255,22 +295,110 @@
 			})
 		}
 		
+		// 완제품 코드 등록하기
+		
+			document.getElementById('insertBtn').addEventListener('click', function(){
+				sweetConfirm('C', function () {
+					
+					let data = {
+							
+							prdCd: document.getElementById('prdCode').value,
+							prdNm: document.getElementById('prdNameModal').value,
+							prdSfamt: document.getElementById('prdSafeAmountModal').value,
+							prdStd: document.getElementById('prdStandardModal').value,
+							prdUn: document.getElementById('prdUnitModal').value
+						}
+					console.log(data);
+						
+						grid.appendRow(data);
+					
+					// ajax 구매 거래처 등록
+					console.log("데이터 가져왔니?");
+					$.ajax({
+						url : "ajax/insertPrd",
+						type : "post",
+						data: data,
+						dataType: "json",
+						success : function(data){
+							if (data > 0) {
+								// ajax success
+					            toastr.success('정상적으로 등록되었습니다.');
+					            //setTimeout(() => {location.reload(), 3000});
+							} else {
+								// ajax fail
+					            toastr.error('등록에 실패했습니다.');	
+							}
+						},
+						error : function(reject){
+							console.log(reject);
+						}
+				 	});					
+				})
+			})
+			
+		// 완제품 코드 삭제하기
+		
+			document.getElementById('deleteBtn').addEventListener('click', function(){
+				sweetConfirm('D', function () {
+					
+					let data = grid.getCheckedRows();
+					
+					$.ajax({
+						url : "ajax/delPrd",
+						type : "post",
+						data: JSON.stringify(data),
+						contentType: "application/json",
+						dataType: "json",
+						success : function(data){
+							if (data > 0) {
+								// ajax success
+					            toastr.success('정상적으로 삭제되었습니다.');
+					            grid.removeCheckedRows();
+							} else {
+								// ajax fail
+					            toastr.error('삭제에 실패했습니다.');	
+							}
+						},
+							error : function(reject){
+								console.log(reject);
+							}
+						
+						});
+					
+				})
+			})
+		
+			
 		// bind 'change' event
 		selectBox.on('change', ev => {
 		  console.log(` ${ev.curr.getLabel()}    ${ev.curr.getValue()}`);
-		  $('#standard').val(ev.curr.getValue());
+		  $('#prdStatus').val(ev.curr.getValue());
 		});
 		
 		
 		selectBox2.on('change', ev => {
 			  console.log(` ${ev.curr.getLabel()}    ${ev.curr.getValue()}`);
-			  $('#unit').val(ev.curr.getValue());
+			  $('#prdUnit').val(ev.curr.getValue());
+			});
+		
+		
+		selectBox3.on('change', ev => {
+			  console.log(` ${ev.curr.getLabel()}    ${ev.curr.getValue()}`);
+			  $('#prdStandardModal').val(ev.curr.getValue());
+			});
+		
+		
+		selectBox4.on('change', ev => {
+			  console.log(` ${ev.curr.getLabel()}    ${ev.curr.getValue()}`);
+			  $('#prdUnitModal').val(ev.curr.getValue());
 			});
 		
 		
 		function resetf(){
-			 $('#standard').val("")
-			 $('#unit').val("")
+			 $('#prdStatus').val("")
+			 $('#prdUnit').val("")
+			 $('#prdStandardModal').val("")
+			 $('#prdUnitModal').val("")
 		}
     </script>
     
