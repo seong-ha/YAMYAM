@@ -152,6 +152,9 @@
 		</div>
 	</div> -->
 <script>
+	/* token */
+	var token = $("meta[name='_csrf']").attr("content");
+	var header = $("meta[name='_csrf_header']").attr("content");
 
 	let grid = gridInit()					// 실적조회 grid 초기화
 	let orModalGrid = orModalGridInit();	// 생산지시목록 모달 grid
