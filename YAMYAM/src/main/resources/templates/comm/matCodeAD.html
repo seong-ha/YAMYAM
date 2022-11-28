@@ -82,7 +82,7 @@ width:80%;	display: inline;
 				<hr>
 					
 				<div align="right">
-					<button type="button" class="btn btn-dark btn-sm">저장</button>&nbsp;
+					<button type="button" class="btn btn-dark btn-sm" id="insertBtn">저장</button>&nbsp;
 					<input type="reset" class="btn btn-dark btn-sm" id="reset" name="reset">
 					</div>
 				</form>
@@ -358,6 +358,7 @@ width:80%;	display: inline;
 			console.log(grid.getRow(ev.rowKey).mtrCd);
 			$('#select-box').val(grid.getRow(ev.rowKey).mtrStd);
 		
+			
 		// 칼럼 클릭시 거기에 맞는 정보 출력
 			$.ajax({
 				url : "ajax/selectMtrInfo",
@@ -394,9 +395,51 @@ width:80%;	display: inline;
 			actCode.value = rowData.actCd;
 			actName.value = rowData.actNm;
 			insertModalClose.click();
+		});
+		
+		
+		// ajax 자재 등록
+		
+		document.getElementById('insertBtn').addEventListener('click', function(){
+			sweetConfirm('C', function () {
+
+			let data = {
+
+				mtrCd: document.getElementById('mtrCode').value,
+				mtrNm: document.getElementById('mtrName').value,
+				mtrStd: document.getElementById('mtrStandard').value,
+				mtrUn: document.getElementById('mtrUnit').value,
+				actCd: document.getElementById('actCode').value,
+				actNm: document.getElementById('actName').value,
+				mtrSfamt: document.getElementById('mtrSafeamount').value,
+				mtrSts: document.getElementById('mtrStatus').value
+			}
 			
 			
+			grid.appendRow(data);
 			
+			// ajax 자재 정보 등록
+			console.log("데이터 가져왔니?");
+			$.ajax({
+				url : "ajax/insertMtr",
+				type : "post",
+				data: data,
+				dataType: "json",
+				success : function(data){
+					if (data > 0) {
+						// ajax success
+			            toastr.success('정상적으로 등록되었습니다.');
+			            //setTimeout(() => {location.reload(), 3000});
+					} else {
+						// ajax fail
+			            toastr.error('등록에 실패했습니다.');	
+					}
+				},
+				error : function(reject){
+					console.log(reject);
+				}
+		 	});
+			});
 		});
 		
 	</script>

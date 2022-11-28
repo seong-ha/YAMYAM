@@ -83,6 +83,12 @@ public class CommServiceImpl implements CommService {
 	public MtrVO ajaxSelectMtrInfo(MtrVO mtrVO) {
 		return commMapper.ajaxSelectMtrInfo(mtrVO);
 	}
+	
+	// ajax 자재 - 자재 정보 등록하기
+	@Override
+	public int ajaxInsertMtr(MtrVO mtrVO) {
+		return commMapper.ajaxInsertMtr(mtrVO);
+	}
 
 	// ajax 거래처 코드 불러오기
 	@Override
@@ -113,6 +119,8 @@ public class CommServiceImpl implements CommService {
 	public List<PrdVO> ajaxSelectModalBOM() {
 		return commMapper.ajaxSelectModalBOM();
 	}
+	
+
 	
 
 	

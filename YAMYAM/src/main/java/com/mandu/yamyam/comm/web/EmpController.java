@@ -171,6 +171,15 @@ public class EmpController {
 		return commService.ajaxSelectMtrInfo(mtrVO);
 	}
 	
+	// ajax 자재 - 자재 정보 등록
+	@PostMapping("ajax/insertMtr")
+	@ResponseBody
+	public int ajaxInsertMtr(@RequestBody MtrVO mtrVO) {
+		int result = commService.ajaxInsertMtr(mtrVO);
+		
+		return result;
+	}
+	
 	/*
 	 *  actCodeAD.html에 관한 컨트롤러
 	 */
@@ -189,17 +198,7 @@ public class EmpController {
 		
 		return commService.ajaxSelectAct();
 	}
-	
-	// ajax 직원 정보 등록
-	@PostMapping("ajax/insertAct")
-	@ResponseBody
-	public int ajaxInsertAct(@RequestBody ActVO actVO) {
-		int result = commService.ajaxInsertAct(actVO);
-		
-		return result;
-	}
-	
-	
+
 	
 	/*
 	 *  pdtCodeAD.html에 관한 컨트롤러

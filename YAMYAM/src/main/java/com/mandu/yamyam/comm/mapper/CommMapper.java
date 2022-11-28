@@ -14,18 +14,15 @@ public interface CommMapper {
 	// ajax 공통코드 불러오기
 	public List<CommVO> ajaxSelectComm();
 	
+	
 	// ajax 상세 공통 코드 불러오기
 	public List<CommdVO> ajaxSelectDetailComm(CommdVO commdVO);
-
 	// ajax 상세 공통 코드 등록
 	public int ajaxInsertDetailComm(CommdVO commdVO);
-	
 	// ajax 상세 공통 코드 삭제
 	public int ajaxDeleteDetailComm(CommdVO commdVO);
-	
 	// ajax 공통 코드 등록
 	public int ajaxInsertComm(CommVO commVO);
-	
 	// 상세 공통 코드, 이름 불러오기(성하)
 	public List<CommdVO> getCommdCdNm(String commCd);
 	
@@ -36,6 +33,8 @@ public interface CommMapper {
 	public List<ActVO> ajaxSelectModalAct();
 	// ajax 자재 - 자재 단건 정보 가져오기
 	public MtrVO ajaxSelectMtrInfo(MtrVO mtrVO);
+	// ajax 자재 - 자재 정보 등록하기
+	public int ajaxInsertMtr(MtrVO mtrVO);
 	
 	
 	
