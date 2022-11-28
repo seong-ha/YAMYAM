@@ -1,18 +1,11 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"  
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
 </head>
 <body>
-	<p>Please select an option</p>
-<ol>
-  <li><a href="emp/list" th:href="@{/emp/list}">Product List</a></li>
-  <li><a href="order/list.html" th:href="@{/order/list}">Order List</a></li>
-  <li><a href="subscribe.html" th:href="@{/subscribe}">Subscribe to our Newsletter</a></li>
-  <li><a href="userprofile.html" th:href="@{/userprofile}">See User Profile</a></li>
-</ol>
-
-
+	<button type="button" class="btn btn-primary" onclick="location.href='login'">로그인</button>
 </body>
 </html>

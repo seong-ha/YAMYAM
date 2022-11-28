@@ -99,5 +99,15 @@
 	
 	</delete>
 
-	
+	<!-- 직원 정보 조회(입사일 빼고) -->
+	<select id="selectEmpInfo" parameterType="String" resultType="com.mandu.yamyam.comm.service.EmpVO">
+		SELECT emp_no,
+		       emp_nm,
+		       emp_id,
+		       emp_pw,
+		       emp_role,
+		       dept_cd
+		FROM   c_emp
+		WHERE  emp_id = #{value}
+	</select>
 </mapper>

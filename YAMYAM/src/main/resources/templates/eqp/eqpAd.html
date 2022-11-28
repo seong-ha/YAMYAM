@@ -53,11 +53,13 @@
 						data-bs-target="#select" type="button" role="tab"
 						aria-controls="select" aria-selected="true">조회</button>
 				</li>
-				<li class="nav-item" role="presentation">
-					<button class="nav-link" id="manage-tab" data-bs-toggle="tab"
-						data-bs-target="#manage" type="button" role="tab"
-						aria-controls="manage" aria-selected="false">관리</button>
-				</li>
+				<th:block sec:authorize="hasAnyAuthority('JOB-GRD1', 'JOB-GRD2')">
+					<li class="nav-item" role="presentation">
+						<button class="nav-link" id="manage-tab" data-bs-toggle="tab"
+							data-bs-target="#manage" type="button" role="tab"
+							aria-controls="manage" aria-selected="false">관리</button>
+					</li>
+				</th:block>
 			</ul>
 			<!-- 탭 목록 end -->
 			
@@ -76,7 +78,9 @@
 									<button type="button" class="btn btn-dark btn-sm" id="searchBtn">검색</button>
 									<button type="reset" class="btn btn-dark btn-sm" id="resetFilter">초기화</button>
 								</form>
-								<button type="button" class="btn btn-dark btn-sm me-md-2" style="float:right" id="deleteBtn">삭제</button>
+								<th:block sec:authorize="hasAnyAuthority('JOB-GRD1', 'JOB-GRD2')">
+									<button type="button" class="btn btn-dark btn-sm me-md-2" style="float:right" id="deleteBtn">삭제</button>
+								</th:block>
 							</li>
 						</ul>
 						<!-- 조회 grid -->
@@ -246,6 +250,10 @@
 		</div>
 		
 		<script type="text/javascript">
+			/* token */
+			var token = $("meta[name='_csrf']").attr("content");
+			var header = $("meta[name='_csrf_header']").attr("content");
+		
 			let selectEqpGrid = selectTabInit(); 		// 조회탭 그리드 초기화
 			getSelectEqpData();							// 조회탭 그리드 정보 초기화
 			let eqpListModalGrid = eqpListModalInit();	// 관리탭 설비목록 모달 그리드 초기화
@@ -413,6 +421,9 @@
 						url: '/getEqp',
 						type: 'post',
 						data: {eqpCd : rowData.eqpCd},
+						beforeSend : function(xhr){
+			           		xhr.setRequestHeader(header, token);
+			           	},
 						success: function (data) {
 							document.getElementById('eqpCd').value = data.eqpCd;
 							document.getElementById('eqpNm').value = data.eqpNm;
@@ -454,12 +465,12 @@
 					scrollY: true,
 					columns: [{
 				          header: '설비구분코드',
-				          name: 'eqpTypeCd',
+				          name: 'commdCd',
 				          align: 'center'
 				        },
 				        {
 				          header: '설비구분명',
-				          name: 'eqpTypeNm',
+				          name: 'commdNm',
 				          align: 'left'
 				        },
 			      ] 
@@ -487,8 +498,8 @@
 				eqpTypeModalGrid.on('click',function(ev){
 					
 					let data = eqpTypeModalGrid.getRow(ev.rowKey);
-					let eqpTypeCode = data.eqpTypeCd; // 선택된 설비 구분 코드
-					let eqpTypeName = data.eqpTypeNm; // 선택된 설비 구분명
+					let eqpTypeCode = data.commdCd; // 선택된 설비 구분 코드
+					let eqpTypeName = data.commdNm; // 선택된 설비 구분명
 					
 					document.getElementById('eqpTypeCd').value = eqpTypeCode;
 					document.getElementById('eqpTypeNm').value = eqpTypeName;
@@ -575,6 +586,9 @@
 							type: 'post',
 							contentType: 'application/json',
 							data: JSON.stringify(data),
+							beforeSend : function(xhr){
+				           		xhr.setRequestHeader(header, token);
+				           	},
 							success: function (data) {
 								if (data > 0) {
 									// ajax success
@@ -699,6 +713,9 @@
 					             processData : false,
 					             contentType : false,
 					             data : formData,
+					             beforeSend : function(xhr){
+						           	 xhr.setRequestHeader(header, token);
+						         },
 					             success:function(data) {
 									 // ajax success
 									 if (data.result == 'success') {
@@ -734,8 +751,10 @@
 					             processData : false,
 					             contentType : false,
 					             data : formData,
-					             success:function(data) {
-					            	 console.log(data);
+					             beforeSend : function(xhr){
+						           		xhr.setRequestHeader(header, token);
+						         },
+					             success: function (data) {
 									 // ajax success
 									 if (data.result == 'success') {
 									 	 toastr.success('정상적으로 수정되었습니다.');

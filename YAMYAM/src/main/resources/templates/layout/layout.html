@@ -1,9 +1,13 @@
 <!DOCTYPE html>
-<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<html xmlns:th="http://www.thymeleaf.org"  
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 <head>
   <title>YAMYAM</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta id="_csrf" name="_csrf" th:content="${_csrf.token}"/>
+  <meta id="_csrf_header" name="_csrf_header" th:content="${_csrf.headerName}"/>
   <link href="css/styles.css" rel="stylesheet" />
   <link href="css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://uicdn.toast.com/tui.pagination/latest/tui-pagination.css" />
@@ -51,8 +55,16 @@
       <!-- Navbar Brand-->
       <a class="navbar-brand ps-3 font-NSEB logo-size" href="/" onclick="tabInfoDelete()"><span
          class="col-green">YAM</span>YAM</a>
+      <th:block sec:authorize="isAuthenticated()">
+          <form action="logout" method="post" style="margin-left:76%" id="logout">
+		      <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+		      <input class="login-menu font-NSEB" type="submit" value="logout">
+          </form>   
+      </th:block>
       <!-- 로그인 유무에 따라 Login/LogOut로 다르게 보이도록 -->
-      <a class="login-menu font-NSEB" href="index.html">Login</a>
+      <th:block sec:authorize="!isAuthenticated()">
+          <a class="login-menu font-NSEB" href="/login">Login</a>
+      </th:block>
    </nav>
 
    <div layout:fragment="sidebar" id="layoutSidenav">
@@ -61,10 +73,18 @@
             id="sidenavAccordion">
             <div class="sb-sidenav-menu" style="background-color: white">
                <div>
-                  <p class="username font-NSEB">unknown</p>
-                  <p class="log-sts font-NSEB">
-                     <small class="small-font">●</small> offline
-                  </p>
+               	  <th:block sec:authorize="isAuthenticated()">
+	                  <p class="username font-NSEB" th:text="${session.empNm}">EMP_NM</p>
+	                  <p class="log-sts-on font-NSEB">
+	                     <small class="small-font">●</small> online
+	                  </p>
+	              </th:block>
+	              <th:block sec:authorize="!isAuthenticated()">
+	                  <p class="username font-NSEB">unknown</p>
+	                  <p class="log-sts-off font-NSEB">
+	                     <small class="small-font">●</small> offline
+	                  </p>
+	              </th:block>
                   <hr class="col-black">
                </div>
                <div class="accordion accordion-flush" id="accordionFlushExample">
@@ -197,11 +217,11 @@
 
    </div>
 
-   <div>
-      <input type="hidden" id="currentLi" name="currentLi" value="${}">
-   </div>
-   
    <script type="text/javascript">
+   
+      /* token */
+	  var token = $("meta[name='_csrf']").attr("content");
+	  var header = $("meta[name='_csrf_header']").attr("content");
    
       // 회사 로고 누르면 하위탭 안 나오게 sessionStorage 해당 부분 날려주기
       function tabInfoDelete() {
@@ -209,6 +229,10 @@
          sessionStorage.removeItem('tabIdNum');
       }
    
+      function logout() {
+    	  document.getElementById('logout').submit();
+      }
+      
       document.addEventListener('DOMContentLoaded', function () {
          
          /* 
@@ -244,4 +268,3 @@
       });
    </script>
 </body>
-</html>

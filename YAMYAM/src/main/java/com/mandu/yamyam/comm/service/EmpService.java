@@ -17,6 +17,8 @@ public interface EmpService {
 	public int updateEmpInfo(EmpVO empVO);
 	// 직원 정보 삭제
 	public int deleteEmpInfo(List<EmpVO> empVO);
+	// 직원 정보 조회
+	public EmpVO selectEmpInfo(String id);
 	
 	
 	// 부서 조회(modal)

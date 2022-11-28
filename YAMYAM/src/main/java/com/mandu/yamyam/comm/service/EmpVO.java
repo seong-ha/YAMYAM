@@ -4,6 +4,8 @@ import java.util.Date;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import lombok.Data;
 
 @Data
@@ -15,6 +17,7 @@ public class EmpVO {
 	private String deptNm; // 부서이름
 	private String empNm; // 직원 이름
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	@JsonFormat(pattern = "yyyy-MM-dd")
 	private Date empDate; // 입사일
 	private String empId; // 계정 아이디
 	private String empPw; // 계정 비밀번호

@@ -70,11 +70,13 @@
 							</div>
 							<button id="eqpChkSearch" class="btn btn-dark btn-sm">조회</button>
 							<button id="clearSearchBox" class="btn btn-dark btn-sm">초기화</button>
-							<button id="deleteChecked" class="btn btn-dark btn-sm" style="float:right">삭제</button>
-							<button id="insertEqpChk" class="btn btn-dark btn-sm" style="float:right; margin-right:5px;">저장</button>
-							<button id="updateEqpChk" class="btn btn-dark btn-sm" style="float:right; margin-right:5px;">수정</button>
-							<button id="eqpTypeSearch" class="btn btn-dark btn-sm"
-								data-bs-toggle="modal" data-bs-target="#eqpToChkModal"style="float:right; margin-right:30px;">설비조회</button>
+							<th:block sec:authorize="hasAnyAuthority('JOB-GRD1', 'JOB-GRD2')">
+								<button id="deleteChecked" class="btn btn-dark btn-sm" style="float:right">삭제</button>
+								<button id="insertEqpChk" class="btn btn-dark btn-sm" style="float:right; margin-right:5px;">저장</button>
+								<button id="updateEqpChk" class="btn btn-dark btn-sm" style="float:right; margin-right:5px;">수정</button>
+								<button id="eqpTypeSearch" class="btn btn-dark btn-sm"
+									data-bs-toggle="modal" data-bs-target="#eqpToChkModal"style="float:right; margin-right:30px;">설비조회</button>
+							</th:block>
 						</li>
 					</ul>
 				</form>
@@ -131,6 +133,10 @@
         </div>
 		
 		<script type="text/javascript">
+			/* token */
+			var token = $("meta[name='_csrf']").attr("content");
+			var header = $("meta[name='_csrf_header']").attr("content");
+		
 			datePickerInit()									//datepicker
 			let eqpChkGrid = eqpChkGridInit(); 					// 설비 점검 그리드 초기화
 			let eqpToChkModalGrid = eqpToChkModalGridInit();	// 금일 점검 대상 설비 모달 grid 초기화
@@ -385,8 +391,6 @@
 				    let rowKey1 = eqpChkGrid.getFocusedCell().rowKey; // 클릭한 설비 점검 행
 				    let rowData2 = eqpEmpModalGrid.getRow(ev.rowKey);  // 클릭한 설비 직원 행
 				    
-				   	console.log(eqpEmpModalGrid.getValue(ev.rowKey,ev.columnName));
-				    
 				    eqpChkGrid.setValue(rowKey1, 'chkEmp', rowData2.chkEmp);
 				    eqpChkGrid.setValue(rowKey1, 'chkEmpNm', rowData2.chkEmpNm)
 					
@@ -425,6 +429,9 @@
 					type: 'post',
 					data: {'days' : days},
 					dataType: 'json',
+					beforeSend : function(xhr){
+		           		xhr.setRequestHeader(header, token);
+		           	},
 					success: function (data) {
 						eqpToChkModalGrid.resetData(data);
 						eqpToChkModalGrid.refreshLayout();
@@ -520,12 +527,14 @@
 					$.ajax({
 						url:'/findEqpChkList',
 						type : "post",
-			             processData : false,
-			             contentType : false,
-			             data : formData,
+			            processData : false,
+			            contentType : false,
+			            data : formData,
 						dataType: 'json',
+						beforeSend : function(xhr){
+			           		xhr.setRequestHeader(header, token);
+			           	},
 						success: function (data) {
-							console.log(data);
 							eqpChkGrid.resetData(data);
 							eqpChkGrid.refreshLayout();
 						},
@@ -586,6 +595,9 @@
 							type: 'post',
 							contentType: 'application/json',
 							data: JSON.stringify(rowDatas),
+							beforeSend : function(xhr){
+				           		xhr.setRequestHeader(header, token);
+				           	},
 							success: function (data) {
 								if (data > 0) {
 									toastr.success('정상적으로 삭제되었습니다.');
@@ -615,6 +627,12 @@
 				document.getElementById('insertEqpChk').addEventListener('click', function () {
 					let rowDatas = eqpChkGrid.getCheckedRows();
 					
+					// 체크하지 않았을 시 체크하도록 유도
+					if (rowDatas.length == 0) {
+						toastr.warning('추가할 점검을 먼저 체크해주세요.');
+						return;
+					}
+					
 					sweetConfirm('C', function () {
 						$.ajax({
 							url:'/insertEqpChk',
@@ -622,6 +640,9 @@
 							contentType: 'application/json',
 							data: JSON.stringify(rowDatas),
 							dataType: 'json',
+							beforeSend : function(xhr){
+				           		xhr.setRequestHeader(header, token);
+				           	},
 							success: function (data) {
 								if (data > 0) {
 									toastr.success('정상적으로 등록되었습니다.');
@@ -650,6 +671,12 @@
 				document.getElementById('updateEqpChk').addEventListener('click', function () {
 					let rowDatas = eqpChkGrid.getCheckedRows();
 					
+					// 체크하지 않았을 시 체크하도록 유도
+					if (rowDatas.length == 0) {
+						toastr.warning('수정할 점검을 먼저 체크해주세요.');
+						return;
+					}
+					
 					sweetConfirm('U', function () {
 						
 						$.ajax({
@@ -658,6 +685,9 @@
 							contentType: 'application/json',
 							data: JSON.stringify(rowDatas),
 							dataType: 'json',
+							beforeSend : function(xhr){
+				           		xhr.setRequestHeader(header, token);
+				           	},
 							success: function (data) {
 								if (data > 0) {
 									toastr.success('정상적으로 수정되었습니다.');
