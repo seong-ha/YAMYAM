@@ -1,247 +1,288 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"  
-      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 <head>
-  <title>YAMYAM</title>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta id="_csrf" name="_csrf" th:content="${_csrf.token}"/>
-  <meta id="_csrf_header" name="_csrf_header" th:content="${_csrf.headerName}"/>
-  <link href="css/styles.css" rel="stylesheet" />
-  <link href="css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="https://uicdn.toast.com/tui.pagination/latest/tui-pagination.css" />
-  <link href="css/tui-grid.css" rel="stylesheet">
-  <link rel="stylesheet"href="https://cdn.jsdelivr.net/npm/sweetalert2@11.6.8/dist/sweetalert2.min.css" />
+<title>YAMYAM</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta id="_csrf" name="_csrf" th:content="${_csrf.token}" />
+<meta id="_csrf_header" name="_csrf_header"
+	th:content="${_csrf.headerName}" />
+<link href="css/styles.css" rel="stylesheet" />
+<link href="css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet"
+	href="https://uicdn.toast.com/tui.pagination/latest/tui-pagination.css" />
+<link href="css/tui-grid.css" rel="stylesheet">
+<link rel="stylesheet"
+	href="https://cdn.jsdelivr.net/npm/sweetalert2@11.6.8/dist/sweetalert2.min.css" />
 
-  <!-- toast-datepicker -->
-  <link rel="stylesheet" href="https://uicdn.toast.com/tui.date-picker/latest/tui-date-picker.css">
-  <!-- toast-selectbox -->
-  <link rel="stylesheet"
-    href="https://uicdn.toast.com/select-box/latest/toastui-select-box.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.css" integrity="sha512-3pIirOrwegjM6erE5gPSwkUzO+3cTjpnV9lexlNZqvupR64iZBnOOTiiLPb9M36zpMScbmUNIcHUqKD47M719g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<!-- toast-datepicker -->
+<link rel="stylesheet"
+	href="https://uicdn.toast.com/tui.date-picker/latest/tui-date-picker.css">
+<!-- toast-selectbox -->
+<link rel="stylesheet"
+	href="https://uicdn.toast.com/select-box/latest/toastui-select-box.css" />
+<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.css"
+	integrity="sha512-3pIirOrwegjM6erE5gPSwkUzO+3cTjpnV9lexlNZqvupR64iZBnOOTiiLPb9M36zpMScbmUNIcHUqKD47M719g=="
+	crossorigin="anonymous" referrerpolicy="no-referrer" />
 
-    <!-- 제이쿼리 -->
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
-    <!-- 엑셀 저장 -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.1/xlsx.full.min.js"></script>
-  <script src="js/bootstrap.bundle.min.js"></script>
-  <!-- toast-datepicker -->
-  <script src="https://uicdn.toast.com/tui.date-picker/latest/tui-date-picker.js"></script>
-  <!-- toast-selectbox -->
-  <script src="https://uicdn.toast.com/select-box/latest/toastui-select-box.js"></script>
-  <!-- 그리드 페이징 -->
-  <script type="text/javascript" src="https://uicdn.toast.com/tui.pagination/v3.4.0/tui-pagination.js"></script>
-  <script src="js/tui-grid.js"></script>
+<!-- 제이쿼리 -->
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+<!-- 엑셀 저장 -->
+<script
+	src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.1/xlsx.full.min.js"></script>
+<script src="js/bootstrap.bundle.min.js"></script>
+<!-- toast-datepicker -->
+<script
+	src="https://uicdn.toast.com/tui.date-picker/latest/tui-date-picker.js"></script>
+<!-- toast-selectbox -->
+<script
+	src="https://uicdn.toast.com/select-box/latest/toastui-select-box.js"></script>
+<!-- 그리드 페이징 -->
+<script type="text/javascript"
+	src="https://uicdn.toast.com/tui.pagination/v3.4.0/tui-pagination.js"></script>
+<script src="js/tui-grid.js"></script>
 
-  <script src="js/common.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js" integrity="sha512-VEd+nq25CkR676O+pLBnDW09R7VQX9Mdiij052gVCp5yVH3jGtH70Ho/UUv4mJDsEdTvqRCFZg0NKGiojGnUCw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-  <!-- sweetalert2 -->
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.6.8/dist/sweetalert2.min.js"></script>
+<script src="js/common.js"></script>
+<script
+	src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"
+	integrity="sha512-VEd+nq25CkR676O+pLBnDW09R7VQX9Mdiij052gVCp5yVH3jGtH70Ho/UUv4mJDsEdTvqRCFZg0NKGiojGnUCw=="
+	crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<!-- sweetalert2 -->
+<script
+	src="https://cdn.jsdelivr.net/npm/sweetalert2@11.6.8/dist/sweetalert2.min.js"></script>
 
-  <style type="text/css">
-     .tui-datepicker {
-      	z-index: 1001;
-     }
-     .tui-select-box {
-     	z-index : 1001;
-     }
-     
-     .tui-pagination .tui-first-child.tui-is-selected {
-     	 border-left: 1px solid #963446;
-     }
-     .tui-pagination .tui-last-child.tui-is-selected {
-         border-right: 1px solid #963446;
-     
-     }
-     
-     .tui-pagination .tui-is-selected, .tui-pagination strong {
-	     background : #963446;
-	     border-color : #963446;
-     }
-     
-      .tui-pagination .tui-grid-pagination .tui-page-btn a:hover {
-	     background : #963446;
-     }
-     
-  </style>
+<style type="text/css">
+.tui-datepicker {
+	z-index: 1001;
+}
+
+.tui-select-box {
+	z-index: 1001;
+}
+
+.tui-pagination .tui-first-child.tui-is-selected {
+	border-left: 1px solid #963446;
+}
+
+.tui-pagination .tui-last-child.tui-is-selected {
+	border-right: 1px solid #963446;
+}
+
+.tui-pagination .tui-is-selected, .tui-pagination strong {
+	background: #963446;
+	border-color: #963446;
+}
+
+.tui-pagination .tui-grid-pagination .tui-page-btn a:hover {
+	background: #963446;
+}
+</style>
 </head>
 
 <body>
-   <nav layout:fragment="menu"
-      class="sb-topnav navbar navbar-expand navbar-dark bg-red">
-      <!-- Navbar Brand-->
-      <a class="navbar-brand ps-3 font-NSEB logo-size" href="/" onclick="tabInfoDelete()"><span
-         class="col-green">YAM</span>YAM</a>
-      <th:block sec:authorize="isAuthenticated()">
-          <form action="logout" method="post" style="margin-left:76%" id="logout">
-		      <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
-		      <input class="login-menu font-NSEB" type="submit" value="logout">
-          </form>   
-      </th:block>
-      <!-- 로그인 유무에 따라 Login/LogOut로 다르게 보이도록 -->
-      <th:block sec:authorize="!isAuthenticated()">
-          <a class="login-menu font-NSEB" href="/login">Login</a>
-      </th:block>
-   </nav>
+	<nav layout:fragment="menu"
+		class="sb-topnav navbar navbar-expand navbar-dark bg-red">
+		<!-- Navbar Brand-->
+		<a class="navbar-brand ps-3 font-NSEB logo-size" href="/"
+			onclick="tabInfoDelete()"><span class="col-green">YAM</span>YAM</a>
+		<th:block sec:authorize="isAuthenticated()">
+			<form action="logout" method="post" style="margin-left: 76%"
+				id="logout">
+				<input type="hidden" th:name="${_csrf.parameterName}"
+					th:value="${_csrf.token}" /> <input class="btn btn-link font-NSEB"
+					type="submit" value="Logout"
+					style="font-size: 1.5rem; text-decoration: none; color: #fff;
+					font-weight: bold; padding-left: 100px;">
+			</form>
+		</th:block>
+		<!-- 로그인 유무에 따라 Login/LogOut로 다르게 보이도록 -->
+		<th:block sec:authorize="!isAuthenticated()">
+			<a class="login-menu font-NSEB" href="/login">Login</a>
+		</th:block>
+	</nav>
 
-   <div layout:fragment="sidebar" id="layoutSidenav">
-      <div id="layoutSidenav_nav">
-         <nav class="sb-sidenav accordion sb-sidenav-dark"
-            id="sidenavAccordion">
-            <div class="sb-sidenav-menu" style="background-color: white">
-               <div>
-               	  <th:block sec:authorize="isAuthenticated()">
-	                  <p class="username font-NSEB" th:text="${session.empNm}">EMP_NM</p>
-	                  <p class="log-sts-on font-NSEB">
-	                     <small class="small-font">●</small> online
-	                  </p>
-	              </th:block>
-	              <th:block sec:authorize="!isAuthenticated()">
-	                  <p class="username font-NSEB">unknown</p>
-	                  <p class="log-sts-off font-NSEB">
-	                     <small class="small-font">●</small> offline
-	                  </p>
-	              </th:block>
-                  <hr class="col-black">
-               </div>
-               <div class="accordion accordion-flush" id="accordionFlushExample">
-                  <div class="accordion-item bg-light text-dark bg-opacity-10">
-                     <h2 class="accordion-header" id="flush-headingOne">
-                        <button
-                           class="accordion-button collapsed bg-light text-dark bg-opacity-10 font-NSEB"
-                           type="button" data-bs-toggle="collapse"
-                           data-bs-target="#flush-collapseOne" aria-expanded="false"
-                           aria-controls="flush-collapseOne">공통관리</button>
-                     </h2>
-                     <div id="flush-collapseOne" class="accordion-collapse collapse"
-                        aria-labelledby="flush-headingOne"
-                        data-bs-parent="#accordionFlushExample">
-                        <div class="accordion-body side-menu-content">
-                           <ul class="mylist">
-                              <li><a href="/employeeAD">직원 관리</a></li>
-                              <li><a href="/commonCodeAD">공통 코드 관리</a></li>
-                              <li><a href="/matCodeAD">자재 코드 관리</a></li>
-                              <li><a href="/actCodeAD">거래처 코드 관리</a></li>
-                              <li><a href="/pdtCodeAD">완제품 코드 관리</a></li>
-                              <li><a href="/BOMAD">BOM 관리</a></li>
-                           </ul>
-                        </div>
-                     </div>
-                  </div>
-                  <div class="accordion-item bg-light text-dark bg-opacity-10">
-                     <h2 class="accordion-header" id="flush-headingTwo">
-                        <button
-                           class="accordion-button collapsed font-NSEB bg-light text-dark bg-opacity-10"
-                           type="button" data-bs-toggle="collapse"
-                           data-bs-target="#flush-collapseTwo" aria-expanded="false"
-                           aria-controls="flush-collapseTwo">영업관리</button>
-                     </h2>
-                     <div id="flush-collapseTwo" class="accordion-collapse collapse"
-                        aria-labelledby="flush-headingTwo"
-                        data-bs-parent="#accordionFlushExample">
-                        <div class="accordion-body side-menu-content">
-                           <ul class="mylist">
-                              <li><a href="/odAd">주문 관리</a></li>
-                              <li><a href="/prdOutList">완제품 출고 조회</a></li>
-                              <th:block sec:authorize="hasAnyAuthority('JOB-GRD1', 'JOB-GRD2')">
-                              	<li><a href="/prdOutAd">완제품 출고 관리</a></li>
-                              </th:block>
-                              <li><a href="/prdReAd">완제품 반품 관리</a></li>
-                              <li><a href="/prdList">완제품 재고 조회</a></li>
-                              <th:block sec:authorize="hasAnyAuthority('JOB-GRD1', 'JOB-GRD2')">
-                              	<li><a href="/prdAd">완제품 재고 관리</a></li>
-                              </th:block>
-                              <li><a href="/podOrderAd">생산 요청 관리</a></li>
-                              <li><a href="/prdSfamtAd">제품 안전 재고 관리</a></li>
-                           </ul>
-                        </div>
-                     </div>
-                  </div>
-                  <div class="accordion-item bg-light text-dark bg-opacity-10">
-                     <h2 class="accordion-header font-NSEB" id="flush-headingThree">
-                        <button
-                           class="accordion-button collapsed bg-light text-dark bg-opacity-10"
-                           type="button" data-bs-toggle="collapse"
-                           data-bs-target="#flush-collapseThree" aria-expanded="false"
-                           aria-controls="flush-collapseThree">생산관리</button>
-                     </h2>
-                     <div id="flush-collapseThree" class="accordion-collapse collapse"
-                        aria-labelledby="flush-headingThree"
-                        data-bs-parent="#accordionFlushExample">
-                        <div class="accordion-body side-menu-content">
-                           <ul class="mylist">
-                              <li><a href="/proPlan">생산 계획 관리</a></li>
-                              <li><a href="/planOrdCheck">생산 지시 </a></li>
-                              <li><a href="/proOrdManage">생산 관리</a></li>
-                              <th:block sec:authorize="hasAnyAuthority('JOB-GRD1', 'JOB-GRD2')">
-	                              <li><a href="/proResult">공정 실적 조회</a></li>
-	                              <li><a href="/proManage">공정 관리</a></li>
-	                              <li><a href="/flowDiagram">제품 공정 흐름도</a></li>
-                              </th:block>
-                           </ul>
-                        </div>
-                     </div>
-                  </div>
-                  <div class="accordion-item bg-light text-dark bg-opacity-10">
-                     <h2 class="accordion-header" id="flush-headingFour">
-                        <button
-                           class="accordion-button collapsed font-NSEB bg-light text-dark bg-opacity-10"
-                           type="button" data-bs-toggle="collapse"
-                           data-bs-target="#flush-collapseFour" aria-expanded="false"
-                           aria-controls="flush-collapseFour">자재관리</button>
-                     </h2>
-                     <div id="flush-collapseFour" class="accordion-collapse collapse"
-                        aria-labelledby="flush-headingFour"
-                        data-bs-parent="#accordionFlushExample">
-                        <div class="accordion-body side-menu-content">
-                           <ul class="mylist">
-                              <li><a href="/matOd">자재 발주 관리</a></li>
-                              <li><a href="/matLookup">자재 발주 조회</a></li>
-                              <li><a href="/matInChk">자재 입고 검수 관리</a></li>
-                              <li><a href="/matIn">자재 입고 관리</a></li>
-                              <li><a href="/matOut">자재 출고 관리</a></li>
-                              <li><a href="/matInOut">자재 입출고 조회</a></li>
-                              <li><a href="/matStockLookup">자재 재고 조회</a></li>
-                              <li><a href="/matReturn">자재 반품 관리</a></li>
-                              <li><a href="/matReturnLookup">자재 반품 조회</a></li>
-                              <li><a href="/matSafe">안전 재고 관리</a></li>
-                           </ul>
-                        </div>
-                     </div>
-                  </div>
-                  <div class="accordion-item bg-light text-dark bg-opacity-10">
-                     <h2 class="accordion-header" id="flush-headingFive">
-                        <button
-                           class="accordion-button collapsed font-NSEB bg-light text-dark bg-opacity-10"
-                           type="button" data-bs-toggle="collapse"
-                           data-bs-target="#flush-collapseFive" aria-expanded="false"
-                           aria-controls="flush-collapseFive">설비관리</button>
-                     </h2>
-                     <div id="flush-collapseFive" class="accordion-collapse collapse"
-                        aria-labelledby="flush-headingFive"
-                        data-bs-parent="#accordionFlushExample">
-                        <div class="accordion-body side-menu-content">
-                           <ul class="mylist">
-                           	  <li><a href="/eqpAd">설비 관리</a></li>
-                              <li><a href="/uopAd">설비 비가동 관리</a></li>
-                              <li><a href="/eqpChkAd">설비 점검 관리</a></li>
-                              <li><a href="#">실시간 설비 상태 조회</a></li>
-                           </ul>
-                        </div>
-                     </div>
-                  </div>
-                  <hr>
-               </div>
-            </div>
-         </nav>
-      </div>
+	<div layout:fragment="sidebar" id="layoutSidenav">
+		<div id="layoutSidenav_nav">
+			<nav class="sb-sidenav accordion sb-sidenav-dark"
+				id="sidenavAccordion">
+				<div class="sb-sidenav-menu" style="background-color: white">
+					<div>
+						<th:block sec:authorize="isAuthenticated()">
+							<p class="username font-NSEB" th:text="${session.empNm}">EMP_NM</p>
+							<p class="log-sts-on font-NSEB">
+								<small class="small-font">●</small> online
+							</p>
+						</th:block>
+						<th:block sec:authorize="!isAuthenticated()">
+							<p class="username font-NSEB">unknown</p>
+							<p class="log-sts-off font-NSEB">
+								<small class="small-font">●</small> offline
+							</p>
+						</th:block>
+						<hr class="col-black">
+					</div>
+					<div class="accordion accordion-flush" id="accordionFlushExample">
+						<div class="accordion-item bg-light text-dark bg-opacity-10">
+							<h2 class="accordion-header" id="flush-headingOne">
+								<button
+									class="accordion-button collapsed bg-light text-dark bg-opacity-10 font-NSEB"
+									type="button" data-bs-toggle="collapse"
+									data-bs-target="#flush-collapseOne" aria-expanded="false"
+									aria-controls="flush-collapseOne">공통관리</button>
+							</h2>
+							<div id="flush-collapseOne" class="accordion-collapse collapse"
+								aria-labelledby="flush-headingOne"
+								data-bs-parent="#accordionFlushExample">
+								<div class="accordion-body side-menu-content">
+									<ul class="mylist">
+										<li><a href="/employeeAD">직원 관리</a></li>
+										<li><a href="/commonCodeAD">공통 코드 관리</a></li>
+										<li><a href="/matCodeAD">자재 코드 관리</a></li>
+										<li><a href="/actCodeAD">거래처 코드 관리</a></li>
+										<li><a href="/pdtCodeAD">완제품 코드 관리</a></li>
+										<li><a href="/BOMAD">BOM 관리</a></li>
+									</ul>
+								</div>
+							</div>
+						</div>
+						<div class="accordion-item bg-light text-dark bg-opacity-10">
+							<h2 class="accordion-header" id="flush-headingTwo">
+								<button
+									class="accordion-button collapsed font-NSEB bg-light text-dark bg-opacity-10"
+									type="button" data-bs-toggle="collapse"
+									data-bs-target="#flush-collapseTwo" aria-expanded="false"
+									aria-controls="flush-collapseTwo">영업관리</button>
+							</h2>
+							<div id="flush-collapseTwo" class="accordion-collapse collapse"
+								aria-labelledby="flush-headingTwo"
+								data-bs-parent="#accordionFlushExample">
+								<div class="accordion-body side-menu-content">
+									<ul class="mylist">
+										<li><a href="/odAd">주문 관리</a></li>
+										<li><a href="/prdOutList">완제품 출고 조회</a></li>
+										<th:block
+											sec:authorize="hasAnyAuthority('JOB-GRD1', 'JOB-GRD2')">
+											<li><a href="/prdOutAd">완제품 출고 관리</a></li>
+										</th:block>
+										<li><a href="/prdReAd">완제품 반품 관리</a></li>
+										<li><a href="/prdList">완제품 재고 조회</a></li>
+										<th:block
+											sec:authorize="hasAnyAuthority('JOB-GRD1', 'JOB-GRD2')">
+											<li><a href="/prdAd">완제품 재고 관리</a></li>
+										</th:block>
+										<li><a href="/podOrderAd">생산 요청 관리</a></li>
+										<li><a href="/prdSfamtAd">제품 안전 재고 관리</a></li>
+									</ul>
+								</div>
+							</div>
+						</div>
+						<div class="accordion-item bg-light text-dark bg-opacity-10">
+							<h2 class="accordion-header font-NSEB" id="flush-headingThree">
+								<button
+									class="accordion-button collapsed bg-light text-dark bg-opacity-10"
+									type="button" data-bs-toggle="collapse"
+									data-bs-target="#flush-collapseThree" aria-expanded="false"
+									aria-controls="flush-collapseThree">생산관리</button>
+							</h2>
+							<div id="flush-collapseThree" class="accordion-collapse collapse"
+								aria-labelledby="flush-headingThree"
+								data-bs-parent="#accordionFlushExample">
+								<div class="accordion-body side-menu-content">
+									<ul class="mylist">
+										<li><a href="/proPlan">생산 계획 관리</a></li>
+										<li><a href="/planOrdCheck">생산 지시 </a></li>
+										<li><a href="/proOrdManage">생산 관리</a></li>
+										<th:block
+											sec:authorize="hasAnyAuthority('JOB-GRD1', 'JOB-GRD2')">
+											<li><a href="/proResult">공정 실적 조회</a></li>
+											<li><a href="/proManage">공정 관리</a></li>
+											<li><a href="/flowDiagram">제품 공정 흐름도</a></li>
+										</th:block>
+									</ul>
+								</div>
+							</div>
+						</div>
+						<div class="accordion-item bg-light text-dark bg-opacity-10">
+							<h2 class="accordion-header" id="flush-headingFour">
+								<button
+									class="accordion-button collapsed font-NSEB bg-light text-dark bg-opacity-10"
+									type="button" data-bs-toggle="collapse"
+									data-bs-target="#flush-collapseFour" aria-expanded="false"
+									aria-controls="flush-collapseFour">자재관리</button>
+							</h2>
+							<div id="flush-collapseFour" class="accordion-collapse collapse"
+								aria-labelledby="flush-headingFour"
+								data-bs-parent="#accordionFlushExample">
+								<div class="accordion-body side-menu-content">
+									<ul class="mylist">
+										<th:block
+											sec:authorize="hasAnyAuthority('JOB-GRD1', 'JOB-GRD2')">
+											<li><a href="/matOd">자재 발주 관리</a></li>
+										</th:block>
+										<li><a href="/matLookup">자재 발주 조회</a></li>
+										<th:block
+											sec:authorize="hasAnyAuthority('JOB-GRD1', 'JOB-GRD2')">
+											<li><a href="/matInChk">자재 입고 검수 관리</a></li>
+										</th:block>
+										<th:block
+											sec:authorize="hasAnyAuthority('JOB-GRD1', 'JOB-GRD2')">
+											<li><a href="/matIn">자재 입고 관리</a></li>
+										</th:block>
+										<th:block
+											sec:authorize="hasAnyAuthority('JOB-GRD1', 'JOB-GRD2')">
+											<li><a href="/matOut">자재 출고 관리</a></li>
+										</th:block>
+										<li><a href="/matInOut">자재 입출고 조회</a></li>
+										<li><a href="/matStockLookup">자재 재고 조회</a></li>
+										<th:block
+											sec:authorize="hasAnyAuthority('JOB-GRD1', 'JOB-GRD2')">
+											<li><a href="/matReturn">자재 반품 관리</a></li>
+										</th:block>
+										<li><a href="/matReturnLookup">자재 반품 조회</a></li>
+										<th:block
+											sec:authorize="hasAnyAuthority('JOB-GRD1', 'JOB-GRD2')">
+											<li><a href="/matSafe">안전 재고 관리</a></li>
+										</th:block>
+									</ul>
+								</div>
+							</div>
+						</div>
+						<div class="accordion-item bg-light text-dark bg-opacity-10">
+							<h2 class="accordion-header" id="flush-headingFive">
+								<button
+									class="accordion-button collapsed font-NSEB bg-light text-dark bg-opacity-10"
+									type="button" data-bs-toggle="collapse"
+									data-bs-target="#flush-collapseFive" aria-expanded="false"
+									aria-controls="flush-collapseFive">설비관리</button>
+							</h2>
+							<div id="flush-collapseFive" class="accordion-collapse collapse"
+								aria-labelledby="flush-headingFive"
+								data-bs-parent="#accordionFlushExample">
+								<div class="accordion-body side-menu-content">
+									<ul class="mylist">
+										<li><a href="/eqpAd">설비 관리</a></li>
+										<li><a href="/uopAd">설비 비가동 관리</a></li>
+										<li><a href="/eqpChkAd">설비 점검 관리</a></li>
+										<li><a href="#">실시간 설비 상태 조회</a></li>
+									</ul>
+								</div>
+							</div>
+						</div>
+						<hr>
+					</div>
+				</div>
+			</nav>
+		</div>
 
-      <div layout:fragment="content"></div>
+		<div layout:fragment="content"></div>
 
-   </div>
+	</div>
 
-   <script type="text/javascript">
+	<script type="text/javascript">
    
       /* token */
 	  var token = $("meta[name='_csrf']").attr("content");

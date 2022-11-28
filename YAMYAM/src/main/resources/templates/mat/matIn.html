@@ -109,6 +109,10 @@
 	</div>
 	
 	<script th:inline="javascript">
+	// token
+	var token = $("meta[name='_csrf']").attr("content");
+	var header = $("meta[name='_csrf_header']").attr("content");
+	
 	let grid = inMatList(); 		// 입고전체조회 그리드
 	
 	let modalGrid = matList();		// 자재 목록 모달 그리드
@@ -417,6 +421,9 @@
 		        	method: 'POST',
 		        	contentType: 'application/JSON',
 					data: JSON.stringify(data),
+					beforeSend : function (xhr) {
+					    xhr.setRequestHeader(header, token);
+					},
 					success: function(result){
 						if(result >= 1){
 				        	Swal.fire('저장이 완료되었습니다.');
@@ -468,6 +475,9 @@
 				method: 'POST',
 				contentType: 'application/JSON',
 				data: JSON.stringify(data),
+				beforeSend : function (xhr) {
+				    xhr.setRequestHeader(header, token);
+				},
 				success: function(result){
 					grid.resetData(result)
 				},

@@ -59,6 +59,17 @@
 								<span class="tui-ico-date"></span>
 								<div id="endpicker-container" style="margin-left: -1px;">
 								</div>
+							</div></li>
+						<li><span style="margin-right: 35px;">검수상태</span>
+						<div class="form-check form-check-inline">
+								<input class="form-check-input" type="radio"
+									name="inlineRadioOptions" id="inlineRadio1" value="Y">
+								<label class="form-check-label" for="inlineRadio1">Y</label>
+							</div>
+							<div class="form-check form-check-inline">
+								<input class="form-check-input" type="radio"
+									name="inlineRadioOptions" id="inlineRadio2" value="N">
+								<label class="form-check-label" for="inlineRadio2">N</label>
 							</div>
 							<button class="btn btn-dark btn-sm" id="SearchBtn">조회</button>
 							<button class="btn btn-dark btn-sm" id="resetBtn">초기화</button></li>
@@ -153,45 +164,44 @@
 			</div>
 		</div>
 	</div>
-		<!-- 신규 생산 계획서 목록 모달 -->
-		<div class="modal" id="planModal" tabindex="-1"
-			aria-labelledby="planModalLabel" aria-hidden="true">
-			<div class="modal-dialog modal-xl">
-				<div class="modal-content">
-					<div class="modal-header">
-						<h5 class="modal-title" id="planModalLabel">신규 생산 계획서 리스트</h5>
-						<button type="button" class="btn-close" data-bs-dismiss="modal"
-							aria-label="Close" id="planModalClose"></button>
+	<!-- 신규 생산 계획서 목록 모달 -->
+	<div class="modal" id="planModal" tabindex="-1"
+		aria-labelledby="planModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-xl">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="planModalLabel">신규 생산 계획서 리스트</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal"
+						aria-label="Close" id="planModalClose"></button>
+				</div>
+				<div class="modal-body">
+					<!-- Date Picker -->
+					<label for="startpicker-input">발주신청일</label>
+					<div class="tui-datepicker-input tui-datetime-input tui-has-focus">
+						<input id="startpicker-input2" type="text" aria-label="Date">
+						<span class="tui-ico-date"></span>
+						<div id="startpicker-container2" style="margin-left: -1px;"></div>
 					</div>
-					<div class="modal-body">
-						<!-- Date Picker -->
-						<label for="startpicker-input">발주신청일</label>
-						<div class="tui-datepicker-input tui-datetime-input tui-has-focus">
-							<input id="startpicker-input2" type="text" aria-label="Date">
-							<span class="tui-ico-date"></span>
-							<div id="startpicker-container2" style="margin-left: -1px;"></div>
-						</div>
-						<span>-</span>
-						<div class="tui-datepicker-input tui-datetime-input tui-has-focus">
-							<input id="endpicker-input2" type="text" aria-label="Date">
-							<span class="tui-ico-date"></span>
-							<div id="endpicker-container2" style="margin-left: -1px;"></div>
-						</div>
-						<button class="btn btn-dark btn-sm" id="newPlanLookupBtn">조회</button>
-						<!-- <button class="btn btn-dark btn-sm" id="resetBtn2">초기화</button> -->
-						<div>
-							<div id="modalGrid3"></div>
-						</div>
+					<span>-</span>
+					<div class="tui-datepicker-input tui-datetime-input tui-has-focus">
+						<input id="endpicker-input2" type="text" aria-label="Date">
+						<span class="tui-ico-date"></span>
+						<div id="endpicker-container2" style="margin-left: -1px;"></div>
+					</div>
+					<button class="btn btn-dark btn-sm" id="newPlanLookupBtn">조회</button>
+					<div>
+						<div id="modalGrid3"></div>
 					</div>
 				</div>
 			</div>
 		</div>
-	<!-- 	<span th:text="${odList[0]}"></span> 
-		<span th:text="${odList[1]}"></span> 
- 		<span th:text="${matList}"></span> 
- 		<span th:text="${actList}"></span> -->
+	</div>
 
 	<script th:inline="javascript">
+	/* token */
+	var token = $("meta[name='_csrf']").attr("content");
+	var header = $("meta[name='_csrf_header']").attr("content");
+	
 		let odLookUp = tab1GridInit();		// 탭1 조회 그리드
 		SearchBtnFn();						// 조회 버튼 클릭시 odLookUp 그리드 표시
 		
@@ -221,7 +231,6 @@
 		datePicker(); 						// datePicker
 		datePicker2();						// datePicker2
 		resetBtnEvent();					// 검색 조건 초기화 버튼
-		/* resetDate(); */					// datepicker2 초기화 버튼
 	
 		insertOrder();						// 탭1 행 추가(일반 탭)
 		deleteOrderList();					// 탭1 행 삭제(일반 탭)
@@ -323,7 +332,10 @@
 	        {
 	          header: '검수상태',
 	          name: 'matInsts',
-	          sortable: true
+	          sortable: true,
+		      filter: {
+		    	  type: 'text'
+		      }
 	        }
 	      ]
 	    });
@@ -348,6 +360,9 @@
 				method: 'POST',
 				contentType: 'application/JSON',
 				data: JSON.stringify(data),
+				beforeSend : function (xhr) {
+				    xhr.setRequestHeader(header, token);
+				},
 				success: function(result){
 					// 그리드 표시
 					odLookUp.resetData(result)
@@ -357,6 +372,14 @@
 					if (searchedOdCd.value != null || searchedOdCd.value != '') {
 						odLookUp.filter('matOdCd', [{code: 'contain', value: searchedOdCd.value}]);
 					}
+					
+					// 검수상태로 조회
+					let radioBtn = document.getElementsByName('inlineRadioOptions');
+					radioBtn.forEach((node) => {
+						if(node.checked) {
+							odLookUp.filter('matInsts', [{code: 'contain', value: node.value}]);
+						}
+					})
 				},
 				error: function(reject) {
 					console.log(reject);
@@ -534,10 +557,6 @@
 							 type: 'select'			  
 							 }
 			        },
-/* 			        {
-				      header: '안전발주량',
-				      name: 'safeOd'
-				    }, */
 			        {
 				      header: '단가(원)',
 				      name: 'matOddMn',
@@ -768,6 +787,9 @@
 					type: 'POST',
 					contentType: 'application/json',	// json타입으로 반환 하겠다.
 					data: JSON.stringify(data),			// 데이터를 json타입으로.
+					beforeSend : function (xhr) {
+					    xhr.setRequestHeader(header, token);
+					},
 					success: function(result) {
 						newPlan.resetData(result);
 						planModalClose.click();
@@ -790,6 +812,9 @@
 				type: 'POST',
 				contentType: 'application/json',
 				data: JSON.stringify(data[0]),
+				beforeSend : function (xhr) {
+				    xhr.setRequestHeader(header, token);
+				},
 				success: function(result) {
 					needMat.resetData(result);
 				},
@@ -873,6 +898,14 @@
 			document.getElementById('matOdCd').value = '';
 			document.getElementById('actNm').value = '';
 			document.getElementById('actCd').value = '';
+			
+			// 검수상태로 라디오박스 지우기
+			let radioBtn = document.getElementsByName('inlineRadioOptions');
+			radioBtn.forEach((node) => {
+				if(node.checked) {
+					node.checked = false;
+				}
+			})
 		});	
 	}
 	
@@ -916,6 +949,9 @@
 			        	method: 'POST',
 			        	contentType: 'application/JSON',
 						data: JSON.stringify(data),
+						beforeSend : function (xhr) {
+						    xhr.setRequestHeader(header, token);
+						},
 						success: function(result){
 							console.log(result);
 							// 2개의 테이블이 insert라 최소 2
@@ -1079,6 +1115,9 @@
 			        	method: 'POST',
 			        	contentType: 'application/JSON',
 						data: JSON.stringify(data),
+						beforeSend : function (xhr) {
+						    xhr.setRequestHeader(header, token);
+						},
 						success: function(result){
 							console.log(result);
 							if(result >= 1){
@@ -1135,6 +1174,9 @@
 				method: 'POST',
 				contentType: 'application/json',					
 				data: JSON.stringify(list),
+				beforeSend : function (xhr) {
+				    xhr.setRequestHeader(header, token);
+				},
 				success: function(result){
 					console.log(result);
 					planModal.resetData(result);
