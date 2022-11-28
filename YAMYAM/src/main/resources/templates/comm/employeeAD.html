@@ -76,7 +76,11 @@
 						  	<div class="mb-3 row">
 						    <label for="staticEmail" class="col-sm-3 col-form-label">입사일</label>
 						    <div class="col-sm-9">
-						      <input type="text" name="empDate" class="form-control" id="hireDate">
+						      <div class="tui-datepicker-input tui-datetime-input tui-has-focus"  style="width:100%">
+							      <input type="text" id="hireDate" name="empDate" aria-label="Date-Time">
+								  <span class="tui-ico-date"></span>
+							  </div>
+							  <div id="wrapper"></div>						    
 						    </div>
 						  </div>
 						  
@@ -103,7 +107,7 @@
 	
 	
 						<div class="modal-footer">
-							<button type="button" class="btn btn-primary" id="insertBtn" data-bs-dismiss="modal">등록</button>
+							<button type="button" class="btn btn-primary" id="insertBtn">등록</button>
 							<input type="reset" class="btn btn-secondary">
 						</div>
 					</div>
@@ -114,7 +118,7 @@
 			
 
 		<button type="button" class="btn btn-dark btn-sm"
-			data-bs-toggle="modal" data-bs-target="#staticBackdrop2" name="mainUpdateBtn" id="mainUpdateBtn">회원 수정</button>
+			data-bs-target="#staticBackdrop2" name="mainUpdateBtn" id="mainUpdateBtn">회원 수정</button>
 
 		<!-- 모달창 2번 -->
 			<div class="modal" id="staticBackdrop2" data-bs-backdrop="static"
@@ -136,21 +140,21 @@
 							  <div class="mb-2 row">
 							    <label for="staticEmail" class="col-sm-3 col-form-label">계정 아이디</label>
 							    <div class="col-sm-9">
-							      <input type="text" name="empId" class="form-control" id="updateId">
+							      <input type="text" name="empId" class="form-control" id="updateId" readonly>
 							    </div>
 							  </div>
 							  
 							  	<div class="mb-3 row">
 							    <label for="staticEmail" class="col-sm-3 col-form-label">비밀번호</label>
 							    <div class="col-sm-9">
-							      <input type="text" name="empPw" class="form-control" id="updatePw">
+							      <input type="password" name="empPw" class="form-control" id="updatePw">
 							    </div>
 							  </div>
 							  
 							  	<div class="mb-3 row">
 							    <label for="staticEmail" class="col-sm-3 col-form-label">비밀번호확인</label>
 							    <div class="col-sm-9">
-							      <input type="text" name="empPwcr" class="form-control" id="updatePwcr">
+							      <input type="password" name="empPwcr" class="form-control" id="updatePwcr">
 							    </div>
 							  </div>
 							  
@@ -164,7 +168,9 @@
 							  	<div class="mb-3 row">
 							    <label for="staticEmail" class="col-sm-3 col-form-label">직급 정보</label>
 							    <div class="col-sm-9">
-							      <input type="text" name="empRole" class="form-control" id="updateRole">
+							      <select name="empRole" class="form-control" id="updateRole">
+							      	<option th:each="job : ${jobs}" th:value="${job.commdCd}" th:text="${job.commdNm}"></option>
+							      </select>
 							    </div>
 							  </div>
 		
@@ -172,8 +178,7 @@
 							</div>
 					    
 							<div class="modal-footer">
-								<input type="submit" class="btn btn-primary" name="updateBtn" id="updateBtn" value="수정" data-bs-dismiss="modal">
-								<input type="reset" class="btn btn-secondary" name="reset">
+								<input type="submit" class="btn btn-primary" name="updateBtn" id="updateBtn" value="수정">
 							</div>
 						</div>
 					</form>
@@ -206,7 +211,22 @@
 	</div>
 	
 	<script>
+		/* token */
+		var token = $("meta[name='_csrf']").attr("content");
+		var header = $("meta[name='_csrf_header']").attr("content");
 	
+		pickerInit('#wrapper', '#hireDate');	// 구매날짜 datepicker	
+		
+		// toastr
+		toastr.options = {
+			    "closeButton": false,
+			    "newestOnTop": true,
+			    "positionClass": "toast-top-center",
+			    "preventDuplicates": true,
+			    "extendedTimeOut" : 1500, 
+			    "timeOut" : 2500
+		}
+		
 	 class RowNumberRenderer {
 	      constructor(props) {
 	        const el = document.createElement('span');
@@ -350,42 +370,87 @@
 		// 회원 등록하기
 		
 		document.getElementById('insertBtn').addEventListener('click', function(){
-			sweetConfirm('C', function () {
 			let data = {
-					
-				empId: document.getElementById('insertId').value,
-				empPw: document.getElementById('insertPw').value,
-				empNm: document.getElementById('insertName').value,
-				empDate: document.getElementById('hireDate').value,
-				deptCd: document.getElementById('deptName').value,
-				empRole: document.getElementById('insertRole').value
+					empId: document.getElementById('insertId').value,
+					empPw: document.getElementById('insertPw').value,
+					empNm: document.getElementById('insertName').value,
+					empDate: document.getElementById('hireDate').value,
+					deptCd: document.getElementById('deptName').value,
+					empRole: document.getElementById('insertRole').value
 			}
 			
-			grid.appendRow(data);
-			
-			// ajax 직원 정보 등록
-			console.log("데이터 가져왔니?");
+			// 값 입력 유무 확인
+			for (let prop in data) {
+				if (data[prop] == '') {
+					toastr.warning('값을 모두 입력해주세요');
+					return;
+				}
+			}
+
+			// 아이디 중복확인
+			let idCheck = '';
 			$.ajax({
-				url : "/ajax/insertEmp",
+				url : "/ajax/selectEmpInfo",
 				type : "post",
-				data: data,
-				dataType: "json",
-				success : function(data){
-					if (data > 0) {
-						// ajax success
-			            toastr.success('정상적으로 등록되었습니다.');
-			            //setTimeout(() => {location.reload(), 3000});
+				data: {'empId': data.empId},
+				async: false,
+				beforeSend : function (xhr) {
+				    xhr.setRequestHeader(header, token);
+				},
+				success : function(result){
+					if (result.empId == data.empId) {
+						idCheck = 'N';
+						return;
 					} else {
-						// ajax fail
-			            toastr.error('등록에 실패했습니다.');	
+						idCheck = 'Y';
 					}
 				},
 				error : function(reject){
 					console.log(reject);
 				}
 			});
-			location.reload();
-			insertModalClose.click();
+			
+			if (idCheck == 'N') {
+				toastr.error('이미 등록된 아이디입니다.');
+				document.getElementById('insertId').focus();
+				return;
+			}
+			
+			// 비밀번호, 비밀번호 확인 일치여부 확인
+			if (document.getElementById('insertPw').value != document.getElementById('insertPwcr').value) {
+				toastr.warning('비밀번호가 맞지 않습니다.');
+				document.getElementById('insertPwcr').focus();
+				return;
+			}
+			
+			sweetConfirm('C', function () {
+				// ajax 직원 정보 등록
+				console.log("데이터 가져왔니?");
+				$.ajax({
+					url : "/ajax/insertEmp",
+					type : "post",
+					data: data,
+					dataType: "json",
+					beforeSend : function (xhr) {
+					    xhr.setRequestHeader(header, token);
+					},
+					success : function(result){
+						if (result > 0) {
+							// ajax success
+				            toastr.success('정상적으로 등록되었습니다.');
+				            location.reload();
+							insertModalClose.click(); // 모달 닫기
+				            //setTimeout(() => {location.reload(), 3000});
+						} else {
+							// ajax fail
+				            toastr.error('등록에 실패했습니다.');	
+						}
+					},
+					error : function(reject){
+						console.log(reject);
+					}
+				});
+				
 			});
 		});
 		
@@ -393,73 +458,79 @@
 		
 		$("#mainUpdateBtn").click(function(e){  //메인 화면 수정버튼
 			let rowData = grid.getCheckedRows();
-			
-			console.log(rowData[0].empId);
-			
-			if (rowData.length > 1) {
-				alert('하나의 열만 선택하세요.');
-				updateModalClose.click()
+			console.log(rowData.length)
+			if (rowData.length < 1) {
+				toastr.warning('하나의 회원을 선택해주세요.');
+				return;
+			} else if (rowData.length > 1) {
+				toastr.warning('하나의 회원만 선택하세요.');
 				return;
 			}
-			 
-		 /*
-		 rowData의 각각 정보를 각각 변수에 담는다.
-		 모달의 input태그들의 value값에 변수들을 담아준다.
-		 */
-		 
-		 updateId.value = rowData[0].empId;
-		 //updatePw.value = rowData[0].empPw;
-		 //updatePwcr.value = rowData[0].empPwcr;
-		 document.getElementById('updateEmpName').value = rowData[0].empNm;
-		 updateRole.value = rowData[0].empRole;
-		 });
+			
+			$('#staticBackdrop2').modal('show');
+				 /*
+				 rowData의 각각 정보를 각각 변수에 담는다.
+				 모달의 input태그들의 value값에 변수들을 담아준다.
+				 */
+				 
+				 updateId.value = rowData[0].empId;
+				 document.getElementById('updateEmpName').value = rowData[0].empNm;
+				 updateRole.value = rowData[0].empRole;
+			 });
 	
 		// 모달창 수정버튼 이벤트
 		
 		document.getElementById('updateBtn').addEventListener('click', function(){ //모달창에 수정 버튼
-	 		console.log();
-			sweetConfirm('U', function () {
-				let data = {
+			let data = {
 					empNo: grid.getCheckedRows()[0]['empNo'],
 					empId: document.getElementById('updateId').value,
 					empPw: document.getElementById('updatePw').value,
 					empNm: document.getElementById('updateEmpName').value,
 					empRole: document.getElementById('updateRole').value
-		};
+			};
 			
-			// ajax 직원 정보 수정
-			console.log("데이터 가져왔니?");
-			$.ajax({
-				url : "/ajax/updateEmp",
-				type : "post",
-				data: data,
-				dataType: "json",
-				success : function(data){
-					if (data > 0) {
-						// ajax success
-			            toastr.success('정상적으로 수정되었습니다.');
-			            location.reload();
-					} else {
-						// ajax fail
-			            toastr.error('수정에 실패했습니다.');	
+			// 비밀번호, 비밀번호 확인 일치여부 확인
+			if (document.getElementById('updatePw').value != document.getElementById('updatePwcr').value) {
+				toastr.warning('비밀번호가 맞지 않습니다.');
+				document.getElementById('updatePwcr').focus();
+				return;
+			}
+			
+			sweetConfirm('U', function () {
+				
+			
+				// ajax 직원 정보 수정
+				$.ajax({
+					url : "/ajax/updateEmp",
+					type : "post",
+					data: data,
+					dataType: "json",
+					beforeSend : function (xhr) {
+					    xhr.setRequestHeader(header, token);
+					},
+					success : function(data){
+						if (data > 0) {
+							// ajax success
+				            toastr.success('정상적으로 수정되었습니다.');
+				            location.reload();
+				            updateModalClose.click(); // 모달창 닫기
+						} else {
+							// ajax fail
+				            toastr.error('수정에 실패했습니다.');	
+						}
+					},
+					error : function(reject){
+						console.log(reject);
 					}
-				},
-				error : function(reject){
-					console.log(reject);
-				}
-			});
+				});
 
-			grid.setValue(data[0].rowKey, 'empId', updateId.value);
+			/* grid.setValue(data[0].rowKey, 'empId', updateId.value);
 			grid.setValue(data[0].rowKey, 'empPw', updatePw.value);
 			grid.setValue(data[0].rowKey, 'empPwcr', updatePwcr.value);
 			grid.setValue(data[0].rowKey, 'empNm', document.getElementById('updateEmpName').value);
-			grid.setValue(data[0].rowKey, 'empRole', updateRole.value);
-			
-			console.log("데이터 가져왔으면 대답해 아오!!!!!");
+			grid.setValue(data[0].rowKey, 'empRole', updateRole.value); */
 			
 			updateModalClose.click(); // 모달창 닫기
-			
-			
 			});
  		});
 	
@@ -479,6 +550,9 @@
 					data: JSON.stringify(data),
 					contentType: "application/json",
 					dataType: "json",
+					beforeSend : function (xhr) {
+					    xhr.setRequestHeader(header, token);
+					},
 					success : function(data){
 						if (data > 0) {
 							// ajax success
