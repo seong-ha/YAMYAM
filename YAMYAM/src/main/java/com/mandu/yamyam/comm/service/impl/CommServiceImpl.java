@@ -89,6 +89,25 @@ public class CommServiceImpl implements CommService {
 	public int ajaxInsertMtr(MtrVO mtrVO) {
 		return commMapper.ajaxInsertMtr(mtrVO);
 	}
+	
+	// 자재 - 자재 정보 수정하기
+	@Override
+	public int ajaxUpdateMtr(MtrVO mtrVO) {
+		int result = 0;
+		result = commMapper.ajaxUpdateMtr(mtrVO);
+		
+		return result;
+	}
+	
+	// 자재 - 자재 정보 삭제하기
+	@Override
+	public int ajaxDeleteMtr(List<MtrVO> mtrVO) {
+		int result = 0;
+		for (int i = 0; i < mtrVO.size(); i++) {
+			result += commMapper.ajaxDeleteMtr(mtrVO.get(i)); 
+		}
+		return result;
+	}
 
 	// ajax 거래처 코드 불러오기
 	@Override
@@ -101,11 +120,33 @@ public class CommServiceImpl implements CommService {
 	public int ajaxInsertAct(ActVO actVO) {
 		return commMapper.ajaxInsertAct(actVO);
 	}
+	
+	// ajax 구매 거래처 수정하기
+	@Override
+	public int ajaxUpdateAct(ActVO actVO) {
+		return commMapper.ajaxUpdateAct(actVO);
+	}
 
 	// ajax 완제품 코드 불러오기
 	@Override
 	public List<PrdVO> ajaxSelectPrd(PrdVO prdVO) {
 		return commMapper.ajaxSelectPrd(prdVO);
+	}
+	
+	// ajax 완제품 등록하기
+	@Override
+	public int ajaxInsertPrd(PrdVO prdVO) {
+		return commMapper.ajaxInsertPrd(prdVO);
+	}
+	
+	// ajax 완제품 삭제하기
+	@Override
+	public int ajaxDeletePrd(List<PrdVO> prdVO) {
+		int result = 0;
+		for(int i = 0; i < prdVO.size(); i++) {
+			result += commMapper.ajaxDeletePrd(prdVO.get(i));
+		}
+		return result;
 	}
 	
 	// ajax BOM 코드 불러오기

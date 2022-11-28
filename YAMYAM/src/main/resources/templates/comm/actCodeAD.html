@@ -40,6 +40,8 @@
 					<li class="d-flex">
 					  <label for="matCode" style="width:130px">거래처 구분</label>
 					  <input id="actDivision" name="actDiv">	&nbsp;&nbsp;&nbsp;
+					  
+					  <input type="hidden" name="actSts"  id="actStatus">
 					  <label style="width:110px">&nbsp;&nbsp;거래상태</label>
 					  <div style="width: 190px;" id="select-box"></div>
 					  <div align="right">&nbsp;&nbsp;
@@ -95,35 +97,30 @@
 				sortingType: 'desc',
 		        sortable: true,
 		        align: 'center',
-		        editor: 'text'
 			}, {
 				header : '거래처 코드',
 				name : 'actCd',
 				sortingType: 'desc',
 		        sortable: true,
 		        align: 'center',
-		        editor: 'text'
 			}, {
 				header : '사업자 등록번호',
 				name : 'actNum',
 				sortingType: 'desc',
 		        sortable: true,
 		        align: 'center',
-		        editor: 'text'
 			}, {
 				header : '전화번호',
 				name : 'actTel',
 				sortingType: 'desc',
 		        sortable: true,
 		        align: 'center',
-		        editor: 'text'
 			}, {
 				header : '거래처구분',
 				name : 'actDiv',
 				sortingType: 'desc',
 		        sortable: true,
 		        align: 'center',
-		        editor: 'text'
 			}, {
 				header : '거래 상태',
 				name : 'actSts',
@@ -190,10 +187,9 @@
 			}
 		})
 		
+
 	// ajax 구매 거래처 등록하기
 	
-		// 회원 등록하기
-		
 		document.getElementById('insertBtn').addEventListener('click', function(){
 			sweetConfirm('C', function () {
 			let data = {
@@ -208,7 +204,7 @@
 			
 			grid.appendRow(data);
 			
-			// ajax 직원 정보 등록
+			// ajax 구매 거래처 등록
 			console.log("데이터 가져왔니?");
 			$.ajax({
 				url : "ajax/insertAct",
@@ -231,7 +227,66 @@
 		 	});
 			});
 		});
-	 
+		
+	// ajax 구매 거래처 수정
+	
+		// 거래처 코드 칼럼 누르면 거기 정보가 나온다
+ 		
+	 	grid.on('click', function(ev){
+			let rowData = grid.getRow(ev.rowKey);
+			console.log(grid.getRow(ev.rowKey).actCd);
+			$('#select-box').val(grid.getRow(ev.rowKey).actSts);
+			
+			$('#actName').val(grid.getRow(ev.rowKey).actNm); 
+			$('#actCode').val(grid.getRow(ev.rowKey).actCd); 
+			$('#actNumber').val(grid.getRow(ev.rowKey).actNum); 
+			$('#actTelephone').val(grid.getRow(ev.rowKey).actTel); 
+			$('#actDivision').val(grid.getRow(ev.rowKey).actDiv); 
+			$('#actStatus').val(grid.getRow(ev.rowKey).actSts);
+			selectBox.select(rowData.actSts);
+	 	
+		
+			document.getElementById('updateBtn').addEventListener('click', function(){
+				sweetConfirm('U', function () {
+					
+					let data = {
+							
+							actNm : document.getElementById('actName').value,
+							actCd : document.getElementById('actCode').value,
+							actNum : document.getElementById('actNumber').value,
+							actTel : document.getElementById('actTelephone').value,
+							actDiv : document.getElementById('actDivision').value,
+							actSts : document.getElementById('actStatus').value
+					};
+					
+					// ajax 직원 정보 수정
+
+					$.ajax({
+						url : "ajax/updateAct",
+						type : "post",
+						data: data,
+						dataType: "json",
+						success : function(data){
+							if (data > 0) {
+								// ajax success
+					            toastr.success('정상적으로 수정되었습니다.');
+								grid.resetData(data);
+								grid.refreshLayout();
+					            //location.reload();
+							} else {
+								// ajax fail
+					            toastr.error('수정에 실패했습니다.');	
+							}
+						},
+						error : function(reject){
+							console.log(reject);
+						}
+				});
+
+
+				})
+			})
+	 	})
     </script>
     
 </div>

@@ -35,7 +35,7 @@ width:80%;	display: inline;
 				<div id="input-group">
 					<ul class="ul-style">
 						<li><label for="matCode">자재코드</label>
-						<input id="mtrCode" name="mtrCd">
+						<input id="mtrCode" name="mtrCd" readonly>
 						&nbsp;&nbsp;&nbsp;
 						<label for="matCode" style="width:80px">자재명</label>
 						<input id="mtrName" name="mtrNm">
@@ -83,6 +83,7 @@ width:80%;	display: inline;
 					
 				<div align="right">
 					<button type="button" class="btn btn-dark btn-sm" id="insertBtn">저장</button>&nbsp;
+					<button type="button" class="btn btn-dark btn-sm" id="deleteBtn">삭제</button>&nbsp;
 					<input type="reset" class="btn btn-dark btn-sm" id="reset" name="reset">
 					</div>
 				</form>
@@ -121,11 +122,13 @@ width:80%;	display: inline;
 	<script>
 		
 		const grid = new tui.Grid({
+			
+			rowHeaders: ['rowNum', 'checkbox'], // 체크박스
+			
 			el : document.getElementById('grid'),
 			bodyHeight : 550,
 			scrollX : false,
 			scrollY : true,
-			rowHeaders: ['rowNum'],
 			
 			columns : [ {
 				header : '자재 코드',
@@ -263,10 +266,10 @@ width:80%;	display: inline;
 		var selectBox2 = new tui.SelectBox('#select-box2', {
 			placeholder : '단위',
 			data : [ {
-				label : 'UNIT1',
+				label : 'BOX',
 				value : 'UNIT1' // 코드 바꾸기
 			}, {
-				label : 'UNIT2',
+				label : 'EA',
 				value : 'UNIT2'
 			}],
 			autofocus : true
@@ -275,10 +278,10 @@ width:80%;	display: inline;
 		var selectBox3 = new tui.SelectBox('#select-box3', {
 			placeholder : '단위',
 			data : [ {
-				label : 'MAT-STS1',
+				label : 'Y',
 				value : 'MAT-STS1' // 코드 바꾸기
 			}, {
-				label : 'MAT-STS2',
+				label : 'N',
 				value : 'MAT-STS2'
 			}],
 			autofocus : true
@@ -401,46 +404,104 @@ width:80%;	display: inline;
 		// ajax 자재 등록
 		
 		document.getElementById('insertBtn').addEventListener('click', function(){
-			sweetConfirm('C', function () {
-
 			let data = {
 
-				mtrCd: document.getElementById('mtrCode').value,
-				mtrNm: document.getElementById('mtrName').value,
-				mtrStd: document.getElementById('mtrStandard').value,
-				mtrUn: document.getElementById('mtrUnit').value,
-				actCd: document.getElementById('actCode').value,
-				actNm: document.getElementById('actName').value,
-				mtrSfamt: document.getElementById('mtrSafeamount').value,
-				mtrSts: document.getElementById('mtrStatus').value
+					mtrCd: document.getElementById('mtrCode').value,
+					mtrNm: document.getElementById('mtrName').value,
+					mtrStd: document.getElementById('mtrStandard').value,
+					mtrUn: document.getElementById('mtrUnit').value,
+					actCd: document.getElementById('actCode').value,
+					actNm: document.getElementById('actName').value,
+					mtrSfamt: document.getElementById('mtrSafeAmount').value,
+					mtrSts: document.getElementById('mtrStatus').value
+					
 			}
 			
+			// 자재코드가 없으면 insert. 있으면 update
+			if (data.mtrCd == '' || data.mtrCd == null) {
+				
+				sweetConfirm('C', function () {
+					// ajax 자재 정보 등록
+					$.ajax({
+						url : "ajax/insertMtr",
+						type : "post",
+						data: data,
+						success : function(data){
+							if (data > 0) {
+								// ajax success
+					            toastr.success('정상적으로 등록되었습니다.');
+					            grid.appendRow(data);
+					            location.reload();
+					            //setTimeout(() => {location.reload(), 3000});
+							} else {
+								// ajax fail
+					            toastr.error('등록에 실패했습니다.');	
+							}
+						},
+						error : function(reject){
+							console.log(reject);
+						}
+				 	});
+				});
+			} else {
+				sweetConfirm('U', function () {
+					// ajax 자재 정보 수정
+					$.ajax({
+						url : "ajax/updateMtr",
+						type : "post",
+						data: data,
+						success : function(data){
+							if (data > 0) {
+								// ajax success
+					            toastr.success('정상적으로 수정되었습니다.');
+					            grid.appendRow(data);
+					            location.reload();
+					            //setTimeout(() => {location.reload(), 3000});
+							} else {
+								// ajax fail
+					            toastr.error('수정에 실패했습니다.');	
+							}
+						},
+						error : function(reject){
+							console.log(reject);
+						}
+				 	});
+				});
+			}
 			
-			grid.appendRow(data);
-			
-			// ajax 자재 정보 등록
-			console.log("데이터 가져왔니?");
-			$.ajax({
-				url : "ajax/insertMtr",
-				type : "post",
-				data: data,
-				dataType: "json",
-				success : function(data){
-					if (data > 0) {
-						// ajax success
-			            toastr.success('정상적으로 등록되었습니다.');
-			            //setTimeout(() => {location.reload(), 3000});
-					} else {
-						// ajax fail
-			            toastr.error('등록에 실패했습니다.');	
-					}
-				},
-				error : function(reject){
-					console.log(reject);
-				}
-		 	});
-			});
 		});
+		
+		// ajax 자재 정보 삭제
+		
+		document.getElementById('deleteBtn').addEventListener('click', function(){
+			sweetConfirm('D', function () {
+				
+				let data = grid.getCheckedRows();
+				
+				$.ajax({
+					url : "ajax/delMtr",
+					type : "post",
+					data: JSON.stringify(data),
+					contentType: "application/json",
+					dataType: "json",
+					success : function(data){
+						if (data > 0) {
+							// ajax success
+				            toastr.success('정상적으로 삭제되었습니다.');
+				            grid.removeCheckedRows();
+						} else {
+							// ajax fail
+				            toastr.error('삭제에 실패했습니다.');	
+						}
+					},
+						error : function(reject){
+							console.log(reject);
+						}
+					
+				})
+				
+			})
+		})
 		
 	</script>
 

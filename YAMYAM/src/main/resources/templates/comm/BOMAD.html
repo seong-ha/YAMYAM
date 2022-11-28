@@ -14,36 +14,30 @@
 	<br> <br>
 	
 	<ul class="ul-style">
-			<li><label for="matNm">제품 코드</label><input id="matNm" name="prdCd" readonly>
-				<img id="matNm" class="Magnifying-Glass-img" alt="image"
+			<li><label for="prdCodeLabel">제품 코드</label><input id="prdCode" name="prdCd" readonly>
+				<img id="prdCodeLabel" class="Magnifying-Glass-img" alt="image"
 					data-bs-toggle="modal" data-bs-target="#exampleModal"
 					src="../images/Magnifying_Glass.png" >
-				<input type="text" name="prdNm" readonly>
-				&nbsp;&nbsp;사용여부&nbsp;<input type="checkbox">
+				<input type="text" name="prdNm" id="prdName" readonly>
 			</li>
 			
 			
 	</ul>
 	
 	<!-- Modal -->
-		<div class="modal fade" id="exampleModal" tabindex="-1"
+		<div class="modal" id="exampleModal" tabindex="-1"
 			aria-labelledby="exampleModalLabel" aria-hidden="true">
 			<div class="modal-dialog">
 				<div class="modal-content">
 					<div class="modal-header">
 			    	<h4 class="modal-title" id="exampleModalLabel">제품 코드 목록</h4>
 			    	<button type="button" class="btn-close" data-bs-dismiss="modal"
-			            aria-label="Close"></button>
+			            aria-label="Close" id="prdModalClose"></button>
 		    		</div>
 			     		<div class="modal-body">
 							<h4 align="center"><b>제품 목록</b></h4>
 			               	<br>
 			               	
-			               	제품명&nbsp;<input type="text">
-			               	<button type="button" class="btn btn-dark btn-sm"
-			                 data-bs-dismiss="modal">조회</button>
-			                <button type="button" class="btn btn-dark btn-sm">초기화</button>
-			                
 			                <br> <br>
 			               	
 			               	<div id="grid2"></div>
@@ -190,11 +184,7 @@
 			}, {
 				header : '소모량',
 				name : 'bomAmt'
-			}, {
-				header : '사용 여부',
-				name : 'bomUse'
-			}
-			],
+			}],
 			showDummyRows : true
 		});
 		
@@ -220,6 +210,19 @@
 		
 		// 모달창 리프레시(모달창에 그리드 화면 띄울때 써야함!)
 	     exampleModal.addEventListener('shown.bs.modal', () => {
+	    	// BOM 제품정보 모달 불러오기
+		 		$.ajax({
+		 			url : "ajax/selectModalBOM",
+		 			type : "get",
+		 			dataType: "json",
+		 			success : function(data){
+		 				console.log(data, 'gg');
+		 				grid2.resetData(data);
+		 			},
+		 			error : function(reject){
+		 				console.log(reject);
+		 			}
+		 		})
 	            grid2.refreshLayout(); //모달창 새로고침
 	     })
 	     
@@ -237,18 +240,20 @@
 			}
 		})
 		
-		// BOM 제품정보 모달 불러오기
-		$.ajax({
-			url : "ajax/selectModalBOM",
-			type : "get",
-			dataType: "json",
-			success : function(data){
-				console.log(data);
-				grid2.resetData(data);
-			},
-			error : function(reject){
-				console.log(reject);
-			}
+		
+		
+		// 제품목록(모달) 코드 칼럼 누르면 거기 정보가 나온다
+ 		
+		grid2.on('click', function(ev){
+			let rowData = grid2.getRow(ev.rowKey);
+			console.log(grid2.getRow(ev.rowKey));
+			
+		// 완제품 코드(모달) 클릭시 안으로 값이 들어감
+			prdCode.value = rowData.prdCd;
+			prdName.value = rowData.prdNm;
+			
+			prdModalClose.click();
+			
 		})
 	       
 	    

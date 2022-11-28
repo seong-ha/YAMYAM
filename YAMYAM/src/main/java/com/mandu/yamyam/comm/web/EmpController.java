@@ -174,11 +174,29 @@ public class EmpController {
 	// ajax 자재 - 자재 정보 등록
 	@PostMapping("ajax/insertMtr")
 	@ResponseBody
-	public int ajaxInsertMtr(@RequestBody MtrVO mtrVO) {
+	public int ajaxInsertMtr(MtrVO mtrVO) {
 		int result = commService.ajaxInsertMtr(mtrVO);
-		
 		return result;
 	}
+	
+	// ajax 자재 - 자재 정보 수정
+	
+	@PostMapping("ajax/updateMtr")
+	@ResponseBody
+	public int ajaxUpdateMtr(MtrVO mtrVO) {
+		int result = commService.ajaxUpdateMtr(mtrVO);
+		return result;
+	}
+	
+	
+	// ajax 자재 - 자재 정보 삭제
+	@PostMapping("ajax/delMtr")
+	@ResponseBody
+	public int ajaxDeleteMtr(@RequestBody List<MtrVO> mtrVO) {
+		int result = commService.ajaxDeleteMtr(mtrVO);
+		return result;
+	}
+	
 	
 	/*
 	 *  actCodeAD.html에 관한 컨트롤러
@@ -198,7 +216,26 @@ public class EmpController {
 		
 		return commService.ajaxSelectAct();
 	}
-
+	
+	// ajax 구매 거래처 등록
+	@PostMapping("ajax/insertAct")
+	@ResponseBody
+	public int ajaxInsertAct(ActVO actVO) {
+		int result = 0;
+		result = commService.ajaxInsertAct(actVO);
+		return result;
+	}
+	
+	// ajax 구매 거래처 수정
+	@PostMapping("ajax/updateAct")
+	@ResponseBody
+	public int ajaxUpdateAct(ActVO actVO) {
+		int result = 0;
+		result = commService.ajaxUpdateAct(actVO);
+		return result;
+	}
+	
+	
 	
 	/*
 	 *  pdtCodeAD.html에 관한 컨트롤러
@@ -217,6 +254,24 @@ public class EmpController {
 	public List<PrdVO> ajaxSelectPrdCode(PrdVO prdVO) {
 		
 		return commService.ajaxSelectPrd(prdVO);
+	}
+	
+	// ajax 완제품 코드 등록하기
+	@PostMapping("ajax/insertPrd")
+	@ResponseBody
+	public int ajaxInsertPrd(PrdVO prdVO) {
+		int result = 0;
+		result = commService.ajaxInsertPrd(prdVO);
+		return result;
+	}
+	
+	// ajax 완제품 코드 삭제하기
+	@PostMapping("ajax/delPrd")
+	@ResponseBody
+	public int ajaxDeletePrd(@RequestBody List<PrdVO> prdVO) {
+		int result = 0;
+		result = commService.ajaxDeletePrd(prdVO);
+		return result;
 	}
 	
 	/*
