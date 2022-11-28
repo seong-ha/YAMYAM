@@ -59,7 +59,6 @@ public class EmpServiceImpl implements EmpService{
 		int result = 0;
 		
 		for (int i = 0; i < empVO.size(); i++) {
-			System.out.println(empVO.get(i));
 			result += empMapper.deleteEmpInfo(empVO.get(i));
 		}
 		

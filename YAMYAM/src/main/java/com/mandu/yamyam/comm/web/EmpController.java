@@ -83,6 +83,13 @@ public class EmpController {
 		return result;
 	}
 	
+	// (직원관리-회원등록 아이디 중복 확인)
+	@PostMapping("/ajax/selectEmpInfo")
+	@ResponseBody
+	public EmpVO employeeDel(EmpVO empVO) {
+		return empService.selectEmpInfo(empVO.getEmpId()); 
+	}
+	
 	
 	/*
 	 *  commCodeAD.html에 관한 컨트롤러

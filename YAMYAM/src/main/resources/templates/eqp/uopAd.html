@@ -538,6 +538,30 @@
 			--------------- */
 			function uopInsertUpdateBtn() {
 				document.getElementById('uopInsertUpdate').addEventListener('click', function () {
+					
+					
+					let eqpCd = document.getElementById('eqpNm');
+					let uopType = document.getElementById('uopType');
+					let uopInfo = document.getElementById('uopInfo');
+					let uopStime = document.getElementById('uopStime');
+					
+					if (eqpCd.value == '' || eqpCd.value == null) {
+						toastr.warning('설비가 비어있습니다.');
+						return;
+					} else if (uopType.value == '' || uopType.value == null) {
+						toastr.warning('비가동 구분을 선택하세요.');
+						uopType.focus();
+						return;
+					} else if (uopInfo.value == '' || uopInfo.value == null) {
+						toastr.warning('작업 내용을 입력하세요.');
+						uopInfo.focus();
+						return;
+					} else if (uopStime.value == '' || uopStime.value == null) {
+						toastr.warning('시작버튼을 눌러주세요.');
+						uopStime.focus();
+						return;
+					}
+					
 					let form = document.getElementById('insertUpdateform');
 					let formData = new FormData(form);
 					
@@ -597,35 +621,39 @@
 			--------------- */
 			function uopDeleteBtn() {
 				document.getElementById('uopDelete').addEventListener('click', function () {
-					if (document.getElementById('uopCd').value != '' || document.getElementById('uopCd').value != null) {
-						let uopCd = document.getElementById('uopCd').value;
-						
-						sweetConfirm('D', function () {
-							$.ajax({
-								url:'/deleteUop',
-								type : "post",
-					            data: {'uopCd': uopCd},
-					            beforeSend : function(xhr){
-					           		xhr.setRequestHeader(header, token);
-					           	},
-								success: function (data) {
-									if (data > 0) {
-										toastr.success('정상적으로에 삭제되었습니다.');
-									} else {
-										toastr.error('삭제에 실패했습니다.');
-									}
-									
-									document.getElementById('reset').click();
-									getEqpGridData();	// resetData
-									getUopGridData();
-								},
-								error: function (reject) {
-									console.log(reject);
-								}
-							});
-							  
-						});	
+					let uopCd = document.getElementById('uopCd').value;
+					console.log(uopCd);
+					// 유효성 체크 비가동 선택 유무 체크
+					if (uopCd == '' || uopCd == null) {
+						toastr.warning('비가동 이력을 선택하세요.');
+						return;
 					}
+					
+					sweetConfirm('D', function () {
+						$.ajax({
+							url:'/deleteUop',
+							type : "post",
+				            data: {'uopCd': uopCd},
+				            beforeSend : function(xhr){
+				           		xhr.setRequestHeader(header, token);
+				           	},
+							success: function (data) {
+								if (data > 0) {
+									toastr.success('정상적으로에 삭제되었습니다.');
+								} else {
+									toastr.error('삭제에 실패했습니다.');
+								}
+								
+								document.getElementById('reset').click();
+								getEqpGridData();	// resetData
+								getUopGridData();
+							},
+							error: function (reject) {
+								console.log(reject);
+							}
+						});
+						  
+					});	
 				})
 			}
 		
