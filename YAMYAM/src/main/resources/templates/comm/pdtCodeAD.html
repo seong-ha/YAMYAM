@@ -133,7 +133,10 @@
 	</div>
 
 	<script>
-	
+		/* token */
+		var token = $("meta[name='_csrf']").attr("content");
+		var header = $("meta[name='_csrf_header']").attr("content");
+
 		const grid = new tui.Grid({
 			el : document.getElementById('grid'),
 			scrollX : true,
@@ -157,7 +160,6 @@
 				header : '단위',
 				name : 'prdUn' 
 			} ],
-			showDummyRows : true
 		});
 		
 		// toast - select box
@@ -269,9 +271,6 @@
 			autofocus : true
 		});	
 		
-		
-		
-		
 		//셀렉트 박스 초기화
 		 document.getElementsByName('reset')[0].addEventListener('click', function(){
 			    selectBox.deselect();
@@ -308,9 +307,6 @@
 							prdStd: document.getElementById('prdStandardModal').value,
 							prdUn: document.getElementById('prdUnitModal').value
 						}
-					console.log(data);
-						
-						grid.appendRow(data);
 					
 					// ajax 구매 거래처 등록
 					console.log("데이터 가져왔니?");
@@ -319,11 +315,14 @@
 						type : "post",
 						data: data,
 						dataType: "json",
+						beforeSend : function (xhr) {
+						    xhr.setRequestHeader(header, token);
+						},
 						success : function(data){
 							if (data > 0) {
 								// ajax success
 					            toastr.success('정상적으로 등록되었습니다.');
-					            //setTimeout(() => {location.reload(), 3000});
+					            selectBoxPrd();
 							} else {
 								// ajax fail
 					            toastr.error('등록에 실패했습니다.');	
@@ -349,6 +348,9 @@
 						data: JSON.stringify(data),
 						contentType: "application/json",
 						dataType: "json",
+						beforeSend : function (xhr) {
+						    xhr.setRequestHeader(header, token);
+						},
 						success : function(data){
 							if (data > 0) {
 								// ajax success

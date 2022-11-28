@@ -120,6 +120,9 @@ width:80%;	display: inline;
         </div>
      </div>
 	<script>
+	/* token */
+	var token = $("meta[name='_csrf']").attr("content");
+	var header = $("meta[name='_csrf_header']").attr("content");
 		
 		const grid = new tui.Grid({
 			
@@ -368,6 +371,9 @@ width:80%;	display: inline;
 				type : "post",
 				data : {'mtrCd' : rowData}, 
 				dataType: "json",
+				beforeSend : function (xhr) {
+				    xhr.setRequestHeader(header, token);
+				},
 				success : function(data){
 					mtrCode.value = data.mtrCd;
 					mtrName.value = data.mtrNm; 
@@ -426,6 +432,9 @@ width:80%;	display: inline;
 						url : "ajax/insertMtr",
 						type : "post",
 						data: data,
+						beforeSend : function (xhr) {
+						    xhr.setRequestHeader(header, token);
+						},
 						success : function(data){
 							if (data > 0) {
 								// ajax success
@@ -450,6 +459,9 @@ width:80%;	display: inline;
 						url : "ajax/updateMtr",
 						type : "post",
 						data: data,
+						beforeSend : function (xhr) {
+						    xhr.setRequestHeader(header, token);
+						},
 						success : function(data){
 							if (data > 0) {
 								// ajax success
@@ -484,6 +496,9 @@ width:80%;	display: inline;
 					data: JSON.stringify(data),
 					contentType: "application/json",
 					dataType: "json",
+					beforeSend : function (xhr) {
+					    xhr.setRequestHeader(header, token);
+					},
 					success : function(data){
 						if (data > 0) {
 							// ajax success
