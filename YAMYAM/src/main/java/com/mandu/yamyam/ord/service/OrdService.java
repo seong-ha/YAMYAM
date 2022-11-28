@@ -27,6 +27,7 @@ public interface OrdService {
 	public List<OrdVO> ordList();
 	
 	
+	
 	/*-----------------
 	//   주문 관리 Tab
 	-------------------*/
@@ -47,6 +48,7 @@ public interface OrdService {
 	public int deleteOrd(List<OrdVO> vo);
 	
 	
+	
 	/*-----------------
 	// 완제품 출고 조회 Tab
 	-------------------*/
@@ -56,6 +58,7 @@ public interface OrdService {
 	
 	// 출고 내역 리스트 조건조회
 	public List<OrdVO> getDetailOutList(OrdVO vo);
+	
 	
 	
 	/*-----------------
@@ -75,34 +78,53 @@ public interface OrdService {
 	public int deleteOutList(List<OrdVO> vo);
 	
 	
+	
 	/*-----------------
 	// 완제품 반품 관리 Tab
 	-------------------*/
+	
 	// 완제품 반품 관리 리스트 조회
 	public List<OrdVO> getReList(OrdVO vo);
 
 	// 완제품 반품 관리 리스트 등록
-	public int insertReList(List<OrdVO> vo);
+	public int insertReList(OrdVO vo);
+	
+	// 완제품 반품 관리 리스트 수정
+	public int updateReList(OrdVO vo);
+	
 	
 	
 	/*-----------------
 	// 완제품 재고 조회 Tab
 	-------------------*/
+	
 	// 완제품 재고 리스트 조회
 	public List<OrdVO> getLotList(OrdVO vo);
+	
+	
 	
 	/*-----------------
 	// 완제품 재고 관리 Tab
 	-------------------*/
+	
 	// 완제품 유통기한 현황 리스트 조회
 	public List<OrdVO> getEdateList(OrdVO vo);
 	
-	// 완제품 반품 관리 리스트 등록
-	public int insertEdateList(List<OrdVO> vo);
+	// 완제품 폐기 등록 현황 리스트 조회
+	public List<OrdVO> getAgAmtList(OrdVO vo);
+	
+	// 완제품 폐기 리스트 등록
+	public int insertEdateList(OrdVO vo);
+	
+	// 완제품 폐기 리스트 수정
+	public int updateEdateList(OrdVO vo);
+	
+	
 	
 	/*-----------------
 	// 생산 요청 관리 Tab
 	-------------------*/
+	
 	// 생산 요청 관리 리스트 조회
 	public List<OrdVO> getPodList();
 	
@@ -117,4 +139,13 @@ public interface OrdService {
 	
 	// 생산 요청 관리 삭제
 	public int deletePodOrd(List<OrdVO> vo);
+	
+	
+	/*-------------------
+	// 제품 안전 재고 관리 Tab
+	---------------------*/
+	
+	// 안전 재고 관리 리스트 조회
+	public List<OrdVO> getSfamtList(OrdVO vo);
+	
 }

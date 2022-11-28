@@ -87,6 +87,9 @@ public interface OrdMapper {
 	// 완제품 반품 관리 리스트 등록
 	public int insertReList(OrdVO vo);
 	
+	// 완제품 반품 관리 리스트 수정
+	public int updateReList(OrdVO vo);
+	
 	/*-----------------
 	// 완제품 재고 조회 Tab
 	-------------------*/
@@ -99,8 +102,14 @@ public interface OrdMapper {
 	// 완제품 유통기한 현황 리스트 조회
 	public List<OrdVO> getEdateList(OrdVO vo);
 	
-	// 완제품 반품 관리 리스트 등록
+	// 완제품 폐기 등록 현황 리스트 조회
+	public List<OrdVO> getAgAmtList(OrdVO vo);
+	
+	// 완제품 폐기 리스트 등록
 	public int insertEdateList(OrdVO vo);
+	
+	// 완제품 폐기 리스트 수정
+	public int updateEdateList(OrdVO vo);
 	
 	
 	/*-----------------
@@ -121,6 +130,15 @@ public interface OrdMapper {
 	
 	// 생산 요청 관리 삭제
 	public int deletePodOrd(OrdVO vo);
+	
+	
+	
+	/*-------------------
+	// 제품 안전 재고 관리 Tab
+	---------------------*/
+	
+	// 안전 재고 관리 리스트 조회
+	public List<OrdVO> getSfamtList(OrdVO vo);
 	
 	
 }

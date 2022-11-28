@@ -174,13 +174,17 @@ public class OrdController {
 		return service.getReList(vo);
 	}
 	
-	// 완제품 반품 관리 리스트 등록
+	// 완제품 반품 관리 리스트 등록 및 수정
 	@PostMapping("insertReList")
 	@ResponseBody
 	public int insertReList(@RequestBody List<OrdVO> vo) {
-	return service.insertReList(vo);
+		int result = 0;
+		for(int i=0; i<vo.size(); i++) {
+			result += service.insertReList(vo.get(i));
+			result += service.updateReList(vo.get(i));
+		}
+		return result;
 	}
-	
 	
 	/*-----------------
 	// 완제품 재고 조회 Tab
@@ -192,6 +196,7 @@ public class OrdController {
 		return service.getLotList(vo);
 	}
 	
+	
 	/*-----------------
 	// 완제품 재고 관리 Tab
 	-------------------*/
@@ -202,11 +207,21 @@ public class OrdController {
 		return service.getEdateList(vo);
 	}
 	
+	// 완제품 폐기 등록 리스트 조회
+	@GetMapping("getAgAmtList")
+	@ResponseBody
+	public List<OrdVO> getAgAmtList(OrdVO vo) {
+		return service.getAgAmtList(vo);
+	}
+	
 	@PostMapping("insertEdateList")
 	@ResponseBody
-	// 완제품 반품 관리 리스트 등록
-	public int insertEdateList(@RequestBody List<OrdVO> vo) {
-		return service.insertEdateList(vo);
+	// 완제품 폐기 리스트 등록 및 수정
+	public int insertEdateList(OrdVO vo) {
+		int result = 0;
+			service.insertEdateList(vo);
+			service.updateEdateList(vo);
+		return result;
 	}
 	
 	/*-----------------
@@ -250,6 +265,18 @@ public class OrdController {
 		int result = service.deletePodOrd(vo);
 		return result;
 	}
+	
+	/*-------------------
+	// 제품 안전 재고 관리 Tab
+	---------------------*/
+	
+	// 안전 재고 관리 리스트 조회
+	@GetMapping("getSfamtList")
+	@ResponseBody
+	public List<OrdVO> getSfamtList(OrdVO vo) {
+		return service.getSfamtList(vo);
+	}
+	
 	
 	/*-----------------
 	// 영업 관리 layout
