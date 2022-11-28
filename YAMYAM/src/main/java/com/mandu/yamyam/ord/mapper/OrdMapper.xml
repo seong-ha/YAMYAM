@@ -316,13 +316,26 @@
 	
 	<!-- 진행중인 주문서 출고등록 -->
 	<insert id="insertOutList" parameterType="com.mandu.yamyam.ord.service.OrdVO">
+		<selectKey keyProperty="outNo" resultType="String" order="BEFORE">
+			SELECT mk_bout_no from dual
+		</selectKey>
 		INSERT INTO B_OUT
 		(
-		
+			OUT_NO,
+			BDATES,
+			BAMT,
+			EDATE,
+			OUT_ETC
+			PRD_LOT
 		)
 		VALUES
 		(
-		
+			#{outNo},
+			#{bdates},
+			#{bamt},
+			#{edate},
+			#{outEtc},
+			#{prdLot}
 		)
 	</insert>
 	
@@ -449,7 +462,7 @@
 			ON P.PRD_CD = I.PRD_CD
 		 WHERE I.SAMT > 0
 		<if test="prdCd != null and !prdCd.equals('')">
-         WHERE P.PRD_CD = #{prdCd}
+         AND P.PRD_CD = #{prdCd}
         </if>
 	  ORDER BY I.EDATE
 	</select>
@@ -586,11 +599,11 @@
 		VALUES 
 		(
 			#{rqtNo}
-			,#{rqtDate}
+			,CURRENT_DATE
 			,#{odCd}
 			,#{prdCd}
 			,#{rqtAmt}
-			,'미계획'
+			,'RQT-STS1'
 		)
 	</insert>
 	
@@ -642,6 +655,11 @@
       
       	  JOIN C_PRD C
         	ON B.PRD_CD = C.PRD_CD
+        	
+      <if test="prdCd != null and !prdCd.equals('')">
+      	 WHERE C.PRD_CD = #{prdCd}
+      </if>
+      ORDER BY B.SAMT ASC
 	</select>
 	
 </mapper>

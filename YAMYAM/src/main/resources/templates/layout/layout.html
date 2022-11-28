@@ -144,10 +144,14 @@
                            <ul class="mylist">
                               <li><a href="/odAd">주문 관리</a></li>
                               <li><a href="/prdOutList">완제품 출고 조회</a></li>
-                              <li><a href="/prdOutAd">완제품 출고 관리</a></li>
+                              <th:block sec:authorize="hasAnyAuthority('JOB-GRD1', 'JOB-GRD2')">
+                              	<li><a href="/prdOutAd">완제품 출고 관리</a></li>
+                              </th:block>
                               <li><a href="/prdReAd">완제품 반품 관리</a></li>
                               <li><a href="/prdList">완제품 재고 조회</a></li>
-                              <li><a href="/prdAd">완제품 재고 관리</a></li>
+                              <th:block sec:authorize="hasAnyAuthority('JOB-GRD1', 'JOB-GRD2')">
+                              	<li><a href="/prdAd">완제품 재고 관리</a></li>
+                              </th:block>
                               <li><a href="/podOrderAd">생산 요청 관리</a></li>
                               <li><a href="/prdSfamtAd">제품 안전 재고 관리</a></li>
                            </ul>

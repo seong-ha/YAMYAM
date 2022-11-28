@@ -68,13 +68,19 @@ text-align: center;
 		<h3>폐기 등록 현황 리스트</h3>
 
 	<div id="od-btn">
+	<th:block sec:authorize="hasAnyAuthority('JOB-GRD1')">
 	<button class="btn btn-dark btn-sm" id="deleteBtn">행삭제</button>
 	<button class="btn btn-dark btn-sm" id="saveBtn">저장</button>
+	</th:block>
 	</div>
 	<div id="AbrogateGrid"></div>
 		</div>
 
 <script>
+
+/* token */
+var token = $("meta[name='_csrf']").attr("content");
+var header = $("meta[name='_csrf_header']").attr("content");
 
 
 	/*------------
@@ -261,6 +267,9 @@ text-align: center;
 								contentType: 'application/json',
 								data: JSON.stringify(List),
 								dataType : 'json',
+								beforeSend : function (xhr) {
+								    xhr.setRequestHeader(header, token);
+								},
 								 success : function(result) {
 					                 if(result > 0){
 					                	 Swal.fire(

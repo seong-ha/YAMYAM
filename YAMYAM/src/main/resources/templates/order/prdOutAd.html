@@ -93,6 +93,10 @@ text-align: center;
 
 <script>
 
+/* token */
+var token = $("meta[name='_csrf']").attr("content");
+var header = $("meta[name='_csrf_header']").attr("content");
+
 
 	/*------------
 	// function
@@ -102,7 +106,7 @@ text-align: center;
 	searchBtnHandler();		// 조회 버튼 핸들러
 	cancelBtnHandler();		// 데이트피커 값 초기화 버튼
 	deleteBtnHandler();		// 삭제 버튼 이벤트 핸들러
-	modalSaveBtnHandler();	// 모달 등록 버튼 이벤트 핸들러
+	SaveBtnHandler();		// 저장 버튼 핸들러
 	
 	let lotSModalGrid = lotSGridInit(); 		// 완제품LOT 재고 현황 모달
 	let grid = orderGridInit();					// 진행중인 주문서 Grid
@@ -309,28 +313,6 @@ text-align: center;
     
 	
 	
-    
-    
-	/*------------
-	// 해당하는 header의 모달창 띄우기
-	----------------*/
-	insertOutGrid.on('click',function(ev){
-   		if(ev.columnName =='prdLot'){
-   		 $.ajax({
-             url : '/lotSListModal',
-             dataType : "json",
-             success : function(data) {
-            	 lotSModalGrid.resetData(data);
-   				$('#lotSModal').modal('show');
-   				lotSModalGrid.refreshLayout();
-             },
-             error : function(reject) {
-                console.log(reject);
-             }
-          })
-   		}
-   	});
-	
 	
     /*------------
 	// LOT 모달 등록 버튼 핸들러
@@ -368,6 +350,63 @@ text-align: center;
 		});
     	
     }
+	
+	
+	
+	 /*------------
+	// 저장 버튼 클릭
+	----------------*/
+	function SaveBtnHandler(){
+		$('#saveBtn').on('click',function(){
+			let rowData = insertOutGrid.getCheckedRows();
+			let list = [];
+			let prdLot = '';
+			let reCd = '';
+			let actCd = '';
+			let reAmt = '';
+			let odAmt = '';
+			for (let i=0; i<rowData.length; i++) {
+				prdLot = rowData[i].prdLot;
+				reCd = rowData[i].reCd;
+				actCd = rowData[i].actCd;
+				reAmt = rowData[i].reAmt;
+				odAmt = rowData[i].odAmt;
+				list.push({reCd,prdLot,actCd,reAmt});
+				console.log(rowData[i].prdLot);
+			}
+			
+			if (reCd == null){
+				sweetConfirm('C', function(){
+							$.ajax({
+								url : '/insertReList',
+								type : 'post',
+								contentType: 'application/json',
+								data: JSON.stringify(list),
+								dataType : 'json',
+								beforeSend : function (xhr) {
+								    xhr.setRequestHeader(header, token);
+								},
+								 success : function(result) {
+					                 if(result > 0){
+					                	 Swal.fire(
+					       			          '등록이 완료되었습니다.'	);
+					                	 getOrdList();
+					                 }else {
+					                	 Swal.fire(
+					                			 '등록이 실패하였습니다.');
+					                 }
+					              },
+					              error : function(reject) {
+					                 console.log(reject);
+					              }
+							})
+				})
+			}	
+		})	
+   }
+	 
+	 
+	 
     
     
     /*------------
