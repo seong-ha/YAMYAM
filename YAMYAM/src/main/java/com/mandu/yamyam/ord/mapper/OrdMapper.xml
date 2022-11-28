@@ -54,6 +54,32 @@
 		 -->
 	</select>
 	
+		<!-- 완제품LOT 출고 현황 모달 -->
+	<select id="lotOutList" resultType="com.mandu.yamyam.common.LowerKeyMap">
+		SELECT OD.OD_CD, 
+			   I.PRD_LOT, 
+			   P.PRD_NM, 
+			   A.ACT_CD,
+			   A.ACT_NM,
+			   OD.OD_AMT,
+			   OU.BAMT, 
+			   OU.BDATES
+			   
+		  FROM B_OD OD
+		  
+		  JOIN B_OUT OU
+			ON OD.OD_CD = OU.OD_CD
+			
+		  JOIN C_PRD P
+			ON OD.PRD_CD = P.PRD_CD
+			
+		  JOIN C_ACT A
+		  	ON OD.ACT_CD = A.ACT_CD
+			
+		  JOIN B_IN I
+			ON I.PRD_LOT = OU.PRD_LOT
+	</select>
+	
 		<!-- 주문서 관리 모달 -->
 	<select id="ordList" resultType="com.mandu.yamyam.common.LowerKeyMap">
 		SELECT O.OD_CD, 
@@ -143,7 +169,7 @@
 		 )
 		VALUES 
 		(
-		 sysdate,
+		 CURRENT_DATE,
 		 #{odCd},
 		 #{prdCd},
 		 #{odAmt},
@@ -222,14 +248,16 @@
 		JOIN B_IN I
 		  ON O.PRD_LOT = I.PRD_LOT
 		  
-		JOIN  C_ACT A
+		JOIN C_ACT A
 		  ON A.ACT_CD = O.ACT_CD
 		  
 		JOIN C_PRD P
 		  ON P.PRD_CD = I.PRD_CD
+		  
+		WHERE OD.OD_STS = '완료'
         
         <if test='startDate != null and endDate != null'>
-        	 WHERE TRUNC(I.POD_DATE) BETWEEN #{startDate} AND #{endDate}
+        	 AND TRUNC(I.POD_DATE) BETWEEN #{startDate} AND #{endDate}
         </if>
         <if test="prdCd != null and !prdCd.equals('')">
         	  AND P.PRD_CD = #{prdCd}
@@ -289,9 +317,143 @@
 	<!-- 진행중인 주문서 출고등록 -->
 	<insert id="insertOutList" parameterType="com.mandu.yamyam.ord.service.OrdVO">
 		INSERT INTO B_OUT
+		(
+		
+		)
+		VALUES
+		(
+		
+		)
 	</insert>
 	
 	
+	<!--
+		완제품 반품 관리 Tab
+							 -->
+	<!-- 완제품 반품 관리 리스트 조회 -->
+	<select id="getReList" resultType="com.mandu.yamyam.common.LowerKeyMap">
+		SELECT TO_CHAR(R.RE_DATE,'yyyy-MM-dd') AS RE_DATE, 
+			   R.RE_CD, 
+			   I.PRD_LOT, 
+			   (SELECT PRD_NM
+				  FROM C_PRD
+				 WHERE PRD_CD = I.PRD_CD) AS PRD_NM, 
+			   A.ACT_NM,
+			   A.ACT_CD,
+			   OD.OD_AMT,
+			   R.RE_AMT, 
+			   ABS(OD.OD_AMT - R.RE_AMT) AS BAMT
+			   
+		  FROM B_OUT OU
+		  
+		  JOIN B_OD OD
+		    ON OD.OD_CD = OU.OD_CD
+		    
+		  JOIN B_RT R
+			ON R.ACT_CD = OU.ACT_CD
+			
+		  JOIN B_IN I
+			ON R.PRD_LOT = I.PRD_LOT
+			
+		  JOIN C_ACT A
+			ON R.ACT_CD = A.ACT_CD
+		<if test='startDate != null and endDate != null'>
+         WHERE TRUNC(R.RE_DATE) BETWEEN #{startDate} AND #{endDate}
+        </if>
+	</select>
+	
+	<!-- 완제품 반품 관리 리스트 등록 -->
+	<insert id="insertReList" parameterType="com.mandu.yamyam.ord.service.OrdVO">
+		<selectKey keyProperty="reCd" resultType="String" order="BEFORE">
+		SELECT mk_bre_cd from dual
+		</selectKey>
+		INSERT INTO B_RT
+		(
+			RE_DATE,
+			RE_CD,
+			PRD_LOT,
+			ACT_CD,
+			RE_AMT
+		)
+		VALUES
+		(
+			CURRENT_DATE,
+			#{reCd},
+			#{prdLot},
+			#{actCd},
+			#{reAmt}
+		)
+	</insert>
+	
+	<!--
+		완제품 재고 조회 Tab
+							 -->
+	<!-- 완제품 재고 리스트 조회 -->
+	<select id="getLotList" resultType="com.mandu.yamyam.common.LowerKeyMap">
+		SELECT TO_CHAR(POD.PODD_DATES,'yyyy-MM-dd') AS POD_DATE, 
+		I.PRD_LOT, 
+		P.PRD_CD, 
+		P.PRD_NM,ABS(I.BIN_AMT - OU.BAMT) AS SAMT
+		
+		FROM B_IN I
+		
+		JOIN P_ODD POD
+		  ON POD.PRD_LOT = I.PRD_LOT
+		  
+		JOIN C_PRD P
+		  ON P.PRD_CD = I.PRD_CD
+		  
+		JOIN B_OUT OU
+		  ON I.PRD_LOT = OU.PRD_LOT
+		  
+        <if test="prdCd != null and !prdCd.equals('')">
+        WHERE P.PRD_CD = #{prdCd}
+        </if>
+        <if test="prdLot != null and !prdLot.equals('')">
+        AND I.PRD_LOT = #{prdLot}
+        </if>
+	</select>
+	
+	<!--
+		완제품 재고 관리 Tab
+							 -->
+	<!-- 완제품 재고 관리 유통기한 현황 리스트 조회 -->			
+	<select id="getEdateList" resultType="com.mandu.yamyam.common.LowerKeyMap">
+		SELECT TO_CHAR(POD.PODD_DATES,'yyyy-MM-dd') AS POD_DATE, 
+			   I.PRD_LOT, 
+			   P.PRD_CD, P.PRD_NM,
+			   I.EDATE
+			   
+		  FROM B_IN I
+		  
+		  JOIN P_ODD POD
+			ON POD.PRD_LOT = I.PRD_LOT
+			
+		  JOIN C_PRD P
+			ON P.PRD_CD = I.PRD_CD
+	  ORDER BY I.EDATE
+	</select>
+				 
+	<!-- 완제품 재고 관리 폐기 현황 리스트 등록 -->
+	<insert id="insertEdateList" parameterType="com.mandu.yamyam.ord.service.OrdVO">
+		INSERT INTO 
+		(
+			POD_DATE,
+			PRD_LOT,
+			PRD_CD,
+			AG_AMT,
+			EDATE
+		)
+		VALUES
+		(
+			#{podDate}
+			,#{prdLot}
+			,#{prdCd}
+			,#{agAmt}
+			,#{edate}
+		)
+	</insert>
+					 
 	<!--
 		생산 요청 관리 Tab
 							 -->
@@ -311,13 +473,21 @@
 		      	TO_CHAR(O.DE_DATE,'yyyy-MM-dd') AS DE_DATE,
 		      	D.RQT_STS
 		      	
-		FROM B_POD D
+		   FROM B_POD D
 		
-		JOIN B_OD O
-		  ON D.OD_CD = O.OD_CD
+		   JOIN B_OD O
+		  	 ON D.OD_CD = O.OD_CD
 		  
-		JOIN C_PRD P
-		  ON P.PRD_CD = D.PRD_CD
+		   JOIN C_PRD P
+		 	 ON P.PRD_CD = D.PRD_CD
+		  
+		<if test="prdCd != null and !prdCd.equals('')">
+          WHERE P.PRD_CD = #{prdCd}
+        </if>
+        
+		<if test="prdLot != null and !prdLot.equals('')">
+          AND I.PRD_LOT = #{prdLot}
+        </if>
 	</select>
 	
 	<!-- 생산 요청 관리 조건조회 -->
@@ -374,10 +544,22 @@
 		)
 	</insert>
 	
+	<!-- 생산 요청 관리 수정 -->
+	<update id="updatePodOrd" parameterType="com.mandu.yamyam.ord.service.OrdVO">
+		UPDATE B_POD
+		<if test="!rqtSts.equals('계획완료')">
+		<set>
+		RQT_DATE = #{rqtDate},
+		RQT_AMT = #{rqtAmt}
+		</set>
+		WHERE RQT_NO = #{rqtNo}
+		</if>
+	</update>
+	
 	<!-- 생산 요청 관리 삭제 -->
 	<delete id="deletePodOrd" parameterType="com.mandu.yamyam.ord.service.OrdVO">
+        	DELETE FROM B_POD 
 	    <if test="!rqtSts.equals('미계획')">
-        	DELETE FROM B_POD
         	WHERE RQT_NO = #{rqtNo}
         </if>
 	</delete>

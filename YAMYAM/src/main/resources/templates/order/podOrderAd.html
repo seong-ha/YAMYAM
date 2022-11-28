@@ -104,7 +104,7 @@ text-align: center;
 	searchBtnHandler();		// 조회 버튼 핸들러
 	cancelBtnHandler();		// input 값 초기화 버튼
 	deleteBtnHandler();		// 삭제 버튼 핸들러
-	//SaveBtnHandler();		// 저장 버튼 핸들러
+	SaveBtnHandler();		// 저장 버튼 핸들러
 	exportBtnHandler(); 	// 엑셀출력 버튼 핸들러
 	
 	let podListGrid = podListGridInit();	// 생산요청 리스트
@@ -149,7 +149,7 @@ text-align: center;
 				   },
 				   success : function(data) {
 					   podListGrid.resetData(data);
-					   console.log(getOdSts);
+					   console.log(getSts);
 				   },
 				   error : function(reject) {
 					   console.log(reject);
@@ -165,8 +165,33 @@ text-align: center;
 	----------------*/
 	function cancelBtnHandler(){
 		$('#cancelBtn').on('click',function(){
+			let radio_name = [];
+		    let radio = $("input[type=radio]");
+		    $.each(radio, function (key, value) { // input radio의 name 값 가져오기
+		        radio_name.push($(value).attr('name'));
+		    });
+		    radio_name = $.unique(radio_name.sort()).sort(); //중복요소 이름을 제거
+		    for (let i = 0; i < radio_name.length; i++) {
+		        $('input[name="' + radio_name[i] + '"]').removeAttr('checked');
+		        //체크되어있는 항목 모두 해제
+		        $('input[name="' + radio_name[i] + '"]')[0].checked = true;
+		        //name에서 첫번쨰 요소만 선택
+		    }
 			$("#startpicker-input").val(today);
 			$("#endpicker-input").val(today);
+			
+			$.ajax({
+				   url:'/PodList',
+				   contentType: 'application/json',
+				   dataType: "json",
+				   method: "GET",
+				   success : function(data) {
+					   podListGrid.resetData(data);
+				   },
+				   error : function(reject) {
+					   console.log(reject);
+				   }
+			   })
 		});	
 	}
    
@@ -198,34 +223,39 @@ text-align: center;
 				      }
 		      },
 		      {
+		        header: '요청 코드',
+		        align : 'center',
+		        name  : 'rqtNo'
+		      },
+		      {
 		        header: '주문 코드',
 		        align : 'center',
-		        name: 'odCd'
+		        name  : 'odCd'
 		      },
 		      {
 		        header: '제품 코드',
 		        align : 'center',
-		        name: 'prdCd'
+		        name  : 'prdCd'
 		      },
 		      {
 		        header: '제품명',
 		        align : 'center',
-		        name: 'prdNm'
+		        name  : 'prdNm'
 		      },
 		      {
 		        header: '주문량',
 		        align : 'center',
-		        name: 'odAmt'
+		        name  : 'odAmt'
 		      },
 		      {
 		        header: '재고량',
 		        align : 'center',
-		        name: 'samt'
+		        name  : 'samt'
 		      },
 		      {
 		        header: '요청수량',
 		        align : 'center',
-		        name: 'rqtAmt',
+		        name  : 'rqtAmt',
 		        editor: 'text',
 				// 필수 입력 값
 				validation: {
@@ -236,12 +266,12 @@ text-align: center;
 		      {
 		        header: '납기 일자',
 		        align : 'center',
-		        name: 'deDate',
+		        name  : 'deDate',
 		      },
 		      {
 		        header: '진행 상황',
 		        align : 'center',
-		        name: 'rqtSts'
+		        name  : 'rqtSts'
 		      },
 		    ]
 		  });
@@ -292,10 +322,84 @@ text-align: center;
 	// 주문서 추가 버튼
 	----------------*/
    $('#insertBtn').on('click',function(){
-      let rowData = [{rqtDate: "", odCd: "", prdCd: "", prdNm: "", odAmt: "", sAmt : "" , rqtAmt: "", deDate: "", sts:""}]
+      let rowData = [{rqtDate: "", rqtNo: "", odCd: "", prdCd: "", prdNm: "", odAmt: "", samt : "" , rqtAmt: "", deDate: "", rqtSts:""}]
       podListGrid.appendRow(rowData); 
 	});
 	
+	
+   /*------------
+	// 저장 버튼 클릭
+	----------------*/
+	function SaveBtnHandler(){
+		$('#saveBtn').on('click',function(){
+			let rowData = podListGrid.getCheckedRows();
+			let podList = [];
+			let rqtNo = '';
+		
+			for (let i=0; i<rowData.length; i++) {
+				rqtNo = rowData[i].rqtNo;
+				let rqtDate = rowData[i].rqtDate;
+				let rqtAmt = rowData[i].rqtAmt;
+				let prdCd = rowData[i].prdCd;
+				let odCd = rowData[i].odCd;
+				let rqtSts = rowData[i].rqtSts;
+				podList.push({rqtNo,rqtDate,rqtAmt,prdCd,odCd,rqtSts});
+				console.log(rowData[i].odCd);
+			}
+			
+			if (rqtNo == null){
+				sweetConfirm('C', function(){
+							$.ajax({
+								url : '/insertPodList',
+								type : 'post',
+								contentType: 'application/json',
+								data: JSON.stringify(podList),
+								dataType : 'json',
+								 success : function(result) {
+					                 if(result > 0){
+					                	 Swal.fire(
+					       			          '등록이 완료되었습니다.'	);
+					                	 getPodList();
+					                 }else {
+					                	 Swal.fire(
+					                			 '등록이 실패하였습니다.');
+					                 }
+					              },
+					              error : function(reject) {
+					                 console.log(reject);
+					              }
+							})
+				})
+			}else if(rqtNo != null) {
+				sweetConfirm('U', function(){
+					$.ajax({
+						url : '/updatePodList',
+						type : 'post',
+						contentType: 'application/json',
+						data: JSON.stringify(podList),
+						dataType : 'json',
+						 success : function(result) {
+			                 if(result > 0){
+			                	 Swal.fire(
+			       			          '수정이 완료되었습니다.'	);
+			                	 getPodList();
+			                 }else {
+			                	 Swal.fire(
+			                			 '수정이 실패하였습니다.');
+			                 }
+			              },
+			              error : function(reject) {
+			                 console.log(reject);
+			              }
+					})
+				})
+			}
+			
+		})
+		
+  }
+   
+   
 	
    /*------------
 	// 삭제 버튼 클릭(그리드행 삭제)
@@ -303,27 +407,35 @@ text-align: center;
 	function deleteBtnHandler(){
 		// grid 선택 행 삭제
 		$('#deleteBtn').on('click',function(){
-			// sweetalert2
-			Swal.fire({
-			      title: '정말로 삭제 하시겠습니까?',
-			      //text: "다시 되돌릴 수 없습니다. 신중하세요.",
-			      icon: 'warning',
-			      showCancelButton: true,
-			      confirmButtonColor: '#3085d6',
-			      cancelButtonColor: '#d33',
-			      confirmButtonText: '승인',
-			      cancelButtonText: '취소',
-			      //reverseButtons: true, // 버튼 순서 거꾸로
-			      
-			    }).then((result) => {
-			      if (result.isConfirmed) {
-			        Swal.fire(
-			          '삭제가 완료되었습니다.'		          
-			        )
-			        podListGrid.removeCheckedRows();
-			      }
-			    })
-			
+			let rowData = podListGrid.getCheckedRows();
+			let list = [];
+			for (let i=0; i<rowData.length; i++) {
+				let rqtNo = rowData[i].rqtNo;
+				list.push({rqtNo})
+			}
+			sweetConfirm('D', function(){
+		    	  $.ajax({
+		              url : '/deletePodList',
+		              type: 'delete',
+		              contentType: 'application/json',
+						data: JSON.stringify(list),
+		              success : function(result) {
+		                 if(result > 0){
+		                	 Swal.fire(
+		       			          '삭제가 완료되었습니다.'	);
+		                	 getPodList();
+		                 }else {
+		                	 Swal.fire(
+		                			 '삭제에 실패하였습니다.');
+		                 }
+		              },
+		              error : function(reject) {
+		                 console.log(reject);
+		              }
+		           })
+		        podListGrid.removeCheckedRows();   
+	})
+
 		});	
 	}
    
@@ -397,73 +509,6 @@ text-align: center;
 	    $('#orderModal').modal("hide");
    })
    
-   
-    /*------------
-	// 저장 버튼 클릭
-	----------------*/
-	function SaveBtnHandler(){
-		$('#saveBtn').on('click',function(){
-			let rowData = podListGrid.getCheckedRows();
-			let ordList = [];
-			for (let i=0; i<rowData.length; i++) {
-				let prdCd = rowData[i].prdCd;
-				let odAmt = rowData[i].odAmt;
-				let actCd = rowData[i].actCd;
-				let deDate = rowData[i].deDate;
-				let odCd = rowData[i].odCd;
-				ordList.push({prdCd,odAmt,actCd,deDate,odCd});
-				console.log(rowData[i].odCd);
-			}
-			if (rowData[i].odCd == null){
-				sweetConfirm('C', function(){
-							$.ajax({
-								url : '/insertOrd',
-								type : 'post',
-								contentType: 'application/json',
-								data: JSON.stringify(ordList),
-								dataType : 'json',
-								 success : function(result) {
-					                 if(result > 0){
-					                	 Swal.fire(
-					       			          '등록이 완료되었습니다.'	);
-					                	 getOrdList();
-					                 }else {
-					                	 Swal.fire(
-					                			 '등록이 실패하였습니다.');
-					                 }
-					              },
-					              error : function(reject) {
-					                 console.log(reject);
-					              }
-							})
-				})
-			}else if(rowData[i].odCd != null) {
-				sweetConfirm('U', function(){
-					$.ajax({
-						url : '/updateOrd',
-						type : 'post',
-						contentType: 'application/json',
-						data: JSON.stringify(ordList),
-						dataType : 'json',
-						 success : function(result) {
-			                 if(result > 0){
-			                	 Swal.fire(
-			       			          '수정이 완료되었습니다.'	);
-			                	 getOrdList();
-			                 }else {
-			                	 Swal.fire(
-			                			 '수정이 실패하였습니다.');
-			                 }
-			              },
-			              error : function(reject) {
-			                 console.log(reject);
-			              }
-					}) // end of ajax
-				})	// end of swc
-			}	// end of if
-		}) // end of click
-   }
-	 
 	 
    
 	/*------------

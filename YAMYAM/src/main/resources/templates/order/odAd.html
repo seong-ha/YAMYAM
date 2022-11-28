@@ -237,6 +237,18 @@ text-align: center;
 	----------------*/ // 폼으로 감싸서 한번에 초기화시키기
 	function cancelBtnHandler(){
 		$('#cancelBtn').on('click',function(){
+			let radio_name = [];
+		    let radio = $("input[type=radio]");
+		    $.each(radio, function (key, value) { // input radio의 name 값 가져오기
+		        radio_name.push($(value).attr('name'));
+		    });
+		    radio_name = $.unique(radio_name.sort()).sort(); //중복요소 이름을 제거
+		    for (let i = 0; i < radio_name.length; i++) {
+		        $('input[name="' + radio_name[i] + '"]').removeAttr('checked');
+		        //체크되어있는 항목 모두 해제
+		        $('input[name="' + radio_name[i] + '"]')[0].checked = true;
+		        //name에서 첫번쨰 요소만 선택
+		    }
 			$("#startpicker-input").val(today);
 			$("#endpicker-input").val(today);
 			$("#actCd").val("");
@@ -410,12 +422,13 @@ text-align: center;
 		$('#saveBtn').on('click',function(){
 			let rowData = grid.getCheckedRows();
 			let ordList = [];
+			let odCd = '';
 			for (let i=0; i<rowData.length; i++) {
 				let prdCd = rowData[i].prdCd;
 				let odAmt = rowData[i].odAmt;
 				let actCd = rowData[i].actCd;
 				let deDate = rowData[i].deDate;
-				let odCd = rowData[i].odCd;
+				odCd = rowData[i].odCd;
 				ordList.push({prdCd,odAmt,actCd,deDate,odCd});
 				console.log(rowData[i].odCd);
 			}
@@ -482,9 +495,11 @@ text-align: center;
 		$('#deleteBtn').on('click',function(){
 			let rowData = grid.getCheckedRows();
 			let list = [];
+			let odCd = '';
 			for (let i=0; i<rowData.length; i++) {
-				let odCd = rowData[i].odCd;
+				odCd = rowData[i].odCd;
 				list.push({odCd})
+			}
 			sweetConfirm('D', function(){
 				    	  $.ajax({
 				              url : '/deleteOrd',
@@ -508,7 +523,7 @@ text-align: center;
 				        grid.removeCheckedRows();
 				      
 			})
-			}
+			
 		});	
 	}
    

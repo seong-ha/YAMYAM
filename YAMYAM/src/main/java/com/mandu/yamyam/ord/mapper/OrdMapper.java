@@ -22,6 +22,9 @@ public interface OrdMapper {
 	// 완제품LOT 재고 현황 모달
 	public List<OrdVO> lotSList();
 	
+	// 완제품LOT 출고 현황 모달
+	public List<OrdVO> lotOutList();
+	
 	// 주문서 관리 모달
 	public List<OrdVO> ordList();
 		
@@ -73,6 +76,31 @@ public interface OrdMapper {
 	
 	// 출고 등록 리스트 삭제
 	public int deleteOutList(OrdVO vo);
+	
+	
+	/*-----------------
+	// 완제품 반품 관리 Tab
+	-------------------*/
+	// 완제품 반품 관리 리스트 조회
+	public List<OrdVO> getReList(OrdVO vo);
+
+	// 완제품 반품 관리 리스트 등록
+	public int insertReList(OrdVO vo);
+	
+	/*-----------------
+	// 완제품 재고 조회 Tab
+	-------------------*/
+	// 완제품 재고 리스트 조회
+	public List<OrdVO> getLotList(OrdVO vo);
+	
+	/*-----------------
+	// 완제품 재고 관리 Tab
+	-------------------*/
+	// 완제품 유통기한 현황 리스트 조회
+	public List<OrdVO> getEdateList(OrdVO vo);
+	
+	// 완제품 반품 관리 리스트 등록
+	public int insertEdateList(OrdVO vo);
 	
 	
 	/*-----------------

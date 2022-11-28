@@ -42,6 +42,12 @@ public class OrdServiceImpl implements OrdService {
 		return map.lotSList();
 	}
 	
+	// 완제품LOT 출고 현황 모달
+	@Override
+	public List<OrdVO> lotOutList() {
+		return map.lotOutList();
+	}
+	
 	// 주문서 관리 모달
 	@Override
 	public List<OrdVO> ordList() {
@@ -148,6 +154,52 @@ public class OrdServiceImpl implements OrdService {
 		return result;
 	}
 
+	/*-----------------
+	// 완제품 반품 관리 Tab
+	-------------------*/
+	// 완제품 반품 관리 리스트 조회
+	@Override
+	public List<OrdVO> getReList(OrdVO vo) {
+		return map.getReList(vo);
+	}
+
+	// 완제품 반품 관리 리스트 등록
+	@Override
+	public int insertReList(List<OrdVO> vo) {
+		int result = 0;
+		for(int i=0; i<vo.size(); i++) {
+			result += map.insertReList(vo.get(i));
+		}
+		return result;
+	}
+
+	/*-----------------
+	// 완제품 재고 조회 Tab
+	-------------------*/
+	// 완제품 재고 리스트 조회
+	@Override
+	public List<OrdVO> getLotList(OrdVO vo) {
+		return map.getLotList(vo);
+	}
+	
+	/*-----------------
+	// 완제품 재고 관리 Tab
+	-------------------*/
+	// 완제품 유통기한 현황 리스트 조회
+	@Override
+	public List<OrdVO> getEdateList(OrdVO vo) {
+		return map.getEdateList(vo);
+	}
+	
+	// 완제품 반품 관리 리스트 등록
+	@Override
+	public int insertEdateList(List<OrdVO> vo) {
+		int result = 0;
+		for(int i=0; i<vo.size(); i++) {
+			result += map.insertEdateList(vo.get(i));
+		}
+		return result;
+	}
 	
 	/*-----------------
 	// 생산 요청 관리 Tab
@@ -168,14 +220,21 @@ public class OrdServiceImpl implements OrdService {
 	// 생산 요청 관리 추가
 	@Override
 	public int insertPodOrd(List<OrdVO> vo) {
-		// TODO Auto-generated method stub
-		return 0;
+		int result = 0;
+		for(int i=0; i<vo.size(); i++) {
+			result += map.insertPodOrd(vo.get(i));
+		}
+		return result;
 	}
 
+	// 생산 요청 관리 수정
 	@Override
 	public int updatePodOrd(List<OrdVO> vo) {
-		// TODO Auto-generated method stub
-		return 0;
+		int result = 0;
+		for(int i=0; i<vo.size(); i++) {
+			result += map.updatePodOrd(vo.get(i));
+		}
+		return result;
 	}
 
 	// 생산 요청 관리 삭제
@@ -183,8 +242,10 @@ public class OrdServiceImpl implements OrdService {
 	public int deletePodOrd(List<OrdVO> vo) {
 		int result = 0;
 		for(int i=0; i<vo.size(); i++) {
-			result += map.deleteOutList(vo.get(i));
+			result += map.deletePodOrd(vo.get(i));
 		}
 		return result;
 	}
+
+
 }
