@@ -118,12 +118,6 @@ public class MatOdServiceImpl implements MatOdService {
 		return mapper.odListDtLookUpBtn(vo);
 	}
 
-	// 자재발주 리스트(생산계획 탭)
-	@Override
-	public List<Map<String, Object>> chkMatList(MatVO vo) {
-		return mapper.chkMatList(vo.getMtrCd());
-	}
-
 	@Override
 	public int updatePlndSts(MatVO vo) {
 		return mapper.updatePlndSts(vo);
@@ -181,6 +175,16 @@ public class MatOdServiceImpl implements MatOdService {
 		return result;
 	}
 	
+	// 자재 입고 검수 관리 - update
+	@Override
+	public int updateMatOdSts(List<MatVO> list) {
+		int result = 0;
+		for(int i=0; i<list.size(); i++) {
+			result += mapper.updateMatOdSts(list.get(i));
+		}
+		return result;
+	}
+	
 	// 자재 입고 검수 관리 - delete
 	@Override
 	public int deletetChkOd(List<MatVO> list) {
@@ -221,6 +225,17 @@ public class MatOdServiceImpl implements MatOdService {
 		}
 		return result;
 	}
+	
+	// update
+	@Override
+	public int updateMatInsts(List<MatVO> list) {
+		int result = 0;
+		for(int i=0; i<list.size(); i++) {
+			result += mapper.updateMatInsts(list.get(i));
+		}
+		
+		return result;
+	}
 
 	// delete
 	@Override
@@ -253,10 +268,21 @@ public class MatOdServiceImpl implements MatOdService {
 		return mapper.needMtrLotList(vo);
 	}
 
+	// 출고테이블로 insert
+	@Override
+	public int insertMatOut(List<MatVO> list) {
+		int result = 0;
+		for(int i=0; i<list.size(); i++) {
+			result += mapper.insertMatOut(list.get(i));
+		}
+		return result;
+	}
+	
 	// 출고처리 - 자재 마이너스 업데이트
 	@Override
 	public int updateOutOd(List<MatVO> list) {
 		int result = 0;
+		
 		for(int i=0; i<list.size(); i++) {
 		 result += mapper.updateOutOd(list.get(i));
 		}

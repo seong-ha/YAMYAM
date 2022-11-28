@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.mandu.yamyam.mat.service.MatOdService;
 import com.mandu.yamyam.mat.service.MatVO;
 
-
+// 2022-11 이현성
 @Controller
 public class MatController {
 
@@ -87,13 +87,6 @@ public class MatController {
 	@ResponseBody
 	public List<Map<String,Object>> needMatList(@RequestBody MatVO vo){
 		return service.needMatList(vo);
-	}
-	
-	// 자재 발주 리스트(자재 발주 - 생산계획 탭)
-	@PostMapping("/chkMatList")
-	@ResponseBody
-	public List<Map<String,Object>> chkMatList(@RequestBody MatVO vo){
-		return service.chkMatList(vo);
 	}
 	
 	// 자재 발주 리스트 날짜 조회(일반 탭)
@@ -169,6 +162,14 @@ public class MatController {
 		return result;
 	}
 	
+	// update
+	@PostMapping("/updateChk")
+	@ResponseBody
+	public int updateMatOdSts(@RequestBody List<MatVO> list) {
+		int result = service.updateMatOdSts(list);
+		return result;
+	}
+	
 	// 자재 입고 검수 delete
 	@DeleteMapping("/ChkOd")
 	@ResponseBody
@@ -202,6 +203,14 @@ public class MatController {
 		return result;
 	}
 	
+	// update 
+	@PostMapping("/updateInsts")
+	@ResponseBody
+	public int updateMatInsts(@RequestBody List<MatVO> list) {
+		int result = service.updateMatInsts(list);
+		return result;
+	}
+	
 	// 자재 입고 관리 delete
 	@DeleteMapping("/inManage")
 	@ResponseBody
@@ -231,6 +240,14 @@ public class MatController {
 	@ResponseBody
 	public List<Map<String,Object>> needMtrLotList(@RequestBody MatVO vo){
 		return service.needMtrLotList(vo);
+	}
+	
+	// 출고테이블로 insert
+	@PostMapping("/insertOut")
+	@ResponseBody
+	public int insertMatOut(@RequestBody List<MatVO> list) {
+		int result = service.insertMatOut(list);
+		return result;
 	}
 	
 	// 출고처리 - 재고 마이너스 업데이트
