@@ -207,30 +207,31 @@ WHERE MTR_CD = #{mtrCd}
 
 <!-- ajax 구매 거래처 등록하기 -->
 <insert id="ajaxInsertAct" parameterType="com.mandu.yamyam.comm.service.ActVO">
+	<selectKey keyProperty="actCd" resultType="String" order="BEFORE">
+		SELECT mk_act_cd FROM dual
+	</selectKey>
 	
 	INSERT INTO C_ACT
-	(
-	ACT_NM, 
-	ACT_CD, 
-	ACT_NUM, 
-	ACT_TEL, 
-	ACT_DIV, 
-	ACT_STS
-	)
-	VALUES
-	(
-	#{actNm},
-	#{actCd},
-	#{actNum},
-	#{actTel},
-	#{actDiv},
-	#{actSts}
-	)
-
+					(
+					ACT_NM, 
+					ACT_CD, 
+					ACT_NUM, 
+					ACT_TEL, 
+					ACT_DIV, 
+					ACT_STS
+					)
+			VALUES
+					(
+					#{actNm},
+					#{actCd},
+					#{actNum},
+					#{actTel},
+					#{actDiv},
+					#{actSts}
+					)
 </insert>
 
 <!-- 구매 거래처 수정하기 -->
-
 <update id="ajaxUpdateAct" parameterType="com.mandu.yamyam.comm.service.ActVO">
 
 	UPDATE C_ACT

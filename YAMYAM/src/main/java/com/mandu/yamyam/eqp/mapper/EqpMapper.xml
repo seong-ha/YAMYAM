@@ -130,8 +130,8 @@
 		       uop_type,
 		       find_code_name(uop_type) AS uop_type_nm,
 		       uop_info,
-		       to_char(uop_stime, 'yyyy-mm-dd hh24:mm') AS uop_stime,
-		       to_char(uop_etime, 'yyyy-mm-dd hh24:mm') AS uop_etime
+		       to_char(uop_stime, 'yyyy-mm-dd hh24:mi') AS uop_stime,
+		       to_char(uop_etime, 'yyyy-mm-dd hh24:mi') AS uop_etime
 		FROM e_uop
 		WHERE uop_stime BETWEEN TRUNC(CURRENT_DATE - 7) AND TRUNC(CURRENT_DATE + 1)
 		ORDER BY uop_cd

@@ -62,13 +62,13 @@ public class EqpRestController {
 	// 비가동 리스트 조건 조회
 	@PostMapping("/findUopList")
 	public List<UopVO> findUopList(UopVO uopVO) {
-		System.out.println(uopVO.getEndDate());
 		return eqpService.findUopList(uopVO);
 	}
 	
 	// 비가동 등록 및 수정
 	@PostMapping("/insertUpdateUop")
 	public int insertUpdateUop(UopVO uopVO) {
+		System.out.println(uopVO.getUopEtime());
 		return eqpService.insertUpdateUop(uopVO);
 	}
 	

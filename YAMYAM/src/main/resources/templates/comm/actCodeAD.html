@@ -11,50 +11,33 @@
 	<hr>
 	<br>
 	<form action="#">
-		<table>
-			<tr>
-				<td>
-					<ul class="ul-style">
-					<li><label for="matCode" style="width:130px">거래처 업체명</label><input id="actName" name="actNm">
-					&nbsp;&nbsp;&nbsp;
-					<label for="matCode">거래처 코드</label><input id="actCode" name="actCd">
-					</li>
-					</ul>
-				</td>
-			</tr>
-		
-			<tr>
-				<td>
-					<ul class="ul-style">
-					<li><label for="matCode" style="width:130px">사업자 등록번호</label><input id="actNumber" name="actNum">
-					&nbsp;&nbsp;&nbsp;
-					<label for="matCode" style="width:100px">전화번호</label><input id="actTelephone" name="actTel">
-					</li>
-				</ul>
-				</td>
-			</tr>
-			
-			<tr>
-				<td>
-					<ul class="ul-style">
-					<li class="d-flex">
-					  <label for="matCode" style="width:130px">거래처 구분</label>
-					  <input id="actDivision" name="actDiv">	&nbsp;&nbsp;&nbsp;
-					  
-					  <input type="hidden" name="actSts"  id="actStatus">
-					  <label style="width:110px">&nbsp;&nbsp;거래상태</label>
-					  <div style="width: 190px;" id="select-box"></div>
-					  <div align="right">&nbsp;&nbsp;
-						  <button type="button" class="btn btn-dark btn-sm" id="insertBtn">구매 거래처 등록</button>&nbsp;
-						  <button type="button" class="btn btn-dark btn-sm" id="updateBtn">거래처 수정</button>&nbsp;
-						  <input type="reset" class="btn btn-dark btn-sm" id="reset" name="reset">
-					  </div>
-					</li>
-				</ul>
-				</td>
-			</tr>
-				
-		</table>
+		<ul class="ul-style">
+			<li>
+				<label for="matCode" style="width:130px">거래처 업체명</label>
+				<input id="actName" name="actNm">&nbsp;&nbsp;&nbsp;
+				<label for="matCode">거래처 코드</label>
+				<input id="actCode" name="actCd" readonly>
+			</li>
+			<li>
+				<label for="matCode" style="width:130px">사업자 등록번호</label>
+				<input id="actNumber" name="actNum">&nbsp;&nbsp;&nbsp;
+				<label for="matCode" style="width:100px">전화번호</label>
+				<input id="actTelephone" name="actTel">
+			</li>
+			<li class="d-flex">
+				<input type="hidden" id="actDivision" name="actDiv">	&nbsp;&nbsp;&nbsp;
+				<label for="matCode" style="width:115px">거래처 구분</label>
+				<div style="width: 190px;" id="select-box2"></div>
+				<input type="hidden" name="actSts"  id="actStatus">&nbsp;
+				<label style="width:113px">&nbsp;&nbsp;거래상태</label>&nbsp;
+				<div style="width: 190px;" id="select-box"></div>
+				<div align="right">&nbsp;&nbsp;
+					<button type="button" class="btn btn-dark btn-sm" id="insertBtn">구매 거래처 등록</button>&nbsp;
+					<button type="button" class="btn btn-dark btn-sm" id="updateBtn">거래처 수정</button>&nbsp;
+					<input type="reset" class="btn btn-dark btn-sm" id="reset" name="reset">
+				</div>
+			</li>
+		</ul>
 	</form>
 	
 	
@@ -64,10 +47,21 @@
 	
 	<script>
 	
-	/* token */
-	var token = $("meta[name='_csrf']").attr("content");
-	var header = $("meta[name='_csrf_header']").attr("content");
+		/* token */
+		var token = $("meta[name='_csrf']").attr("content");
+		var header = $("meta[name='_csrf_header']").attr("content");
+			
 		
+		// toastr
+		toastr.options = {
+			    "closeButton": false,
+			    "newestOnTop": true,
+			    "positionClass": "toast-top-center",
+			    "preventDuplicates": true,
+			    "extendedTimeOut" : 1500, 
+			    "timeOut" : 2500
+		}
+	
 		// 렌더링 에디터 (라디오박스)
 		
 	/* 	 class CustomSliderRenderer {
@@ -142,8 +136,9 @@
 		        } 
 			}, 
 		],
-		showDummyRows: true
 	});
+	    
+	    selectAct();	//ajax 거래처코드 불러오기
 		
 	// 렌더링 에디터 (라디오박스)
 		
@@ -161,35 +156,59 @@
 				value : 'N'
 			} ],
 			autofocus : true
-		});
+	});
+	
+	var selectBox2 = new tui.SelectBox('#select-box2', {
+		placeholder : '거래처 구분',
+		data : [ {
+			label : '판매처',
+			value : 'ACT-TYPE1'
+		}, {
+			label : '자재업체',
+			value : 'ACT-TYPE2'
+		}, {
+			label : '설비업체',
+			value : 'ACT-TYPE3'
+		} ],
+		autofocus : true
+});
 	
 	
-	// bind 'change' event
+	// bind 'change' event1
 	selectBox.on('change', ev => {
 	  console.log(` ${ev.curr.getLabel()}    ${ev.curr.getValue()}`);
 	  $('#actStatus').val(ev.curr.getValue());
+	});
+	
+	// bind 'change' event2
+	selectBox2.on('change', ev => {
+	  console.log(` ${ev.curr.getLabel()}    ${ev.curr.getValue()}`);
+	  $('#actDivision').val(ev.curr.getValue());
 	});
 	
 	
 	// 셀렉트 박스 초기화
 	 document.getElementsByName('reset')[0].addEventListener('click', function(){
 		    selectBox.deselect();
+		    selectBox2.deselect();
 	 }) 
 	 
 	 // ajax 거래처코드 불러오기
-	 
- 		$.ajax({
-			url : "ajax/selectAct",
-			type : "get",
-			dataType: "json",
-			success : function(data){
-				console.log(data);
-				grid.resetData(data);
-			},
-			error : function(reject){
-				console.log(reject);
-			}
-		})
+	 function selectAct() {
+		 $.ajax({
+				url : "ajax/selectAct",
+				type : "get",
+				dataType: "json",
+				success : function(data){
+					console.log(data);
+					grid.resetData(data);
+				},
+				error : function(reject){
+					console.log(reject);
+				}
+			})
+	 }
+ 		
 		
 
 	// ajax 구매 거래처 등록하기
@@ -206,8 +225,6 @@
 				actSts: document.getElementById('actStatus').value
 			}
 			
-			grid.appendRow(data);
-			
 			// ajax 구매 거래처 등록
 			console.log("데이터 가져왔니?");
 			$.ajax({
@@ -222,6 +239,7 @@
 					if (data > 0) {
 						// ajax success
 			            toastr.success('정상적으로 등록되었습니다.');
+			            selectAct(); // 최신화된 거래처 불러오기
 			            //setTimeout(() => {location.reload(), 3000});
 					} else {
 						// ajax fail
@@ -241,8 +259,6 @@
  		
 	 	grid.on('click', function(ev){
 			let rowData = grid.getRow(ev.rowKey);
-			console.log(grid.getRow(ev.rowKey).actCd);
-			$('#select-box').val(grid.getRow(ev.rowKey).actSts);
 			
 			$('#actName').val(grid.getRow(ev.rowKey).actNm); 
 			$('#actCode').val(grid.getRow(ev.rowKey).actCd); 
@@ -250,7 +266,9 @@
 			$('#actTelephone').val(grid.getRow(ev.rowKey).actTel); 
 			$('#actDivision').val(grid.getRow(ev.rowKey).actDiv); 
 			$('#actStatus').val(grid.getRow(ev.rowKey).actSts);
+			
 			selectBox.select(rowData.actSts);
+			selectBox2.select(rowData.actDiv);
 	 	
 		
 			document.getElementById('updateBtn').addEventListener('click', function(){
@@ -280,8 +298,7 @@
 							if (data > 0) {
 								// ajax success
 					            toastr.success('정상적으로 수정되었습니다.');
-								grid.resetData(data);
-								grid.refreshLayout();
+					            selectAct(); // 최신화된 거래처 불러오기
 					            //location.reload();
 							} else {
 								// ajax fail

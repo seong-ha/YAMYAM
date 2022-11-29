@@ -11,10 +11,6 @@
 		
 		<h3>공통 코드 관리</h3>
 		<hr>
-
-		<br> <br> <br> <br> <br>
-
-		
 			<div class="col-4" style="padding-left: 50px">
 			<form action="" onsubmit="return false">
 				<br> <br><b>공통 코드 검색</b>&nbsp;&nbsp; 
@@ -25,7 +21,7 @@
 				<div id="grid" style="width: 400px"></div>
 			</div>
 
-		<div class="col-7">
+		<div class="col-7" style="margin-top: 50px">
 			<ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
 				<li class="nav-item" role="presentation">
 					<button class="nav-link active" id="pills-home-tab"
@@ -146,10 +142,10 @@
 		const grid = new tui.Grid({
 			
 			el : document.getElementById('grid'),
-			bodyHeight : 300, // 스크롤
+			bodyHeight : 500, // 스크롤
 
 			width : 400,
-			scrollX : true,
+			scrollX : false,
 			scrollY : true,
 			rowHeaders: ['rowNum'],
 			columns : [{
@@ -164,7 +160,7 @@
 				name : 'commNm',
 				sortingType: 'desc',
 		        sortable: true,
-		        align: 'center'
+		        align: 'left'
 			} ],
 
 		});
@@ -197,7 +193,7 @@
 			
 			bodyHeight : 300, // 스크롤
 			width : 900,
-			scrollX : true,
+			scrollX : false,
 			scrollY : true,
 			rowHeaders: ['checkbox'],
 
@@ -215,7 +211,7 @@
 					name : 'commdNm',
 					sortingType: 'desc',
 			        sortable: true,
-			        align: 'center',
+			        align: 'left',
 			        editor: 'text'
 				},
 				{
@@ -223,7 +219,7 @@
 					name : 'commdInfo',
 					sortingType: 'desc',
 			        sortable: true,
-			        align: 'center',
+			        align: 'left',
 			        editor: 'text'
 				},
 				{
@@ -285,13 +281,13 @@
 		// 공통 코드 검색
 		
 		document.getElementById('commBtn').addEventListener('click', function(){
-    	grid.filter('commCd', [{code: 'eq', value: commSearch.value}]);
+    	grid.filter('commCd', [{code: 'contain', value: commSearch.value}]);
      		
         });
 		
 		document.getElementById('commSearch').addEventListener("keydown", function(){
 	         if(event.keyCode == 13){
-	        	 grid.filter('commCd', [{code: 'eq', value: commSearch.value}]);
+	        	 grid.filter('commCd', [{code: 'contain', value: commSearch.value}]);
 	        	 searchEmpName.value = '';
 	         }
 	     });

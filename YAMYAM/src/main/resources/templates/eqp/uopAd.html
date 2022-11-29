@@ -80,8 +80,7 @@
 						</li>
 					</ul>
 				</form>
-				<div id="selectUop" style="margin-bottom: 18px"></div>
-				<br>
+				<div id="selectUop"></div>
 				<h3>비가동 등록</h3>
 				<form action="" onsubmit="return false" id="insertUpdateform">
 					<table>
@@ -178,7 +177,7 @@
 			function selectEqpGridInit() {
 				let selectEqpGrid = new tui.Grid({
 				      el: document.getElementById('selectEqp'),
-				      bodyHeight: 600, // 스크롤
+				      bodyHeight: 650, // 스크롤
 				      rowHeaders: ['rowNum'],
 				      scrollX: false,
 				      scrollY: true,
@@ -282,9 +281,13 @@
 				let selectUopGrid = new tui.Grid({
 				      el: document.getElementById('selectUop'),
 				      bodyHeight: 200, // 스크롤
+				      pageOptions: {
+				    	  useClient: true,
+				    	  perPage: 5
+				      },
 				      rowHeaders: ['rowNum'],
 				      scrollX: false,
-				      scrollY: true,
+				      scrollY: false,
 				      columns: [
 				        {
 				          header: '비가동코드',
