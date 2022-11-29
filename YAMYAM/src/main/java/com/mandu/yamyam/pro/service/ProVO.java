@@ -60,7 +60,7 @@ public class ProVO {
 	private String eqpType; 	// 설비타입
 	private String mdNm;		// 설비 모델이름
 	private String pproName;	// 공정명
-	private String pproEmpName; // 담당자
+	private String pproEmpId; 	// 담당자 번호
 	private String chkEmp;		// 설비담당자 이름
 	private Integer pproInAmt;		// 투입량
 	private Integer pproErAmt;		// 불량량

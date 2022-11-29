@@ -3,6 +3,7 @@ package com.mandu.yamyam.pro.mapper;
 import java.util.List;
 import java.util.Map;
 
+import com.mandu.yamyam.comm.service.EmpVO;
 import com.mandu.yamyam.pro.service.ProVO;
 
 public interface ProMapper {
@@ -49,6 +50,9 @@ public interface ProMapper {
 	// 생산 요청서 업데이트(진행상황 : 진행)
 	public int updateBpod(ProVO vo);
 	
+	// 생산 요청서 업데이트(진행상황 : 진행)
+	public int updateBod(ProVO vo);
+	
 	/*---------------
 	// 생산 지시 관리
 	----------------*/
@@ -75,6 +79,13 @@ public interface ProMapper {
 	
 	// 자재 입고 테이블 업데이트(재고 변경)
 	public int updateMin(ProVO vo);
+	
+	// 실시간 생산공정을 기반으로 생산공정 이력을 생성(프로시저 사용)
+	public int insertPRecord(ProVO vo);
+	
+	// 실시간 공정 테이블 비워주기
+	public int resertPpro(ProVO vo);
+	
 	
 	/*---------------
 	// 생산 지시 조회
@@ -103,6 +114,7 @@ public interface ProMapper {
 	// 완제품 재고 생성
 	public int insertBIn(ProVO vo);
 	
+	
 	/*---------------
 	// 공정 실적 조회
 	----------------*/
@@ -113,6 +125,9 @@ public interface ProMapper {
 	// 공정 관리
 	----------------*/
 	public List<ProVO> getProList(ProVO vo);
+	
+	// 생산담당 직원 조회
+	public List<EmpVO> getProEmpList();
 	
 	// 미사용 설비 조회
 	public List<ProVO> noUseEqp();

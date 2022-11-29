@@ -3,6 +3,8 @@ package com.mandu.yamyam.pro.service;
 import java.util.List;
 import java.util.Map;
 
+import com.mandu.yamyam.comm.service.EmpVO;
+
 
 public interface ProService {
 
@@ -88,6 +90,9 @@ public interface ProService {
 	
 	// 미사용 설비 조회
 	public List<ProVO> noUseEqp();
+	
+	// 생산담당 직원 조회
+	public List<EmpVO> getProEmpList();
 	
 	// 공정 등록
 	public int insertProManage(List<ProVO> vo);

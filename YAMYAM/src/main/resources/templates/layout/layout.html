@@ -196,12 +196,11 @@
 										<li><a href="/proPlan">생산 계획 관리</a></li>
 										<li><a href="/planOrdCheck">생산 지시 </a></li>
 										<li><a href="/proOrdManage">생산 관리</a></li>
-										<th:block
-											sec:authorize="hasAnyAuthority('JOB-GRD1', 'JOB-GRD2')">
+										<th:block sec:authorize="hasAnyAuthority('JOB-GRD1', 'JOB-GRD2')">
 											<li><a href="/proResult">공정 실적 조회</a></li>
-											<li><a href="/proManage">공정 관리</a></li>
-											<li><a href="/flowDiagram">제품 공정 흐름도</a></li>
 										</th:block>
+										<li><a href="/proManage">공정 관리</a></li>
+										<li><a href="/flowDiagram">제품 공정 흐름도</a></li>
 									</ul>
 								</div>
 							</div>

@@ -24,8 +24,8 @@
 
 <body>
 	<!-- 본문 시작 -->
-	<div layout:fragment="content" class="container">
-		<div><button type="button" id="scheduleBtn" class="btn btn-dark btn-sm" style="float: right">공정이동표</button></div>
+	<div layout:fragment="content" class="container"> <!-- display:none; -->
+		<!-- <div><button type="button" style=" background-color : #963446; color:#fcf8e3; float: right" id="scheduleBtn" class="btn btn-dark btn-sm">공정이동표</button></div> -->
 		<h3>생산 관리</h3>
 		
 	<div class="row">
@@ -112,15 +112,18 @@ var header = $("meta[name='_csrf_header']").attr("content");
 				},
 				{
 					header: '제품코드',
-					name: 'prdCd'
+					name: 'prdCd',
+					align : 'center'
 				},
 				{
 					header: '제품명',
-					name: 'prdNm'
+					name: 'prdNm',
+					align : 'center'
 				},
 				{
 					header: '수량',
-					name: 'poddAmt' 
+					name: 'poddAmt',
+					align : 'right'
 				},
 				{
 					header: '라인코드',
@@ -171,30 +174,35 @@ var header = $("meta[name='_csrf_header']").attr("content");
 				},
 				{
 					header: '담당자',
-					name: 'pproEmpName'
+					name: 'pproEmpNm'
 				},
 				{
 					header: '투입량',
 					name: 'pproInAmt',
-					width : '100'
+					width : '100',
+					align : 'right'
 				},
 				{
 					header: '불량량',
 					name: 'pproErAmt',
-					width : '100'
+					width : '100',
+					align : 'right'
 				},
 				{
 					header: '생산량',
 					name: 'pproOtAmt',
-					width : '100'
+					width : '100',
+					align : 'right'
 				},
 				{
 					header: '시작시간',
-					name: 'pproSTime'
+					name: 'pproSTime',
+					align : 'right'
 				},
 				{
 					header: '종료시간',
-					name: 'pproETime'
+					name: 'pproETime',
+					align : 'right'
 				},
 				{
 					header: '상태', // 설비상태
@@ -239,7 +247,7 @@ var header = $("meta[name='_csrf_header']").attr("content");
 				},
 				{
 					header: '담당자',
-					name: 'pproEmpName'
+					name: 'pproEmpNm'
 				},
 				{
 					header: '투입량',
@@ -322,15 +330,21 @@ var header = $("meta[name='_csrf_header']").attr("content");
 	function scheduleBtnHandler(){
 		// 모달 클릭 버튼 이벤트
 		$('#scheduleBtn').on('click',function(){
-	
 			 $("#progressModal").modal("show");
-				let rKey = pOrderGrid.getFocusedCell().rowKey;
+			 // 모달이 로드 되는데 시간이 걸리므로 인터벌 걸어주기
+			 setInterval(function(){
+					pLModalGrid.refreshLayout()
+					},100);	
+			
+			    let rKey = pOrderGrid.getFocusedCell().rowKey;
 				let data = pOrderGrid.getRow(rKey);
+				let poddCd = data.poddCd;
 				
 				let prcd = data.prdCd;
 				let plineCd = data.plineCd;
 				let prNm = data.prdNm;
 				let iAmt = data.poddAmt;
+				$('#poddCdcd').val(poddCd);
 				$('#linCd').val(plineCd);
 				$('#prCd').val(prcd);
 				$('#prNm').val(prNm);
@@ -343,15 +357,10 @@ var header = $("meta[name='_csrf_header']").attr("content");
 					method: "GET",
 					success : function(data){
 						pLModalGrid.resetData(data);
-						
+						pLModalGrid.refreshLayout();
 					},
 					error : function(reject){console.log(reject);}				
 				});
-
-			// 모달이 로드 되는데 시간이 걸리므로 인터벌 걸어주기
-			setInterval(function(){
-				pLModalGrid.refreshLayout()
-				},100);	
 		});
 	}
 	
@@ -420,12 +429,12 @@ var header = $("meta[name='_csrf_header']").attr("content");
 			let pro = proGrid.getData();
 			for(let i = 0; i<pro.length; i++){
 				proGrid.setValue(i,'eqpSts','완료');
-				console.log('얍');
 			} 
-		
+			
 			let binAmt = pro[5].pproOtAmt;
 			let pG = pOrderGrid.getFocusedCell().rowKey;
 			let poddCd = pOrderGrid.getValue(pG,'poddCd');
+			let plineCd = pOrderGrid.getValue(pG,'plineCd');
 			let prdCd = pOrderGrid.getValue(pG,'prdCd');
 			console.log(binAmt);
 			// ajax (b-in[완제품재고] table insert)
@@ -433,7 +442,7 @@ var header = $("meta[name='_csrf_header']").attr("content");
 			$.ajax({
 				url : '/insertBIn',
 				method: 'POST',
-				data :  {"binAmt" : binAmt, "samt" : binAmt, "prdCd" : prdCd, "poddCd": poddCd},
+				data :  {"binAmt" : binAmt, "samt" : binAmt, "prdCd" : prdCd, "poddCd": poddCd, "plineCd" : plineCd},
 				dataType : 'json',
 				beforeSend : function (xhr) {
 				    xhr.setRequestHeader(header, token);
@@ -476,7 +485,7 @@ var header = $("meta[name='_csrf_header']").attr("content");
 	 
 		if(eqpSts == '대기'){
 			// 대기 -> 가동
-			 $.ajax({
+			$.ajax({
 				url : '/eqpUpdate',
 				method: 'POST',
 				async : false,
@@ -531,7 +540,7 @@ var header = $("meta[name='_csrf_header']").attr("content");
 						console.log(reject);
 						// 실패
 				}			 		  
-			});	// end of ajax 
+			});	// end of ajax
 		}
 
 	} 

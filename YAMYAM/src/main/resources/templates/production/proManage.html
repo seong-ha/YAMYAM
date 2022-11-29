@@ -32,15 +32,35 @@
 				</tr>
 				<tr>
 					<td colspan="3" style="text-align: right;">
+					<th:block sec:authorize="hasAnyAuthority('JOB-GRD1', 'JOB-GRD2')">
 						<button type="button" id="plusBtn" class="btn btn-dark btn-sm">행 추가</button>
 						<button type="button" id="removeBtn" class="btn btn-dark btn-sm">행 삭제</button>
 						<button type="button" id="insertBtn" class="btn btn-dark btn-sm">입력</button>
 						<button type="button" id="updateBtn" class="btn btn-dark btn-sm">수정</button>
+					</th:block>	
 					</td>
 				</tr>
 			</table>
 
 		</div>
+		
+	<!-- 생산 담당자 그리드 모달 -->
+	<div class="modal" id="empModal" tabindex="-1">
+		<div class="modal-dialog" >
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4 class="modal-title">생산 담당자명</h4>
+					<button type="button" class="btn-close" data-bs-dismiss="modal"	aria-label="Close" id="close_modal"></button>
+				</div>
+				<div class="modal-body">					
+					<div>
+						<div id="empListGrid"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>	
+		
 	<!-- 미사용설비 그리드 모달 -->
 	<div class="modal" id="eqModal" tabindex="-1">
 		<div class="modal-dialog" >
@@ -65,15 +85,17 @@
 
 		let grid = gridInit();				    // 공정관리 그리드
 		let eqModalGrid = eqModalGridInit();	// 미사용 설비 모달 그리드
+		let empListGrid = empListGridInit();	// 생산담당 모달 조회 그리드
 
 		plusBtnHandler(); 	 	// 그리드 행 추가 이벤트 핸들러
 		removeBtnHandler();  	// 그리드 행 삭제 이벤트 핸들러
 		insertBtnHandler();		// 그리드 행 입력 이벤트 핸들러
 		updateBtnHandler();		// 그리드 행 수정 이벤트 핸들러
 		gridClick(); 			// 공정관리 그리드 클릭 이벤트
-		eqModalGridClick();		// 미사용 설비 모달  그리드 클릭 이벤트
+		eqModalGridClick();		// 미사용 설비 모달 그리드 클릭 이벤트
+		empListGridClick();		// 생산담당자조회 모달 그리드 클릭 이벤트
 		cancelBtnHandler();     // 값 초기화 버튼
-		selectChange();			  // select 옵션 변경시 조회
+		selectChange();			// select 옵션 변경시 조회
 		
 		/*------------
 		// grid 초기화
@@ -124,21 +146,14 @@
 					header : '모델명',
 					name : 'mdNm',
 				}, {
-					header : '담당자',
-					name : 'pproEmpName',
+					header : '담당자 번호',
+					name : 'pproEmpId',
 					editor: {
 					      type: 'select',
-					      options: {
-					        listItems: [
-					          {text: '최혼합', value: '최혼합'},
-					          {text: '최성형', value: '최성형'},
-					          {text: '최증숙', value: '최증숙'},
-					          {text: '최냉동', value: '최냉동'},
-					          {text: '최포장', value: '최포장'},
-				          	  {text: '최박스', value: '최박스'}]
-					      }
-					}
-	
+					      options: 'text' }
+			    }, {
+					header : '담당자명',
+					name : 'pproEmpNm'
 				}]
 			});
 			
@@ -151,6 +166,31 @@
 			
 			
 			return grid;
+		}
+		
+		
+		/*------------
+		// 생산담당자 모달 grid
+		----------------*/
+		
+		function empListGridInit(){
+			let empListGrid = new tui.Grid({
+				el: document.getElementById('empListGrid'),
+				scrollX: false,
+				scrollY: false,
+				rowHeaders: ['rowNum'],
+				columns: [
+					{
+						header: '담당자 번호',
+						name: 'pproEmpId'
+					},
+					{
+						header: '담당자명',
+						name: 'pproEmpNm'
+					}
+				]
+			});
+			return empListGrid;
 		}
 		
 		
@@ -194,22 +234,35 @@
 		function gridClick(){
 			grid.on('click',function(ev){
 				let rk = grid.getFocusedCell().rowKey;
-				let val = grid.getRow(rk).eqpNm;
-				console.log(val);
-				if(rk != null && val == null || val == ''){
-					$.ajax({
-						url : '/noUseEqp',
-						method: "GET",			
-					}).then(res=>{
-						eqModalGrid.resetData(res);
-					})
-		   			$('#eqModal').modal('show');
-		   			eqModalGrid.refreshLayout();
+				let eqpNm = grid.getRow(rk).eqpNm;
+				let pproEmpId = grid.getRow(rk).pproEmpId;
+				console.log(pproEmpId);
+				if(rk != null){
+					if(eqpNm == null || eqpNm == ''){
+						$.ajax({
+							url : '/noUseEqp',
+							method: "GET",			
+						}).then(res=>{
+							eqModalGrid.resetData(res);
+						})
+			   			$('#eqModal').modal('show');
+			   			eqModalGrid.refreshLayout();
+					}else if(pproEmpId == null || pproEmpId == ''){
+						$.ajax({
+							url : '/getProEmpList',
+							method: "GET",			
+						}).then(res=>{
+							empListGrid.resetData(res);
+						})
+						$('#empModal').modal('show');
+			   			empListGrid.refreshLayout();
+					}
 				}
 				
 			})
 		}
 	
+		
 		/*------------
 		// 미설비목록 모달 그리드 클릭 이벤트
 		----------------*/
@@ -232,6 +285,27 @@
 		}
 		
 		
+
+		/*------------
+		// 생산담당자 조회 모달 그리드 클릭 이벤트
+		----------------*/
+		function empListGridClick(){
+			empListGrid.on('click',function(ev){
+				let data = empListGrid.getRow(ev.rowKey);
+				let pproEmpId = data.pproEmpId;
+				let pproEmpNm = data.pproEmpNm;
+				let gRowKey = grid.getFocusedCell().rowKey;
+				
+				grid.setValue(gRowKey,'pproEmpId',pproEmpId);
+				grid.setValue(gRowKey,'pproEmpNm',pproEmpNm);
+				
+				$("#empModal").modal("hide"); 
+			})
+		}
+		
+		
+		
+		
 		/*------------
 		// select 옵션 변경시 조회
 		----------------*/
@@ -251,6 +325,8 @@
 			});
 		}
 		
+		
+		
 		/*------------
 		// 초기화버튼 이벤트 핸들러
 		----------------*/
@@ -267,6 +343,8 @@
 				})
 			});	
 		}
+		
+		
 		
 		
 		/*------------
@@ -307,6 +385,9 @@
 						contentType : 'application/json',
 						data : JSON.stringify(dataList),
 						dataType : 'json',
+						beforeSend : function (xhr) {
+						    xhr.setRequestHeader(header, token);
+						},
 						success : function(data){
 								  Swal.fire('삭제 완료되었습니다');
 								  grid.removeCheckedRows();
@@ -339,9 +420,9 @@
 						let pproCd = data[i].pproCd;
 						let eqpCd = data[i].eqpCd;
 						let pproName = data[i].pproName;
-						let pproEmpName = data[i].pproEmpName;
+						let pproEmpId = data[i].pproEmpId;
 						let pproSts = data[i].pproSts;
-						dataList.push({pproCd, eqpCd, pproName, pproEmpName, pproSts})
+						dataList.push({pproCd, eqpCd, pproName, pproEmpId, pproSts})
 						
 					}
 					
@@ -351,6 +432,9 @@
 						contentType : 'application/json',
 						data : JSON.stringify(dataList),
 						dataType : 'json',
+						beforeSend : function (xhr) {
+						    xhr.setRequestHeader(header, token);
+						},
 						success : function(data){
 								 Swal.fire('저장 완료되었습니다');
 								// grid에서 수정
@@ -386,6 +470,9 @@
 						method: 'POST',
 						dataType : 'json',
 						data : {"pproCd" : pproCd, "eqpCd" : eqpCd},
+						beforeSend : function (xhr) {
+						    xhr.setRequestHeader(header, token);
+						},
 						success : function(data){
 								 Swal.fire('수정 완료되었습니다');
 								// grid에서 수정

@@ -4,7 +4,7 @@
 
 	<!-- 생산계획조회 -->
 	<select id="getPlan" resultType="com.mandu.yamyam.common.LowerKeyMap">
-		SELECT TO_CHAR(l.ppln_date,'yyyy-MM-dd') AS ppln_date, 
+		SELECT DISTINCT TO_CHAR(l.ppln_date,'yyyy-MM-dd') AS ppln_date, 
 		       l.ppln_cd, 
 		       l.od_cd, 
 		       l.ppln_name, 
@@ -18,7 +18,7 @@
                      AND #{endDate}
             </if>
         </where>
-         ORDER BY PPLN_CD DESC
+         ORDER BY ppln_date DESC
 	</select>
 	
 	
@@ -37,7 +37,7 @@
                      AND #{endDate}
             </if>
         </where>
-        ORDER BY P.PPLN_CD, D.PPLND_CD
+        ORDER BY d.pplnd_prio
         
 	</select>
 	
@@ -98,6 +98,13 @@
 	<update id="updateBpod" parameterType="com.mandu.yamyam.pro.service.ProVO">
 		UPDATE b_pod
 		SET rqt_sts = 'RQT-STS2'
+		WHERE od_cd = #{odCd}
+	</update>
+	
+	<!-- 주문서 업데이트 -->
+	<update id="updateBod" parameterType="com.mandu.yamyam.pro.service.ProVO">
+		UPDATE b_od
+		SET od_sts = 'ORD-STS2'
 		WHERE od_cd = #{odCd}
 	</update>
 	
@@ -257,14 +264,17 @@
 		    ON d.pod_cd = p.pod_cd
 		  JOIN c_prd c
 		    ON p.prd_cd = c.prd_cd
-		 WHERE TRUNC(SYSDATE) = TRUNC(d.podd_dates)
-         and d.podd_sts = 'PLN-STS3'
+          LEFT OUTER JOIN b_in b
+            ON b.podd_cd = d.podd_cd
+          WHERE b.podd_cd is null
+		  AND TRUNC(CURRENT_DATE) = TRUNC(d.podd_dates)
+          AND d.podd_sts = 'PLN-STS3'
 		 ORDER BY 3
 	</select>
 	
 	<!-- 생산관리 : 공정목록 조회 -->
 	<select id="flowProgress" resultType="com.mandu.yamyam.common.LowerKeyMap">
-		SELECT l.prd_cd, p.ppro_cd, p.ppro_name, e.eqp_cd,e.eqp_nm, p.ppro_emp_name,
+		SELECT l.prd_cd, p.ppro_cd, p.ppro_name, e.eqp_cd,e.eqp_nm, find_emp_name(p.ppro_emp_id) as ppro_emp_nm,
 			   find_code_name(e.eqp_sts) AS eqp_sts , p.pline_cd
 		  FROM p_pro p
 		  JOIN e_eqp e
@@ -298,7 +308,7 @@
 	
 	<!-- 생산관리 : 진행 후 조회 -->
 	<select id="afterProgress" resultType="com.mandu.yamyam.common.LowerKeyMap">
-		SELECT p.ppro_cd, p.ppro_name, e.eqp_cd,e.eqp_nm, p.ppro_emp_name,
+		SELECT p.ppro_cd, p.ppro_name, e.eqp_cd,e.eqp_nm, find_emp_name(ppro_emp_id) as ppro_emp_nm,
 			   find_code_name(e.eqp_sts) AS eqp_sts,
 			   p.ppro_er_amt, p.ppro_ot_amt, p.ppro_in_amt, p.pline_cd,
 			   TO_CHAR(p.ppro_s_time, 'yyyy-MM-dd HH24:MM:SS') as ppro_s_time,
@@ -358,48 +368,61 @@
 						   )
 	</insert>
 	
+	<!-- 실시간 생산공정을 기반으로 생산공정 이력을 생성(프로시저 사용) -->
+	<insert id="insertPRecord" parameterType="com.mandu.yamyam.pro.service.ProVO" statementType="CALLABLE">
+		{ CALL mk_p_record(#{plineCd}) }
+	</insert>
+	
+	<!-- 실시간 공정 비워주기 -->
+	<update id="resertPpro" parameterType="com.mandu.yamyam.pro.service.ProVO">
+		UPDATE p_pro set ppro_in_amt = '',
+                 ppro_er_amt = '',
+                 ppro_ot_amt = '',
+                 ppro_s_time = '',
+                 ppro_e_time = '',
+                 ppro_er_cd = '',
+                 ppro_er_dtl = ''
+		WHERE pline_cd = #{plineCd}
+	</update>
+	
+	
 	
 	<!-- 공정 실적 조회 -->
 	<select id="getResultList" resultType="com.mandu.yamyam.common.LowerKeyMap">
-	    SELECT p.ppro_cd, p.ppro_name, e.eqp_cd, e.eqp_nm, p.ppro_emp_name,
-	   		  find_code_name(e.eqp_sts) AS eqp_sts,
-	   	      TO_CHAR(p.ppro_s_time, 'yyyy-MM-dd HH24:MM:SS') as ppro_s_time,
-       		  TO_CHAR(p.ppro_e_time, 'yyyy-MM-dd HH24:MM:SS') as ppro_e_time,
-       	      p.ppro_er_amt, p.ppro_ot_amt, p.ppro_in_amt, p.pline_cd, d.pod_cd,
-       	      TO_CHAR(d.pod_dates, 'yyyy-MM-dd') as pod_dates,
-       	      To_CHAR(pl.ppln_date, 'yyyy-MM-dd') as ppln_date
-	    FROM p_pro p
-	    JOIN e_eqp e
-	      ON p.eqp_cd = e.eqp_cd
-		JOIN p_line l
-		  ON l.pline_cd = p.pline_cd
-		JOIN p_od d
-		  ON l.pline_cd = d.pline_cd
-		JOIN p_odd od
-          ON od.pod_cd = d.pod_cd
-        JOIN b_in b
-          ON b.podd_cd = od.podd_cd
-        JOIN p_plnd pl
-          ON pl.pplnd_cd = d.pplnd_cd
-        <where>
+	    SELECT DISTINCT d.pod_cd,find_emp_name(r.ppro_emp_id) as ppro_emp_nm,
+      				    r.ppro_cd, r.pre_date, r.eqp_cd, r.ppro_name,
+       				    r.ppro_emp_id, r.ppro_in_amt, r.ppro_er_amt, r.ppro_ot_amt,
+       					TO_CHAR(r.ppro_s_time, 'yyyy-MM-dd HH24:MM:SS') AS ppro_s_time,
+       					TO_CHAR(r.ppro_e_time, 'yyyy-MM-dd HH24:MM:SS') AS ppro_e_time,
+       					r.ppro_er_cd, r.ppro_er_dtl,
+        				TO_CHAR(d.pod_dates, 'yyyy-MM-dd') AS pod_dates
+		FROM p_record r
+		JOIN e_eqp e ON r.eqp_cd = e.eqp_cd
+		JOIN p_od d ON r.pline_cd = d.pline_cd
+		JOIN p_odd od ON od.pod_cd = d.pod_cd
+		JOIN b_in i ON i.podd_cd = od.podd_cd
+		JOIN p_plnd pl ON pl.pplnd_cd = d.pplnd_cd
+       	
         	<if test="podCd !=null and !podCd.equals('')">
-	        	d.pod_cd = #{podCd}	AND
+	        	WHERE d.pod_cd = #{podCd}
 	        </if>
 	        <if test="pproName != null and !pproName.equals('') ">
-	        	p.ppro_name LIKE #{pproName}||'%' AND
+	        	AND r.ppro_name = #{pproName} 
 	        </if>
 	        <if test="pproErCd != null and !pproErCd.equals('') ">
-	        	p.ppro_er_cd = #{pproErCd} AND
+	        	AND r.ppro_er_cd = #{pproErCd} 
 	        </if>
 	        <if test='startDate!= null and endDate != null'>
-	            TRUNC(pl.ppln_date) BETWEEN #{startDate} AND #{endDate}
+	            AND TRUNC(pl.ppln_date) BETWEEN #{startDate} AND #{endDate}
 	        </if>
-        </where>
+
+        ORDER BY pod_dates DESC, r.eqp_cd
 	</select>
 	
 	<!-- 공정관리 조회 -->
 	<select id="getProList" resultType="com.mandu.yamyam.common.LowerKeyMap">
-		SELECT find_code_name(p.ppro_sts) AS ppro_sts, p.ppro_cd, p.ppro_name, p.eqp_cd, p.ppro_emp_name, e.eqp_nm, e.md_nm
+		SELECT find_code_name(p.ppro_sts) AS ppro_sts, p.ppro_cd, p.ppro_name, p.eqp_cd, p.ppro_emp_id, e.eqp_nm, e.md_nm,
+			   find_emp_name(ppro_emp_id) as ppro_emp_nm
 		  FROM p_pro p
 		  JOIN e_eqp e
 		    ON p.eqp_cd = e.eqp_cd
@@ -420,19 +443,28 @@
 		   AND e.eqp_sts = 'EQP-STS3'
 	</select>
 	
+	<!-- 생산 직원 리스트 조회 -->
+	<select id="getProEmpList" resultType="com.mandu.yamyam.common.LowerKeyMap">
+		SELECT emp_no as ppro_emp_id,
+		       emp_nm as ppro_emp_nm
+		FROM c_emp
+		WHERE dept_cd = 102
+	</select>
+	
+	
 	<!-- 공정관리 : 등록 -->
 	<insert id="insertProManage" parameterType="com.mandu.yamyam.pro.service.ProVO">
 		INSERT INTO p_pro (
 							ppro_cd,
 							eqp_cd,
 							ppro_name,
-							ppro_emp_name,
+							ppro_emp_id,
 							ppro_sts ) 
      				VALUES (
      						#{pproCd},
 							#{eqpCd},
 							#{pproName},
-							#{pproEmpName},
+							#{pproEmpId},
 							#{pproSts})
 	</insert>
 	
@@ -468,7 +500,7 @@
 	
 	<!-- 공정 목록 조회 -->
 	<select id="viewProgress" resultType="com.mandu.yamyam.common.LowerKeyMap">
-		SELECT p.ppro_cd, p.ppro_name, e.eqp_cd,e.eqp_nm, p.ppro_emp_name,
+		SELECT p.ppro_cd, p.ppro_name, e.eqp_cd,e.eqp_nm, find_emp_name(ppro_emp_id) as ppro_emp_nm,
 			   find_code_name(e.eqp_sts) AS eqp_sts 
 		  FROM p_pro p
 		  JOIN e_eqp e

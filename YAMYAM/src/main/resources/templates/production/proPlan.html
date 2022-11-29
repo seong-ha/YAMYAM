@@ -43,65 +43,64 @@
 					<!-- 관리 탭 -->
 					<div class="tab-pane fade show active" id="manage" role="tabpanel"
 						aria-labelledby="manage-tab">
-						<div style="margin: 15px;">
-							<h4>생산계획</h4>
-							<table style="width: 100%;">
-								
-								<tr>
-									<td style="width: 80px">계획일자 &nbsp;</td>
-									<td>
-										<!-- date-picker -->
-										<div
-											class="tui-datepicker-input tui-datetime-input tui-has-focus">
-											<input id="startpicker-input" type="text" aria-label="Date" name="startDate">
-											<span class="tui-ico-date"></span>
-											<div id="startpicker-container" style="margin-left: -1px;"></div>
-										</div> <span>-</span>
-										<div
-											class="tui-datepicker-input tui-datetime-input tui-has-focus">
-											<input id="endpicker-input" type="text" aria-label="Date" name="endDate">
-											<span class="tui-ico-date"></span>
-											<div id="endpicker-container" style="margin-left: -1px;"></div>
-										</div>
-										<button type="button" id="searchBtn"
-											class="btn btn-dark btn-sm">검색</button>
-										<button type="button" id="cancelBtn"
-											class="btn btn-dark btn-sm">초기화</button>
-									</td>
-									<td></td>
-								</tr>
-								<tr>
-									<td colspan="3">
-										<div id="manageGrid"></div>
-									</td>
-								</tr>
-							</table>
-
-						</div>
-						<div style="margin: 15px;">
-							<h4>상세생산계획</h4>
-							<table style="width: 100%;">
-								<tr>
-									<td colspan="3">
-										<div id="detailPGrid"></div>
-									</td>
-								</tr>
-								<tr>
-									<td></td>
-									<td></td>
-									<td style="text-align: right;">
-									<th:block sec:authorize="hasAnyAuthority('JOB-GRD2')">
-										<button type="button" id="updateBtn"
-											class="btn btn-dark btn-sm">계획수정</button>
-										<button type="button" id="deleteBtn"
-											class="btn btn-dark btn-sm">계획취소</button>
-									</th:block>
-									</td>
-								</tr>
-							</table>
-
-						</div>
-
+						<div class="container">
+							<div class="row">
+								<div class="col-5">
+										<h4>생산계획</h4>
+										<table style="width: 100%;">
+											<tr>
+												<td style="width: 80px">계획일자 &nbsp;</td>
+												<td>
+													<!-- date-picker -->
+													<div
+														class="tui-datepicker-input tui-datetime-input tui-has-focus">
+														<input id="startpicker-input" type="text" aria-label="Date" name="startDate">
+														<span class="tui-ico-date"></span>
+														<div id="startpicker-container" style="margin-left: -1px;"></div>
+													</div> <span>-</span>
+													<div
+														class="tui-datepicker-input tui-datetime-input tui-has-focus">
+														<input id="endpicker-input" type="text" aria-label="Date" name="endDate">
+														<span class="tui-ico-date"></span>
+														<div id="endpicker-container" style="margin-left: -1px;"></div>
+													</div>
+													<button type="button" id="searchBtn"
+														class="btn btn-dark btn-sm">검색</button>
+													<button type="button" id="cancelBtn"
+														class="btn btn-dark btn-sm">초기화</button>
+												</td>
+												<td></td>
+											</tr>
+											<tr>
+												<td colspan="3">
+													<div id="manageGrid"></div>
+												</td>
+											</tr>
+										</table>
+								</div>
+								<div class="col-7">
+										<h4>상세생산계획</h4>
+										<table style="width: 100%; margin-top:39px;">
+											<tr><td></td></tr>
+											<tr>
+												<td colspan="3">
+													<div id="detailPGrid"></div>
+												</td>
+											</tr>
+											<tr>
+												<td style="text-align: right;">
+												<th:block sec:authorize="hasAnyAuthority('JOB-GRD1', 'JOB-GRD2')">
+													<button type="button" id="updateBtn"
+														class="btn btn-dark btn-sm">계획수정</button>
+													<button type="button" id="deleteBtn"
+														class="btn btn-dark btn-sm">계획취소</button>
+												</th:block>
+												</td>
+											</tr>
+										</table>
+								</div>
+							</div>
+					</div>
 					</div>
 					
 					<!-- 등록 탭 -->
@@ -217,7 +216,7 @@
 	searchBtnHandler();	 	  // date picker input 값 조회 버튼
 	rModalGridClickHandler(); // 생산요청서 모달에 클릭 이벤트 핸들러
 	insertClickHandler();	  // insertGrid 클릭 이벤트 핸들러
-	getDetailBtnhandler();
+	getDetailBtnhandler();	  // 생산계획 관리 그리드 선택시 상세계획 그리드에 출력
 	
 	
 	
@@ -260,6 +259,7 @@
 				    useClient: true,	// front에서만 페이징 하는 속성
 				    perPage: 5
 				  },
+			width : 630,
 			pagination : true,
 			scrollX : false,
 			scrollY : false,
@@ -268,22 +268,19 @@
 			{
 				header : '생산계획코드',
 				name : 'pplnCd',
+				width : 140
 			}, {
 				header : '계획명',
 				name : 'pplnName'
 			}, {
 				header : '주문코드',
-				name : 'odCd'
+				name : 'odCd',
+				width : 140
 			},{
 				header : '계획날짜',
-				name : 'pplnDate'
-			}
-			, {
-				header : '진행구분',
-				name : 'pplndSts',
-				filter: {
-			        type: 'select'  
-			      }
+				name : 'pplnDate',
+				align: "right",
+				width : 100
 			}]
 		});
 		$.ajax({
@@ -313,36 +310,40 @@
 			}, {
 				header : '제품명',
 				name : 'prdNm',
-				align: "center",
 				filter: {
 			        type: 'select'			  
-			      }
+			      },
+			    width : 120
 			}, {
 				header : '계획량',
 				name : 'pplndAmt',
-				align: "right"
+				align: "right",
+				width : 120
 
 			}, {
 				header : '우선순위',
 				name : 'pplndPrio',
 				align: "right",
-				editor: 'text'
+				editor: 'text',
+				width : 120
 				
 			}, {
 				header : '생산일수',
 				name : 'pplndDays',
 				align: "right",
-			    editor: 'text'
+			    editor: 'text',
+			    width : 120
 			}, {
 				header : '진행구분',
 				name : 'pplndSts',
 				filter: {
 			        type: 'select'			  
-			      }
+			      },
+			    width : 120
 			}]
 		});
 		
-		detailPGrid.hideColumn('pplndSts');
+		//detailPGrid.hideColumn('pplndSts');
 		// 계획 관리 그리드에서의 수정
 		detailPGrid.on('afterChange', function(ev) {
 
@@ -515,23 +516,25 @@
 				name : 'odCd',
 			}, {
 				header : '제품코드',
-				name : 'prdCd'
+				name : 'prdCd',
+				align : 'center'
 			}, {
 				header : '제품명',
 				name : 'prdNm'
 			}, {
 				header : '계획량',
 				name : 'rqtAmt',
-				editor : 'text'
+				editor : 'text',
+				align : 'right'
 			}, {
 				header : '생산일수',
 				name : 'pplndDays',
 				editor: 'text',
-				// 필수 입력 값
 				validation: {
 			        dataType: 'text',
 			        required: true
-			      }  
+			      },
+			    align : 'right'
 			}, {
 				header : '작업우선순위',
 				name : 'pplndPrio',
@@ -541,6 +544,7 @@
 			        dataType: 'text',
 			        required: true
 			      },
+			    align : 'right'
 			}, {
 				header : '비고',
 				name : 'other'
@@ -577,16 +581,19 @@
 				name : 'odCd',
 			}, {
 				header : '납기일자',
-				name : 'deDate'
+				name : 'deDate',
+				align : 'right'
 			}, {
 				header : '제품코드',
-				name : 'prdCd'
+				name : 'prdCd',
+				align : 'center'
 			}, {
 				header : '제품명',
 				name : 'prdNm'
 			}, {
 				header : '요청수량',
 				name : 'rqtAmt',
+				align : 'right'
 			}]
 		});
 			
@@ -603,21 +610,34 @@
 		requestModalGrid.on('click',function(ev){
 			// 클릭한 행의 자재명, 자재코드 
 			let val = requestModalGrid.getRow(ev.rowKey);
-			let RMCode = val.odCd;
+			let RMCode = val.odCd; // 생산요청서 모달에서 클릭한 주문코드
+			let inCount = insertGrid.getRowCount(); // 생산계획관리 그리드
 			let iGDataList = insertGrid.getData();
 			let pplndAmt = requestModalGrid.getRow(ev.rowKey).rqtAmt;
-			if(iGDataList != ''){
-				for(let i =0; i<iGDataList; i++){
-					let code = el.odCd; 
+			console.log(inCount);
+			if(inCount == 0){
+				insertGrid.appendRow(val);
+				insertGrid.setValue(ev.rowKey,'pplndAmt',pplndAmt)
+				$('#requestModal').modal("hide");
+			}else {
+				for(let i =0; i<iGDataList.length; i++){
+					let code = iGDataList[i].odCd;
+					$('#requestModal').modal("hide");
+					console.log(RMCode);
+					console.log(code);
 					if(RMCode != code){
 						insertGrid.appendRow(val);
+						insertGrid.setValue(ev.rowKey,'pplndAmt',pplndAmt)
 						$('#requestModal').modal("hide");
 					}
 				}
 			}
-				insertGrid.appendRow(val);
+				
+			
+			
+				/* insertGrid.appendRow(val);
 				insertGrid.setValue(ev.rowKey,'pplndAmt',pplndAmt)
-				$('#requestModal').modal("hide");	
+				$('#requestModal').modal("hide");	 */
 		})
 	}
 	

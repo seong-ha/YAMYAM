@@ -30,7 +30,6 @@
 				<td style="width: 140px;">불량분류 &nbsp;</td>
 				<td>
 					<select id="errPro" name="errPro">
-					<option>선택</option>
 					<option th:each="eCode : ${eCode}" th:text="${eCode.commdNm}" th:value="${eCode.commdCd}"></option>								
 					</select>
 				</td>
@@ -213,7 +212,7 @@
 				},
 				{
 					header: '설비명',
-					name: 'plineCd'
+					name: 'eqpNm'
 				},
 				{
 					header: '투입량',
@@ -250,7 +249,7 @@
 				},
 				{
 					header: '담당자',
-					name: 'pproEmpName',
+					name: 'pproEmpNm',
 					width : '70'
 				},
 				{
@@ -440,22 +439,20 @@
 			// 지시코드
 			let podCd = $('#orderCd').val();
 			// 공정명
-			let pproName = $('#prName').val().substr(0, 2);
+			let pproName = $('#prName').val();
 			// 불량분류
 			let pproErCd = $('select[name=errPro] option:selected').val();
 			// 계획일자
 			let getStartDay = $("#startpicker-input").val();
 			let getEndDay = $("#endpicker-input").val();
-			if(pproErCd == '선택'){
+			if(pproErCd == 'ERR-PRO-001'){
 				$.ajax({
 					url : '/getProResult',
 					method: "GET",
 					contentType: 'application/json',
 					dataType : 'json',
 					data : {"podCd" : podCd, "pproName" : pproName, "startDate" : getStartDay, "endDate" : getEndDay}
-					}).then(res=>{
-					grid.resetData(res);
-					})
+					}).then(res=>{ grid.resetData(res);	})
 			}else {
 				$.ajax({
 					url : '/getProResult',
@@ -463,12 +460,8 @@
 					contentType: 'application/json',
 					dataType : 'json',
 					data : {"podCd" : podCd, "pproName" : pproName, "pproErCd" : pproErCd, "startDate" : getStartDay, "endDate" : getEndDay}
-					}).then(res=>{
-					grid.resetData(res);
-					})
+					}).then(res=>{ grid.resetData(res);	})
 			}
-			
-			
 		})
 	}
 
