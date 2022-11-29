@@ -57,7 +57,6 @@
 					<button class="btn btn-dark btn-sm" id="SearchBtn">조회</button>
 					<button class="btn btn-dark btn-sm" id="resetBtn1">초기화</button></li>
 			</ul>
-			<h3>입고 목록</h3>
 			<div id="grid"></div>
 		</div>
 
@@ -194,7 +193,11 @@
 	function matInList(){
 		let grid = new tui.Grid({
 		      el: document.getElementById('grid'),
-		      bodyHeight: 500,
+			  pageOptions: {
+				    useClient: true,
+				    perPage: 12
+				  	},
+		      bodyHeight: 480,
 		      data: [[${matInList}]],
 		      rowHeaders: ['rowNum'],
 		      scrollX: false,
@@ -211,6 +214,7 @@
 		        {
 		          header: '자재코드',
 		          name: 'mtrCd',
+			      align: 'center',
 		          sortable: true,
 			      filter: {
 			    	  type: 'text'
@@ -219,6 +223,7 @@
 		        {
 		          header: '자재명',
 		          name: 'mtrNm',
+			      align: 'center',
 		          sortable: true,
 			      filter: {
 			    	  type: 'text'
@@ -227,6 +232,7 @@
 		        {
 		          header: '업체명',
 		          name: 'actNm',
+			      align: 'center',
 		          sortable: true,
 			      filter: {
 			    	  type: 'text'
@@ -235,6 +241,7 @@
 		        {
 		          header: '입고량',
 		          name: 'matInAmt',
+			      align: 'right',
 		          sortable: true,
 			      filter: {
 			    	  type: 'text'
@@ -243,6 +250,7 @@
 		        {
 		          header: '입고일',
 		          name: 'matInDate',
+			      align: 'right',
 		          sortable: true,
 			      filter: {
 			    	  type: 'text'
@@ -259,6 +267,7 @@
 		        {
 		          header: '유통기한',
 		          name: 'matEdate',
+			      align: 'right',
 		          sortable: true,
 			      filter: {
 			    	  type: 'text'

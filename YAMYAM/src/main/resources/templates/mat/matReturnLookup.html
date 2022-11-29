@@ -107,7 +107,11 @@
 	function matReList(){
 		  let grid = new tui.Grid({
 	      el: document.getElementById('grid'),
-	      bodyHeight: 500,
+		  pageOptions: {
+			    useClient: true,
+			    perPage: 12
+			  	},
+	      bodyHeight: 480,
 	      data: [[${mtrReList}]],
 	      rowHeaders: ['rowNum'],
 	      scrollX: false,
@@ -124,6 +128,7 @@
 			        {
 			          header: '자재코드',
 			          name: 'mtrCd',
+				      align: 'center',
 			          sortable: true,
 				      filter: {
 				    	  type: 'text'
@@ -132,6 +137,7 @@
 			        {
 			          header: '자재명',
 			          name: 'mtrNm',
+				      align: 'center',
 			          sortable: true,
 				      filter: {
 				    	  type: 'text'
@@ -140,6 +146,7 @@
 			        {
 			          header: '업체명',
 			          name: 'actNm',
+				      align: 'center',
 			          sortable: true,
 				      filter: {
 				    	  type: 'text'
@@ -148,6 +155,7 @@
 			        {
 			          header: '검사일자',
 			          name: 'matChkDate',
+				      align: 'right',
 			          sortable: true,
 				      filter: {
 				    	  type: 'text'
@@ -156,6 +164,7 @@
 			        {
 			            header: '불량내용',
 			            name: 'erInfo',
+					    align: 'center',
 				          sortable: true,
 					      filter: {
 					    	  type: 'text'
@@ -164,6 +173,7 @@
 			        {
 			          header: '반품수량',
 			          name: 'matRtAmt',
+				      align: 'center',
 			          sortable: true,
 				      filter: {
 				    	  type: 'text'
@@ -172,6 +182,7 @@
 			        {
 			          header: '반품요청일',
 			          name: 'matRtDate',
+				      align: 'right',
 			          sortable: true,
 				      filter: {
 				    	  type: 'text'

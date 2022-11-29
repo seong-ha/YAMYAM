@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.mandu.yamyam.comm.service.CommService;
 import com.mandu.yamyam.mat.service.MatOdService;
 import com.mandu.yamyam.mat.service.MatVO;
 
@@ -24,6 +25,9 @@ public class MatController {
 	@Autowired
 	MatOdService service;
 	
+	@Autowired
+	CommService commService;
+	
 	//======================
 	// 1) 자재 발주 관리
 	//======================
@@ -32,6 +36,7 @@ public class MatController {
 	public String matOd(Model model) {
 		model.addAttribute("matList", service.matList());			// 돋보기 자재목록 모달
 		model.addAttribute("actList", service.actList());			// 돋보기 업체목록 모달
+		model.addAttribute("oderN", service.matOderN7());			// 기본 전체 조회
 		model.addAttribute("newPlanList", service.newPlanList());	// 신규생산계획조회(생산계획서용 탭)
 		model.addAttribute("addNewPlan", service.addNewPlan());		// 신규 생산 계획서 모델 선택 모달창(생산계획서용 탭)
 		return "mat/matOd";
@@ -116,7 +121,9 @@ public class MatController {
 	// 자재 발주 조회
 	@RequestMapping("/matLookup")
 	public String matLookup(Model model) {
-		model.addAttribute("matLookUpAllList", service.matOdLookUpList()); // 자재전체조회 odList
+		model.addAttribute("matLookUpAllList", service.matOdLookUpList());  // 자재전체조회 odList
+		model.addAttribute("matList", service.matList());					// 돋보기 자재목록 모달
+		model.addAttribute("actList", service.actList());					// 돋보기 업체목록 모달
 		return "mat/matLookup";
 	}
 	
@@ -141,10 +148,12 @@ public class MatController {
 	// 자재 입고 검수
 	@RequestMapping("/matInChk")
 	public String matInChk(Model model) {
+		model.addAttribute("chkOd", service.chkOdList7());				// 7일치 기본 조회
 		model.addAttribute("addChkList", service.addChkModal());
 		model.addAttribute("errorList", service.erCdErInfoLookUp());	// 불량 목록 모달
 		model.addAttribute("matList", service.matList());				// 돋보기 자재 목록 모달
 		model.addAttribute("empList", service.empLookUp());				// 담당자 목록 모달
+		model.addAttribute("commList", commService.getCommdCdNm("ERR-MNP"));
 		return "mat/matInChk";
 	}
 	
@@ -183,8 +192,9 @@ public class MatController {
 	//======================
 	@RequestMapping("/matIn")
 	public String matIn(Model model) {
+		model.addAttribute("matInList", service.matInList());		// 기본 전체 조회
 		model.addAttribute("matList", service.matList());			// 돋보기 자재 목록 모달
-		model.addAttribute("empList", service.empLookUp());			// 돋보기 담당자 목록 모달
+		model.addAttribute("actList", service.actList());			// 돋보기 업체 목록 모달
 		model.addAttribute("bfInList", service.beforeInList());		// 입고 예정 목록 모달
 		return "mat/matIn";
 	}

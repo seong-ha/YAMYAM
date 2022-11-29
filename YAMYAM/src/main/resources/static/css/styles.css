@@ -11920,3 +11920,13 @@ input[readonly] {
    background-repeat: no-repeat;
    background-size: contain;
 }
+
+.light{
+    width 360px;
+    color:#87C77D;
+    font-size: 0.8em;
+    text-shadow: 0 0 .1em, 0 0 .3em;
+    left:50%;
+    top:50%;
+    transform: translate(-50%, -50%)
+}

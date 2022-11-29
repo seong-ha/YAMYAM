@@ -15,11 +15,13 @@ public interface MatOdMapper {
 	// 돋보기 업체목록 모달
 	public List<Map<String, Object>> actList();
 	
-	
 	//===============================================
 	// 1) 자재 발주 관리
 	//===============================================
-	// 자재 발주 관리(일반 탭)  - 전체 조회
+	// 자재 발주 관리(일반 탭) - 기본 전체 조회
+	public List<Map<String, Object>> matOderN7();
+	
+	// 자재 발주 관리(일반 탭)  - 조회 버튼 시 전체 조회
 	public List<Map<String, Object>> matOrderList(MatVO vo);
 	
 	// 자재 발주 관리 - 발주상세코드 단건 delete(일반 탭)
@@ -73,6 +75,9 @@ public interface MatOdMapper {
 	//===============================================
 	// 3) 자재 입고 검수 관리
 	//===============================================
+	// 자재 발주 7일치 기본 조회
+	public List<Map<String, Object>> chkOdList7();
+	
 	// 자재 입고 검수 관리 - 전체 조회
 	public List<Map<String, Object>> chkOdMatList(MatVO vo);
 	
@@ -97,8 +102,11 @@ public interface MatOdMapper {
 	//===============================================
 	// 4) 자재 입고 관리
 	//===============================================
-	// 자재 입고 관리
+	// 조회 버튼 클릭 시 조회
 	public List<Map<String, Object>> matInAllList(MatVO vo);
+	
+	// 기본 조회
+	public List<Map<String, Object>> matInList();
 	
 	// 입고 예정 목록
 	public List<Map<String, Object>> beforeInList();

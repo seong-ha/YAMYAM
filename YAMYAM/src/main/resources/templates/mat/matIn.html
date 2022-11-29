@@ -16,7 +16,7 @@
 			data-bs-target="#matModal" src="../images/Magnifying_Glass.png">
 			<input id="matOdCd" type="text" data-bs-toggle="modal"
 			data-bs-target="#matModal" readonly></li>
-		<li><label for="empNm">담당자</label><input id="empNm"
+		<li><label for="empNm">업체명</label><input id="empNm"
 			data-bs-toggle="modal" data-bs-target="#empModal" readonly> <img
 			class="Magnifying-Glass-img" alt="image" data-bs-toggle="modal"
 			data-bs-target="#empModal" src="../images/Magnifying_Glass.png">
@@ -94,7 +94,7 @@
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header">
-					<h5 class="modal-title" id="empModalLabel">사원 목록</h5>
+					<h5 class="modal-title" id="empModalLabel">업체 목록</h5>
 					<button type="button" class="btn-close" data-bs-dismiss="modal"
 						aria-label="Close" id="empCloseBtn"></button>
 				</div>
@@ -116,7 +116,7 @@
 	let grid = inMatList(); 		// 입고전체조회 그리드
 	
 	let modalGrid = matList();		// 자재 목록 모달 그리드
-	let modalGrid2 = empList();		// 직원 목록 모달 그리드
+	let modalGrid2 = actList();		// 직원 목록 모달 그리드
 	let modalGrid3 = addInMat();	// 입고 예정 추가 모달 그리드
 	
 	modalRef();						// 모달 리프레쉬
@@ -138,11 +138,15 @@
 	function inMatList(){
 		let grid = new tui.Grid({
 		      el: document.getElementById('grid'),
-		      bodyHeight: 500,
-		      data: null,
+			  pageOptions: {
+				    useClient: true,
+				    perPage: 12
+				  	},
+		      bodyHeight: 480,
+		      data: [[${matInList}]],
 		      rowHeaders: ['checkbox','rowNum'],
 		      scrollX: false,
-		      scrollY: true,
+		      scrollY: false,
 		      columns: [
 		        {
 		          header: '자재LOT번호',
@@ -152,26 +156,31 @@
 		        {
 		          header: '자재코드',
 		          name: 'mtrCd',
+			      align: 'center',
 		          sortable: true
 		        },
 		        {
 		          header: '자재명',
 		          name: 'mtrNm',
+			      align: 'center',
 		          sortable: true
 		        },
 		        {
 		          header: '업체명',
 		          name: 'actNm',
+			      align: 'center',
 		          sortable: true
 		        },
 		        {
 		          header: '입고량',
 		          name: 'matInAmt',
+			      align: 'right',
 		          sortable: true
 		        },
 		        {
 		          header: '입고일',
 		          name: 'matInDate',
+			      align: 'right',
 		          sortable: true,
 			      editor: {
 			    	  type: 'datePicker',
@@ -238,32 +247,24 @@
 	}
 	
 	/*------------------------------
-	// 담당자목록 모달 그리드
+	// 업체목록 모달
 	--------------------------------*/
-	function empList(){
+	function actList() {
 		let modalGrid2 = new tui.Grid({
 			el: document.getElementById('modalGrid2'),
 			bodyHeight: 250,
-			data: [[${empList}]],
+			data: [[${actList}]],
 			rowHeaders: ['rowNum'],
 			scrollX: false,
 			scrollY: true,
 			columns: [
 				{
-					header: '이름',
-					name: 'empNm',
-					sortable: true,
-					filter: {
-					        type: 'select'			  
-					      }
+					header: '업체 코드',
+					name: 'actCd',
 				},
 				{
-					header: '아이디',
-					name: 'empId',
-					sortable: true,
-					filter: {
-					        type: 'select'			  
-					      }
+					header: '업체명',
+					name: 'actNm',
 				}
 			]
 		});
@@ -339,6 +340,8 @@
 			document.getElementById('matOdCd').value = '';
 			document.getElementById('empNm').value = '';
 			document.getElementById('empId').value = '';
+			
+			grid.resetData([[${matInList}]]);
 		});	
 	}
 	
@@ -428,20 +431,8 @@
 						if(result >= 1){
 				        	Swal.fire('저장이 완료되었습니다.');
 				        	
-				        	// 검수 테이블에 MAT_INSTS 'Y'로 업데이트
-				        	$.ajax({
-				        		url: '/updateInsts',
-				        		method: 'POST',
-				        		contentType: 'application/JSON',
-				        		dataType: 'JSON',
-				        		data: JSON.stringify(data),
-				        		sussecc: function(result){
-				        			console.log('검수상태 Y로 업데이트 완료');
-				        		},
-				        		error: function(reject){
-				        			console.log(reject);
-				        		}
-				        	})
+				        	// MAT_INSTS 'Y'로 업데이트
+				        	updateInsts(data);
 				        	
 							setTimeout(() => location.reload(),400);
 				        	
@@ -458,17 +449,35 @@
 		})
 	}
 	
+    // 검수 테이블에 MAT_INSTS 'Y'로 업데이트
+	function updateInsts(data){
+    	$.ajax({
+    		url: '/updateInsts',
+    		method: 'POST',
+    		contentType: 'application/JSON',
+    		dataType: 'JSON',
+    		async: false,
+    		data: JSON.stringify(data),
+    		sussecc: function(result){
+    			console.log('검수상태 Y로 업데이트 완료');
+    		},
+    		error: function(reject){
+    			console.log(reject);
+    		}
+    	})
+	}
+	
 	/*--------------------------------
 	// 조회 버튼 클릭 시 그리드 등장
 	----------------------------------*/
 	function SearchBtnFn() {
 		document.getElementById('SearchBtn').addEventListener('click',function() {
 			let matOdCd = document.getElementById('matOdCd').value; // 자재 코드
-			let empNm = document.getElementById('empNm').value; // 직원 이름
+			let empNm = document.getElementById('empNm').value; // 업체 이름
 			let matInDate = document.getElementById('startpicker-input').value; // 시작 날짜
 			let matEdate = document.getElementById('endpicker-input').value; // WHERE절 비교 용으로 유통기한에 end Date담음
 			
-			let data = {mtrCd: matOdCd, empNm: empNm, matInDate: matInDate, matEdate: matEdate};
+			let data = {mtrCd: matOdCd, actNm: empNm, matInDate: matInDate, matEdate: matEdate};
 			
 			$.ajax({
 				url: '/matIn',
@@ -508,7 +517,7 @@
 	}
 	
 	/*--------------------------------
-	// 직원 모달 행 클릭시 인풋 태그로
+	// 업체 모달 행 클릭시 인풋 태그로
 	----------------------------------*/
 	function empModalClickFn() {
 		modalGrid2.on('click', function(ev){
@@ -518,8 +527,8 @@
 			let empNm = document.getElementById('empNm');
 			let empId = document.getElementById('empId');
 			
-			empNm.value = data.empNm;
-			empId.value = data.empId;
+			empNm.value = data.actNm;
+			empId.value = data.actCd;
 			
 			empCloseBtn.click();
 		})

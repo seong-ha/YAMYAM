@@ -34,7 +34,13 @@ public class MatOdServiceImpl implements MatOdService {
 	//===============================================
 	// 1) 자재 발주 관리
 	//===============================================
-	// 전체조회(일반 탭)
+	// 자재 발주 관리(일반 탭) - 기본 전체 조회
+	@Override
+	public List<Map<String, Object>> matOderN7() {
+		return mapper.matOderN7();
+	}
+	
+	// 조회 버튼 클릭 시 전체조회(일반 탭)
 	@Override
 	public List<Map<String, Object>> matOrderList(MatVO vo) {
 		return mapper.matOrderList(vo);
@@ -147,6 +153,12 @@ public class MatOdServiceImpl implements MatOdService {
 	//===============================================
 	// 3) 자재 입고 검수 관리
 	//===============================================
+	// 자재 발주 7일치 기본 조회
+	@Override
+	public List<Map<String, Object>> chkOdList7() {
+		return mapper.chkOdList7();
+	}
+	
 	// 자재 입고 검수 관리 - 추가 모달창
 	@Override
 	public List<Map<String, Object>> addChkModal() {
@@ -204,10 +216,16 @@ public class MatOdServiceImpl implements MatOdService {
 	//===============================================
 	// 4) 자재 입고 관리
 	//===============================================
-	// 자재 입고 관리
+	// 조회 버튼 조회
 	@Override
 	public List<Map<String, Object>> matInAllList(MatVO vo) {
 		return mapper.matInAllList(vo);
+	}
+	
+	// 기본 조회
+	@Override
+	public List<Map<String, Object>> matInList() {
+		return mapper.matInList();
 	}
 
 	// 입고 예정 목록
