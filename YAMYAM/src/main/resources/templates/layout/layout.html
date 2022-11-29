@@ -87,16 +87,18 @@
 	<nav layout:fragment="menu"
 		class="sb-topnav navbar navbar-expand navbar-dark bg-red">
 		<!-- Navbar Brand-->
-		<a class="navbar-brand ps-3 font-NSEB logo-size" href="/"
-			onclick="tabInfoDelete()"><span class="col-green">YAM</span>YAM</a>
+<!-- 				<a class="navbar-brand ps-3 font-NSEB logo-size" href="/"
+			onclick="tabInfoDelete()"><span class="col-green">YAM</span>YAM</a> -->
+		 <a href="/"> <img alt="image" src="/images/logo.png"
+			style="width: 120px; height: 70px; margin-bottom: 15px; margin-left: 15px;">
+		</a>
 		<th:block sec:authorize="isAuthenticated()">
 			<form action="logout" method="post" style="margin-left: 76%"
 				id="logout">
 				<input type="hidden" th:name="${_csrf.parameterName}"
 					th:value="${_csrf.token}" /> <input class="btn btn-link font-NSEB"
 					type="submit" value="Logout"
-					style="font-size: 1.5rem; text-decoration: none; color: #fff;
-					font-weight: bold; padding-left: 100px;">
+					style="font-size: 1.5rem; text-decoration: none; color: #fff; font-weight: bold; padding-left: 100px;">
 			</form>
 		</th:block>
 		<!-- 로그인 유무에 따라 Login/LogOut로 다르게 보이도록 -->
