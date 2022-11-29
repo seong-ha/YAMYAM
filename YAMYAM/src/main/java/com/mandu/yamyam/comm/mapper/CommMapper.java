@@ -8,6 +8,7 @@ import com.mandu.yamyam.comm.service.CommVO;
 import com.mandu.yamyam.comm.service.CommdVO;
 import com.mandu.yamyam.comm.service.MtrVO;
 import com.mandu.yamyam.comm.service.PrdVO;
+import com.mandu.yamyam.pro.service.ProVO;
 
 public interface CommMapper {
 
@@ -47,7 +48,6 @@ public interface CommMapper {
 	public int ajaxDeleteMtr(MtrVO mtrVO);
 	
 	
-	
 	// ajax 거래처 코드 불러오기
 	public List<ActVO> ajaxSelectAct();
 	// ajax 구매 거래처 등록하기
@@ -66,6 +66,14 @@ public interface CommMapper {
 	
 	// ajax BOM 코드 불러오기
 	public List<BOMVO> ajaxSelectBOM();
-	// ajax BOM 제품목록(모달창)
+	// ajax BOM 제품목록(모달창grid2)
 	public List<PrdVO> ajaxSelectModalBOM();
+	// ajax BOM 사용공정명(모달창(grid3)
+	public List<ProVO> ajaxSelectProInfoModalBOM();
+	// ajax BOM 사용공정명(모달창(grid4)
+	public List<PrdVO> ajaxSelectPrdInfoModalBOM();
+	// ajax BOM 사용공정명(모달창(grid5)
+	public List<MtrVO> ajaxSelectMtrInfoModalBOM();
+	// ajax BOM 등록하기
+	public int ajaxInsertBOM(BOMVO bomVO);
 }

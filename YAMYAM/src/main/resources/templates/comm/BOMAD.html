@@ -16,7 +16,7 @@
 		<ul class="ul-style">
 				<li><label for="prdCodeLabel">제품 코드</label><input id="prdCode" name="prdCd" readonly>
 					<img id="prdCodeLabel" class="Magnifying-Glass-img" alt="image"
-						data-bs-toggle="modal" data-bs-target="#exampleModal"
+						data-bs-toggle="modal" data-bs-target="#exampleModal2"
 						src="../images/Magnifying_Glass.png" >
 					<input type="text" name="prdNm" id="prdName" readonly>
 				</li>
@@ -25,21 +25,21 @@
 		</ul>
 		
 			<div align="right">
-			<button type="button" class="btn btn-dark btn-sm" onclick="resetf()" id="selectBtn">조회</button>
+			<button type="button" class="btn btn-dark btn-sm" id="selectBtn">조회</button>
 			<button type="button" class="btn btn-dark btn-sm" id="insertBtn">추가</button>
 			<button type="button" class="btn btn-dark btn-sm" id="saveBtn">저장</button>
-			<button type="reset" class="btn btn-dark btn-sm">초기화</button>
+			<button type="reset" class="btn btn-dark btn-sm" id="searchReset">초기화</button>
 	</div>
 	</form>
-	<!-- Modal -->
-		<div class="modal" id="exampleModal" tabindex="-1"
+	<!-- Modal2 -->
+		<div class="modal" id="exampleModal2" tabindex="-1"
 			aria-labelledby="exampleModalLabel" aria-hidden="true">
 			<div class="modal-dialog">
 				<div class="modal-content">
 					<div class="modal-header">
 			    	<h4 class="modal-title" id="exampleModalLabel">제품 코드 목록</h4>
 			    	<button type="button" class="btn-close" data-bs-dismiss="modal"
-			            aria-label="Close" id="prdModalClose"></button>
+			            aria-label="Close" id="prdModalClose2"></button>
 		    		</div>
 			     		<div class="modal-body">
 							<h4 align="center"><b>제품 목록</b></h4>
@@ -48,6 +48,78 @@
 			                <br> <br>
 			               	
 			               	<div id="grid2"></div>
+			            	   	
+			               	
+			     	    </div>
+			     </div>
+			 </div>
+	    </div>
+	    
+	    <!-- Modal3 -->
+		<div class="modal" id="exampleModal3" tabindex="-1"
+			aria-labelledby="exampleModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+			    	<h4 class="modal-title" id="exampleModalLabel">공정 코드 목록</h4>
+			    	<button type="button" class="btn-close" data-bs-dismiss="modal"
+			            aria-label="Close" id="prdModalClose3"></button>
+		    		</div>
+			     		<div class="modal-body">
+							<h4 align="center"><b>공정 코드 검색</b></h4>
+			               	<br>
+			               	
+			                <br> <br>
+			               	
+			               	<div id="grid3"></div>
+			            	   	
+			               	
+			     	    </div>
+			     </div>
+			 </div>
+	    </div>
+	    
+	    <!-- Modal4 -->
+		<div class="modal" id="exampleModal4" tabindex="-1"
+			aria-labelledby="exampleModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+			    	<h4 class="modal-title" id="exampleModalLabel">제품 코드 목록</h4>
+			    	<button type="button" class="btn-close" data-bs-dismiss="modal"
+			            aria-label="Close" id="prdModalClose4"></button>
+		    		</div>
+			     		<div class="modal-body">
+							<h4 align="center"><b>제품 코드 검색</b></h4>
+			               	<br>
+			               	
+			                <br> <br>
+			               	
+			               	<div id="grid4"></div>
+			            	   	
+			               	
+			     	    </div>
+			     </div>
+			 </div>
+	    </div>
+	    
+	    <!-- Modal5 -->
+		<div class="modal" id="exampleModal5" tabindex="-1"
+			aria-labelledby="exampleModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+			    	<h4 class="modal-title" id="exampleModalLabel">자재 코드 목록</h4>
+			    	<button type="button" class="btn-close" data-bs-dismiss="modal"
+			            aria-label="Close" id="prdModalClose5"></button>
+		    		</div>
+			     		<div class="modal-body">
+							<h4 align="center"><b>자재 코드 검색</b></h4>
+			               	<br>
+			               	
+			                <br> <br>
+			               	
+			               	<div id="grid5"></div>
 			            	   	
 			               	
 			     	    </div>
@@ -117,9 +189,10 @@
 			scrollX : true,
 			scrollY : true,
 			bodyHeight : 500,
+			rowHeaders: ['rowNum', 'checkbox'],
 			columns : [ {
-				header : 'No',
-				name : 'bomNo'
+				header : '사용 공정코드',
+				name : 'pproCd'
 			}, {
 				header : '사용 공정명',
 				name : 'pproName'
@@ -128,7 +201,8 @@
 				name : 'bomCd'
 			}, {
 				header : '제품 코드',
-				name : 'prdCd'
+				name : 'prdCd',
+				filter : 'text'
 			}, {
 				header : '자재 코드',
 				name : 'mtrCd'
@@ -142,7 +216,7 @@
 			}],
 			showDummyRows : true
 		});
-		
+		selectBOM();	// BOM 정보 불러오기(grid)
 		
 		const grid2 = new tui.Grid({
 			el : document.getElementById('grid2'),
@@ -159,7 +233,7 @@
 				header : '규격',
 				name : 'prdStd'
 			}
-			],
+			]
 		});
 		
 		const grid3 = new tui.Grid({
@@ -167,10 +241,15 @@
 			scrollX : false,
 			scrollY : true,
 			bodyHeight : 500,
-			columns : [{
+			columns : [
+				{
+				header : '공정 코드',
+				name : 'pproCd'
+				},
+				{
 				header : '사용 공정명',
 				name : 'pproName'
-			}],
+			}]
 		});
 		
 		const grid4 = new tui.Grid({
@@ -178,10 +257,15 @@
 			scrollX : false,
 			scrollY : true,
 			bodyHeight : 500,
-			columns : [{
+			columns : [
+				{
 				header : '제품 코드',
 				name : 'prdCd'
-			}],
+				},
+				{
+				header : '제품명',
+				name : 'prdNm'
+			}]
 		});
 		
 		const grid5 = new tui.Grid({
@@ -196,19 +280,35 @@
 				header : '자재명',
 				name : 'mtrNm'
 			}
-			],
+			]
 		});
 		
 		
+	     // BOM 정보 불러오기(grid)
+		function selectBOM() {
+			$.ajax({
+				url : "ajax/selectBOM",
+				type : "get",
+				dataType: "json",
+				success : function(data){
+					grid.resetData(data);
+				},
+				error : function(reject){
+					console.log(reject);
+				}
+			})	 
+	    }
+	     
+		
+		
 		// 모달창 리프레시(모달창에 그리드 화면 띄울때 써야함!)
-	     exampleModal.addEventListener('shown.bs.modal', () => {
+	     exampleModal2.addEventListener('shown.bs.modal', () => {
 	    	// BOM 제품정보 모달 불러오기
 		 		$.ajax({
 		 			url : "ajax/selectModalBOM",
 		 			type : "get",
 		 			dataType: "json",
 		 			success : function(data){
-		 				console.log(data, 'gg');
 		 				grid2.resetData(data);
 		 			},
 		 			error : function(reject){
@@ -218,43 +318,223 @@
 	            grid2.refreshLayout(); //모달창 새로고침
 	     })
 	     
-	     // BOM 정보 불러오기
-
-	     $.ajax({
-			url : "ajax/selectBOM",
-			type : "get",
-			dataType: "json",
-			success : function(data){
-				console.log(data);
-				grid.resetData(data);
-			},
-			error : function(reject){
-				console.log(reject);
-			}
-		})
-		
-		
-		
 		// 제품목록(모달) 코드 칼럼 누르면 거기 정보가 나온다
  		
 		grid2.on('click', function(ev){
 			let rowData = grid2.getRow(ev.rowKey);
-			console.log(grid2.getRow(ev.rowKey));
 			
 		// 완제품 코드(모달) 클릭시 안으로 값이 들어감
 			prdCode.value = rowData.prdCd;
 			prdName.value = rowData.prdNm;
 			
-			prdModalClose.click();
+			prdModalClose2.click();
+			prdCode.focus();
 			
 		})
 	      
 		
-		function resetf(){
+		// ajax BOM 사용공정명(모달창(grid3))
+				
+		// 모달창 리프레시(모달창에 그리드 화면 띄울때 써야함!)
+	     exampleModal3.addEventListener('shown.bs.modal', () => {
+	    	// BOM 제품정보 모달 불러오기
+		 		$.ajax({
+		 			url : "ajax/SelectProInfoModalBOM",
+		 			type : "get",
+		 			dataType: "json",
+		 			success : function(data){
+		 				grid3.resetData(data);
+		 			},
+		 			error : function(reject){
+		 				console.log(reject);
+		 			}
+		 		})
+	            grid3.refreshLayout(); //모달창 새로고침
+	     })
+	     
+	     
+	     
+	     // ajax BOM 사용공정명(모달창(grid4))
+				
+		// 모달창 리프레시(모달창에 그리드 화면 띄울때 써야함!)
+	     exampleModal4.addEventListener('shown.bs.modal', () => {
+	    	// BOM 제품정보 모달 불러오기
+		 		$.ajax({
+		 			url : "ajax/SelectPrdInfoModalBOM",
+		 			type : "get",
+		 			dataType: "json",
+		 			success : function(data){
+		 				grid4.resetData(data);
+		 			},
+		 			error : function(reject){
+		 				console.log(reject);
+		 			}
+		 		})
+	            grid4.refreshLayout(); //모달창 새로고침
+	     })	
+	     
+	     
+	     // ajax BOM 사용공정명(모달창(grid5))
+				
+		// 모달창 리프레시(모달창에 그리드 화면 띄울때 써야함!)
+	     exampleModal5.addEventListener('shown.bs.modal', () => {
+	    	// BOM 제품정보 모달 불러오기
+		 		$.ajax({
+		 			url : "ajax/SelectMtrInfoModalBOM",
+		 			type : "get",
+		 			dataType: "json",
+		 			success : function(data){
+		 				grid5.resetData(data);
+		 			},
+		 			error : function(reject){
+		 				console.log(reject);
+		 			}
+		 		})
+	            grid5.refreshLayout(); //모달창 새로고침
+	     })	
+	     
+	     
+	    function resetf(){
 			 $('#prdCode').val("")
 			 $('#prdName').val("")
-		}
+		} 
+		
+	   // 추가버튼 클릭시 한줄 생성
+	   
+	   document.getElementById('insertBtn').addEventListener('click', function(){
+		  
+		   let rowData = [{bomNo: "", pproName: "", bomCd: "", prdCd: "", mtrCd: "", mtrNm: "", bomAmt: ""}]
+		   grid.appendRow(rowData);
+	   })
+
+	   // 사용 공정명 칼럼 누르면 거기 맞는 코드, 공정명 나옴. 클릭시 안에 값 지정(grid3)
+	   grid.on('click', function(ev){
+		   let rowData = grid3.getRow(ev.rowKey);
+		 
+		   if(ev.columnName =='pproName' || ev.columnName =='pproCd'){
+			   $('#exampleModal3').modal('show');
+			   grid3.refreshLayout();
+		   }
+		   
+			// 사용 공정명(모달) 클릭시 안으로 값이 들어감
+		   grid3.on('click', function(ev2){
+			   
+			   let rowKey1 = grid.getFocusedCell().rowKey; // 클릭한 BOM grid 행 rowkey
+			   let rowData2 = grid3.getRow(ev2.rowKey);  // 클릭한 공정 모달의 행
+			    
+			   grid.setValue(rowKey1, 'pproCd', rowData2.pproCd);
+			   grid.setValue(rowKey1, 'pproName', rowData2.pproName);
+				
+			   prdModalClose3.click();
+		   
+		   })
+	   })
+	   
+	   
+	   // 사용 공정명 칼럼 누르면 거기 맞는 코드, 공정명 나옴. 클릭시 안에 값 지정(grid4)
+	     grid.on('click', function(ev){
+		   let rowData = grid4.getRow(ev.rowKey);
+		 
+		   if(ev.columnName =='prdCd'){
+			   $('#exampleModal4').modal('show');
+			   grid4.refreshLayout();
+		   }
+		   
+			// 사용 공정명(모달) 클릭시 안으로 값이 들어감
+		   grid4.on('click', function(ev2){
+			   
+			   let rowKey1 = grid.getFocusedCell().rowKey; // 클릭한 BOM grid 행 rowkey
+			   let rowData2 = grid4.getRow(ev2.rowKey);  // 클릭한 공정 모달의 행
+			    
+			   grid.setValue(rowKey1, 'prdCd', rowData2.prdCd);
+			   grid.setValue(rowKey1, 'prdNm', rowData2.prdNm);
+				
+			   prdModalClose4.click();
+		   
+		   })
+	   }) 
+	   
+	   
+	   // 사용 공정명 칼럼 누르면 거기 맞는 코드, 공정명 나옴. 클릭시 안에 값 지정(grid5)
+	   grid.on('click', function(ev){
+		   let rowData = grid5.getRow(ev.rowKey);
+		 
+		   if(ev.columnName =='mtrCd' || ev.columnName =='mtrNm'){
+			   $('#exampleModal5').modal('show');
+			   grid5.refreshLayout();
+		   }
+		   
+			// 사용 공정명(모달) 클릭시 안으로 값이 들어감
+		   grid5.on('click', function(ev2){
+			   
+			   let rowKey1 = grid.getFocusedCell().rowKey; // 클릭한 BOM grid 행 rowkey
+			   let rowData2 = grid5.getRow(ev2.rowKey);  // 클릭한 공정 모달의 행
+			    
+			   grid.setValue(rowKey1, 'mtrCd', rowData2.mtrCd);
+			   grid.setValue(rowKey1, 'mtrNm', rowData2.mtrNm);
+				
+			   prdModalClose5.click();
+		   
+		   })
+	   })
+	   
+	   //제품 코드 검색 기능     
+		
+	     document.getElementById('selectBtn').addEventListener('click', function(){
+	    	 grid.filter('prdCd', [{code: 'eq', value: prdCode.value}]);
+	    	 resetf();
+	     });
+	     
+	   
+	   // 엔터키로 검색 가능
+	     document.getElementById('prdCode').addEventListener("keydown", function(){
+	         if(event.keyCode == 13){
+	        	 grid.filter('prdCd', [{code: 'eq', value: prdCode.value}]);
+	        	 resetf();
+	         }
+	     })
+	     
+	   // 초기화 버튼 누를시 다시 데이터 원상복구
+	     
+	     document.getElementById("searchReset").addEventListener('click', function(){
+	    	grid.unfilter('prdCd', [{code: 'eq', value: prdCode.value}]);
+	     });
+	   
+	   // ajax BOM 추가하기
+	   
+	   document.getElementById('saveBtn').addEventListener('click', function(){
+		   sweetConfirm('C', function () {
+			 
+			   let rowData = grid.getCheckedRows();
+							   
+				// ajax 구매 거래처 등록
+				$.ajax({
+					url : "ajax/insertBOM",
+					type : "post",
+					contentType: 'application/json',
+					data: JSON.stringify(rowData),
+					beforeSend : function (xhr) {
+					    xhr.setRequestHeader(header, token);
+					},
+					success : function(data){
+						if (data > 0) {
+							// ajax success
+				            toastr.success('정상적으로 등록되었습니다.');
+				            selectBOM();	// BOM정보 최신화
+						} else {
+							// ajax fail
+				            toastr.error('등록에 실패했습니다.');	
+						}
+					},
+					error : function(reject){
+						console.log(reject);
+					}
+			 	});	
+		   })
+		   
+	   })
 	    
+		
     </script>
     
 </div>

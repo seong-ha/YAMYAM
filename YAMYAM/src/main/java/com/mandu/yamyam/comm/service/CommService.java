@@ -2,6 +2,8 @@ package com.mandu.yamyam.comm.service;
 
 import java.util.List;
 
+import com.mandu.yamyam.pro.service.ProVO;
+
 public interface CommService {
 	
 	// ajax 공통코드 불러오기
@@ -25,7 +27,6 @@ public interface CommService {
 	// ajax 공통 코드 삭제
 	int ajaxDeleteComm(CommVO commVO);
 
-	
 	
 	// ajax 자재 코드 불러오기
 	public List<MtrVO> ajaxSelectMat();
@@ -59,7 +60,14 @@ public interface CommService {
 	
 	// ajax BOM 코드 불러오기
 	public List<BOMVO> ajaxSelectBOM();
-	// ajax BOM 제품목록(모달창)
+	// ajax BOM 제품목록(모달창(grid2)
 	public List<PrdVO> ajaxSelectModalBOM();
-	
+	// ajax BOM 사용공정명(모달창(grid3)
+	public List<ProVO> ajaxSelectProInfoModalBOM();
+	// ajax BOM 사용공정명(모달창(grid4)
+	public List<PrdVO> ajaxSelectPrdInfoModalBOM();
+	// ajax BOM 사용공정명(모달창(grid5)
+	public List<MtrVO> ajaxSelectMtrInfoModalBOM();
+	// ajax BOM 등록하기
+	public int ajaxInsertBOM(List<BOMVO> bomVO);
 }
