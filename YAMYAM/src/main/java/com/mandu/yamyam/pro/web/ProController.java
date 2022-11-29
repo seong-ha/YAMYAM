@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.mandu.yamyam.comm.service.CommService;
 import com.mandu.yamyam.comm.service.CommdVO;
+import com.mandu.yamyam.comm.service.EmpVO;
 import com.mandu.yamyam.pro.service.ProService;
 import com.mandu.yamyam.pro.service.ProVO;
 
@@ -245,6 +246,13 @@ public class ProController {
 	@ResponseBody
 	public List<ProVO> noUseEqp(ProVO vo){
 		return service.noUseEqp();
+	}
+	
+	// 생산담당 직원 조회
+	@RequestMapping("/getProEmpList")
+	@ResponseBody
+	public List<EmpVO> getProEmpList(){
+		return service.getProEmpList();
 	}
 
 	// 공정 등록

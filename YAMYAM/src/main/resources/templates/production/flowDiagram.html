@@ -36,10 +36,12 @@
 
 				<div id="flowManage"></div>
 				<div style="float:right;">
+					<th:block sec:authorize="hasAnyAuthority('JOB-GRD1', 'JOB-GRD2')">
 						<button type="button" id="plusBtn" class="btn btn-dark btn-sm">행 추가</button>
 						<button type="button" id="deleteBtn" class="btn btn-dark btn-sm">행 삭제</button>	
-						<button type="button" id="insertBtn" class="btn btn-dark btn-sm">저장</button>	
-					</div>
+						<button type="button" id="insertBtn" class="btn btn-dark btn-sm">저장</button>
+					</th:block>	
+				</div>
 				
 			</div>
 		
@@ -91,7 +93,6 @@
 		deleteBtnHandler();  	  // 그리드 행 삭제버튼 이벤트
 		plusBtnHandler(); 	 	  // 그리드 행 추가 이벤트 핸들러
 		insertBtnHandler();  	  // 등록버튼 이벤트 핸들러
-		//pSBtnHandler();			  // 공정분류 선택 클릭 이벤트
 		pRBtnHandler();			  // 공정분류 선택 초기화 이벤트
 		selectChange();			  // select 옵션 변경시 조회
 		
@@ -325,6 +326,9 @@
 								contentType : 'application/json',
 								data : JSON.stringify(dataList),
 								dataType : 'json',
+								beforeSend : function (xhr) {
+								    xhr.setRequestHeader(header, token);
+								},
 								success : function(data){
 										 Swal.fire('저장 완료되었습니다');
 										 flowManage.refreshLayout();
@@ -359,6 +363,8 @@
 				})
 			})
 		}
+		
+		
 		
 		/*------------
 		// select 옵션 변경시 조회

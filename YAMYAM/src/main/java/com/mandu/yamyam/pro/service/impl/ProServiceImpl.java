@@ -6,6 +6,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.mandu.yamyam.comm.service.EmpVO;
 import com.mandu.yamyam.pro.mapper.ProMapper;
 import com.mandu.yamyam.pro.service.ProService;
 import com.mandu.yamyam.pro.service.ProVO;
@@ -34,6 +35,7 @@ public class ProServiceImpl implements ProService {
 		int result = 0;
 		mapper.insertPlan(vo.get(0));
 		mapper.updateBpod(vo.get(0));
+		mapper.updateBod(vo.get(0));
 		String code = vo.get(0).getPplnCd();
 		for(int i=0; i<vo.size(); i++) {
 			vo.get(i).setPplnCd(code);
@@ -172,6 +174,12 @@ public class ProServiceImpl implements ProService {
 		return mapper.noUseEqp();
 	}
 	
+	// 생산담당 직원 조회
+	public List<EmpVO> getProEmpList(){
+		return mapper.getProEmpList();
+	};
+	
+	
 	// 공정 등록
 	@Override
 	public int insertProManage(List<ProVO> vo) {
@@ -199,10 +207,14 @@ public class ProServiceImpl implements ProService {
 	}
 	
 	// 완제품 재고 등록
-		@Override
-		public int insertBIn(ProVO vo) {
-			return mapper.insertBIn(vo);
-		}
+	@Override
+	public int insertBIn(ProVO vo) {
+		int result = 0;
+		mapper.insertBIn(vo);
+		mapper.insertPRecord(vo);
+		mapper.resertPpro(vo);
+		return result;
+	}
 		
 
 	// 공정실적조회
