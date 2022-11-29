@@ -248,11 +248,15 @@
 	function tab1GridInit(){
 		let odLookUp = new tui.Grid({
 	      el: document.getElementById('grid'),
-	      bodyHeight: 500,
-	      data: null,
+		  pageOptions: {
+		    useClient: true,
+		    perPage: 10
+		  	},
+	      bodyHeight: 400,
+	      data: [[${oderN}]],
 	      rowHeaders: ['checkbox', 'rowNum'],
 	      scrollX: false,
-	      scrollY: true,
+	      scrollY: false,
 	      columns: [
 	        {
 	          header: '발주코드',
@@ -265,11 +269,13 @@
 	        {
 	          header: '자재코드',
 	          name: 'mtrCd',
+		      align: 'center',
 	          sortable: true
 	        },
 	        {
 	          header: '자재명',
 	          name: 'mtrNm',
+		      align: 'center',
 	          sortable: true,
 			  filter: {
 			        type: 'select'			  
@@ -278,23 +284,27 @@
 	        {
 	          header: '단가(원)',
 	          name: 'matOddMn',
+		      align: 'right',
 	          sortable: true,
 			  editor: 'text'
 	        },
 	        {
 	          header: '발주량',
 	          name: 'matOddAmt',
+		      align: 'right',
 	          sortable: true,
 			  editor: 'text'
 	        },
 	        {
 	          header: '총액',
 	          name: 'matSum',
+		      align: 'right',
 	          sortable: true
 	        },
 	        {
 		      header: '업체코드',
 		      name: 'actCd',
+		      align: 'center',
 		      sortable: true,
 			  filter: {
 			  	type: 'select'			  
@@ -303,6 +313,7 @@
 	        {
 	          header: '업체명',
 	          name: 'actNm',
+		      align: 'center',
 	          sortable: true,
 			  filter: {
 			    type: 'select'			  
@@ -311,11 +322,13 @@
 	        {
 	          header: '발주신청일',
 	          name: 'matOdDd',
+		      align: 'right',
 	          sortable: true
 	        },
 	        {
 	          header: '납기요청일',
 	          name: 'matOddDate',
+		      align: 'right',
 	          sortable: true,
 		      editor: {
 		    	  type: 'datePicker',
@@ -332,6 +345,7 @@
 	        {
 	          header: '검수상태',
 	          name: 'matInsts',
+		      align: 'center',
 	          sortable: true,
 		      filter: {
 		    	  type: 'text'
@@ -369,7 +383,7 @@
 					
 					// 발주코드 조회탭 검색 버튼
 					let searchedOdCd = document.getElementById('matCode');
-					if (searchedOdCd.value != null || searchedOdCd.value != '') {
+					if (searchedOdCd.value != '' || searchedOdCd.value != null) {
 						odLookUp.filter('matOdCd', [{code: 'contain', value: searchedOdCd.value}]);
 					}
 					
@@ -905,6 +919,8 @@
 				if(node.checked) {
 					node.checked = false;
 				}
+				
+				odLookUp.resetData([[${oderN}]]);
 			})
 		});	
 	}
@@ -1026,6 +1042,7 @@
 			        	
 			          // 다건 삭제 시작	
 			    	} else if(data.length > 1) {
+			    		
 			    		// 자재발주코드 삭제 ajax
 				        $.ajax({
 				        	url: '/matOdDel',
@@ -1038,23 +1055,10 @@
 									Swal.fire({
 										icon: 'sussecc',
 										title :'삭제에 완료되었습니다!'});
-						        	odLookUp.removeCheckedRows();
-						        	// 자재발주상세코드 삭제 ajax
-						        	$.ajax({
-						        		url: '/matOddDel',
-							        	method: 'DELETE',
-							        	contentType: 'application/JSON',
-										data: JSON.stringify(list),
-										success: function(result){
-											console.log(result);
-											if(result > 1){
-												console.log('자재발주상세코드 삭제: ' + result)
-											}
-										},
-										error: function(reject){
-											console.log(reject);
-										}
-						        	})
+
+									// 자재발주상세코드 삭제 ajax
+									deleteMatOddCd(list);
+									
 						        	odLookUp.removeCheckedRows();
 								} else {
 									Swal.fire({
@@ -1070,6 +1074,25 @@
 			      }
 			   })
 		})
+	}
+	
+	function deleteMatOddCd(list){
+    	// 자재발주상세코드 삭제 ajax
+    	$.ajax({
+    		url: '/matOddDel',
+        	method: 'DELETE',
+        	contentType: 'application/JSON',
+			data: JSON.stringify(list),
+			success: function(result){
+				console.log(result);
+				if(result > 1){
+					console.log('자재발주상세코드 삭제: ' + result)
+				}
+			},
+			error: function(reject){
+				console.log(reject);
+			}
+    	})
 	}
 	
 	/*------------------------------
@@ -1142,6 +1165,7 @@
 			   })
 			})
 		}
+	
 	// pplnCd의 상태를 미지시로 업데이트(ajax 분리)
 	function updataSts(planData){
 		$.ajax({
@@ -1241,7 +1265,15 @@
 	function allCheckFn() {
 		needMat.on('checkAll', function(){
 			let data = needMat.getData();
+			let chkData = newPlan.getCheckedRows();
+			console.log(chkData[0].pplndAmt)
+			
 			odMat.resetData(data);
+			
+			// 발주량도 계산되어 같이 들어가도록 처리
+			for(let i=0; i<data.length; i++){
+				odMat.setValue(i, 'matOddAmt', (data[i].bomAmt * chkData[0].pplndAmt));
+			}
 		})
 		
 		needMat.on('uncheckAll', function(){

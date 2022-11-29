@@ -3,26 +3,32 @@
 	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
 	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	layout:decorate="~{/layout/layout}">
-
+<head>
+<style type="text/css">
+	select option[value=""][disabled] {
+		display: none;
+	}
+</style>
+</head>
 <div class="container" layout:fragment="content">
 	<div id="mat-od-title">
 		<h3>자재 입고 검수 관리</h3>
 	</div>
 	<hr>
 	<ul class="ul-style">
-			<li><label for="matNm">자재명</label><input id="matNm"
+		<li><label for="matNm">자재명</label><input id="matNm"
 			data-bs-toggle="modal" data-bs-target="#matMg" readonly> <img
 			class="Magnifying-Glass-img" alt="image" data-bs-toggle="modal"
-			data-bs-target="#matMg" src="../images/Magnifying_Glass.png">
-			<input id="matOdCd" type="text" data-bs-toggle="modal"
+			data-bs-target="#matMg" src="../images/Magnifying_Glass.png"> <input
+			id="matOdCd" type="text" data-bs-toggle="modal"
 			data-bs-target="#matMg" readonly></li>
 		<li><label for="empNm">담당자</label><input id="empNm"
 			data-bs-toggle="modal" data-bs-target="#empMg" readonly> <img
 			class="Magnifying-Glass-img" alt="image" data-bs-toggle="modal"
-			data-bs-target="#empMg" src="../images/Magnifying_Glass.png">
-			<input id="empId"type="text" data-bs-toggle="modal" data-bs-target="#empMg"
+			data-bs-target="#empMg" src="../images/Magnifying_Glass.png"> <input
+			id="empId" type="text" data-bs-toggle="modal" data-bs-target="#empMg"
 			readonly></li>
-	
+
 		<!-- Date Picker -->
 		<li><label for="startpicker-input">검사일자</label>
 			<div class="tui-datepicker-input tui-datetime-input tui-has-focus">
@@ -37,6 +43,15 @@
 			</div>
 			<button class="btn btn-dark btn-sm" id="SearchBtn">조회</button>
 			<button class="btn btn-dark btn-sm" id="resetBtn">초기화</button></li>
+
+		<!-- select -->
+		<li><div align="right"><select
+			class="form-select form-select-sm" name="erCd" id="erCd"
+			style="width: 200px">
+				<option value="" disabled selected>불량내용</option>
+				<option th:each="list : ${commList}" th:value="${list.commdCd}"
+					th:text="${list.commdNm}">
+		</select></div></li>
 	</ul>
 
 	<div id="grid"></div>
@@ -104,7 +119,7 @@
 			</div>
 		</div>
 	</div>
-	
+
 	<!-- 자재 목록 모달 -->
 	<div class="modal" id="matMg" tabindex="-1"
 		aria-labelledby="matMgLabel" aria-hidden="true">
@@ -144,7 +159,7 @@
 			</div>
 		</div>
 	</div>
-	
+
 	<script th:inline="javascript">
 	// token
 	var token = $("meta[name='_csrf']").attr("content");
@@ -173,7 +188,9 @@
 		empModalClickFn();					// 직원 모달 클릭 시 인풋 태그로
 		
 		datePicker();						// datepicker
-		resetBtn();						// 초기화
+		resetBtn();							// 초기화
+		
+		selectFn();							// 셀렉트 이벤트
 		
 		/*------------------------------
 		// 자재전체조회 그리드
@@ -181,11 +198,15 @@
 		function chkMatList(){
 			const grid = new tui.Grid({
 			      el: document.getElementById('grid'),
-			      bodyHeight: 500,
-			      data: null,
+				  pageOptions: {
+					    useClient: true,
+					    perPage: 8
+					  	},
+			      bodyHeight: 320,
+			      data: [[${chkOd}]],
 			      rowHeaders: ['checkbox', 'rowNum'],
 			      scrollX: false,
-			      scrollY: true,
+			      scrollY: false,
 			      columns: [
 			        {
 			          header: '발주코드',
@@ -198,6 +219,7 @@
 			        {
 			          header: '자재코드',
 			          name: 'mtrCd',
+				      align: 'center',
 			          sortable: true,
 					  filter: {
 					        type: 'select'			  
@@ -206,6 +228,7 @@
 			        {
 			          header: '자재명',
 			          name: 'mtrNm',
+				      align: 'center',
 			          sortable: true,
 					  filter: {
 					        type: 'select'			  
@@ -214,23 +237,27 @@
 			        {
 			          header: '발주총량',
 			          name: 'matOddAmt',
+				      align: 'right',
 			          sortable: true
 			        },
 			        {
 			          header: '합격량',
 			          name: 'paAmt',
+				      align: 'right',
 			          sortable: true,
 					  editor: 'text'
 				    },
 			        {
 			          header: '불합격량',
 			          name: 'erAmt',
+				      align: 'right',
 			          sortable: true,
 					  editor: 'text'
 				    },
 			        {
 			          header: '담당자',
 			          name: 'empNm',
+				      align: 'center',
 			          sortable: true,
 					  filter: {
 					        type: 'select'			  
@@ -239,6 +266,7 @@
 			        {
 			          header: '검사일자',
 			          name: 'matChkDate',
+				      align: 'right',
 			          sortable: true,
 				      editor: {
 				    	  type: 'datePicker',
@@ -255,6 +283,7 @@
 			        {
 			            header: '불량코드',
 			            name: 'erCd',
+					    align: 'center',
 			            sortable: true,
 						  filter: {
 						        type: 'select'			  
@@ -263,6 +292,7 @@
 			          {
 			              header: '불량내용',
 			              name: 'erInfo',
+					      align: 'center',
 			              sortable: true,
 						  filter: {
 						        type: 'select'			  
@@ -519,6 +549,11 @@
 				document.getElementById('matOdCd').value = '';
 				document.getElementById('empNm').value = '';
 				document.getElementById('empId').value = '';
+				
+				// 에러 셀렉트 초기화
+				document.getElementById('erCd').value = '';
+				
+				grid.resetData([[${chkOd}]])
 			});	
 		}
 		
@@ -711,6 +746,18 @@
 			document.addEventListener('shown.bs.modal', function (){
 				modalGrid5.refreshLayout();
 			});
+		}
+		
+		/*--------------------------------
+		// 셀렉트박스 이벤트
+		----------------------------------*/
+		function selectFn() {
+			document.getElementById('erCd').addEventListener('change', function(){
+				let select = document.getElementById('erCd');
+				if (select.value != null || select.value != '') {
+					grid.filter('erCd', [{code: 'contain', value: select.value}]);
+				}
+			})
 		}
 	</script>
 </div>

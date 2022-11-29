@@ -110,27 +110,32 @@
 			        },
 			        {
 			          header: '완제품코드',
+				      align: 'center',
 			          name: 'prdCd',
 			          sortable: true
 			        },
 			        {
 			          header: '작업지시량',
+				      align: 'right',
 			          name: 'poddAmt',
 			          sortable: true
 			        },
 			        {
 			          header: '생산일자',
 			          name: 'poddDates',
+				      align: 'right',
 			          sortable: true,
 			        },
 			        {
 			          header: '지시등록일자',
 			          name: 'podDates',
+				      align: 'right',
 			          sortable: true,
 			        },
 			        {
 			          header: '진행구분',
 			          name: 'poddSts',
+				      align: 'center',
 			          sortable: true
 			        }
 			      ]
@@ -248,9 +253,9 @@
 			return matLot;
 		}
 			
-		/*------------
-		// 모달에 뜨는 필요자재 LOT grid 
-		----------------*/	
+		/*------------------------
+		// 필요자재 입력 모달
+		----------------------------*/	
 		function matLotGrid2Init(){
 			let matLotGrid2 = new tui.Grid({
 				el: document.getElementById('lotModal'),
@@ -294,6 +299,14 @@
 			        }
 			      }
 			});
+			
+			// 사용수량 입력하면 체크처리
+			matLotGrid2.on('afterChange', function(){
+				let data = matLotGrid2.getData();
+				let idx = matLotGrid2.getFocusedCell().rowKey;
+				matLotGrid2.check(idx);
+			})
+			
 			return matLotGrid2; 
 		}
 		

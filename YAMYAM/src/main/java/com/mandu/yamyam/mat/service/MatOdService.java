@@ -17,7 +17,10 @@ public interface MatOdService {
 	//===============================================
 	// 1) 자재 발주 관리
 	//===============================================
-	// 자재 발주 관리 - 전체 조회(일반 탭)
+	// 자재 발주 관리(일반 탭) - 기본 전체 조회
+	public List<Map<String, Object>> matOderN7();
+	
+	// 자재 발주 관리 - 조회 버튼 시 전체 조회(일반 탭)
 	public List<Map<String, Object>> matOrderList(MatVO vo);
 	
 	// 자재 발주 전체 리스트(생산계획서용 탭)
@@ -68,10 +71,12 @@ public interface MatOdService {
 	// 발주 신청일 클릭 시 이벤트 (조건 조회 탭)
 	public List<Map<String, Object>> clickOdDate(MatVO vo);
 	
-	
 	//===============================================
 	// 3) 자재 입고 검수 관리
 	//===============================================
+	// 자재 발주 7일치 기본 조회
+	public List<Map<String, Object>> chkOdList7();
+	
 	// 자재 입고 검수 관리 - 전체 조회
 	public List<Map<String, Object>> chkOdMatList(MatVO vo);
 	
@@ -96,8 +101,11 @@ public interface MatOdService {
 	//===============================================
 	// 4) 자재 입고 관리
 	//===============================================
-	// 자재 입고 관리
+	// 조회 버튼 클릭 조회
 	public List<Map<String, Object>> matInAllList(MatVO vo);
+	
+	// 기본 조회
+	public List<Map<String, Object>> matInList();
 	
 	// 입고 예정 목록
 	public List<Map<String, Object>> beforeInList();

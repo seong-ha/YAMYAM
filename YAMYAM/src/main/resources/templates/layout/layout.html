@@ -114,13 +114,13 @@
 						<th:block sec:authorize="isAuthenticated()">
 							<p class="username font-NSEB" th:text="${session.empNm}">EMP_NM</p>
 							<p class="log-sts-on font-NSEB">
-								<small class="small-font">●</small> online
+								<small class="small-font">●</small><span> online</span>
 							</p>
 						</th:block>
 						<th:block sec:authorize="!isAuthenticated()">
 							<p class="username font-NSEB">unknown</p>
 							<p class="log-sts-off font-NSEB">
-								<small class="small-font">●</small> offline
+								<small class="small-font">●</small><span> offline</span>
 							</p>
 						</th:block>
 						<hr class="col-black">
