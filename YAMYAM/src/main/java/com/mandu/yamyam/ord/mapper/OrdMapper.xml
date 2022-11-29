@@ -46,12 +46,12 @@
 		       TO_CHAR(BIN.POD_DATE,'yyyy-MM-dd') AS POD_DATE, 
 		       TO_CHAR(BIN.EDATE,'yyyy-MM-dd') AS EDATE
 		       
-		FROM B_IN BIN 
-		JOIN B_OUT BOT
-		  ON BIN.PRD_LOT = BOT.PRD_LOT
-	   WHERE BIN.PRD_CD = #{prdCd}
-	  	 AND BIN.SAMT > 0
-	ORDER BY BIN.PRD_LOT
+		  FROM B_IN BIN 
+		  JOIN B_OUT BOT
+		    ON BIN.PRD_LOT = BOT.PRD_LOT
+	     WHERE BIN.PRD_CD = #{prdCd}
+	   	   AND BIN.SAMT > 0
+	  ORDER BY BIN.PRD_LOT
 	</select>
 
 	<!-- 완제품LOT 출고 현황 모달 (반품 관리 Tab) -->
@@ -79,10 +79,10 @@
 		  JOIN B_IN I
 			ON I.PRD_LOT = OU.PRD_LOT
 			
-		JOIN B_RT R
-		ON R.PRD_LOT = I.PRD_LOT
+		  JOIN B_RT R
+		 	ON R.PRD_LOT = I.PRD_LOT
 		
-		WHERE R.RE_CD IS NULL
+		 WHERE R.RE_CD IS NULL
 	  ORDER BY OD.OD_CD
 	</select>
 	
@@ -197,7 +197,7 @@
 		JOIN B_IN I
 		  ON O.PRD_LOT = I.PRD_LOT
 		
-		JOIN  C_ACT A
+		JOIN C_ACT A
 		  ON A.ACT_CD = O.ACT_CD
 		
 		JOIN C_PRD P
@@ -217,7 +217,7 @@
        <if test="prdLot != null and !prdLot.equals('')">
          AND I.PRD_LOT = #{prdLot}
        </if>
-       ORDER BY BDATES
+    ORDER BY BDATES
 	</select>
 	
 
@@ -242,7 +242,7 @@
 		  JOIN C_ACT A
 		 	ON A.ACT_CD = OD.ACT_CD
 		 	
-		 	JOIN B_IN I
+		  JOIN B_IN I
 		 	ON OD.PRD_CD = I.PRD_CD
 		 	
 		 WHERE OD.OD_STS = 'ORD-STS1'
@@ -284,9 +284,9 @@
 	<update id="updateOutList" parameterType="com.mandu.yamyam.ord.service.OrdVO">
 			UPDATE B_IN I
 			<set>
-				samt = bin_amt - (SELECT SUM(bamt)
-                       FROM b_out
-                       WHERE prd_lot = #{prdLot})
+				SAMT = BIN_AMT - (SELECT SUM(BAMT)
+                       				FROM B_OUT
+                       			   WHERE PRD_LOT = #{prdLot})
 			</set>
 				 WHERE PRD_LOT = #{prdLot}
 	</update>
@@ -326,6 +326,7 @@
 		<if test='startDate != null and endDate != null'>
          WHERE TRUNC(R.RE_DATE) BETWEEN #{startDate} AND #{endDate}
         </if>
+      ORDER BY RE_DATE
 	</select>
 	
 	<!-- 완제품 반품 관리 리스트 등록 -->
@@ -354,16 +355,14 @@
 	<!-- 완제품 반품 후, 재고 수정 -->
 	<update id="updateReList" parameterType="com.mandu.yamyam.ord.service.OrdVO">
 			UPDATE B_IN I
-		<if test="reAmt != null">
 		<set>
-			I.SAMT = (SELECT ABS(OD.OD_AMT - R.RE_AMT) 
-					    FROM B_OD OD, B_RT R 
-					    WHERE R.PRD_LOT = I.PRD_LOT 
-					      AND I.PRD_CD = OD.PRD_CD)
+			SAMT = SAMT - (SELECT SUM(RE_AMT) 
+            				 FROM B_RT
+            				WHERE PRD_LOT = #{prdLot})
 		</set>
-			WHERE I.PRD_LOT = #{prdLot}
-		</if>
+			WHERE PRD_LOT = #{prdLot}
 	</update>
+	
 	
 	<!--
 		완제품 재고 조회 Tab

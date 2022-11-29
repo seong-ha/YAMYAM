@@ -80,7 +80,7 @@ public interface OrdService {
 	// 완제품 반품 관리 리스트 등록
 	public int insertReList(OrdVO vo);
 	
-	// 완제품 반품 관리 리스트 수정
+	// 완제품 반품 관리 리스트 등록 후, 재고 업데이트
 	public int updateReList(OrdVO vo);
 	
 	

@@ -11,7 +11,9 @@
 #od-btn {
 	display: inline-block; margin: 0 5px; float: right;
 }
-
+#startpicker-input, #endpicker-input{
+text-align: center;
+}
 </style>
 </head>
 <body>
@@ -108,8 +110,10 @@ var header = $("meta[name='_csrf_header']").attr("content");
 	----------------*/
 	function searchBtnHandler(){
 		$('#searchBtn').on('click',function(){
-			let getStartDate = $("startpicker-input").val();
+			let getStartDate = $("#startpicker-input").val();
 			let getEndDate = $("#endpicker-input").val();
+			console.log(getStartDate);
+			console.log(getEndDate);
 			$.ajax({
 				   url:'/reList',
 				   contentType: 'application/json',
@@ -157,25 +161,31 @@ var header = $("meta[name='_csrf_header']").attr("content");
 	    rowHeaders: ['checkbox','rowNum'],
 	    scrollX: false,
 	    scrollY: false,
+	    bodyHeight: 200,
+	    pageOptions: {
+	                    useClient: true,   // front에서만 페이징 하는 속성
+	                    perPage: 10
+	              			    },
+	             	pagination : true,
 	    columns: [
 	      {
 	        header: '반품 일자',
-	        align : 'center',
+	        align : 'right',
 	        name: 'reDate'
 	      },
 	      {
 	        header: '반품 코드',
-	        align : 'center',
+	        align : 'left',
 	        name: 'reCd'
 	      },
 	      {
 	        header: '완제품 LOT',
-	        align : 'center',
+	        align : 'left',
 	        name: 'prdLot'
 	      },
 	      {
 	        header: '제품명',
-	        align : 'center',
+	        align : 'left',
 	        name: 'prdNm'
 	      },
 	      {
@@ -185,17 +195,17 @@ var header = $("meta[name='_csrf_header']").attr("content");
 	      },
 	      {
 	        header: '거래처명',
-	        align : 'center',
+	        align : 'left',
 	        name: 'actNm'
 	      },
 	      {
 	        header: '주문량',
-	        align : 'center',
+	        align : 'right',
 	        name: 'odAmt'
 	      },
 	      {
 	        header: '반품량',
-	        align : 'center',
+	        align : 'right',
 	        name: 'reAmt',
 	        editor: 'text',
 			// 필수 입력 값
@@ -206,13 +216,14 @@ var header = $("meta[name='_csrf_header']").attr("content");
 	      },
 	      {
 	        header: '최종 출고량',
-	        align : 'center',
+	        align : 'right',
 	        name: 'bamt'
 	      }
 	    ]
 	  });
     	return grid;
     }
+    
 	
 	/*------------
 	// 반품 리스트 가져오기
@@ -277,16 +288,13 @@ var header = $("meta[name='_csrf_header']").attr("content");
 			let rowData = grid.getCheckedRows();
 			let list = [];
 			let prdLot = '';
-			let reCd = '';
-			let actCd = '';
-			let reAmt = '';
-			let odAmt = '';
+			
 			for (let i=0; i<rowData.length; i++) {
 				prdLot = rowData[i].prdLot;
-				reCd = rowData[i].reCd;
-				actCd = rowData[i].actCd;
-				reAmt = rowData[i].reAmt;
-				odAmt = rowData[i].odAmt;
+				let reCd = rowData[i].reCd;
+				let actCd = rowData[i].actCd;
+				let reAmt = rowData[i].reAmt;
+				let odAmt = rowData[i].odAmt;
 				list.push({reCd,prdLot,actCd,reAmt});
 				console.log(rowData[i].prdLot);
 			}
@@ -375,20 +383,26 @@ var header = $("meta[name='_csrf_header']").attr("content");
 	    rowHeaders: ['rowNum'],
 	    scrollX: false,
 	    scrollY: false,
+	    bodyHeight: 200,
+	    pageOptions: {
+	                    useClient: true,   // front에서만 페이징 하는 속성
+	                    perPage: 5
+	              			    },
+	             	pagination : true,
 	    columns: [
 	      {
 	        header: '주문 코드',
-	        align : 'center',
+	        align : 'left',
 	        name  : 'odCd'
 	      },
 	      {
 	        header: '완제품LOT',
-	        align : 'center',
+	        align : 'left',
 	        name  : 'prdLot'
 	      },
 	      {
 	        header: '제품명',
-	        align : 'center',
+	        align : 'left',
 	        name  : 'prdNm'
 	      },
 	      {
@@ -398,22 +412,22 @@ var header = $("meta[name='_csrf_header']").attr("content");
 	      },
 	      {
 	        header: '거래처명',
-	        align : 'center',
+	        align : 'left',
 	        name  : 'actNm'
 	      },
 	      {
 	        header: '주문량',
-	        align : 'center',
+	        align : 'right',
 	        name  : 'odAmt'
 	      },
 	      {
 	        header: '출고량',
-	        align : 'center',
+	        align : 'right',
 	        name  : 'bamt'
 		  },
 		  {
 	        header: '출고 일자',
-	        align : 'center',
+	        align : 'right',
 	        name  : 'bdates'
 		   }
 	    ]

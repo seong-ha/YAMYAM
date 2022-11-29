@@ -74,20 +74,24 @@ public interface OrdMapper {
 	/*-----------------
 	// 완제품 반품 관리 Tab
 	-------------------*/
+	
 	// 완제품 반품 관리 리스트 조회
 	public List<OrdVO> getReList(OrdVO vo);
 
 	// 완제품 반품 관리 리스트 등록
 	public int insertReList(OrdVO vo);
 	
-	// 완제품 반품 관리 리스트 수정
+	// 완제품 반품 관리 리스트 등록 후, 재고 업데이트
 	public int updateReList(OrdVO vo);
+	
 	
 	/*-----------------
 	// 완제품 재고 조회 Tab
 	-------------------*/
+	
 	// 완제품 재고 리스트 조회
 	public List<OrdVO> getLotList(OrdVO vo);
+	
 	
 	/*-----------------
 	// 완제품 재고 관리 Tab
