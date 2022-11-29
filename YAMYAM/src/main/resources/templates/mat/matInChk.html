@@ -5,9 +5,9 @@
 	layout:decorate="~{/layout/layout}">
 <head>
 <style type="text/css">
-	select option[value=""][disabled] {
-		display: none;
-	}
+select option[value=""][disabled] {
+	display: none;
+}
 </style>
 </head>
 <div class="container" layout:fragment="content">
@@ -16,6 +16,14 @@
 	</div>
 	<hr>
 	<ul class="ul-style">
+		<!-- select -->
+		<li><label style="margin-right: 1px;">불량내용</label><select class="form-select form-select-sm" name="erCd"
+			id="erCd" style="width: 200px; display: inline;">
+				<option value="" disabled selected>불량내용</option>
+				<option th:each="list : ${commList}" th:value="${list.commdCd}"
+					th:text="${list.commdNm}">
+		</select></li>
+
 		<li><label for="matNm">자재명</label><input id="matNm"
 			data-bs-toggle="modal" data-bs-target="#matMg" readonly> <img
 			class="Magnifying-Glass-img" alt="image" data-bs-toggle="modal"
@@ -40,28 +48,18 @@
 				<input id="endpicker-input" type="text" aria-label="Date"> <span
 					class="tui-ico-date"></span>
 				<div id="endpicker-container" style="margin-left: -1px;"></div>
-			</div>
+			</div> 
+			<!-- 검색조건 버튼 -->
 			<button class="btn btn-dark btn-sm" id="SearchBtn">조회</button>
-			<button class="btn btn-dark btn-sm" id="resetBtn">초기화</button></li>
-
-		<!-- select -->
-		<li><div align="right"><select
-			class="form-select form-select-sm" name="erCd" id="erCd"
-			style="width: 200px">
-				<option value="" disabled selected>불량내용</option>
-				<option th:each="list : ${commList}" th:value="${list.commdCd}"
-					th:text="${list.commdNm}">
-		</select></div></li>
+			<button class="btn btn-dark btn-sm" id="resetBtn">초기화</button>
+			<!-- CRUD 버튼 -->
+			<button class="btn btn-dark btn-sm" data-bs-toggle="modal"
+				data-bs-target="#addModal" style="margin-left: 52%;">추가</button>
+			<button class="btn btn-dark btn-sm" id="deleteBtn">삭제</button>
+			<button class="btn btn-dark btn-sm" id="saveChkBtn">저장</button></li>
 	</ul>
 
 	<div id="grid"></div>
-
-	<div style="text-align: right;">
-		<button class="btn btn-dark btn-sm" data-bs-toggle="modal"
-			data-bs-target="#addModal">추가</button>
-		<button class="btn btn-dark btn-sm" id="deleteBtn">삭제</button>
-		<button class="btn btn-dark btn-sm" id="saveChkBtn">저장</button>
-	</div>
 
 	<!-- 불량코드 목록 모달 -->
 	<div class="modal" id="errorModal" tabindex="-1"

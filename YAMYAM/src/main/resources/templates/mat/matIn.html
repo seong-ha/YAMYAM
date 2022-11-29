@@ -20,8 +20,8 @@
 			data-bs-toggle="modal" data-bs-target="#empModal" readonly> <img
 			class="Magnifying-Glass-img" alt="image" data-bs-toggle="modal"
 			data-bs-target="#empModal" src="../images/Magnifying_Glass.png">
-			<input id="empId"type="text" data-bs-toggle="modal" data-bs-target="#empModal"
-			readonly></li>
+			<input id="empId" type="text" data-bs-toggle="modal"
+			data-bs-target="#empModal" readonly></li>
 
 		<!-- Date Picker -->
 		<li><label for="startpicker-input">입고일자</label>
@@ -35,18 +35,17 @@
 					class="tui-ico-date"></span>
 				<div id="endpicker-container" style="margin-left: -1px;"></div>
 			</div>
+			<!-- 조건조회 버튼 -->
 			<button class="btn btn-dark btn-sm" id="SearchBtn">조회</button>
-			<button class="btn btn-dark btn-sm" id="resetDpBtn">초기화</button></li>
+			<button class="btn btn-dark btn-sm" id="resetDpBtn">초기화</button>
+			<!-- CRUD 버튼 -->
+			<button class="btn btn-dark btn-sm" data-bs-toggle="modal"
+				data-bs-target="#addModal" style="margin-left: 53%;">추가</button>
+			<button class="btn btn-dark btn-sm" id="deleteBtn">삭제</button>
+			<button class="btn btn-dark btn-sm" id="saveBtn">저장</button></li>
 	</ul>
 
 	<div id="grid"></div>
-
-	<div style="text-align: right;">
-		<button class="btn btn-dark btn-sm" data-bs-toggle="modal"
-			data-bs-target="#addModal">추가</button>
-		<button class="btn btn-dark btn-sm" id="deleteBtn">삭제</button>
-		<button class="btn btn-dark btn-sm" id="saveBtn">저장</button>
-	</div>
 
 	<!-- 추가 버튼 모달 -->
 	<div class="modal" id="addModal" tabindex="-1"
@@ -107,7 +106,7 @@
 			</div>
 		</div>
 	</div>
-	
+
 	<script th:inline="javascript">
 	// token
 	var token = $("meta[name='_csrf']").attr("content");
