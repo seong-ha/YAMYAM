@@ -161,10 +161,14 @@ public class OrdController {
 		int result = 0;
 		for(int i=0; i<vo.size(); i++) {
 			result += service.insertReList(vo.get(i));
+		}
+		for(int i=0; i<vo.size(); i++) {
 			result += service.updateReList(vo.get(i));
 		}
 		return result;
 	}
+	
+	
 	
 	/*-----------------
 	// 완제품 재고 조회 Tab
@@ -175,6 +179,7 @@ public class OrdController {
 	public List<OrdVO> getLotList(OrdVO vo) {
 		return service.getLotList(vo);
 	}
+	
 	
 	
 	/*-----------------

@@ -110,8 +110,8 @@ var header = $("meta[name='_csrf_header']").attr("content");
 	----------------*/
 	function searchBtnHandler(){
 		$('#searchBtn').on('click',function(){
-			let getPrdCd = $("prdCd").val();
-			let getLot = $("lot").val();
+			let getPrdCd = $("#prdCd").val();
+			let getLot = $("#lot").val();
 			$.ajax({
 				   url:'/getLotList',
 				   contentType: 'application/json',
@@ -161,15 +161,21 @@ var header = $("meta[name='_csrf_header']").attr("content");
 		    rowHeaders: ['rowNum'],
 		    scrollX: false,
 		    scrollY: false,
+		    bodyHeight: 200,
+		    pageOptions: {
+                 useClient: true,   // front에서만 페이징 하는 속성
+                 perPage: 5
+           			    },
+          	pagination : true,
 		    columns: [
 		      {
 		        header: '생산 일자',
-		        align : 'center',
+		        align : 'right',
 		        name  : 'podDate'
 		      },
 		      {
 		        header: '완제품LOT',
-		        align : 'center',
+		        align : 'left',
 		        name  : 'prdLot'
 		      },
 		      {
@@ -179,12 +185,12 @@ var header = $("meta[name='_csrf_header']").attr("content");
 		      },
 		      {
 		        header: '제품명',
-		        align : 'center',
+		        align : 'left',
 		        name  : 'prdNm'
 		      },
 		      {
 		        header: '재고 수량',
-		        align : 'center',
+		        align : 'right',
 		        name  : 'samt'
 		      }
 		    ]
@@ -216,10 +222,15 @@ var header = $("meta[name='_csrf_header']").attr("content");
 	function prdGridInit() {
 		let prdModalGrid = new tui.Grid({
 		    el: document.getElementById('prdModalGrid'),
-		    bodyHeight: 500,
+		    bodyHeight: 200,
 		    rowHeaders: ['rowNum'],
 		    scrollX: false,
 		    scrollY: true,
+		    pageOptions: {
+                useClient: true,   // front에서만 페이징 하는 속성
+                perPage: 5
+          			    },
+         	pagination : true,
 		    columns: [
 		      {
 		        header: '제품코드',
@@ -281,22 +292,28 @@ var header = $("meta[name='_csrf_header']").attr("content");
 		let lotModalGrid = new tui.Grid({
 		    el: document.getElementById('lotModalGrid'),
 		    rowHeaders: ['rowNum'],
+		    bodyHeight: 200,
 		    scrollX: false,
 		    scrollY: false,
+		    pageOptions: {
+                useClient: true,   // front에서만 페이징 하는 속성
+                perPage: 5
+          			    },
+         	pagination : true,
 		    columns: [
 		      {
 		        header: '완제품LOT',
-		        align : 'center',
+		        align : 'left',
 		        name: 'prdLot'
 		      },
 		      {
 		        header: '제품명',
-		        align : 'center',
+		        align : 'left',
 		        name: 'prdNm'
 		      },
 		      {
 		        header: '유통기한',
-		        align : 'center',
+		        align : 'right',
 		        name: 'edate'
 		      }
 		    ]
