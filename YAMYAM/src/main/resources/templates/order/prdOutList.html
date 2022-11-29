@@ -106,13 +106,13 @@ var header = $("meta[name='_csrf_header']").attr("content");
 	/*------------
 	// function
 	----------------*/
-	getOrdOutList(); 		// DB에서 출고내역 리스트 불러오기
-	getPrdList();			// DB에서 제품명 Modal 불러오기
-	getLotList();			// DB에서 완제품LOT Modal 불러오기
+	getOrdOutList(); 					// DB에서 출고내역 리스트 불러오기
+	getPrdList();						// DB에서 제품명 Modal 불러오기
+	getLotList();						// DB에서 완제품LOT Modal 불러오기
 	
-	searchBtnHandler(); 	// 조회 버튼 핸들러
-	cancelBtnHandler(); 	// input 값 초기화 버튼
-	exportBtnHandler(); 	// 엑셀출력 버튼 핸들러
+	searchBtnHandler(); 				// 조회 버튼 핸들러
+	cancelBtnHandler(); 				// input 값 초기화 버튼
+	exportBtnHandler(); 				// 엑셀출력 버튼 핸들러
 	
 	let grid = MainGridInit(); 			// 출고 내역 리스트 grid
 	let prdModalGrid = prdGridInit(); 	// 제품 Modal Gird
@@ -135,7 +135,7 @@ var header = $("meta[name='_csrf_header']").attr("content");
 			let getStartDate = $("#startpicker-input").val();
 			let getEndDate = $("#endpicker-input").val();
 				$.ajax({
-				   url:'/detailOutList',
+				   url:'/ordOutList',
 				   contentType: 'application/json',
 				   dataType: "json",
 				   method: "GET",
@@ -191,46 +191,51 @@ var header = $("meta[name='_csrf_header']").attr("content");
 		    rowHeaders: ['rowNum'],
 		    scrollX: false,
 		    scrollY: false,
+		    pageOptions: {
+                useClient: true,   // front에서만 페이징 하는 속성
+                perPage: 10
+          			    },
+         	pagination : true,
 		    columns: [
 		      {
 		        header: '출고 코드',
-		        align : 'center',
+		        align : 'left',
 		        name: 'outNo'
 		      },
 		      {
 		        header: '완제품LOT',
-		        align : 'center',
+		        align : 'left',
 		        name: 'prdLot'
 		      },
 		      {
 		        header: '제품명',
-		        align : 'center',
+		        align : 'left',
 		        name: 'prdNm'
 		      },
 		      {
 		        header: '거래처명',
-		        align : 'center',
+		        align : 'left',
 		        name: 'actNm'
 		      },
 		      {
 		        header: '출고량',
-		        align : 'center',
+		        align : 'right',
 		        name: 'bamt'
 		      },
 		      {
 		        header: '출고 일자',
-		        align : 'center',
+		        align : 'right',
 		        name: 'bdates'
 		      },
 		      {
 		        header: '유통기한',
-		        align : 'center',
+		        align : 'right',
 		        name: 'edate'
 		      },
 		      {
 		        header: '비고',
-		        align : 'center',
-		        width: 'auto',
+		        align : 'left',
+		        width: '200',
 		        name: 'outEtc'
 		      }
 		    ]
@@ -263,10 +268,15 @@ var header = $("meta[name='_csrf_header']").attr("content");
 	function prdGridInit() {
 		let prdModalGrid = new tui.Grid({
 		    el: document.getElementById('prdModalGrid'),
-		    bodyHeight: 500,
+		    bodyHeight: 200,
 		    rowHeaders: ['rowNum'],
 		    scrollX: false,
-		    scrollY: true,
+		    scrollY: false,
+		    pageOptions: {
+                useClient: true,   // front에서만 페이징 하는 속성
+                perPage: 5
+          			    },
+         	pagination : true,
 		    columns: [
 		      {
 		        header: '제품코드',
@@ -275,7 +285,7 @@ var header = $("meta[name='_csrf_header']").attr("content");
 		      },
 		      {
 		        header: '제품명',
-		        align : 'center',
+		        align : 'left',
 		        name: 'prdNm'
 		      }
 		    ]
@@ -326,25 +336,30 @@ var header = $("meta[name='_csrf_header']").attr("content");
 	function lotGridInit() {
 	let lotModalGrid = new tui.Grid({
 	    el: document.getElementById('lotModalGrid'),
-	    bodyHeight: 500,
+	    bodyHeight: 200,
 	    rowHeaders: ['rowNum'],
 	    scrollX: false,
-	    scrollY: true,
+	    scrollY: false,
+	    pageOptions: {
+            useClient: true,   // front에서만 페이징 하는 속성
+            perPage: 5
+      			    },
+     	pagination : true,
 	    columns: [
 	      {
 	        header: '완제품LOT',
-	        align : 'center',
-	        name: 'prdLot'
+	        align : 'left',
+	        name  : 'prdLot'
 	      },
 	      {
 	        header: '제품명',
-	        align : 'center',
-	        name: 'prdNm'
+	        align : 'left',
+	        name  : 'prdNm'
 	      },
 	      {
 	        header: '유통기한',
-	        align : 'center',
-	        name: 'edate'
+	        align : 'right',
+	        name  : 'edate'
 	      }
 	    ]
 	  });

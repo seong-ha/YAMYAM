@@ -38,8 +38,8 @@ public class OrdServiceImpl implements OrdService {
 	
 	// 완제품LOT 재고 현황 모달
 	@Override
-	public List<OrdVO> lotSList() {
-		return map.lotSList();
+	public List<OrdVO> lotSList(OrdVO vo) {
+		return map.lotSList(vo);
 	}
 	
 	// 완제품LOT 출고 현황 모달
@@ -59,19 +59,13 @@ public class OrdServiceImpl implements OrdService {
 	// 주문 관리 Tab
 	---------------*/
 	
-	// 주문서관리 리스트 조회
+	// 주문서 관리 리스트 조회 (단건, 조건조회)
 	@Override
-	public List<OrdVO> getOrdList() {
-		return map.getOrdList();
+	public List<OrdVO> getOrdList(OrdVO vo) {
+		return map.getOrdList(vo);
 	}
 	
-	// 주문서관리 주문서 조건조회
-	@Override
-	public List<OrdVO> getList(OrdVO vo) {
-		return map.getList(vo);
-	}
-	
-	// 주문서 관리 추가
+	// 주문서 관리 신규등록
 	@Override
 	public int insertOrd(List<OrdVO> vo) {
 		int result = 0;
@@ -108,15 +102,11 @@ public class OrdServiceImpl implements OrdService {
 	
 	// 출고 내역 리스트 조회
 	@Override
-	public List<OrdVO> getOrdOutList() {
-		return map.getOrdOutList();
+	public List<OrdVO> getOrdOutList(OrdVO vo) {
+		return map.getOrdOutList(vo);
 	}
 	
-	// 출고 내역 리스트 조건조회
-	@Override
-	public List<OrdVO> getDetailOutList(OrdVO vo) {
-		return map.getDetailOutList(vo);
-	}
+
 
 	/*-----------------
 	// 완제품 출고 관리 Tab
@@ -124,34 +114,20 @@ public class OrdServiceImpl implements OrdService {
 	
 	// 진행중인 주문서 리스트 조회
 	@Override
-	public List<OrdVO> getIngOrdList() {
-		return map.getIngOrdList();
-	}
-
-	// 진행중인 주문서 조건조회
-	@Override
-	public List<OrdVO> getIngOrdDetailList(OrdVO vo) {
-		return map.getIngOrdDetailList(vo);
+	public List<OrdVO> getIngOrdList(OrdVO vo) {
+		return map.getIngOrdList(vo);
 	}
 
 	// 출고 등록 리스트 등록
 	@Override
-	public int insertOutList(List<OrdVO> vo) {
-		int result = 0;
-		for(int i=0; i<vo.size(); i++) {
-			result += map.insertOutList(vo.get(i));
-		}
-		return result;
+	public int insertOutList(OrdVO vo) {
+		return map.insertOutList(vo);
 	}
-
-	// 출고 등록 리스트 삭제
+	
 	@Override
-	public int deleteOutList(List<OrdVO> vo) {
-		int result = 0;
-		for(int i=0; i<vo.size(); i++) {
-			result += map.deleteOutList(vo.get(i));
-		}
-		return result;
+	// 출고 등록 리스트 등록 후, 재고 업데이트
+	public int updateOutList(OrdVO vo) {
+		return map.updateOutList(vo);
 	}
 
 	/*-----------------
