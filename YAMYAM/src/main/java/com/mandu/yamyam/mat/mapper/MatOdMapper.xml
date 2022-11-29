@@ -639,7 +639,7 @@
 		  
 		  JOIN P_OD D
 		   ON D.PRD_CD = P.PRD_CD
-		   
+		  
 		   JOIN P_ODD O
 		    ON O.POD_CD = D.POD_CD
 		    

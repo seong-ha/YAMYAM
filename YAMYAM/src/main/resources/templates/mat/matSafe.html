@@ -145,14 +145,15 @@
 				let data3 = (data.matSamt/data.mtrSfamt) * 100
 				let data4 = '';
 				
-				if(data3 >= 30) {
-					data4 = "안전"
+				if(data3 < 15) {
+					data4 = "위험"
 				} else if(data3 < 30) {
 					data4 = "경고"
-				} else if (data3 < 15) {
-					data4 = "위험"
+				} else if (data3 < 40) {
+					data4 = "주의"
+				} else if (data3 >= 40){
+					data4 = "안전"
 				}
-				
 				
 				let holdData = [{amt: result, holdP: data2, safeP: data3, safeG: data4}];
 				grid2.resetData(holdData);
@@ -211,6 +212,14 @@
 		          name: 'safeG',
 				  sortable: true,
 				  align: 'center',
+		          renderer: {
+		               styles: {
+		                    fontWeight: 'bold',
+		                    color: (props) => 
+			      					(props.value == '위험') ? '#FF4500' : (props.value == '경고') ? '#FF8C00' : 
+			      						(props.value == '주의') ? '#FFD700' : '#32CD32'
+		                 	}
+				           },
 				  filter: {
 						 type: 'select'			  
 						 }
