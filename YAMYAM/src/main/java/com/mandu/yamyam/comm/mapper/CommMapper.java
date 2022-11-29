@@ -14,12 +14,14 @@ public interface CommMapper {
 
 	// ajax 공통코드 불러오기
 	public List<CommVO> ajaxSelectComm();
-	
-	
 	// ajax 상세 공통 코드 불러오기
 	public List<CommdVO> ajaxSelectDetailComm(CommdVO commdVO);
+	// ajax 상세 공통 코드 한건 불러오기
+	public CommdVO ajaxFindCommd(CommdVO commdVO);
 	// ajax 상세 공통 코드 등록
 	public int ajaxInsertDetailComm(CommdVO commdVO);
+	// ajax 상세 공통 코드 수정	
+	public int ajaxUpdateCommd(CommdVO commdVO);
 	// ajax 상세 공통 코드 삭제
 	public int ajaxDeleteDetailComm(CommdVO commdVO);
 	// ajax 공통 코드 등록
@@ -54,6 +56,8 @@ public interface CommMapper {
 	public int ajaxInsertAct(ActVO actVO);
 	// ajax 구매 거래처 수정하기
 	public int ajaxUpdateAct(ActVO actVO);
+	// ajax 거래처 삭제하기
+	public int ajaxDeleteAct(ActVO actVO);
 	
 	
 	// ajax 완제품 코드 불러오기

@@ -12,9 +12,6 @@ width:80%;	display: inline;
 </style>
 </head>
 <div class="container" layout:fragment="content">
-
-
-	<br>
 	<h3>자재 코드 관리</h3>
 	<hr>
 
@@ -318,21 +315,21 @@ width:80%;	display: inline;
 		
 		// bind 'change' event
 		selectBox.on('change', ev => {
-		  console.log(` ${ev.curr.getLabel()}    ${ev.curr.getValue()}`);
+		  //console.log(` ${ev.curr.getLabel()}    ${ev.curr.getValue()}`);
 		  $('#mtrStandard').val(ev.curr.getValue());
-		  console.log($('#mtrStandard').val(ev.curr.getValue()));
+		  //console.log($('#mtrStandard').val(ev.curr.getValue()));
 		  
 		});
 		
 		
 		selectBox2.on('change', ev => {
-			  console.log(` ${ev.curr.getLabel()}    ${ev.curr.getValue()}`);
+			  //console.log(` ${ev.curr.getLabel()}    ${ev.curr.getValue()}`);
 			  $('#mtrUnit').val(ev.curr.getValue());
 		});
 		
 		
 		selectBox3.on('change', ev => {
-			  console.log(` ${ev.curr.getLabel()}    ${ev.curr.getValue()}`);
+			  //console.log(` ${ev.curr.getLabel()}    ${ev.curr.getValue()}`);
 			  $('#mtrStatus').val(ev.curr.getValue());
 		});
 		
@@ -360,7 +357,6 @@ width:80%;	display: inline;
 				type : "get",
 				dataType: "json",
 				success : function(data){
-					console.log(data);
 					grid.resetData(data);
 				},
 				error : function(reject){
@@ -377,7 +373,6 @@ width:80%;	display: inline;
 				type : "get",
 				dataType: "json",
 				success : function(data){
-					console.log(data);
 					grid2.resetData(data);
 				},
 				error : function(reject){
@@ -426,7 +421,6 @@ width:80%;	display: inline;
 		
 		grid2.on('click', function(ev){
 			let rowData = grid2.getRow(ev.rowKey);
-			console.log(grid2.getRow(ev.rowKey).actCd);
 		
 			actCode.value = rowData.actCd;
 			actName.value = rowData.actNm;

@@ -34,6 +34,11 @@ public class CommServiceImpl implements CommService {
 		return commMapper.ajaxSelectDetailComm(commdVO);
 	}
 	
+	// ajax 상세 공통 코드 한건 불러오기
+	@Override
+	public CommdVO ajaxFindCommd(CommdVO commdVO) {
+		return commMapper.ajaxFindCommd(commdVO);
+	}
 	
 	// ajax 상세 공통 코드 등록
 	@Override
@@ -41,6 +46,17 @@ public class CommServiceImpl implements CommService {
 		int result = 0;
 		for(int i=0; i<commdVO.size(); i++) {
 			result += commMapper.ajaxInsertDetailComm(commdVO.get(i));
+		}
+		return result;
+	}
+	
+	// ajax 상세 공통 코드 수정
+	@Override
+	public int ajaxUpdateCommd(List<CommdVO> commdVO) {
+		int result = 0;
+		
+		for (int i = 0; i < commdVO.size(); i++) {
+			result += commMapper.ajaxUpdateCommd(commdVO.get(i));
 		}
 		return result;
 	}
@@ -146,6 +162,12 @@ public class CommServiceImpl implements CommService {
 	public int ajaxUpdateAct(ActVO actVO) {
 		return commMapper.ajaxUpdateAct(actVO);
 	}
+	
+	// ajax 거래처 삭제하기
+	@Override
+	public int ajaxDeleteAct(ActVO actVO) {
+		return commMapper.ajaxDeleteAct(actVO);
+	}
 
 	// ajax 완제품 코드 불러오기
 	@Override
@@ -218,7 +240,5 @@ public class CommServiceImpl implements CommService {
 		}
 		return result;
 	}
-	
-	
 
 }

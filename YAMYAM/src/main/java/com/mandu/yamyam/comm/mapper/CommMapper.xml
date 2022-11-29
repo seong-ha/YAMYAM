@@ -19,6 +19,13 @@
 	
 </select>
 
+<!-- ajax 상세 공통 코드 한건 불러오기 -->
+<select id="ajaxFindCommd" parameterType="com.mandu.yamyam.comm.service.CommdVO" resultType="com.mandu.yamyam.comm.service.CommdVO">
+	SELECT commd_cd
+	FROM c_commd
+	WHERE commd_cd = #{commdCd}
+</select>
+
 <!-- 상세 공통 코드 등록 -->
 
 <insert id="ajaxInsertDetailComm" parameterType="com.mandu.yamyam.comm.service.CommdVO">
@@ -42,6 +49,16 @@
 	)
 	
 </insert>
+
+<!-- ajax 상세 공통 코드 수정	 -->
+<update id="ajaxUpdateCommd" parameterType="com.mandu.yamyam.comm.service.CommdVO">
+	UPDATE c_commd
+	SET    comm_cd = #{commCd},
+	       commd_nm = #{commdNm},
+	       commd_info = #{commdInfo},
+	       commd_use = #{commdUse}
+	WHERE  commd_cd = #{commdCd}
+</update>
 
 <!-- 상세 공통 코드 삭제 -->
 
@@ -257,6 +274,12 @@ WHERE MTR_CD = #{mtrCd}
 	WHERE ACT_CD = #{actCd}
 
 </update>
+
+
+<delete id="ajaxDeleteAct" parameterType="com.mandu.yamyam.comm.service.ActVO">
+	DELETE FROM c_act
+	WHERE act_cd = #{actCd}
+</delete>
 
 <!-- ajax 완제품코드 불러오기 -->
 <select id="ajaxSelectPrd" resultType="com.mandu.yamyam.common.LowerKeyMap">
