@@ -4,33 +4,31 @@
 	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	layout:decorate="~{/layout/layout}">
 <div class="container" layout:fragment="content">
-
-	<br>
-	
 	<h3>BOM관리</h3>
 	
 	<hr>
 	
-	<br> <br>
-	<form id="frm">
+	<form id="frm" style="margin-bottom:10px">
     	<ul class="ul-style">
 			<li>
 				<label for="prdCodeLabel">제품 코드</label>
 				<input id="prdCode" name="prdCd" readonly>
 				<img id="prdCodeLabel" class="Magnifying-Glass-img" alt="image" data-bs-toggle="modal" 
 				data-bs-target="#exampleModal2" src="../images/Magnifying_Glass.png" >
-				<input type="text" name="prdNm" id="prdName" readonly>
+				<input type="text" name="prdNm" id="prdName" style="margin-right:15px" readonly>
+				<button type="button" class="btn btn-dark btn-sm" id="selectBtn">조회</button>
+				<button type="reset" class="btn btn-dark btn-sm" id="searchReset">초기화</button>
 			</li>
 		</ul>
-		
 		<div align="right">
-			<button type="button" class="btn btn-dark btn-sm" id="selectBtn">조회</button>
 			<button type="button" class="btn btn-dark btn-sm" id="insertBtn">추가</button>
 			<button type="button" class="btn btn-dark btn-sm" id="saveBtn">저장</button>
 			<button type="button" class="btn btn-dark btn-sm" id="deleteBtn">삭제</button>
-			<button type="reset" class="btn btn-dark btn-sm" id="searchReset">초기화</button>
 		</div>
 	</form>
+	<div id="grid"></div>
+	
+	
 	<!-- Modal2 -->
 		<div class="modal" id="exampleModal2" tabindex="-1"
 			aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -167,13 +165,6 @@
 												 </div>
 										    </div> -->
 			
-			
-	
-	
-	<br>
-	
-	<div id="grid"></div>
-
 	<script>
 	
 	/* token */
@@ -490,7 +481,6 @@
 		
 	     document.getElementById('selectBtn').addEventListener('click', function(){
 	    	 grid.filter('prdCd', [{code: 'eq', value: prdCode.value}]);
-	    	 resetf();
 	     });
 	     
 	   
@@ -498,7 +488,6 @@
 	     document.getElementById('prdCode').addEventListener("keydown", function(){
 	         if(event.keyCode == 13){
 	        	 grid.filter('prdCd', [{code: 'eq', value: prdCode.value}]);
-	        	 resetf();
 	         }
 	     })
 	     

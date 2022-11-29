@@ -12,4 +12,7 @@ public class ActVO {
 	private String actTel; // 전화번호
 	private String actSts; // 거래 상태
 	private String actDiv; // 거래처 구분
+	
+	// 프로시저 결과값
+	private int result;
 }

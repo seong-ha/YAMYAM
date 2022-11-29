@@ -117,12 +117,26 @@ public class EmpController {
 		return commService.ajaxSelectDetailComm(commdVO);
 	}
 	
+	// ajax 상세 공통 코드 한건 불러오기
+	@PostMapping("ajax/findCommd")
+	@ResponseBody
+	public CommdVO ajaxFindCommd(CommdVO commdVO){
+		return commService.ajaxFindCommd(commdVO);
+	}
+	
 	// ajax 상세 공통 코드 등록
 	@PostMapping("ajax/insertCommd")
 	@ResponseBody
 	public int ajaxInsertCommd(@RequestBody List<CommdVO> commdVO) {
 		int result = commService.ajaxInsertDetailComm(commdVO);
 		return result;
+	}
+	
+	// ajax 상세 공통 코드 수정
+	@PostMapping("ajax/updateCommd")
+	@ResponseBody
+	public int ajaxUpdateCommd(@RequestBody List<CommdVO> commdVO) {
+		return commService.ajaxUpdateCommd(commdVO);
 	}
 	
 	// ajax 상세 공통 코드 삭제
@@ -262,6 +276,13 @@ public class EmpController {
 		int result = 0;
 		result = commService.ajaxUpdateAct(actVO);
 		return result;
+	}
+	
+	// ajax 구매 거래처 삭제
+	@PostMapping("ajax/deleteAct")
+	@ResponseBody
+	public int ajaxDeleteAct(ActVO actVO) {
+		return commService.ajaxDeleteAct(actVO);
 	}
 	
 	

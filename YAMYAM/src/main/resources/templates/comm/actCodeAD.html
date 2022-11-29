@@ -4,12 +4,8 @@
 	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	layout:decorate="~{/layout/layout}">
 <div class="container" layout:fragment="content">
-
-
-	<br>
 	<h3>거래처 코드관리</h3>
 	<hr>
-	<br>
 	<form action="#">
 		<ul class="ul-style">
 			<li>
@@ -30,11 +26,14 @@
 				<div style="width: 190px;" id="select-box2"></div>
 				<input type="hidden" name="actSts"  id="actStatus">&nbsp;
 				<label style="width:113px">&nbsp;&nbsp;거래상태</label>&nbsp;
-				<div style="width: 190px;" id="select-box"></div>
-				<div align="right">&nbsp;&nbsp;
-					<button type="button" class="btn btn-dark btn-sm" id="insertBtn">구매 거래처 등록</button>&nbsp;
+				<div style="width: 190px;" id="select-box"></div>&nbsp;&nbsp;&nbsp;
+				<input type="reset" class="btn btn-dark btn-sm" id="reset" name="reset">
+			</li>
+			<li>
+				<div align="right">
+					<button type="button" class="btn btn-dark btn-sm" id="insertBtn">거래처 등록</button>&nbsp;
 					<button type="button" class="btn btn-dark btn-sm" id="updateBtn">거래처 수정</button>&nbsp;
-					<input type="reset" class="btn btn-dark btn-sm" id="reset" name="reset">
+					<button type="button" class="btn btn-dark btn-sm" id="deleteBtn">거래처 삭제</button>
 				</div>
 			</li>
 		</ul>
@@ -155,7 +154,6 @@
 				label : 'N',
 				value : 'N'
 			} ],
-			autofocus : true
 	});
 	
 	var selectBox2 = new tui.SelectBox('#select-box2', {
@@ -170,19 +168,18 @@
 			label : '설비업체',
 			value : 'ACT-TYPE3'
 		} ],
-		autofocus : true
 });
 	
 	
 	// bind 'change' event1
 	selectBox.on('change', ev => {
-	  console.log(` ${ev.curr.getLabel()}    ${ev.curr.getValue()}`);
+	  //console.log(` ${ev.curr.getLabel()}    ${ev.curr.getValue()}`);
 	  $('#actStatus').val(ev.curr.getValue());
 	});
 	
 	// bind 'change' event2
 	selectBox2.on('change', ev => {
-	  console.log(` ${ev.curr.getLabel()}    ${ev.curr.getValue()}`);
+	  //console.log(` ${ev.curr.getLabel()}    ${ev.curr.getValue()}`);
 	  $('#actDivision').val(ev.curr.getValue());
 	});
 	
@@ -200,7 +197,6 @@
 				type : "get",
 				dataType: "json",
 				success : function(data){
-					console.log(data);
 					grid.resetData(data);
 				},
 				error : function(reject){
@@ -208,15 +204,59 @@
 				}
 			})
 	 }
- 		
+ 	
+	// 거래처 코드를 제외한 값을 입력했는지 체크
+	function checkEmpty() {
+		let actNm =  document.getElementById('actName');
+		let actCd = document.getElementById('actCode');
+		let actNum = document.getElementById('actNumber');
+		let actTel = document.getElementById('actTelephone');
+		let actDiv = document.getElementById('actDivision');
+		let actSts = document.getElementById('actStatus');
+		
+		if (actNm.value == null || actNm.value == '') {
+			toastr.warning('거래처명을 입력하세요ㅣ.');
+			actNm.focus();
+			return true;
+		} else if (actNum.value == null || actNum.value == '') {
+			toastr.warning('사업자등록번호를 입력하세요ㅣ.');
+			actNum.focus();
+			return true;			
+		} else if (actTel.value == null || actTel.value == '') {
+			toastr.warning('전화번호를 입력하세요ㅣ.');
+			actTel.focus();
+			return true;
+		} else if (actDiv.value == null || actDiv.value == '') {
+			toastr.warning('거래처 구분을 선택하세요ㅣ.');
+			document.getElementById('select-box2').focus();
+			return true;
+		} else if (actSts.value == null || actSts.value == '') {
+			toastr.warning('거래 상태를 선택하세요ㅣ.');
+			document.getElementById('select-box1').focus();
+			return true;
+		}
+		
+		return false;
+	}
 		
 
 	// ajax 구매 거래처 등록하기
 	
-		document.getElementById('insertBtn').addEventListener('click', function(){
+		document.getElementById('insertBtn').addEventListener('click', function() {
+			// 거래처코드 비어있는지 확인
+			let actCd = document.getElementById('actCode'); 
+			if (actCd.value.length != 0) {
+				toastr.warning('먼저 거래처 코드를 초기화 후 작성해주세요.');
+				return;
+			}
+			
+			// 거래처 코드를 제외한 값을 입력했는지 체크
+			if (checkEmpty()) {
+				return;
+			};
+			
 			sweetConfirm('C', function () {
 			let data = {
-					
 				actNm: document.getElementById('actName').value,
 				actCd: document.getElementById('actCode').value,
 				actNum: document.getElementById('actNumber').value,
@@ -226,7 +266,6 @@
 			}
 			
 			// ajax 구매 거래처 등록
-			console.log("데이터 가져왔니?");
 			$.ajax({
 				url : "ajax/insertAct",
 				type : "post",
@@ -239,6 +278,7 @@
 					if (data > 0) {
 						// ajax success
 			            toastr.success('정상적으로 등록되었습니다.');
+			            document.getElementsByName('reset')[0].click();
 			            selectAct(); // 최신화된 거래처 불러오기
 			            //setTimeout(() => {location.reload(), 3000});
 					} else {
@@ -253,8 +293,6 @@
 			});
 		});
 		
-	// ajax 구매 거래처 수정
-	
 		// 거래처 코드 칼럼 누르면 거기 정보가 나온다
  		
 	 	grid.on('click', function(ev){
@@ -269,51 +307,99 @@
 			
 			selectBox.select(rowData.actSts);
 			selectBox2.select(rowData.actDiv);
+			
+	 	})
 	 	
-		
-			document.getElementById('updateBtn').addEventListener('click', function(){
-				sweetConfirm('U', function () {
-					
-					let data = {
-							
-							actNm : document.getElementById('actName').value,
-							actCd : document.getElementById('actCode').value,
-							actNum : document.getElementById('actNumber').value,
-							actTel : document.getElementById('actTelephone').value,
-							actDiv : document.getElementById('actDivision').value,
-							actSts : document.getElementById('actStatus').value
-					};
-					
-					// ajax 직원 정보 수정
-
-					$.ajax({
-						url : "ajax/updateAct",
-						type : "post",
-						data: data,
-						dataType: "json",
-						beforeSend : function (xhr) {
-						    xhr.setRequestHeader(header, token);
-						},
-						success : function(data){
-							if (data > 0) {
-								// ajax success
-					            toastr.success('정상적으로 수정되었습니다.');
-					            selectAct(); // 최신화된 거래처 불러오기
-					            //location.reload();
-							} else {
-								// ajax fail
-					            toastr.error('수정에 실패했습니다.');	
-							}
-						},
-						error : function(reject){
-							console.log(reject);
+	 	
+	 	// ajax 구매 거래처 수정
+	 	document.getElementById('updateBtn').addEventListener('click', function(){
+	 		// 수정할 거래처코드 입력되어있는지 확인
+			let actCd = document.getElementById('actCode'); 
+			if (actCd.value.length == 0) {
+				toastr.warning('거래처를 선택한 후 수정해주세요.');
+				return;
+			}
+	 		
+	 		// 거래처 코드를 제외한 값을 입력했는지 체크
+			if (checkEmpty()) {
+				return;
+			};
+	 		
+			sweetConfirm('U', function () {
+				
+				let data = {
+						
+						actNm : document.getElementById('actName').value,
+						actCd : document.getElementById('actCode').value,
+						actNum : document.getElementById('actNumber').value,
+						actTel : document.getElementById('actTelephone').value,
+						actDiv : document.getElementById('actDivision').value,
+						actSts : document.getElementById('actStatus').value
+				};
+				
+				$.ajax({
+					url : "ajax/updateAct",
+					type : "post",
+					data: data,
+					beforeSend : function (xhr) {
+					    xhr.setRequestHeader(header, token);
+					},
+					success : function(data){
+						if (data > 0) {
+							// ajax success
+				            toastr.success('정상적으로 수정되었습니다.');
+				            document.getElementsByName('reset')[0].click();
+				            selectAct(); // 최신화된 거래처 불러오기
+				            //location.reload();
+						} else {
+							// ajax fail
+				            toastr.error('수정에 실패했습니다.');	
 						}
+					},
+					error : function(reject){
+						console.log(reject);
+					}
 				});
 
-
-				})
 			})
-	 	})
+		})
+		
+		
+		// 거래처 삭제
+		document.getElementById('deleteBtn').addEventListener('click', function() {
+			// 삭제할 거래처코드 입력되어있는지 확인
+			let actCd = document.getElementById('actCode'); 
+			if (actCd.value == '' || actCd.value == null) {
+				toastr.warning('거래처를 선택한 후 삭제해주세요.');
+				return;
+			}
+			
+			sweetConfirm('D', function () {
+				$.ajax({
+					url : "ajax/deleteAct",
+					type : "post",
+					data: {'actCd' : actCd.value},
+					beforeSend : function (xhr) {
+					    xhr.setRequestHeader(header, token);
+					},
+					success : function (data) {
+						if (data > 0) {
+							// ajax success
+				            toastr.success('정상적으로 삭제되었습니다.');
+				            document.getElementsByName('reset')[0].click();
+				            selectAct(); // 최신화된 거래처 불러오기
+						} else {
+							// ajax fail
+				            toastr.error('삭제에 실패했습니다.');	
+						}
+					},
+					error : function(reject){
+						console.log(reject);
+					}
+				});
+			});
+			
+		});
     </script>
     
 </div>

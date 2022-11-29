@@ -4,9 +4,6 @@
 	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	layout:decorate="~{/layout/layout}">
 <div class="container" layout:fragment="content">
-
-
-	<br>
 	<h3>직원관리</h3>
 	<hr>
 
@@ -347,7 +344,6 @@
 				type : "get",
 				dataType: "json",
 				success : function(data){
-					console.log(data);
 					grid.resetData(data);
 				},
 				error : function(reject){
@@ -357,16 +353,7 @@
 		}
 		selectEmps();	
 	
-		// 체크박스
-		 grid.on('check', function(ev) {
-		      console.log('check', ev);
-		    });
-
-	    grid.on('uncheck', function(ev) {
-	      console.log('uncheck', ev);
-	    });
-	
-	
+		
 		// 회원 등록하기
 		
 		document.getElementById('insertBtn').addEventListener('click', function(){
@@ -425,7 +412,6 @@
 			
 			sweetConfirm('C', function () {
 				// ajax 직원 정보 등록
-				console.log("데이터 가져왔니?");
 				$.ajax({
 					url : "/ajax/insertEmp",
 					type : "post",
@@ -458,7 +444,7 @@
 		
 		$("#mainUpdateBtn").click(function(e){  //메인 화면 수정버튼
 			let rowData = grid.getCheckedRows();
-			console.log(rowData.length)
+
 			if (rowData.length < 1) {
 				toastr.warning('하나의 회원을 선택해주세요.');
 				return;
@@ -473,10 +459,24 @@
 				 모달의 input태그들의 value값에 변수들을 담아준다.
 				 */
 				 
-				 updateId.value = rowData[0].empId;
-				 document.getElementById('updateEmpName').value = rowData[0].empNm;
-				 updateRole.value = rowData[0].empRole;
-			 });
+			$.ajax({
+				url : "/ajax/selectEmpInfo",
+				type : "post",
+				data: {'empId': rowData[0].empId},
+				async: false,
+				beforeSend : function (xhr) {
+				    xhr.setRequestHeader(header, token);
+				},
+				success : function(result){
+					document.getElementById('updateId').value = result.empId;
+					document.getElementById('updateEmpName').value = result.empNm;
+					document.getElementById('updateRole').value = result.empRole;
+				},
+				error : function(reject){
+					console.log(reject);
+				}
+			});
+		 });
 	
 		// 모달창 수정버튼 이벤트
 		
@@ -542,8 +542,6 @@
 				let data = grid.getCheckedRows(); 
 				
 				// ajax 직원 정보 삭제
-				console.log(data);
-				
 				$.ajax({
 					url : "/ajax/delEmp",
 					type : "post",
