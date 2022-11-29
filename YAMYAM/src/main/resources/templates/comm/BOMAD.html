@@ -13,23 +13,23 @@
 	
 	<br> <br>
 	<form id="frm">
-		<ul class="ul-style">
-				<li><label for="prdCodeLabel">제품 코드</label><input id="prdCode" name="prdCd" readonly>
-					<img id="prdCodeLabel" class="Magnifying-Glass-img" alt="image"
-						data-bs-toggle="modal" data-bs-target="#exampleModal2"
-						src="../images/Magnifying_Glass.png" >
-					<input type="text" name="prdNm" id="prdName" readonly>
-				</li>
-				
-				
+    	<ul class="ul-style">
+			<li>
+				<label for="prdCodeLabel">제품 코드</label>
+				<input id="prdCode" name="prdCd" readonly>
+				<img id="prdCodeLabel" class="Magnifying-Glass-img" alt="image" data-bs-toggle="modal" 
+				data-bs-target="#exampleModal2" src="../images/Magnifying_Glass.png" >
+				<input type="text" name="prdNm" id="prdName" readonly>
+			</li>
 		</ul>
 		
-			<div align="right">
+		<div align="right">
 			<button type="button" class="btn btn-dark btn-sm" id="selectBtn">조회</button>
 			<button type="button" class="btn btn-dark btn-sm" id="insertBtn">추가</button>
 			<button type="button" class="btn btn-dark btn-sm" id="saveBtn">저장</button>
+			<button type="button" class="btn btn-dark btn-sm" id="deleteBtn">삭제</button>
 			<button type="reset" class="btn btn-dark btn-sm" id="searchReset">초기화</button>
-	</div>
+		</div>
 	</form>
 	<!-- Modal2 -->
 		<div class="modal" id="exampleModal2" tabindex="-1"
@@ -37,9 +37,9 @@
 			<div class="modal-dialog">
 				<div class="modal-content">
 					<div class="modal-header">
-			    	<h4 class="modal-title" id="exampleModalLabel">제품 코드 목록</h4>
-			    	<button type="button" class="btn-close" data-bs-dismiss="modal"
-			            aria-label="Close" id="prdModalClose2"></button>
+			    		<h4 class="modal-title" id="exampleModalLabel">제품 코드 목록</h4>
+			    		<button type="button" class="btn-close" data-bs-dismiss="modal" 
+			    			aria-label="Close" id="prdModalClose2"></button>
 		    		</div>
 			     		<div class="modal-body">
 							<h4 align="center"><b>제품 목록</b></h4>
@@ -49,7 +49,6 @@
 			               	
 			               	<div id="grid2"></div>
 			            	   	
-			               	
 			     	    </div>
 			     </div>
 			 </div>
@@ -63,7 +62,7 @@
 					<div class="modal-header">
 			    	<h4 class="modal-title" id="exampleModalLabel">공정 코드 목록</h4>
 			    	<button type="button" class="btn-close" data-bs-dismiss="modal"
-			            aria-label="Close" id="prdModalClose3"></button>
+			         	aria-label="Close" id="prdModalClose3"></button>
 		    		</div>
 			     		<div class="modal-body">
 							<h4 align="center"><b>공정 코드 검색</b></h4>
@@ -72,7 +71,6 @@
 			                <br> <br>
 			               	
 			               	<div id="grid3"></div>
-			            	   	
 			               	
 			     	    </div>
 			     </div>
@@ -96,7 +94,6 @@
 			                <br> <br>
 			               	
 			               	<div id="grid4"></div>
-			            	   	
 			               	
 			     	    </div>
 			     </div>
@@ -121,7 +118,6 @@
 			               	
 			               	<div id="grid5"></div>
 			            	   	
-			               	
 			     	    </div>
 			     </div>
 			 </div>
@@ -136,7 +132,7 @@
 						    	<h4 class="modal-title" id="exampleModalLabel">저장 확인</h4>
 						    	<button type="button" class="btn-close" data-bs-dismiss="modal"
 						            aria-label="Close"></button>
-					    		</div>
+					    	</div>
 						     		<div class="modal-body">
 						     		
 										<div align="center">해당 정보를 BOM 코드로 저장 하시겠습니까?</div><br>
@@ -192,31 +188,46 @@
 			rowHeaders: ['rowNum', 'checkbox'],
 			columns : [ {
 				header : '사용 공정코드',
-				name : 'pproCd'
+				name : 'pproCd',
+				align : 'center'
 			}, {
 				header : '사용 공정명',
-				name : 'pproName'
+				name : 'pproName',
+				align : 'center',
+				sortingType: 'desc',
+		        sortable: true
 			}, {
 				header : 'BOM코드',
-				name : 'bomCd'
+				name : 'bomCd',
+				align : 'center',
+				sortingType: 'desc',
+		        sortable: true
 			}, {
 				header : '제품 코드',
 				name : 'prdCd',
+				align : 'center',
 				filter : 'text'
 			}, {
 				header : '자재 코드',
-				name : 'mtrCd'
+				name : 'mtrCd',
+				align : 'center',
+				sortingType: 'desc',
+		        sortable: true
 			}, {
 				header : '자재명',
-				name : 'mtrNm'
+				name : 'mtrNm',
+				align : 'right'
 			}, {
 				header : '소모량',
 				name : 'bomAmt',
+				align : 'right',
+				sortingType: 'desc',
+		        sortable: true,
 				editor : 'text'
 			}],
 			showDummyRows : true
 		});
-		selectBOM();	// BOM 정보 불러오기(grid)
+			selectBOM();	// BOM 정보 불러오기(grid)
 		
 		const grid2 = new tui.Grid({
 			el : document.getElementById('grid2'),
@@ -232,8 +243,7 @@
 			}, {
 				header : '규격',
 				name : 'prdStd'
-			}
-			]
+			}]
 		});
 		
 		const grid3 = new tui.Grid({
@@ -279,8 +289,7 @@
 			}, {
 				header : '자재명',
 				name : 'mtrNm'
-			}
-			]
+			}]
 		});
 		
 		
@@ -400,7 +409,6 @@
 		} 
 		
 	   // 추가버튼 클릭시 한줄 생성
-	   
 	   document.getElementById('insertBtn').addEventListener('click', function(){
 		  
 		   let rowData = [{bomNo: "", pproName: "", bomCd: "", prdCd: "", mtrCd: "", mtrNm: "", bomAmt: ""}]
@@ -416,7 +424,7 @@
 			   grid3.refreshLayout();
 		   }
 		   
-			// 사용 공정명(모달) 클릭시 안으로 값이 들어감
+		// 사용 공정명(모달) 클릭시 안으로 값이 들어감
 		   grid3.on('click', function(ev2){
 			   
 			   let rowKey1 = grid.getFocusedCell().rowKey; // 클릭한 BOM grid 행 rowkey
@@ -464,7 +472,7 @@
 			   grid5.refreshLayout();
 		   }
 		   
-			// 사용 공정명(모달) 클릭시 안으로 값이 들어감
+		// 사용 공정명(모달) 클릭시 안으로 값이 들어감
 		   grid5.on('click', function(ev2){
 			   
 			   let rowKey1 = grid.getFocusedCell().rowKey; // 클릭한 BOM grid 행 rowkey
@@ -478,7 +486,7 @@
 		   })
 	   })
 	   
-	   //제품 코드 검색 기능     
+	   // 제품 코드 검색 기능     
 		
 	     document.getElementById('selectBtn').addEventListener('click', function(){
 	    	 grid.filter('prdCd', [{code: 'eq', value: prdCode.value}]);
@@ -532,6 +540,40 @@
 			 	});	
 		   })
 		   
+	   })
+	   
+	   // ajax BOM 삭제하기
+	   
+	   document.getElementById('deleteBtn').addEventListener('click', function(){
+		   sweetConfirm('D', function () {
+			 
+			   let data = grid.getCheckedRows();
+				
+				$.ajax({
+					url : "ajax/deleteBOM",
+					type : "post",
+					data: JSON.stringify(data),
+					contentType: "application/json",
+					dataType: "json",
+					beforeSend : function (xhr) {
+					    xhr.setRequestHeader(header, token);
+					},
+					success : function(data){
+						if (data > 0) {
+							// ajax success
+				            toastr.success('정상적으로 삭제되었습니다.');
+				            grid.removeCheckedRows();
+						} else {
+							// ajax fail
+				            toastr.error('삭제에 실패했습니다.');	
+						}
+					},
+						error : function(reject){
+							console.log(reject);
+						}
+					
+				});
+		   })
 	   })
 	    
 		

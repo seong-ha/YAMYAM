@@ -11,7 +11,7 @@
 	       TO_CHAR(EMP_DATE, 'yyyy-MM-dd') as EMP_DATE,
 	       EMP_ID,
 	       DEPT_NM,
-	       EMP_ROLE
+	       FIND_CODE_NAME(EMP_ROLE) EMP_ROLE
 	FROM C_EMP E, C_DEPT D
 	WHERE E.DEPT_CD  = D.DEPT_CD
 	ORDER BY EMP_NO

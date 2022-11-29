@@ -66,14 +66,16 @@ public interface CommMapper {
 	
 	// ajax BOM 코드 불러오기
 	public List<BOMVO> ajaxSelectBOM();
-	// ajax BOM 제품목록(모달창grid2)
+	// ajax BOM 제품목록(모달창(grid2))
 	public List<PrdVO> ajaxSelectModalBOM();
-	// ajax BOM 사용공정명(모달창(grid3)
+	// ajax BOM 사용공정명(모달창(grid3))
 	public List<ProVO> ajaxSelectProInfoModalBOM();
-	// ajax BOM 사용공정명(모달창(grid4)
+	// ajax BOM 사용공정명(모달창(grid4))
 	public List<PrdVO> ajaxSelectPrdInfoModalBOM();
-	// ajax BOM 사용공정명(모달창(grid5)
+	// ajax BOM 사용공정명(모달창(grid5))
 	public List<MtrVO> ajaxSelectMtrInfoModalBOM();
 	// ajax BOM 등록하기
 	public int ajaxInsertBOM(BOMVO bomVO);
+	// ajax BOM 삭제하기
+	public int ajaxDeleteBOM(BOMVO bomVO);
 }
