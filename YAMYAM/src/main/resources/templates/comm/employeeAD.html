@@ -9,7 +9,6 @@
 	<br>
 	<h3>직원관리</h3>
 	<hr>
-	<br> <br>
 
 	<div align="right">
 		<form action="" onsubmit="return false">
@@ -24,7 +23,7 @@
 	<div id="grid"></div>
 
 	<div align="right">
-		<br> <br>
+		<br>
 		
 			<button type="button" class="btn btn-dark btn-sm"
 			data-bs-toggle="modal" data-bs-target="#staticBackdrop1" id="mainInsertBtn">회원 등록</button>
@@ -310,26 +309,26 @@
 				name : 'empNm',
 				sortingType: 'desc',
 		        sortable: true,
-		        align: 'center',
+		        align: 'left',
 		        filter: 'text'
 			}, {
 				header : '입사일',
 				name : 'empDate',
 				sortingType: 'desc',
 		        sortable: true,
-		        align: 'center'
+		        align: 'right'
 			}, {
 				header : '계정아이디',
 				name : 'empId',
 				sortingType: 'desc',
 		        sortable: true,
-		        align: 'center'
+		        align: 'left'
 			}, {
 				header : '부서명',
 				name : 'deptNm',
 				sortingType: 'desc',
 		        sortable: true,
-		        align: 'center'
+		        align: 'left'
 			}, {
 				header : '직급정보',
 				name : 'empRole',
@@ -337,7 +336,6 @@
 		        sortable: true,
 		        align: 'center'
 			}  ],
-			showDummyRows: true
 			
 		});
 	

@@ -18,8 +18,6 @@ width:80%;	display: inline;
 	<h3>자재 코드 관리</h3>
 	<hr>
 
-	<br> <br> <br>
-
 	<div class="container">
 		<div class="row row-cols-2">
 			<div class="col-7">
@@ -71,7 +69,7 @@ width:80%;	display: inline;
 
 				<div class="mb-3 row">
 					<label class="col-sm-2" style="width:100px">&nbsp;안전재고</label>&nbsp;
-					<span class="col-sm-4" style="width: 190px;"><input type="text" name="mtrSfamt" id="mtrSafeAmount"></span>
+					<span class="col-sm-4" style="width: 190px;"><input type="number" name="mtrSfamt" id="mtrSafeAmount"></span>
 				
 			
 			
@@ -82,8 +80,8 @@ width:80%;	display: inline;
 				<hr>
 					
 				<div align="right">
+					<button type="button" class="btn btn-danger btn-sm" id="deleteBtn" style="float: left">삭제</button>&nbsp;
 					<button type="button" class="btn btn-dark btn-sm" id="insertBtn">저장</button>&nbsp;
-					<button type="button" class="btn btn-dark btn-sm" id="deleteBtn">삭제</button>&nbsp;
 					<input type="reset" class="btn btn-dark btn-sm" id="reset" name="reset">
 					</div>
 				</form>
@@ -104,83 +102,103 @@ width:80%;	display: inline;
                     aria-label="Close" id="insertModalClose"></button>
               </div>
               <div class="modal-body">
-              <div id="actModalGrid"></div>
-              <br>
-              		<h4 align="center"><b>거래처 검색</b></h4>
-              		<br>
-              		
-              		<div id="modalGrid1"></div>
-              		
-              		<br>
-              		<div id="grid2"></div>
-              			
-              
+           		<div id="grid2"></div>
               </div>
            </div>
         </div>
      </div>
 	<script>
-	/* token */
-	var token = $("meta[name='_csrf']").attr("content");
-	var header = $("meta[name='_csrf_header']").attr("content");
+		/* token */
+		var token = $("meta[name='_csrf']").attr("content");
+		var header = $("meta[name='_csrf_header']").attr("content");
+			
+		
+		// toastr
+		toastr.options = {
+			    "closeButton": false,
+			    "newestOnTop": true,
+			    "positionClass": "toast-top-center",
+			    "preventDuplicates": true,
+			    "extendedTimeOut" : 1500, 
+			    "timeOut" : 2500
+		}
+		
 		
 		const grid = new tui.Grid({
 			
 			rowHeaders: ['rowNum', 'checkbox'], // 체크박스
 			
 			el : document.getElementById('grid'),
-			bodyHeight : 550,
+			bodyHeight : 500,
 			scrollX : false,
 			scrollY : true,
 			
 			columns : [ {
 				header : '자재 코드',
-				name : 'mtrCd'
+				name : 'mtrCd',
+				align: 'center'
 			}, {
 				header : '자재명',
-				name : 'mtrNm'
+				name : 'mtrNm',
+				align: 'left'
 			}, {
 				header : '규격',
-				name : 'mtrStd'
+				name : 'mtrStd',
+				align: 'center'
 			}, {
 				header : '작업단위',
-				name : 'mtrUn'
+				name : 'mtrUn',
+				align: 'center'
 			}, {
 				header : '안전 재고 수량',
-				name : 'mtrSfamt'
+				name : 'mtrSfamt',
+				align: 'right'
 			}, {
 				header : '사용여부',
-				name : 'mtrSts'
+				name : 'mtrSts',
+				align: 'center'
 			} ],
-			showDummyRows : true
+			
 		});
+		
+		selectMtr();	// 자재정보 불러오기
+		gridClick();	// grid click 이벤트
 		
 		const grid2 = new tui.Grid({
 			el : document.getElementById('grid2'),
-			bodyHeight : 600,
+			bodyHeight : 550,
 			scrollX : false,
 			scrollY : true,
 			rowHeaders: ['rowNum'],
 			columns : [ {
 				header : '거래처 코드',
-				name : 'actCd'
+				name : 'actCd',
+				align: 'center'
 			}, {
 				header : '거래처 업체명',
-				name : 'actNm'
+				name : 'actNm',
+				align: 'left'
 			}, {
 				header : '사업자등록번호',
-				name : 'actNum'
+				name : 'actNum',
+				align: 'left'
 			}, {
 				header : '전화번호',
-				name : 'actTel'
+				name : 'actTel',
+				align: 'left'
 			}
 			],
-			showDummyRows : true
+
 		});
 
+		selectMtrModal();	// 자재 거래처 데이터 불러오기
+		
 		// toast - select box
 		var selectBox = new tui.SelectBox('#select-box', {
 			placeholder : '중량',
+			theme: {
+		          'dropdown.maxHeight': '300px',
+		    },
 			data : [ {
 				label : '1kg',
 				value : 'STD1', // 코드 바꾸기
@@ -266,6 +284,8 @@ width:80%;	display: inline;
 			selected: true
 		});
 		
+		
+		
 		var selectBox2 = new tui.SelectBox('#select-box2', {
 			placeholder : '단위',
 			data : [ {
@@ -279,7 +299,7 @@ width:80%;	display: inline;
 		});
 		
 		var selectBox3 = new tui.SelectBox('#select-box3', {
-			placeholder : '단위',
+			placeholder : '사용여부',
 			data : [ {
 				label : 'Y',
 				value : 'MAT-STS1' // 코드 바꾸기
@@ -328,72 +348,73 @@ width:80%;	display: inline;
 	     
 	      
 	     // 자재 코드 정보 불러오기
-	     
-		$.ajax({
-			url : "ajax/selectMtr",
-			type : "get",
-			dataType: "json",
-			success : function(data){
-				console.log(data);
-				grid.resetData(data);
-			},
-			error : function(reject){
-				console.log(reject);
-			}
-		})
+	     function selectMtr() {
+			 $.ajax({
+				url : "ajax/selectMtr",
+				type : "get",
+				dataType: "json",
+				success : function(data){
+					console.log(data);
+					grid.resetData(data);
+				},
+				error : function(reject){
+					console.log(reject);
+				}
+			});	
+		 }
+		
 		
 		// 자재 업체인 거래처 데이터만 가져와서 모달 grid에 resetData
-		
-		$.ajax({
-			url : "ajax/selectMtrModal",
-			type : "get",
-			dataType: "json",
-			success : function(data){
-				console.log(data);
-				grid2.resetData(data);
-			},
-			error : function(reject){
-				console.log(reject);
-			}
-		})
-		
-		// 자재 코드 칼럼 누르면 거기 정보가 나온다
- 		
-		grid.on('click', function(ev){
-			let rowData = grid.getRow(ev.rowKey).mtrCd;
-			console.log(grid.getRow(ev.rowKey).mtrCd);
-			$('#select-box').val(grid.getRow(ev.rowKey).mtrStd);
-		
-			
-		// 칼럼 클릭시 거기에 맞는 정보 출력
+		function selectMtrModal() {
 			$.ajax({
-				url : "ajax/selectMtrInfo",
-				type : "post",
-				data : {'mtrCd' : rowData}, 
+				url : "ajax/selectMtrModal",
+				type : "get",
 				dataType: "json",
-				beforeSend : function (xhr) {
-				    xhr.setRequestHeader(header, token);
-				},
 				success : function(data){
-					mtrCode.value = data.mtrCd;
-					mtrName.value = data.mtrNm; 
-					//mtrStandard.value = data.mtrStd;
-					selectBox.select(data.mtrStd)
-					//mtrUnit.value = data.mtrUn;
-					selectBox2.select(data.mtrUn)
-					actCode.value = data.actCd;
-					actName.value = data.actNm;
-					mtrSafeAmount.value = data.mtrSfamt;
-					//mtrStatus.value = data.mtrSts;
-					selectBox3.select(data.mtrSts)
-					console.log(data);					
+					console.log(data);
+					grid2.resetData(data);
 				},
 				error : function(reject){
 					console.log(reject);
 				}
 			})
-			
-		})
+		}
+		
+		
+		// 자재 코드 칼럼 누르면 거기 정보가 나온다
+ 		function gridClick() {
+ 			grid.on('click', function(ev) {
+ 				let rowData = grid.getRow(ev.rowKey).mtrCd;
+ 				
+ 				// 칼럼 클릭시 거기에 맞는 정보 출력
+ 				$.ajax({
+ 					url : "ajax/selectMtrInfo",
+ 					type : "post",
+ 					data : {'mtrCd' : rowData}, 
+ 					dataType: "json",
+ 					beforeSend : function (xhr) {
+ 					    xhr.setRequestHeader(header, token);
+ 					},
+ 					success : function(data){
+ 						mtrCode.value = data.mtrCd;
+ 						mtrName.value = data.mtrNm; 
+ 						//mtrStandard.value = data.mtrStd;
+ 						selectBox.select(data.mtrStd);
+ 						//mtrUnit.value = data.mtrUn;
+ 						selectBox2.select(data.mtrUn)
+ 						actCode.value = data.actCd;
+ 						actName.value = data.actNm;
+ 						mtrSafeAmount.value = data.mtrSfamt;
+ 						//mtrStatus.value = data.mtrSts;
+ 						selectBox3.select(data.mtrSts)
+ 					},
+ 					error : function(reject){
+ 						console.log(reject);
+ 					}
+ 				})
+ 			})
+		}
+		
 		
 		// 거래처 코드(모달) 클릭시 안에 값이 들어감
 		
@@ -408,20 +429,54 @@ width:80%;	display: inline;
 		
 		
 		// ajax 자재 등록
-		
 		document.getElementById('insertBtn').addEventListener('click', function(){
-			let data = {
-
-					mtrCd: document.getElementById('mtrCode').value,
-					mtrNm: document.getElementById('mtrName').value,
-					mtrStd: document.getElementById('mtrStandard').value,
-					mtrUn: document.getElementById('mtrUnit').value,
-					actCd: document.getElementById('actCode').value,
-					actNm: document.getElementById('actName').value,
-					mtrSfamt: document.getElementById('mtrSafeAmount').value,
-					mtrSts: document.getElementById('mtrStatus').value
-					
+			let mtrCd = document.getElementById('mtrCode');
+			let mtrNm = document.getElementById('mtrName');
+			let mtrStd = document.getElementById('mtrStandard');
+			let mtrUn = document.getElementById('mtrUnit');
+			let actCd = document.getElementById('actCode');
+			let actNm = document.getElementById('actName');
+			let mtrSfamt = document.getElementById('mtrSafeAmount');
+			let mtrSts = document.getElementById('mtrStatus');
+			
+			if (mtrNm.value == '' || mtrNm.value == null) {
+				toastr.warning('자재명을 입력하세요.');
+				mtrNm.focus();
+				return;
+			} else if (mtrStd.value == '' || mtrStd.value == null) {
+				toastr.warning('규격을 선택하세요.');
+				mtrStd.focus();
+				return;
+			} else if (mtrUn.value == '' || mtrUn.value == null) {
+				toastr.warning('단위를 선택하세요.');
+				mtrUn.focus();
+				return;
+			} else if (actCd.value == '' || actCd.value == null) {
+				toastr.warning('거래처를 선택하세요.');
+				actCd.focus();
+				return;
+			} else if (mtrSfamt.value == '' || mtrSfamt.value == null) {
+				toastr.warning('안전재고량을 숫자로 입력하세요.');
+				mtrSfamt.focus();
+				return;
+			} else if (mtrSts.value == '' || mtrSts.value == null) {
+				toastr.warning('사용여부를 선택하세요.');
+				mtrSts.focus();
+				return;
 			}
+			
+			let data = {
+					mtrCd: mtrCd.value,
+					mtrNm: mtrNm.value,
+					mtrStd: mtrStd.value,
+					mtrUn: mtrUn.value,
+					actCd: actCd.value,
+					actNm: actNm.value,
+					mtrSfamt: mtrSfamt.value,
+					mtrSts: mtrSts.value
+			}
+			
+			
 			
 			// 자재코드가 없으면 insert. 있으면 update
 			if (data.mtrCd == '' || data.mtrCd == null) {
@@ -439,8 +494,7 @@ width:80%;	display: inline;
 							if (data > 0) {
 								// ajax success
 					            toastr.success('정상적으로 등록되었습니다.');
-					            grid.appendRow(data);
-					            location.reload();
+					            selectMtr();	// 최신 자재정보 불러오기
 					            //setTimeout(() => {location.reload(), 3000});
 							} else {
 								// ajax fail
@@ -466,8 +520,7 @@ width:80%;	display: inline;
 							if (data > 0) {
 								// ajax success
 					            toastr.success('정상적으로 수정되었습니다.');
-					            grid.appendRow(data);
-					            location.reload();
+					            selectMtr();	// 최신 자재정보 불러오기
 					            //setTimeout(() => {location.reload(), 3000});
 							} else {
 								// ajax fail
@@ -486,10 +539,14 @@ width:80%;	display: inline;
 		// ajax 자재 정보 삭제
 		
 		document.getElementById('deleteBtn').addEventListener('click', function(){
+			let data = grid.getCheckedRows();
+			
+			if (data.length == 0) {
+				toastr.warning('삭제할 자재를 체크해주세요.')
+				return;
+			}
+			
 			sweetConfirm('D', function () {
-				
-				let data = grid.getCheckedRows();
-				
 				$.ajax({
 					url : "ajax/delMtr",
 					type : "post",
