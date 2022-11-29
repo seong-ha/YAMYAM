@@ -21,6 +21,7 @@ import com.mandu.yamyam.comm.service.EmpService;
 import com.mandu.yamyam.comm.service.EmpVO;
 import com.mandu.yamyam.comm.service.MtrVO;
 import com.mandu.yamyam.comm.service.PrdVO;
+import com.mandu.yamyam.pro.service.ProVO;
 
 
 @Controller
@@ -321,12 +322,45 @@ public class EmpController {
 		return commService.ajaxSelectBOM();
 	}
 	
-	// BOM 제품 목록 모달 불러오기
+	// BOM 제품 목록 모달 불러오기(grid2)
 	@GetMapping("ajax/selectModalBOM")
 	@ResponseBody
 	public List<PrdVO> ajaxSelectModalBOM(){
 		
 		return commService.ajaxSelectModalBOM();
+	}
+	
+	// ajax BOM 사용공정명(모달창(grid3))
+	@GetMapping("ajax/SelectProInfoModalBOM")
+	@ResponseBody
+	public List<ProVO> ajaxSelectProInfoModalBOM(){
+		
+		return commService.ajaxSelectProInfoModalBOM();
+	}
+	
+	// ajax BOM 사용공정명(모달창(grid4))
+	@GetMapping("ajax/SelectPrdInfoModalBOM")
+	@ResponseBody
+	public List<PrdVO> ajaxSelectPrdInfoModalBOM(){
+		
+		return commService.ajaxSelectPrdInfoModalBOM();
+	}
+	
+	// ajax BOM 사용공정명(모달창(grid5))
+	@GetMapping("ajax/SelectMtrInfoModalBOM")
+	@ResponseBody
+	public List<MtrVO> ajaxSelectMtrInfoModalBOM(){
+		
+		return commService.ajaxSelectMtrInfoModalBOM();
+	}
+	
+	// ajax BOM 추가 후 저장하기
+	@PostMapping("ajax/insertBOM")
+	@ResponseBody
+	public int ajaxInsertBOM(@RequestBody List<BOMVO> bomVO) {
+		int result = 0;
+		result = commService.ajaxInsertBOM(bomVO);
+		return result;
 	}
 	
 }

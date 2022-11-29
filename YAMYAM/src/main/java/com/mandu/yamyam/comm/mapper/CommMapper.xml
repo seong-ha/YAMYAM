@@ -307,14 +307,14 @@ WHERE MTR_CD = #{mtrCd}
 
 <select id="ajaxSelectBOM" resultType="com.mandu.yamyam.common.LowerKeyMap">
 
-	SELECT B.BOM_NO, P.PPRO_NAME, B.BOM_CD, B.PRD_CD, B.MTR_CD, C.MTR_NM, B.BOM_AMT, B.BOM_USE
+	SELECT B.BOM_NO, P.PPRO_CD, P.PPRO_NAME, B.BOM_CD, B.PRD_CD, B.MTR_CD, C.MTR_NM, B.BOM_AMT, B.BOM_USE
 	FROM C_BOM B, P_PRO P, C_MTR C
 	WHERE  B.PPRO_CD = P.PPRO_CD
 	AND B.MTR_CD = C.MTR_CD
 	
 </select>
 
-<!-- ajax BOM 제품목록 모달창 불러오기 -->
+<!-- ajax BOM 제품목록 모달창 불러오기(grid2) -->
 
 <select id="ajaxSelectModalBOM" resultType="com.mandu.yamyam.common.LowerKeyMap">
 
@@ -322,5 +322,59 @@ WHERE MTR_CD = #{mtrCd}
 	FROM C_PRD
 	
 </select>
+
+<!-- ajax BOM 사용공정명(모달창(grid3) -->
+
+<select id="ajaxSelectProInfoModalBOM" resultType="com.mandu.yamyam.common.LowerKeyMap">
+
+	SELECT PPRO_CD ,PPRO_NAME
+	FROM P_PRO
 	
+</select>
+
+<!-- ajax BOM 제품명(모달창(grid4)) -->
+<select id="ajaxSelectPrdInfoModalBOM" resultType="com.mandu.yamyam.common.LowerKeyMap">
+
+	SELECT PRD_CD, PRD_NM
+	FROM C_PRD
+
+</select>
+
+<!-- ajax BOM 자재코드 ,자재명(모달창(grid5)) -->
+
+<select id="ajaxSelectMtrInfoModalBOM" resultType="com.mandu.yamyam.common.LowerKeyMap">
+
+	SELECT MTR_CD, MTR_NM
+	FROM C_MTR
+
+</select>
+
+<!-- ajax BOM 등록하기 -->
+
+<insert id="ajaxInsertBOM" parameterType="com.mandu.yamyam.comm.service.BOMVO">
+	<selectKey keyProperty="bomCd" resultType="String" order="BEFORE">
+		SELECT mk_bom_cd FROM dual
+	</selectKey>
+	
+	INSERT INTO C_BOM
+	(
+	BOM_NO,
+	PRD_CD, 
+	BOM_CD, 
+	MTR_CD, 
+	PPRO_CD, 
+	BOM_AMT
+	)
+	VALUES
+	(
+	(SELECT NVL(MAX(bom_no),0)+1 FROM C_BOM),
+	#{prdCd},
+	#{bomCd},
+	#{mtrCd},
+	#{pproCd},
+	#{bomAmt}
+	)
+
+</insert>
+
 </mapper>

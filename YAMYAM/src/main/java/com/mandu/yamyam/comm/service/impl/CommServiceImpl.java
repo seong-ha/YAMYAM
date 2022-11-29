@@ -13,6 +13,7 @@ import com.mandu.yamyam.comm.service.CommVO;
 import com.mandu.yamyam.comm.service.CommdVO;
 import com.mandu.yamyam.comm.service.MtrVO;
 import com.mandu.yamyam.comm.service.PrdVO;
+import com.mandu.yamyam.pro.service.ProVO;
 
 @Service
 public class CommServiceImpl implements CommService {
@@ -174,10 +175,41 @@ public class CommServiceImpl implements CommService {
 		return commMapper.ajaxSelectBOM();
 	}
 
-	// ajax BOM 제품목록(모달) 불러오기
+	// ajax BOM 제품목록(모달(grid2) 불러오기
 	@Override
 	public List<PrdVO> ajaxSelectModalBOM() {
 		return commMapper.ajaxSelectModalBOM();
 	}
+
+	// ajax BOM 공정명(모달(grid3) 불러오기
+	@Override
+	public List<ProVO> ajaxSelectProInfoModalBOM() {
+		return commMapper.ajaxSelectProInfoModalBOM();
+	}
+	
+	// ajax BOM 제품명(모달(grid4) 불러오기
+	@Override
+	public List<PrdVO> ajaxSelectPrdInfoModalBOM() {
+		return commMapper.ajaxSelectPrdInfoModalBOM();
+	}
+	
+	// ajax BOM 자재코드, 자재명(모달(grid5) 불러오기
+	@Override
+	public List<MtrVO> ajaxSelectMtrInfoModalBOM() {
+		return commMapper.ajaxSelectMtrInfoModalBOM();
+	}
+
+	// ajax BOM 등록하기
+	@Override
+	public int ajaxInsertBOM(List<BOMVO> BomVO) {
+		int result = 0;
+		for(int i=0; i<BomVO.size(); i++) {
+			result += commMapper.ajaxInsertBOM(BomVO.get(i));
+		}
+
+		return result;
+	}
+	
+	
 
 }
