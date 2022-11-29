@@ -50,8 +50,8 @@ public class OrdController {
 	// 완제품LOT 재고 현황 모달
 	@GetMapping("lotSListModal")
 	@ResponseBody
-	public List<OrdVO> lotSList() {
-		return service.lotSList();
+	public List<OrdVO> lotSList(OrdVO vo) {
+		return service.lotSList(vo);
 	}
 	
 	// 완제품LOT 출고 현황 모달
@@ -72,21 +72,14 @@ public class OrdController {
 	//   주문 관리 Tab
 	-------------------*/
 	
-	// 주문서 조회
+	// 주문서 관리 리스트 조회 (단건, 조건조회)
 	@GetMapping("ordList")
 	@ResponseBody
-	public List<OrdVO> getOrdList() {
-		return service.getOrdList();
+	public List<OrdVO> getOrdList(OrdVO vo) {
+		return service.getOrdList(vo);
 	}
 	
-	// 주문서 조건조회
-	@GetMapping("detailList")
-	@ResponseBody
-	public List<OrdVO> getList(OrdVO vo) {
-		return service.getList(vo);
-	}
-	
-	// 주문서 등록
+	// 주문서 관리 신규등록
 	@PostMapping("insertOrd")
 	@ResponseBody
 	public int insertOrd(@RequestBody List<OrdVO> vo) {
@@ -118,16 +111,10 @@ public class OrdController {
 	// 출고 내역 리스트 조회
 	@GetMapping("ordOutList")
 	@ResponseBody
-	public List<OrdVO> getOrdOutList() {
-		return service.getOrdOutList();
+	public List<OrdVO> getOrdOutList(OrdVO vo) {
+		return service.getOrdOutList(vo);
 	}
 	
-	// 출고 내역 리스트 조건조회
-	@GetMapping("detailOutList")
-	@ResponseBody
-	public List<OrdVO> getDetailOutList(OrdVO vo) {
-		return service.getDetailOutList(vo);
-	}
 	
 	
 	/*-----------------
@@ -137,32 +124,25 @@ public class OrdController {
 	// 진행중인 리스트 조회
 	@GetMapping("ingOrdList")
 	@ResponseBody
-	public List<OrdVO> getIngOrdList() {
-		return service.getIngOrdList();
-	}
-		
-	// 진행중인 주문서 조건조회
-	@GetMapping("ingOrdDetailList")
-	@ResponseBody
-	public List<OrdVO> getIngOrdDetailList(OrdVO vo) {
-		return service.getIngOrdDetailList(vo);
+	public List<OrdVO> getIngOrdList(OrdVO vo) {
+		return service.getIngOrdList(vo);
 	}
 	
-	// 출고 등록 리스트 등록
+	// 출고 등록 리스트 등록 및 재고 수정
 	@PostMapping("insertOutList")
 	@ResponseBody
 	public int insertOutList(@RequestBody List<OrdVO> vo) {
-		int result =  service.insertOutList(vo);
+		int result = 0;
+		for(int i=0; i<vo.size(); i++) {
+			result += service.insertOutList(vo.get(i));
+		}
+		for (int i=0; i<vo.size(); i++) {
+		result += service.updateOutList(vo.get(i));
+		}
 		return result;
 	}
 	
-	// 출고 등록 리스트 삭제
-	@DeleteMapping("deleteOutList")
-	@ResponseBody
-	public int deleteOutList(@RequestBody List<OrdVO> vo) {
-		int result = service.deleteOutList(vo);
-		return result;
-	}
+	
 	
 	/*-----------------
 	// 완제품 반품 관리 Tab
@@ -174,7 +154,7 @@ public class OrdController {
 		return service.getReList(vo);
 	}
 	
-	// 완제품 반품 관리 리스트 등록 및 수정
+	// 완제품 반품 관리 리스트 등록 및 재고 수정
 	@PostMapping("insertReList")
 	@ResponseBody
 	public int insertReList(@RequestBody List<OrdVO> vo) {

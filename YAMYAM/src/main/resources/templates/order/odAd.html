@@ -35,12 +35,12 @@ text-align: center;
       </td>
    
       <td>
-        <input class="form-check-input" type="radio" name="flexRadioDefault" id="odIng" value="진행">
+        <input class="form-check-input" type="radio" name="flexRadioDefault" id="odIng" value="ORD-STS1">
         <label class="form-check-label" for="odIng">진행</label>
       </td>
    
       <td>
-        <input class="form-check-input" type="radio" name="flexRadioDefault" id="odEnd" value="완료">
+        <input class="form-check-input" type="radio" name="flexRadioDefault" id="odEnd" value="ORD-STS2">
         <label class="form-check-label" for="odEnd">완료</label>
       </td>
    </tr>
@@ -150,7 +150,7 @@ text-align: center;
 
    <div id="od-btn">
    <th:block sec:authorize="hasAnyAuthority('JOB-GRD1', 'JOB-GRD2')">
-	   <button class="btn btn-dark btn-sm" id="insertBtn">추가</button>
+	   <button class="btn btn-dark btn-sm" id="insertBtn">행추가</button>
 	   <button class="btn btn-dark btn-sm" id="deleteBtn">선택삭제</button>
 	   <button class="btn btn-dark btn-sm" id="saveBtn">저장</button>
    </th:block>
@@ -169,30 +169,31 @@ var header = $("meta[name='_csrf_header']").attr("content");
 	/*------------
 	// function
 	----------------*/
-	getOrdList();			// DB에서 주문서목록 불러오기 
-	getActList();			// DB에서 거래처목록 불러오기 - 조회용 
-	getPrdList();			// DB에서 제품목록 불러오기 - 조회용
-	cancelBtnHandler();  	// input 값 초기화 버튼
-	searchBtnHandler();		// 조회 버튼 핸들러
-	deleteBtnHandler();		// 삭제 버튼 핸들러
-	SaveBtnHandler();		// 저장 버튼 핸들러
-	exportBtnHandler(); 	// 엑셀출력 버튼 핸들러
+	getOrdList();						// DB에서 주문서목록 불러오기 
+	getActList();						// DB에서 거래처목록 불러오기 - 조회용 
+	getPrdList();						// DB에서 제품목록 불러오기 - 조회용
+	cancelBtnHandler();  				// input 값 초기화 버튼
+	searchBtnHandler();					// 조회 버튼 핸들러
+	deleteBtnHandler();					// 삭제 버튼 핸들러
+	SaveBtnHandler();					// 저장 버튼 핸들러
+	exportBtnHandler(); 				// 엑셀출력 버튼 핸들러
 	
-	let grid = MainGridInit(); // 주문서 출력 Grid
+	let grid = MainGridInit(); 			// 주문서 Grid
 	
-	let actModalGrid = actGridInit();
-	let actModalGrid2 = actGridInit2();
+	let actModalGrid = actGridInit();	// 행 추가 시, 사용하는 거래처 Modal Grid
+	let actModalGrid2 = actGridInit2();	// 조건 조회 시, 사용하는 거래처 Modal Grid
 	
-	let prdModalGrid = prdGridInit();
-	let prdModalGrid2 = prdGridInit2();
+	let prdModalGrid = prdGridInit();	// 행 추가 시, 사용하는 제품 Modal Grid
+	let prdModalGrid2 = prdGridInit2();	// 조건 조회 시, 사용하는 제품 Modal Grid
 
+	
 	/*------------
 	// 데이트피커
 	----------------*/
    rangeDatepickerInit('#startpicker-input', '#startpicker-container','#endpicker-input','#endpicker-container')
   
    
-   /*------------
+    /*------------
 	// 조회버튼 이벤트 핸들러
 	----------------*/ // 함수로 아작스 두개 묶기
 	function searchBtnHandler(){
@@ -217,7 +218,7 @@ var header = $("meta[name='_csrf_header']").attr("content");
 				})
 			}else if(getOdSts != '전체') {
 				$.ajax({
-				   url:'/detailList',
+				   url:'/ordList',
 				   contentType: 'application/json',
 				   dataType: "json",
 				   method: "GET",
@@ -238,7 +239,7 @@ var header = $("meta[name='_csrf_header']").attr("content");
 	}
    
 	
-   /*------------
+    /*------------
 	// 주문 조회 초기화 버튼
 	----------------*/ // 폼으로 감싸서 한번에 초기화시키기
 	function cancelBtnHandler(){
@@ -287,15 +288,16 @@ var header = $("meta[name='_csrf_header']").attr("content");
 		    rowHeaders: ['checkbox','rowNum'],
 		    scrollX: false,
 		    scrollY: false,
+		    pageOptions: {
+                useClient: true,
+                perPage: 10
+              			},
+         	pagination : true,
 		    columns: [
 		      {
-		        header: '주문 일자',
-		        align : 'center',
-		        name: 'odDate'
-		      },
-		      {
 		        header: '주문 코드',
-		        align : 'center',
+		        width : 200,
+		        align : 'left',
 		        name: 'odCd'
 		      },
 		      {
@@ -305,12 +307,13 @@ var header = $("meta[name='_csrf_header']").attr("content");
 		      },
 		      {
 		        header: '제품명',
-		        align : 'center',
+		        align : 'left',
 		        name: 'prdNm'
 		      },
 		      {
 		        header: '주문량',
-		        align : 'center',
+		        width : 100,
+		        align : 'right',
 		        name: 'odAmt',
 		        editor: 'text',
 				// 필수 입력 값
@@ -326,12 +329,17 @@ var header = $("meta[name='_csrf_header']").attr("content");
 		      },
 		      {
 		        header: '거래처명',
-		        align : 'center',
+		        align : 'left',
 		        name: 'actNm'
 		      },
 		      {
+		        header: '주문 일자',
+		        align : 'right',
+		        name: 'odDate'
+		      },
+		      {
 		        header: '납기 일자',
-		        align : 'center',
+		        align : 'right',
 		        name: 'deDate',
 		        editor: {
 		        	type : 'datePicker',
@@ -347,7 +355,7 @@ var header = $("meta[name='_csrf_header']").attr("content");
 		      },
 		      {
 		        header: '진행 상황',
-		        align : 'center',
+		        align : 'left',
 		        name: 'odSts'
 		      }
 		    ]
@@ -412,16 +420,16 @@ var header = $("meta[name='_csrf_header']").attr("content");
     
     
 	/*------------
-	// 주문서 추가 버튼
+	// 행 추가 버튼
 	----------------*/
    $('#insertBtn').on('click',function(){
-      let rowData = [{odDate: "", odCd: "", prdCd: "", prdNm: "", odAmt: "", actCd : "" , actNm: "", deDate: "", sts:""}]
-      grid.appendRow(rowData); 
+      let rowData = [{odDate: "", odCd: "", prdCd: "", prdNm: "", odAmt: "", actCd : "" , actNm: "", deDate: "", odSts:""}]
+      grid.appendRow(rowData,{at : 0}); 
 	});
 	
 	
 	
-   /*------------
+    /*------------
 	// 저장 버튼 클릭
 	----------------*/ // 컨트롤러에서 if문으로 나눠주기
 	function SaveBtnHandler(){
@@ -429,17 +437,20 @@ var header = $("meta[name='_csrf_header']").attr("content");
 			let rowData = grid.getCheckedRows();
 			let ordList = [];
 			let odCd = '';
+			let odSts = '';
 			for (let i=0; i<rowData.length; i++) {
 				let prdCd = rowData[i].prdCd;
 				let odAmt = rowData[i].odAmt;
 				let actCd = rowData[i].actCd;
 				let deDate = rowData[i].deDate;
 				odCd = rowData[i].odCd;
+				odSts = rowData[i].odSts;
 				ordList.push({prdCd,odAmt,actCd,deDate,odCd});
 				console.log(rowData[i].odCd);
+				console.log(rowData[i].odSts);
 			}
 			
-			if (rowData[i].odCd == null){
+			if (odCd == null){
 				sweetConfirm('C', function(){
 							$.ajax({
 								url : '/insertOrd',
@@ -463,9 +474,20 @@ var header = $("meta[name='_csrf_header']").attr("content");
 					              error : function(reject) {
 					                 console.log(reject);
 					              }
-							})
-				})
-			}else if(rowData[i].odCd != null) {
+					})	// end ajax
+				})	// end sweet
+			}else if(odCd != null) {
+				if(odSts == '완료') {
+					toastr.options = {
+							  "closeButton": true,
+							  "newestOnTop": true,
+							  "positionClass": "toast-bottom-full-width",
+							  "preventDuplicates": true,
+							  "extendedTimeOut" : 0, 
+							  "timeOut" : 0
+					}
+					toastr.error('완료된 주문서는 수정할 수 없습니다.');
+				}else {
 				sweetConfirm('U', function(){
 					$.ajax({
 						url : '/updateOrd',
@@ -488,18 +510,17 @@ var header = $("meta[name='_csrf_header']").attr("content");
 			              },
 			              error : function(reject) {
 			                 console.log(reject);
-			              }
-					})
-				})
-			}
-			
-		})
-		
-   }
+			              	}
+						})	// end ajax
+					}) // end sweet
+				} // end else
+			}	// end else if
+		}) // end click
+   } // end function
 
    
    
-   /*------------
+    /*------------
 	// 삭제 버튼 클릭(그리드행 삭제)
 	----------------*/	
 	function deleteBtnHandler(){
@@ -508,16 +529,31 @@ var header = $("meta[name='_csrf_header']").attr("content");
 			let rowData = grid.getCheckedRows();
 			let list = [];
 			let odCd = '';
+			let odSts = '';
 			for (let i=0; i<rowData.length; i++) {
 				odCd = rowData[i].odCd;
+				odSts = rowData[i].odSts;
 				list.push({odCd})
-			}
+			}if(odSts == '진행') {
+				toastr.options = {
+						  "closeButton": true,
+						  "newestOnTop": true,
+						  "positionClass": "toast-bottom-full-width",
+						  "preventDuplicates": true,
+						  "extendedTimeOut" : 0, 
+						  "timeOut" : 0
+				}
+				toastr.error('진행중인 주문서는 삭제할 수 없습니다.');
+			}else {
 			sweetConfirm('D', function(){
 				    	  $.ajax({
 				              url : '/deleteOrd',
 				              type: 'delete',
 				              contentType: 'application/json',
 								data: JSON.stringify(list),
+								beforeSend : function (xhr) {
+								    xhr.setRequestHeader(header, token);
+								},
 				              success : function(result) {
 				                 if(result > 0){
 				                	 Swal.fire(
@@ -525,7 +561,7 @@ var header = $("meta[name='_csrf_header']").attr("content");
 				                	 getOrdList();
 				                 }else {
 				                	 Swal.fire(
-				                			 '삭제에 실패하였습니다.');
+				                			'삭제에 실패하였습니다.');
 				                 }
 				              },
 				              error : function(reject) {
@@ -533,11 +569,10 @@ var header = $("meta[name='_csrf_header']").attr("content");
 				              }
 				           })
 				        grid.removeCheckedRows();
-				      
-			})
-			
-		});	
-	}
+				}) // end sweet
+			} // end else
+		});	// end click
+	}	// end function
    
    
 	
@@ -547,30 +582,37 @@ var header = $("meta[name='_csrf_header']").attr("content");
    function actGridInit() {
 		let actModalGrid = new tui.Grid({
 	    el: document.getElementById('actModalGrid'),
-	    bodyHeight: 500,
+	    bodyHeight: 200,
 	    rowHeaders: ['rowNum'],
 	    scrollX: false,
-	    scrollY: true,
+	    scrollY: false,
+	    pageOptions: {
+            useClient: true,   // front에서만 페이징 하는 속성
+            perPage: 5
+      			    },
+     	pagination : true,
 	    columns: [
 	      {
 	        header: '거래처 코드',
+	        width : 90,
 	        align : 'center',
 	        name: 'actCd'
 	      },
 	      {
 	        header: '거래처명',
-	        align : 'center',
+	        width : 90,
+	        align : 'left',
 	        name: 'actNm',
 	        filter: {type: 'select'}
 	      },
 	      {
 	        header: '사업자 등록번호',
-	        align : 'center',
+	        align : 'right',
 	        name: 'actNum'
 	      },
 	      {
 	        header: '전화번호',
-	        align : 'center',
+	        align : 'right',
 	        name: 'actTel'
 	      }]
 	  });
@@ -580,36 +622,43 @@ var header = $("meta[name='_csrf_header']").attr("content");
    
 	
 	
-   /*------------
+    /*------------
 	// 거래처 Modal (조회 시, 사용)
 	----------------*/
    function actGridInit2() {
 		let actModalGrid2 = new tui.Grid({
 	    el: document.getElementById('actModalGrid2'),
-	    bodyHeight: 500,
+	    bodyHeight: 200,
 	    rowHeaders: ['rowNum'],
 	    scrollX: false,
-	    scrollY: true,
+	    scrollY: false,
+	    pageOptions: {
+            useClient: true,   // front에서만 페이징 하는 속성
+            perPage: 5
+          			},
+     	pagination : true,
 	    columns: [
 	      {
 	        header: '거래처 코드',
+	        width : 90,
 	        align : 'center',
 	        name: 'actCd'
 	      },
 	      {
 	        header: '거래처명',
-	        align : 'center',
+	        width : 90,
+	        align : 'left',
 	        name: 'actNm',
 	        filter: {type: 'select'}
 	      },
 	      {
 	        header: '사업자 등록번호',
-	        align : 'center',
+	        align : 'right',
 	        name: 'actNum'
 	      },
 	      {
 	        header: '전화번호',
-	        align : 'center',
+	        align : 'right',
 	        name: 'actTel'
 	      }]
 	  });
@@ -618,7 +667,7 @@ var header = $("meta[name='_csrf_header']").attr("content");
 	    
 
    
-   /*------------
+    /*------------
 	// 거래처 모달 클릭 (DB에서 데이터 가져오기) - 조회용
 	----------------*/
 	 function getActList() {
@@ -637,7 +686,7 @@ var header = $("meta[name='_csrf_header']").attr("content");
    });
   }
    
-   /*------------
+    /*------------
 	// 거래처 모달 input 안에 데이터 가져오기
 	----------------*/
    actModalGrid2.on('click', ev => {
@@ -653,7 +702,7 @@ var header = $("meta[name='_csrf_header']").attr("content");
    })
    
    
-   /*------------
+    /*------------
 	// 거래처 모달에서 가져온 데이터 행에 넣어주기
 	----------------*/
    actModalGrid.on('click', ev => {
@@ -671,14 +720,19 @@ var header = $("meta[name='_csrf_header']").attr("content");
 	    
    
    
-   /*------------
+    /*------------
 	// 제품명 Modal (행 추가 시, 사용)
 	----------------*/
 	function prdGridInit() {
 	const prdModalGrid = new tui.Grid({
 	    el: document.getElementById('prdModalGrid'),
-	    bodyHeight: 500,
+	    bodyHeight: 200,
 	    rowHeaders: ['rowNum'],
+	    pageOptions: {
+            useClient: true,   // front에서만 페이징 하는 속성
+            perPage: 5
+         			 },
+     	pagination : true,
 	    scrollX: false,
 	    scrollY: true,
 	    columns: [
@@ -689,7 +743,7 @@ var header = $("meta[name='_csrf_header']").attr("content");
 	      },
 	      {
 	        header: '제품명',
-	        align : 'center',
+	        align : 'left',
 	        name: 'prdNm',
 	        filter: {type: 'select'}
 	      }
@@ -700,16 +754,21 @@ var header = $("meta[name='_csrf_header']").attr("content");
    
    
    
-   /*------------
+    /*------------
 	// 제품명 Modal (조회 시, 사용)
 	----------------*/
 	function prdGridInit2() {
 	const prdModalGrid2 = new tui.Grid({
 	    el: document.getElementById('prdModalGrid2'),
-	    bodyHeight: 500,
+	    bodyHeight: 200,
 	    rowHeaders: ['rowNum'],
 	    scrollX: false,
 	    scrollY: true,
+	    pageOptions: {
+            useClient: true,   // front에서만 페이징 하는 속성
+            perPage: 5
+      			    },
+     	pagination : true,
 	    columns: [
 	      {
 	        header: '제품 코드',
@@ -718,7 +777,7 @@ var header = $("meta[name='_csrf_header']").attr("content");
 	      },
 	      {
 	        header: '제품명',
-	        align : 'center',
+	        align : 'left',
 	        name: 'prdNm',
 	        filter: {type: 'select'}
 	      }
@@ -729,7 +788,7 @@ var header = $("meta[name='_csrf_header']").attr("content");
    
    
 	
-   /*------------
+    /*------------
 	// 제품명 모달 클릭 (DB에서 데이터 가져오기) - 조회용
 	----------------*/
 	 function getPrdList() {
@@ -750,38 +809,38 @@ var header = $("meta[name='_csrf_header']").attr("content");
    
 	
 	
-	   /*------------
-		// 제품명 모달 데이터 가져오기
-		----------------*/
-	   prdModalGrid2.on('click', ev => {
-		   let rowData = prdModalGrid2.getRow(ev.rowKey); // 거래처클릭한 그리드
-		   
-		   let cdVal = rowData['prdCd'];
-		   let nmVal = rowData['prdNm'];
-		   
-		   $('#prdCd').val(cdVal);
-		   $('#prdNm').val(nmVal);
-		   
-		   $('#prdModal2').modal("hide");
-	   })
-	
+    /*------------
+	// 제품명 모달 데이터 가져오기
+	----------------*/
+   prdModalGrid2.on('click', ev => {
+	   let rowData = prdModalGrid2.getRow(ev.rowKey); // 거래처클릭한 그리드
+	   
+	   let cdVal = rowData['prdCd'];
+	   let nmVal = rowData['prdNm'];
+	   
+	   $('#prdCd').val(cdVal);
+	   $('#prdNm').val(nmVal);
+	   
+	   $('#prdModal2').modal("hide");
+   })
+
 	   
 	   
-	   /*------------
-		// 제품 모달에서 값 가져오기
-		----------------*/
-	  	prdModalGrid.on('click', ev => {
-		   let val = prdModalGrid.getRow(ev.rowKey); // 거래처클릭한 그리드
-		  
-		   let val2 = grid.getFocusedCell().rowKey; // 진짜 큰 그리드
-		    
-		   	console.log(prdModalGrid.getValue(ev.rowKey,ev.columnName));
-		    const pmg = prdModalGrid.getValue(ev.rowKey,ev.columnName);
-		    grid.setValue(val2, 'prdCd', val.prdCd);
-		    grid.setValue(val2, 'prdNm', val.prdNm);
-	
-		    $('#prdModal').modal("hide");
-	   })
+    /*------------
+	// 제품 모달에서 값 가져오기
+	----------------*/
+  	prdModalGrid.on('click', ev => {
+	   let val = prdModalGrid.getRow(ev.rowKey); // 거래처클릭한 그리드
+	  
+	   let val2 = grid.getFocusedCell().rowKey; // 진짜 큰 그리드
+	    
+	   	console.log(prdModalGrid.getValue(ev.rowKey,ev.columnName));
+	    const pmg = prdModalGrid.getValue(ev.rowKey,ev.columnName);
+	    grid.setValue(val2, 'prdCd', val.prdCd);
+	    grid.setValue(val2, 'prdNm', val.prdNm);
+
+	    $('#prdModal').modal("hide");
+   })
 	    
    
    
