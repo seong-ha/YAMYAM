@@ -201,12 +201,21 @@ public class CommServiceImpl implements CommService {
 
 	// ajax BOM 등록하기
 	@Override
-	public int ajaxInsertBOM(List<BOMVO> BomVO) {
+	public int ajaxInsertBOM(List<BOMVO> bomVO) {
 		int result = 0;
-		for(int i=0; i<BomVO.size(); i++) {
-			result += commMapper.ajaxInsertBOM(BomVO.get(i));
+		for(int i=0; i<bomVO.size(); i++) {
+			result += commMapper.ajaxInsertBOM(bomVO.get(i));
 		}
+		return result;
+	}
 
+	// ajax BOM 삭제하기
+	@Override
+	public int ajaxDeleteBOM(List<BOMVO> bomVO) {
+		int result = 0;
+		for(int i=0; i < bomVO.size(); i++) {
+			result += commMapper.ajaxDeleteBOM(bomVO.get(i));
+		}
 		return result;
 	}
 	

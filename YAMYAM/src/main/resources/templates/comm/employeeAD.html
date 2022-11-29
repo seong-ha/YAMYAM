@@ -309,33 +309,33 @@
 				name : 'empNm',
 				sortingType: 'desc',
 		        sortable: true,
-		        align: 'left',
+		        align: 'center',
 		        filter: 'text'
-			}, {
-				header : '입사일',
-				name : 'empDate',
-				sortingType: 'desc',
-		        sortable: true,
-		        align: 'right'
 			}, {
 				header : '계정아이디',
 				name : 'empId',
 				sortingType: 'desc',
 		        sortable: true,
-		        align: 'left'
+		        align: 'center'
+			},  {
+				header : '입사일',
+				name : 'empDate',
+				sortingType: 'desc',
+		        sortable: true,
+		        align: 'center'
 			}, {
 				header : '부서명',
 				name : 'deptNm',
 				sortingType: 'desc',
 		        sortable: true,
-		        align: 'left'
+		        align: 'center'
 			}, {
 				header : '직급정보',
 				name : 'empRole',
 				sortingType: 'desc',
 		        sortable: true,
 		        align: 'center'
-			}  ],
+			}],
 			
 		});
 	
@@ -576,13 +576,14 @@
 		//직원 이름 검색 기능     
 		
 	     document.getElementById('searchBtn').addEventListener('click', function(){
-	    	grid.filter('empNm', [{code: 'eq', value: searchEmpName.value}]);
+	    	grid.filter('empNm', [{code: 'contain', value: searchEmpName.value}]);
 	     
 	     });
 	     
+		
 	     document.getElementById('searchEmpName').addEventListener("keydown", function(){
 	         if(event.keyCode == 13){
-	        	 grid.filter('empNm', [{code: 'eq', value: searchEmpName.value}]);
+	        	 grid.filter('empNm', [{code: 'contain', value: searchEmpName.value}]);
 	        	 searchEmpName.value = '';
 	        	 
 	         }

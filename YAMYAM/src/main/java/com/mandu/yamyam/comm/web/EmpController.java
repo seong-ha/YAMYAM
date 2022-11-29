@@ -360,7 +360,19 @@ public class EmpController {
 	public int ajaxInsertBOM(@RequestBody List<BOMVO> bomVO) {
 		int result = 0;
 		result = commService.ajaxInsertBOM(bomVO);
+		
 		return result;
 	}
+	
+	// ajax BOM 삭제 하기
+	@PostMapping("ajax/deleteBOM")
+	@ResponseBody
+	public int ajaxDeleteBOM(@RequestBody List<BOMVO> bomVO) {
+		int result = 0;
+		result = commService.ajaxDeleteBOM(bomVO);
+		
+		return result;
+	}
+	
 	
 }
