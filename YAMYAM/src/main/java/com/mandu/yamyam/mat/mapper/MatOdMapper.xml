@@ -286,7 +286,7 @@
 	<!-- 미지시로 업데이트 -->
 	<update id="updatePlndSts" parameterType="com.mandu.yamyam.mat.service.MatVO">
 		UPDATE P_PLND 
-		 SET PPLND_STS = '미지시'
+		 SET PPLND_STS = 'PLN-STS2'
 		WHERE PPLN_CD = #{pplnCd}
 	</update>
 	
@@ -640,7 +640,7 @@
 		SELECT P.PRD_CD,
 		       B.MTR_CD,
 		       (SELECT FIND_MTR_NAME(B.MTR_CD) FROM DUAL) AS "MTR_NM" ,
-		       ((SELECT FIND_BOM_AMT(P.PRD_CD,B.MTR_CD) FROM DUAL) * #{poddAmt}) AS "AMT"
+		       ((SELECT FIND_BOM_AMT(D.PRD_CD,B.MTR_CD) FROM DUAL) * #{poddAmt}) AS "AMT"
 		FROM C_PRD P
 		
 		 JOIN C_BOM B
