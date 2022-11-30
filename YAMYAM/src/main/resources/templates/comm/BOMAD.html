@@ -21,8 +21,9 @@
 			</li>
 		</ul>
 		<div align="right">
-			<button type="button" class="btn btn-dark btn-sm" id="insertBtn">추가</button>
-			<button type="button" class="btn btn-dark btn-sm" id="saveBtn">저장</button>
+			<button type="button" class="btn btn-dark btn-sm" id="insertRowBtn">행 추가</button>
+			<button type="button" class="btn btn-dark btn-sm" id="deleteRowBtn" style="margin-right:15px">행 삭제</button>
+			<button type="button" class="btn btn-dark btn-sm" id="saveBtn">저장/수정</button>
 			<button type="button" class="btn btn-dark btn-sm" id="deleteBtn">삭제</button>
 		</div>
 	</form>
@@ -207,7 +208,7 @@
 			}, {
 				header : '자재명',
 				name : 'mtrNm',
-				align : 'right'
+				align : 'left'
 			}, {
 				header : '소모량',
 				name : 'bomAmt',
@@ -399,12 +400,25 @@
 			 $('#prdName').val("")
 		} 
 		
-	   // 추가버튼 클릭시 한줄 생성
-	   document.getElementById('insertBtn').addEventListener('click', function(){
+	   // 행 추가버튼 클릭시 한줄 생성
+	   document.getElementById('insertRowBtn').addEventListener('click', function(){
 		  
 		   let rowData = [{bomNo: "", pproName: "", bomCd: "", prdCd: "", mtrCd: "", mtrNm: "", bomAmt: ""}]
 		   grid.appendRow(rowData);
 	   })
+	   
+	   // 행 삭제버튼 클릭시 한줄 삭제
+	   
+	   	document.getElementById('deleteRowBtn').addEventListener('click', function () {
+			let data = grid.getCheckedRows();
+			
+			if (data.length == 0) {
+				toastr.warning('행 삭제할 행을 체크해주세요.');
+				return;
+			}
+			
+			grid.removeCheckedRows();
+		})
 
 	   // 사용 공정명 칼럼 누르면 거기 맞는 코드, 공정명 나옴. 클릭시 안에 값 지정(grid3)
 	   grid.on('click', function(ev){
@@ -497,38 +511,81 @@
 	    	grid.unfilter('prdCd', [{code: 'eq', value: prdCode.value}]);
 	     });
 	   
-	   // ajax BOM 추가하기
 	   
+	   // ajax BOM 추가/수정 (BOM코드가 있으면 수정 BOM코드가 없으면 등록)
 	   document.getElementById('saveBtn').addEventListener('click', function(){
-		   sweetConfirm('C', function () {
-			 
-			   let rowData = grid.getCheckedRows();
-							   
-				// ajax 구매 거래처 등록
-				$.ajax({
-					url : "ajax/insertBOM",
-					type : "post",
-					contentType: 'application/json',
-					data: JSON.stringify(rowData),
-					beforeSend : function (xhr) {
-					    xhr.setRequestHeader(header, token);
-					},
-					success : function(data){
-						if (data > 0) {
-							// ajax success
-				            toastr.success('정상적으로 등록되었습니다.');
-				            selectBOM();	// BOM정보 최신화
-						} else {
-							// ajax fail
-				            toastr.error('등록에 실패했습니다.');	
-						}
-					},
-					error : function(reject){
-						console.log(reject);
-					}
-			 	});	
-		   })
+		   let rowData = grid.getCheckedRows();
 		   
+		   // 체크한 행들이 전부 수정인지 저장인지 유효성 체크
+		   let typeChk = 0;
+		   for (let i = 0; i < rowData.length; i++) {
+			   if (rowData[i].bomCd != null || rowData[i].bomCd == '') {
+				   typeChk += 1;
+			   }
+		   }
+		   
+		   if (typeChk != 0 && typeChk != rowData.length) {
+			   toastr.warning('체크를 확인해주세요.');
+			   return;
+		   }
+		   
+		   
+		   if (typeChk == 0) {
+			   sweetConfirm('C', function () {
+				 
+								   
+					// ajax 구매 거래처 등록
+					$.ajax({
+						url : "ajax/insertBOM",
+						type : "post",
+						contentType: 'application/json',
+						data: JSON.stringify(rowData),
+						beforeSend : function (xhr) {
+						    xhr.setRequestHeader(header, token);
+						},
+						success : function(data){
+							if (data > 0) {
+								// ajax success
+					            toastr.success('정상적으로 등록되었습니다.');
+					            selectBOM();	// BOM정보 최신화
+							} else {
+								// ajax fail
+					            toastr.error('등록에 실패했습니다.');	
+							}
+						},
+						error : function(reject){
+							console.log(reject);
+						}
+				 	});	
+			   })
+		   }else {
+			   sweetConfirm('U', function () {
+				// ajax 자재 정보 수정
+					$.ajax({
+						url : "ajax/updateBOM",
+						type : "post",
+						contentType: 'application/json',
+						data: JSON.stringify(rowData),
+						beforeSend : function (xhr) {
+						    xhr.setRequestHeader(header, token);
+						},
+						success : function(data){
+							if (data > 0) {
+								// ajax success
+					            toastr.success('정상적으로 수정되었습니다.');
+					            selectBOM();	// BOM 정보 불러오기
+					            //setTimeout(() => {location.reload(), 3000});
+							} else {
+								// ajax fail
+					            toastr.error('수정에 실패했습니다.');	
+							}
+						},
+						error : function(reject){
+							console.log(reject);
+						}
+				 	});
+			   })
+		   }
 	   })
 	   
 	   // ajax BOM 삭제하기

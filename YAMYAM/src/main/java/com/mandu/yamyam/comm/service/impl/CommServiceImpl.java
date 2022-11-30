@@ -230,6 +230,16 @@ public class CommServiceImpl implements CommService {
 		}
 		return result;
 	}
+	
+	// ajax BOM 수정하기
+	@Override
+	public int ajaxUpdateBOM(List<BOMVO> bomVO) {
+		int result = 0;
+		for(int i=0; i <bomVO.size(); i++) {
+			result += commMapper.ajaxUpdateBOM(bomVO.get(i));
+		}
+		return result;
+	}
 
 	// ajax BOM 삭제하기
 	@Override
@@ -240,5 +250,7 @@ public class CommServiceImpl implements CommService {
 		}
 		return result;
 	}
+	
+
 
 }

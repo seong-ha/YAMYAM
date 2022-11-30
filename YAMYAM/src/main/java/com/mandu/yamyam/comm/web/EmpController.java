@@ -385,6 +385,14 @@ public class EmpController {
 		return result;
 	}
 	
+	// ajax BOM 수정(BOM코드가 있을경우 수정, 없으면 등록)
+	
+	@PostMapping("ajax/updateBOM")
+	@ResponseBody
+	public int ajaxUpdateBOM(@RequestBody List<BOMVO> bomVO) {
+		return commService.ajaxUpdateBOM(bomVO);
+	}
+	
 	// ajax BOM 삭제 하기
 	@PostMapping("ajax/deleteBOM")
 	@ResponseBody

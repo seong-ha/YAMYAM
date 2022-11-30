@@ -419,6 +419,19 @@ WHERE MTR_CD = #{mtrCd}
 
 </insert>
 
+<!-- ajax BOM 수정하기 -->
+<update id="ajaxUpdateBOM" parameterType="com.mandu.yamyam.comm.service.BOMVO">
+
+	UPDATE C_BOM
+	SET PRD_CD = #{prdCd},
+	    MTR_CD = #{mtrCd},
+	    PPRO_CD = #{pproCd},
+	    BOM_AMT = #{bomAmt}
+	WHERE BOM_CD = #{bomCd}
+
+</update>
+
+
 <!-- ajax BOM 삭제하기 -->
 <delete id="ajaxDeleteBOM" parameterType="com.mandu.yamyam.comm.service.BOMVO">
 
