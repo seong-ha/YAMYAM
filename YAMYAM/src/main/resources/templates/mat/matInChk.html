@@ -189,6 +189,7 @@ select option[value=""][disabled] {
 		resetBtn();							// 초기화
 		
 		selectFn();							// 셀렉트 이벤트
+		passAmtFn();						// 합격량 입력 이벤트
 		
 		/*------------------------------
 		// 자재전체조회 그리드
@@ -262,23 +263,6 @@ select option[value=""][disabled] {
 					      }
 			        },
 			        {
-			          header: '검사일자',
-			          name: 'matChkDate',
-				      align: 'right',
-			          sortable: true,
-				      editor: {
-				    	  type: 'datePicker',
-				    	  options: {
-				    		  format: 'yyyy-MM-dd',
-				    		  language: 'ko'
-				    	  }
-				      },
-					  validation: {
-							 dataType: 'datePicker',
-							 required: true
-						}
-			        },
-			        {
 			            header: '불량코드',
 			            name: 'erCd',
 					    align: 'center',
@@ -295,7 +279,24 @@ select option[value=""][disabled] {
 						  filter: {
 						        type: 'select'			  
 						      }
-			            }
+			            },
+			        {
+			          header: '검사일자',
+			          name: 'matChkDate',
+				      align: 'right',
+			          sortable: true,
+				      editor: {
+				    	  type: 'datePicker',
+				    	  options: {
+				    		  format: 'yyyy-MM-dd',
+				    		  language: 'ko'
+				    	  }
+				      },
+					  validation: {
+							 dataType: 'datePicker',
+							 required: true
+						}
+			        }
 			      ]
 			    });
 			
@@ -757,5 +758,24 @@ select option[value=""][disabled] {
 				}
 			})
 		}
+		
+		/*--------------------------------
+		// 합격량 입력시 불햡격량 출력
+		----------------------------------*/
+		function passAmtFn(){
+			grid.on('afterChange', function(ev){
+				let change = ev.changes[0];
+				let rowData = grid.getRow(change.rowKey);
+				let erAmt = rowData.matOddAmt - rowData.paAmt
+				
+		   		if (change.columnName == 'paAmt'){
+					if(rowData.matOddAmt != null && rowData.paAmt != null){
+						grid.setValue(change.rowKey, 'erAmt', erAmt);
+					}
+		   		}
+				
+			})
+		}
+		
 	</script>
 </div>
