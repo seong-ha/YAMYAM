@@ -37,7 +37,7 @@
 		       A.ACT_NM,
 		       TO_CHAR(O.MAT_OD_DD, 'yyyy-MM-dd') AS "MAT_OD_DD",
 			   TO_CHAR(D.MAT_ODD_DATE,'yyyy-MM-dd') AS "MAT_ODD_DATE",
-               K.MAT_INSTS
+               O.MAT_OD_STS
 		 FROM  M_OD O 
 		 
 		 JOIN  M_ODD D 
@@ -48,10 +48,7 @@
 		 
 		 JOIN  C_ACT A 
 		   ON D.ACT_CD = A.ACT_CD
-        
-         JOIN M_CHK K
-          ON K.MAT_OD_CD = O.MAT_OD_CD
-		   
+
 		  <where>
          	<if test = "mtrCd != null and !mtrCd.equals('')">
 	         	D.MTR_CD = #{mtrCd}
@@ -82,7 +79,7 @@
 		       A.ACT_NM,
 		       TO_CHAR(O.MAT_OD_DD, 'yyyy-MM-dd') AS "MAT_OD_DD",
 			   TO_CHAR(D.MAT_ODD_DATE,'yyyy-MM-dd') AS "MAT_ODD_DATE",
-               K.MAT_INSTS
+               O.MAT_OD_STS
 		 FROM  M_OD O 
 		 
 		 JOIN  M_ODD D 
@@ -93,11 +90,8 @@
 		 
 		 JOIN  C_ACT A 
 		   ON D.ACT_CD = A.ACT_CD
-        
-         JOIN M_CHK K
-          ON K.MAT_OD_CD = O.MAT_OD_CD
 		   
-		 WHERE K.MAT_INSTS = 'N'
+		 WHERE O.MAT_OD_STS = 'N'
 		 AND MAT_OD_DD BETWEEN (CURRENT_DATE-7) AND (CURRENT_DATE+7)
 		  
 		 ORDER BY O.MAT_OD_DD
@@ -159,13 +153,21 @@
 	<!-- 자재 발주 관리(일반 탭) - 저장버튼 -->
 	<insert id="insMatOdList" parameterType="com.mandu.yamyam.mat.service.MatVO">
 		INSERT ALL
-		 INTO M_OD (MAT_OD_CD, MAT_OD_DD, MAT_OD_STS, MAT_SUM)
+		 INTO M_OD (MAT_OD_CD,
+		            MAT_OD_DD,
+		            MAT_OD_STS,
+		            MAT_SUM)
 		 VALUES('OMAT-' || TO_CHAR(CURRENT_DATE,'YYYYMMDD-') || LPAD(MAT_OD_SEQ.NEXTVAL,3,0)
 		        ,CURRENT_DATE
 		        ,'N'<!-- 처음 등록하면 검수NO -->
 		        ,#{matSum})<!-- 총액 -->
 		 
-		 INTO M_ODD (MAT_ODD_CD, MAT_OD_CD, MTR_CD, ACT_CD, MAT_ODD_MN, MAT_ODD_AMT, MAT_ODD_DATE)
+		 INTO M_ODD (MAT_ODD_CD,
+		             MAT_OD_CD, MTR_CD,
+		             ACT_CD,
+		             MAT_ODD_MN,
+		             MAT_ODD_AMT,
+		             MAT_ODD_DATE)
 		 VALUES('DMAT-' || LPAD(MAT_ODD_SEQ.NEXTVAL,3,0)
 		        ,'OMAT-' || TO_CHAR(CURRENT_DATE,'YYYYMMDD-') || LPAD(MAT_OD_SEQ.NEXTVAL,3,0)
 		        ,#{mtrCd}<!-- 선택한 자재코드 -->
@@ -173,6 +175,39 @@
 		        ,#{matOddMn}<!-- 입력받은 단가 -->
 		        ,#{matOddAmt}<!-- 입력받은 발주량 -->
 		        ,#{matOddDate})<!-- 입력받은 납기일자 -->
+		 
+		 SELECT * FROM DUAL
+	</insert>
+	
+	<!-- 자재 발주 관리(생산계획서용 탭) - 발주 버튼 -->
+	<insert id="insertMatOdPplnCd" parameterType="com.mandu.yamyam.mat.service.MatVO">
+		INSERT ALL
+		 INTO M_OD (MAT_OD_CD,
+		            MAT_OD_DD,
+		            MAT_OD_STS,
+		            MAT_SUM)
+		 VALUES('OMAT-' || TO_CHAR(CURRENT_DATE,'YYYYMMDD-') || LPAD(MAT_OD_SEQ.NEXTVAL,3,0)
+		        ,CURRENT_DATE
+		        ,'N'<!-- 처음 등록하면 검수NO -->
+		        ,#{matSum}<!-- 총액 -->
+		         )
+		 
+		 INTO M_ODD (MAT_ODD_CD,
+		             MAT_OD_CD,
+		             MTR_CD,
+		             ACT_CD,
+		             MAT_ODD_MN,
+		             MAT_ODD_AMT,
+		             MAT_ODD_DATE,
+		             PPLN_CD)
+		 VALUES('DMAT-' || LPAD(MAT_ODD_SEQ.NEXTVAL,3,0)
+		        ,'OMAT-' || TO_CHAR(CURRENT_DATE,'YYYYMMDD-') || LPAD(MAT_OD_SEQ.NEXTVAL,3,0)
+		        ,#{mtrCd}<!-- 선택한 자재코드 -->
+		        ,#{actCd}<!-- 선택한 업체코드 -->
+		        ,#{matOddMn}<!-- 입력받은 단가 -->
+		        ,#{matOddAmt}<!-- 입력받은 발주량 -->
+		        ,#{matOddDate}
+		        ,#{pplnCd})<!-- 입력받은 납기일자 -->
 		 
 		 SELECT * FROM DUAL
 	</insert>
@@ -283,7 +318,7 @@
           WHERE B.PRD_CD = #{value}
 	</select>
 	
-	<!-- 미지시로 업데이트 -->
+	<!-- 미지시로 업데이트 (자재 입고 쪽으로 이동)-->
 	<update id="updatePlndSts" parameterType="com.mandu.yamyam.mat.service.MatVO">
 		UPDATE P_PLND 
 		 SET PPLND_STS = 'PLN-STS2'
@@ -581,11 +616,18 @@
 		        #{matInDate})
 	</insert>
 	
-	<!-- update -->
+	<!-- 검사상태 Y로 update -->
 	<update id="updateMatInsts" parameterType="com.mandu.yamyam.mat.service.MatVO">
 		 UPDATE M_CHK 
 		 SET MAT_INSTS = 'Y'
 		 WHERE MAT_OD_CD = #{matOdCd}
+	</update>
+	
+	<!-- 수정 중 -->
+	<update id="" parameterType="com.mandu.yamyam.mat.service.MatVO">
+		UPDATE P_PLND
+		SET PPLND_STS = 'PLN-STS2'
+		WHERE PPLN_CD = #{pplnCd}
 	</update>
 	
 	<!-- delete -->

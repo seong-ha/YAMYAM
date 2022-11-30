@@ -81,6 +81,16 @@ public class MatOdServiceImpl implements MatOdService {
 		}
 		return result;
 	}
+	
+	// 자재 발주 관리 - 등록2(상세계획서용 탭)
+	@Override
+	public int insertMatOdPplnCd(List<MatVO> list) {
+		int result = 0;
+		for(int i=0; i<list.size(); i++) {
+			result += mapper.insertMatOdPplnCd(list.get(i));
+		}
+		return result;
+	}
 
 	// 신규생산계획조회(생산계획서용 탭)
 	@Override
