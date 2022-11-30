@@ -318,9 +318,11 @@
 					}else{
 						let data = flowManage.getCheckedRows();
 						let dataList = [];
+						let pproCd = '';
+						
 					 	for(let i=0; i<data.length;i++){
 							let plineCd = lineName;
-							let pproCd = data[i].pproCd;
+							pproCd = data[i].pproCd;
 							let prdCd = $('#pName').val();
 							dataList.push({plineCd, pproCd, prdCd});
 					 	}

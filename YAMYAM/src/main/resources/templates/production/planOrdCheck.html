@@ -590,13 +590,16 @@
 				 let orderData = planOrder.getCheckedRows();
 					 let dataList = [];
 					 // 생산지시 관련 테이블 C
+					 let poddAmt = '';
+					 let poddDates = '';
+					 let poddPrio = '';
 					 for(let i =0; i<orderData.length; i++){
 						 let plinceCd = orderData[0].plineCd;
 						 let prdCd = orderData[0].prdCd;
 						 let pplndCd = orderData[0].pplndCd;
-						 let poddAmt = orderData[i].poddAmt;
-						 let poddDates = orderData[i].poddDates;
-						 let poddPrio = orderData[i].poddPrio;
+						 poddAmt = orderData[i].poddAmt;
+						 poddDates = orderData[i].poddDates;
+						 poddPrio = orderData[i].poddPrio;
 						 dataList.push({pplndCd,prdCd,poddAmt,poddDates,poddPrio});
 					 }
 					 

@@ -380,9 +380,9 @@
 					let data = grid.getCheckedRows();
 					console.log(data);
 					let dataList = [];
-					
+					let pproCd = '';
 					for(let i=0; i<data.length;i++){
-						let pproCd = data[i].pproCd;
+						pproCd = data[i].pproCd;
 						dataList.push({pproCd})
 					}
 
@@ -422,13 +422,17 @@
 				sweetConfirm('C', function(){
 					let data = grid.getCheckedRows();
 					let dataList = [];
-
+					let pproCd = '';
+					let eqpCd = '';
+					let pproName = '';
+					let pproEmpId = '';
+					let pproSts = '';
 					for(let i=0; i<data.length;i++){
-						let pproCd = data[i].pproCd;
-						let eqpCd = data[i].eqpCd;
-						let pproName = data[i].pproName;
-						let pproEmpId = data[i].pproEmpId;
-						let pproSts = data[i].pproSts;
+						pproCd = data[i].pproCd;
+						eqpCd = data[i].eqpCd;
+						pproName = data[i].pproName;
+						pproEmpId = data[i].pproEmpId;
+						pproSts = data[i].pproSts;
 						dataList.push({pproCd, eqpCd, pproName, pproEmpId, pproSts})
 						
 					}

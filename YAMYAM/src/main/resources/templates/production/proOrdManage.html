@@ -567,6 +567,7 @@ var header = $("meta[name='_csrf_header']").attr("content");
 				clearInterval(interval);
 				
 				let data = proGrid.getData();
+				
 				for(let i = 0; i< data.length; i++){
 					let eqpSts = data[i].eqpSts;
 					if(eqpSts == "가동"){
