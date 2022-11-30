@@ -43,7 +43,6 @@
 <body>
 	<div class="container" layout:fragment="content">
 		<h3>설비 관리</h3>
-		<hr>
 		
 		<div>
 			<!-- 탭 목록 start -->
@@ -64,7 +63,7 @@
 			<!-- 탭 목록 end -->
 			
 			<!-- 탭 본문 -->
-			<div class="tab-content" id="myTabContent" style="border: 1px solid black;">
+			<div class="tab-content" id="myTabContent">
 				
 				<!-- 조회탭 본문 start -->
 				<div class="tab-pane show active" id="select" role="tabpanel"
@@ -292,10 +291,14 @@
 			
 				let selectEqpGrid = new tui.Grid({
 				      el: document.getElementById('selectEqp'),
-				      bodyHeight: 500, // 스크롤
+				      bodyHeight: 480, // 스크롤
 				      rowHeaders: ['checkbox'],
 				      scrollX: false,
 				      scrollY: true,
+				      pageOptions: {
+				    	  useClient: true,
+				    	  perPage: 12
+				      },
 				      columns: [
 				        {
 				          header: '설비코드',
@@ -340,19 +343,28 @@
 				          header: '최고온도',
 				          name: 'highTemp',
 					      sortable: true,
-					      align: 'right'
+					      align: 'right',
+					      validation: {
+					          dataType: 'number'
+					      }
 				        },
 				        {
 				          header: '최저온도',
 				          name: 'lowTemp',
 					      sortable: true,
-					      align: 'right'
+					      align: 'right',
+					      validation: {
+					          dataType: 'number'
+					      }
 				        },
 				        {
 				          header: '점검주기(주기일수)',
 				          name: 'chkCycle',
 					      sortable: true,
-					      align: 'right'
+					      align: 'right',
+					      validation: {
+					          dataType: 'number'
+					      }
 				        },
 				        {
 				          header: '마지막점검일',
