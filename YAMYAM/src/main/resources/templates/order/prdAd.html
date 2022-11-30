@@ -98,6 +98,7 @@ var header = $("meta[name='_csrf_header']").attr("content");
 	deleteBtnHandler();
 	searchBtnHandler();
 	cancelBtnHandler();
+	SaveBtnHandler();
 	
 	/*------------
 	// 조회버튼 이벤트 핸들러
@@ -245,28 +246,36 @@ var header = $("meta[name='_csrf_header']").attr("content");
 		})
 		
 		
-		/*------------
+	/*------------
 	// 저장 버튼 클릭
 	----------------*/
 	function SaveBtnHandler(){
 		$('#saveBtn').on('click',function(){
 			let rowData = AbrogateGrid.getCheckedRows();
 			let List = [];
+			let agAmt = '';
+			let prdLot = ''; 
 			for (let i=0; i<rowData.length; i++) {
-				let podDate = rowData[i].podDate;
-				let prdCd = rowData[i].prdCd;
-				let prdLot = rowData[i].prdLot;
-				let agAmt = rowData[i].agAmt;
-				let edate = rowData[i].edate;
-				List.push({podDate,prdCd,prdLot,agAmt,edate});
+				prdLot = rowData[i].prdLot;
+				agAmt = rowData[i].agAmt;
 			}
-			
+			if(agAmt == null) {
+				toastr.options = {
+						  "closeButton": true,
+						  "newestOnTop": true,
+						  "positionClass": "toast-bottom-full-width",
+						  "preventDuplicates": true,
+						  "extendedTimeOut" : 0, 
+						  "timeOut" : 0
+				}
+				toastr.error('폐기량을 입력해주세요.');
+			}else {
 				sweetConfirm('C', function(){
 							$.ajax({
 								url : '/insertEdateList',
 								type : 'post',
 								contentType: 'application/json',
-								data: JSON.stringify(List),
+								data: JSON.stringify({"agAmt" : agAmt, "prdLot" : prdLot}),
 								dataType : 'json',
 								beforeSend : function (xhr) {
 								    xhr.setRequestHeader(header, token);
@@ -275,7 +284,7 @@ var header = $("meta[name='_csrf_header']").attr("content");
 					                 if(result > 0){
 					                	 Swal.fire(
 					       			          '등록이 완료되었습니다.'	);
-					                	 getOrdList();
+					                	 getAgAmtList();
 					                 }else {
 					                	 Swal.fire(
 					                			 '등록이 실패하였습니다.');
@@ -286,7 +295,7 @@ var header = $("meta[name='_csrf_header']").attr("content");
 					              }
 							})
 				})
-			
+			}
 			
 		})
 		

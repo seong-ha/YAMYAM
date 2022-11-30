@@ -11,7 +11,7 @@
 #od-btn,#modalSaveBtn{
 	display: inline-block; margin: 0 5px; float: right;
 }
-#startpicker-input, #endpicker-input, #odCode, #prdName{
+#startpicker-input, #endpicker-input, #odCode, #prdName, #actCode{
 text-align: center;
 }
 </style>
@@ -81,6 +81,8 @@ text-align: center;
 			<tr>
 			<td>주문코드 : 
 			<input type="text" id="odCode" name="odCode" readonly="readonly"></td>
+			<td>거래처코드 : 
+			<input type="text" id="actCode" name="actCode" readonly="readonly"></td>
 			<td>제품명 : 
 			<input type="text" id="prdName" name="prdName" readonly="readonly"></td>
 		</tr>
@@ -212,6 +214,11 @@ var header = $("meta[name='_csrf_header']").attr("content");
 	        name  : 'actNm',
 	        filter: {type: 'select'}
 	      },
+    	  {
+	        header: '거래처 코드',
+	        align : 'center',
+	        name  : 'actCd'
+	      },
 	      {
 	        header: '주문량',
 	        align : 'right',
@@ -221,7 +228,8 @@ var header = $("meta[name='_csrf_header']").attr("content");
 	  });
 		return grid;
     }
-
+	grid.hideColumn('actCd');
+    
 	/*------------
 	// 주문서 리스트 가져오기
 	----------------*/
@@ -249,9 +257,11 @@ var header = $("meta[name='_csrf_header']").attr("content");
 			let odCode = grid.getValue(ev.rowKey, 'odCd');
 			let prdName = grid.getValue(ev.rowKey, 'prdNm');
 			let prdCd = grid.getValue(ev.rowKey, 'prdCd');
+			let actCd = grid.getValue(ev.rowKey, 'actCd');
 			ordOdAmt = grid.getValue(ev.rowKey, 'odAmt');
 			
 			$('#odCode').val(odCode);
+			$('#actCode').val(actCd);
 			$('#prdName').val(prdName);
 			
 			let rowData = {prdLot:'', samt : '', bamt :'', bdates : '', 
@@ -307,14 +317,19 @@ var header = $("meta[name='_csrf_header']").attr("content");
 			let prdLot = '';
 			let samt = '';
 			let bamt = '';
+			let actCd = $('#actCode').val();
+			let odCd = $('#odCode').val();
+			console.log(odCd);
+			
 			for (let i=0; i<rowData.length; i++) {
+				let prdCd = rowData[i].prdCd;
+				let edate = rowData[i].edate;
+				let outEtc = rowData[i].outEtc;
 				prdLot = rowData[i].prdLot;
-				let actCd = rowData[i].actCd;
 				samt = rowData[i].samt;
 				bamt = rowData[i].bamt;
-				let outEtc = rowData[i].outEtc;
 				
-				list.push({prdLot,actCd,bamt,outEtc});
+				list.push({prdLot,actCd,prdCd,odCd,edate,bamt,outEtc});
 				console.log(rowData[i].prdLot);
 			}
 			if(bamt > samt) {
@@ -384,6 +399,11 @@ var header = $("meta[name='_csrf_header']").attr("content");
 	        name  : 'prdLot'
 	      },
 	      {
+	        header: '제품 코드',
+	        align : 'center',
+	        name  : 'prdCd'
+	      },
+	      {
 	        header: '재고량',
 	        align : 'right',
 	        name  : 'samt'
@@ -437,6 +457,7 @@ var header = $("meta[name='_csrf_header']").attr("content");
 	  	return insertOutGrid;
 	 }
     insertOutGrid.hideColumn('bdates');
+    insertOutGrid.hideColumn('prdCd');
    
 	
 	/*------------

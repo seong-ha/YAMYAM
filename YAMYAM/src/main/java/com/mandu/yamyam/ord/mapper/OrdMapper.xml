@@ -44,12 +44,14 @@
 		SELECT BIN.PRD_LOT, 
 		       BIN.SAMT, 
 		       TO_CHAR(BIN.POD_DATE,'yyyy-MM-dd') AS POD_DATE, 
-		       TO_CHAR(BIN.EDATE,'yyyy-MM-dd') AS EDATE
+		       TO_CHAR(BIN.EDATE,'yyyy-MM-dd') AS EDATE,
+		       P.PRD_CD
 		       
-		  FROM B_IN BIN 
-		  JOIN B_OUT BOT
-		    ON BIN.PRD_LOT = BOT.PRD_LOT
-	     WHERE BIN.PRD_CD = #{prdCd}
+		  FROM B_IN BIN
+		  JOIN C_PRD P
+		  ON P.PRD_CD = BIN.PRD_CD
+		  
+	     WHERE P.PRD_CD = #{prdCd}
 	   	   AND BIN.SAMT > 0
 	  ORDER BY BIN.PRD_LOT
 	</select>
@@ -174,6 +176,17 @@
                               AND POD.OD_CD = #{odCd})
 	</delete>
 	
+	<!-- 출고 등록 후, 주문 진행상황 업데이트 -->
+	<update id="updateOrdStsList" parameterType="com.mandu.yamyam.ord.service.OrdVO">
+		UPDATE B_OD
+		<set>
+			OD_STS = 'ORD-STS2'
+		</set>
+	  WHERE OD_STS = (SELECT OD.OD_STS
+                	  FROM B_OD OD, B_OUT OU
+                	  WHERE OD.OD_CD = #{odCd})
+       AND OD_CD = #{odCd}
+	</update>
 	
 	<!--
 			완제품 출고 조회 Tab
@@ -231,7 +244,8 @@
 		       OD.OD_CD, 
 		       P.PRD_CD, 
 		       P.PRD_NM, 
-		       A.ACT_NM, 
+		       A.ACT_CD, 
+		       A.ACT_NM,
 		       OD.OD_AMT
 		       
 		  FROM B_OD OD 
@@ -266,8 +280,11 @@
 			BDATES,
 			BAMT,
 			EDATE,
-			OUT_ETC,
-			PRD_LOT
+			PRD_CD,
+			ACT_CD,
+			OD_CD,
+			PRD_LOT,
+			OUT_ETC
 		)
 		VALUES
 		(
@@ -275,8 +292,11 @@
 			CURRENT_DATE,
 			#{bamt},
 			#{edate},
-			#{outEtc},
-			#{prdLot}
+			#{prdCd},
+			#{actCd},
+			#{odCd},
+			#{prdLot},
+			#{outEtc}
 		)
 	</insert>
 	
@@ -437,37 +457,26 @@
 			
 		  JOIN C_PRD P
 			ON P.PRD_CD = I.PRD_CD
+			
+		 WHERE I.AG_AMT IS NOT NULL
 	</select>
 	
-	<!-- 완제품 재고 관리 폐기 현황 리스트 등록 -->
-	<insert id="insertEdateList" parameterType="com.mandu.yamyam.ord.service.OrdVO">
-		INSERT INTO 
-		(
-			POD_DATE,
-			PRD_LOT,
-			PRD_CD,
-			AG_AMT,
-			EDATE
-		)
-		VALUES
-		(
-			#{podDate},
-			#{prdLot},
-			#{prdCd},
-			#{agAmt},
-			#{edate}
-		)
-	</insert>
+	<!-- 완제품 재고 관리 폐기 등록 -->
+	<update id="insertEdateList" parameterType="com.mandu.yamyam.ord.service.OrdVO">
+			UPDATE B_IN
+		<set>
+			AG_AMT = #{agAmt}
+		</set>
+			WHERE PRD_LOT = #{prdLot}
+	</update>
 
 	<!-- 완제품 재고 관리 폐기 등록 후, 재고 수정 -->
 	<update id="updateEdateList" parameterType="com.mandu.yamyam.ord.service.OrdVO">
 			UPDATE B_IN
-		<if test="agAmt != null">
 		<set>
-			SAMT = ABS(#{samt} - #{agAmt}) 
+			SAMT = ABS(samt - #{agAmt}) 
 		</set>
 			WHERE PRD_LOT = #{prdLot}
-		</if>
 	</update>
 	
 	<!--
