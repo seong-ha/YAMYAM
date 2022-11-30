@@ -1092,16 +1092,19 @@
 	}
 	
 	/*------------------------------
-	// 자재 발주 그리드에 클릭 시 총합구하기
+	// 자재 발주 그리드에 총합 구하기
 	----------------------------------*/
 	function getSum() {
-		odMat.on('click',function(ev){
+		odMat.on('afterChange',function(ev){
+			let change = ev.changes[0];
+			let rowData = odMat.getRow(change.rowKey);
+			
+			console.log(change.rowKey);
+			
 	   		// 단가 * 발주량 = 총합
-	   		if (ev.columnName == 'matSum'){
-	   			let data = odMat.getRow(ev.rowKey);
-	   			let val =  odMat.getFocusedCell().rowKey;
-				if(data.matOddMn != null && data.matOddAmt != null){
-					odMat.setValue(val, 'matSum', (data.matOddMn * data.matOddAmt));
+	   		if (change.columnName == 'matOddMn'){
+				if(rowData.matOddMn != null && rowData.matOddAmt != null){
+					odMat.setValue(change.rowKey, 'matSum', (rowData.matOddMn * rowData.matOddAmt));
 				}
 	   		}
 	   	});
@@ -1269,6 +1272,7 @@
 			// 발주량도 계산되어 같이 들어가도록 처리
 			for(let i=0; i<data.length; i++){
 				odMat.setValue(i, 'matOddAmt', (data[i].bomAmt * chkData[0].pplndAmt));
+				odMat.setValue(i, 'matOdDd', (today));
 			}
 		})
 		
