@@ -651,9 +651,10 @@
 	function insertClickHandler(){
 		// 빈창 클릭시 데이터
 		insertGrid.on('click', (ev) => {
-			/* if(!ev.rowKey){
+			console.log(ev.rowKey);
+			  if(!ev.rowKey){
 				return;
-			} */
+			 }
 			let prdNm = insertGrid.getValue(ev.rowKey, 'prdNm')
 				
 			if(prdNm == null){
@@ -697,13 +698,11 @@
 	
 	
 	/*------------
-	// insertGrid 빈곳 클릭 핸들러
+	// 제품 모달창의 그리드 선택시 자료를 insertGrid에 넣어주기
 	----------------*/
 	function gridClickHandler(){
-		// 제품 모달창의 그리드 선택시 자료를 insertGrid에 넣어주기
 		materialGrid.on('focusChange',function(event){
 			let data2 = materialGrid.getRow(event.rowKey);
-			
 			let val = insertGrid.getFocusedCell().rowKey;
 
 			let prCode = data2.prdCd; // 선택된 제품 코드

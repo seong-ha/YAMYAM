@@ -50,8 +50,6 @@ public interface ProMapper {
 	// 생산 요청서 업데이트(진행상황 : 진행)
 	public int updateBpod(ProVO vo);
 	
-	// 생산 요청서 업데이트(진행상황 : 진행)
-	public int updateBod(ProVO vo);
 	
 	/*---------------
 	// 생산 지시 관리

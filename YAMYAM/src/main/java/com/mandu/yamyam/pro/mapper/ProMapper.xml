@@ -101,12 +101,6 @@
 		WHERE od_cd = #{odCd}
 	</update>
 	
-	<!-- 주문서 업데이트 -->
-	<update id="updateBod" parameterType="com.mandu.yamyam.pro.service.ProVO">
-		UPDATE b_od
-		SET od_sts = 'ORD-STS2'
-		WHERE od_cd = #{odCd}
-	</update>
 	
 	<!-- 생산계획 우선순위, 생산일자 수정 -->
 	<update id="updatePlanDetail" parameterType="com.mandu.yamyam.pro.service.ProVO">
