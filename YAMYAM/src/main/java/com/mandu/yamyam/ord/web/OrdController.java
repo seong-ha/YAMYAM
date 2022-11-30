@@ -139,6 +139,9 @@ public class OrdController {
 		for (int i=0; i<vo.size(); i++) {
 		result += service.updateOutList(vo.get(i));
 		}
+		for (int i=0; i<vo.size(); i++) {
+		result += service.updateOrdStsList(vo.get(i));
+		}
 		return result;
 	}
 	
@@ -202,10 +205,10 @@ public class OrdController {
 	@PostMapping("insertEdateList")
 	@ResponseBody
 	// 완제품 폐기 리스트 등록 및 수정
-	public int insertEdateList(OrdVO vo) {
+	public int insertEdateList(@RequestBody OrdVO vo) {
 		int result = 0;
-			service.insertEdateList(vo);
-			service.updateEdateList(vo);
+			result += service.insertEdateList(vo);
+			result += service.updateEdateList(vo);
 		return result;
 	}
 	

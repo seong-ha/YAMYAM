@@ -129,6 +129,12 @@ public class OrdServiceImpl implements OrdService {
 	public int updateOutList(OrdVO vo) {
 		return map.updateOutList(vo);
 	}
+	
+	@Override
+	// 출고 등록 리스트 등록 후, 주문서 진행상황 업데이트
+	public int updateOrdStsList(OrdVO vo) {
+		return map.updateOrdStsList(vo);
+	}
 
 	/*-----------------
 	// 완제품 반품 관리 Tab
@@ -182,7 +188,7 @@ public class OrdServiceImpl implements OrdService {
 		return map.insertEdateList(vo);
 	}
 	
-	// 완제품 폐기 리스트 수정
+	// 완제품 폐기 리스트 폐기 등록 후, 재고 수정
 	@Override
 	public int updateEdateList(OrdVO vo) {
 		return map.updateEdateList(vo);

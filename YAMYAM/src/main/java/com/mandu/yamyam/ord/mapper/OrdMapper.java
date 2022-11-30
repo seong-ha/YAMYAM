@@ -70,6 +70,9 @@ public interface OrdMapper {
 	// 출고 등록 리스트 등록 후, 재고 업데이트
 	public int updateOutList(OrdVO vo);
 	
+	// 출고 등록 리스트 등록 후, 주문서 진행상황 업데이트
+	public int updateOrdStsList(OrdVO vo);
+	
 	
 	/*-----------------
 	// 완제품 반품 관리 Tab
@@ -106,7 +109,7 @@ public interface OrdMapper {
 	// 완제품 폐기 리스트 등록
 	public int insertEdateList(OrdVO vo);
 	
-	// 완제품 폐기 리스트 수정
+	// 완제품 폐기 리스트 폐기 등록 후, 재고 수정
 	public int updateEdateList(OrdVO vo);
 	
 	
