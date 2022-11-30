@@ -813,13 +813,20 @@
 			// grid 데이터
 			let data = insertGrid.getCheckedRows();
 			let dataList = [];
+			let pplndPrio = '';
+			let pplndDays = '';
+			let prdCd = '';
+			let odCd ='';
+			let odAmt ='';
+			let pplndAmt = '';
 			for(let i=0; i<data.length;i++){
-				let pplndPrio = data[i].pplndPrio;
-				let pplndDays = data[i].pplndDays;
-				let prdCd = data[i].prdCd;				
-				let odCd = data[i].odCd;
-				let odAmt = data[i].rqtAmt;
-				dataList.push({pplnDate,pplnName,odCd,pplndPrio,pplndDays,prdCd,odAmt})
+				pplndPrio = data[i].pplndPrio;
+				pplndDays = data[i].pplndDays;
+				prdCd = data[i].prdCd;				
+				odCd = data[i].odCd;
+				odAmt = data[i].rqtAmt;
+				pplndAmt = data[i].rqtAmt;
+				dataList.push({pplnDate,pplnName,odCd,pplndPrio,pplndDays,prdCd,odAmt,pplndAmt});
 			}
 			if(pplnName == ''){
 				Swal.fire({
