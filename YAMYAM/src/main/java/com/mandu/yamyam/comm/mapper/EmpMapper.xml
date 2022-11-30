@@ -75,7 +75,7 @@
 					emp_id = #{empId},
 				</if>
 				
-				<if test ="empPw != null and !empPw.equals('') and empPw == empPwcr">
+				<if test ="empPw != null and !empPw.equals('')">
 					emp_pw = #{empPw},
 				</if>
 				

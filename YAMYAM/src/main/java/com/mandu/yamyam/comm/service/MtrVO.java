@@ -13,5 +13,6 @@ public class MtrVO {
 	private String mtrStd; // 규격
 	private String mtrUn; // 작업단위
 	private int mtrSfamt; // 안전 재고 수량
+	private int mtrPrc; // 단가
 	private String mtrSts; // 제품 구분
 }

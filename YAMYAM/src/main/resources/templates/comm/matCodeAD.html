@@ -10,6 +10,12 @@
 width:80%;	display: inline;
 }
 </style>
+
+<style type="text/css">
+	#select-box {
+		z-index: 1002;
+	}
+</style>
 </head>
 <div class="container" layout:fragment="content">
 	<h3>자재 코드 관리</h3>
@@ -66,14 +72,21 @@ width:80%;	display: inline;
 
 				<div class="mb-3 row">
 					<label class="col-sm-2" style="width:100px">&nbsp;안전재고</label>&nbsp;
-					<span class="col-sm-4" style="width: 190px;"><input type="number" name="mtrSfamt" id="mtrSafeAmount"></span>
+					<span class="col-sm-4" style="width: 210px;"><input type="number" name="mtrSfamt" id="mtrSafeAmount"></span>
 				
+					<label class="col-sm-2" style="width:85px">&nbsp;단가</label>&nbsp;
+					<span class="col-sm-4" style="width: 190px;"><input type="number" name="mtrPrc" id="mtrPrice"></span>
 			
-			
-				<input type="hidden" name="mtrSts" id="mtrStatus">
-					<label class="col-sm-2" style="width:130px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;사용여부</label>
-					<span class="col-sm-4" style="width: 190px;" id="select-box3"></span>
 				</div>
+				
+				<hr>
+				
+				<div class="mb-3 row">
+				<input type="hidden" name="mtrSts" id="mtrStatus">
+					<label class="col-sm-2" style="width:110px">&nbsp;사용여부</label>
+					<span class="col-sm-4" style="width: 200px;" id="select-box3"></span>
+				</div>
+				
 				<hr>
 					
 				<div align="right">
@@ -157,6 +170,12 @@ width:80%;	display: inline;
 				sortingType: 'desc',
 		        sortable: true,
 			}, {
+				header : '단가',
+				name : 'mtrPrc',
+				align: 'right',
+				sortingType: 'desc',
+		        sortable: true,
+			},{
 				header : '사용여부',
 				name : 'mtrSts',
 				align: 'center'
@@ -283,7 +302,7 @@ width:80%;	display: inline;
 				value : 'STD20'
 			}
 			],
-			autofocus : true,
+			autofocus : false,
 			selected: true
 		});
 		
@@ -298,7 +317,7 @@ width:80%;	display: inline;
 				label : 'EA',
 				value : 'UNIT2'
 			}],
-			autofocus : true
+			autofocus : false
 		});
 		
 		var selectBox3 = new tui.SelectBox('#select-box3', {
@@ -310,7 +329,7 @@ width:80%;	display: inline;
 				label : 'N',
 				value : 'MAT-STS2'
 			}],
-			autofocus : true
+			autofocus : false
 		});
 		
 		// bind 'change' event
@@ -406,6 +425,7 @@ width:80%;	display: inline;
  						actCode.value = data.actCd;
  						actName.value = data.actNm;
  						mtrSafeAmount.value = data.mtrSfamt;
+ 						mtrPrice.value = data.mtrPrc;
  						//mtrStatus.value = data.mtrSts;
  						selectBox3.select(data.mtrSts)
  					},
@@ -437,6 +457,7 @@ width:80%;	display: inline;
 			let actCd = document.getElementById('actCode');
 			let actNm = document.getElementById('actName');
 			let mtrSfamt = document.getElementById('mtrSafeAmount');
+			let mtrPrc = document.getElementById('mtrPrice');
 			let mtrSts = document.getElementById('mtrStatus');
 			
 			if (mtrNm.value == '' || mtrNm.value == null) {
@@ -463,6 +484,14 @@ width:80%;	display: inline;
 				toastr.warning('사용여부를 선택하세요.');
 				mtrSts.focus();
 				return;
+			} else if (mtrSfamt.value <= 0) {
+				toastr.warning('안전재고는 0 이하일 수 없습니다.');
+				mtrSfamt.focus();
+				return;
+			} else if (mtrPrc.value <= 0) {
+				toastr.warning('단가는 0 이하일 수 없습니다.');
+				mtrPrc.focus();
+				return;
 			}
 			
 			let data = {
@@ -473,6 +502,7 @@ width:80%;	display: inline;
 					actCd: actCd.value,
 					actNm: actNm.value,
 					mtrSfamt: mtrSfamt.value,
+					mtrPrc : mtrPrice.value,
 					mtrSts: mtrSts.value
 			}
 			
