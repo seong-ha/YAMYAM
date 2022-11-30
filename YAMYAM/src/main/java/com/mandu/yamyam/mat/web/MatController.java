@@ -371,7 +371,7 @@ public class MatController {
 	//======================
 	@RequestMapping("/matSafe")
 	public String matSafe(Model model) {
-		model.addAttribute("matStList", service.matStockList());	// 재고 전체조회
+		model.addAttribute("matStList", service.mtrSamtList());		// 재고 전체조회
 		model.addAttribute("holdAmt", service.getHoldAmt());		// 홀딩수량
 		return "mat/matSafe";
 	}

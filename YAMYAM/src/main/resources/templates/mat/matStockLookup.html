@@ -309,14 +309,14 @@
 			document.getElementById('grid').addEventListener('click', function(){
 				let data = grid.getData();
 				let val = grid.getFocusedCell().rowKey;
-				console.log(data[val].mtrCd)
 				let result = 0;
-				for(let i=0; i<[[${holdAmt}]].length; i++){
+				
+				// 홀딩수량 계산 값 구하기.
+				for(let i=0; i < [[${holdAmt}]].length; i++){
 					if(data[val].mtrCd == [[${holdAmt}]][i].mtrCd) {
 						result += [[${holdAmt}]][i].amt;
 					}
 				}
-				console.log(result);
 				let holdData = [{mtrCd: data[val].mtrCd, mtrNm: data[val].mtrNm, amt: result}];
 				grid2.resetData(holdData);
 			})

@@ -198,8 +198,10 @@
         	   P.PPLN_NAME,
         	   TO_CHAR(P.PPLN_DATE, 'yyyy-MM-dd') AS "PPLN_DATE"
 		FROM P_PLN P
+		
 		 JOIN P_PLND D
 		  ON P.PPLN_CD = D.PPLN_CD
+		  
 		WHERE D.PPLND_STS = 'PLN-STS1'
 	</select>
 	
@@ -210,17 +212,24 @@
                P.PPLN_NAME,
                TO_CHAR(P.PPLN_DATE, 'yyyy-MM-dd') AS "PPLN_DATE",
                TO_CHAR(O.MAT_OD_DD, 'yyyy-MM-dd') AS "MAT_OD_DD"
+               
 		FROM P_PLN P 
+		
           JOIN B_OD B
            ON B.OD_CD = P.OD_CD
+           
           JOIN C_ACT A
            ON A.ACT_CD = B.ACT_CD
+           
           JOIN M_ODD D
            ON D.ACT_CD = A.ACT_CD
+           
           JOIN M_OD O
            ON O.MAT_OD_CD = D.MAT_OD_CD
+           
           JOIN P_PLND D
 		   ON P.PPLN_CD = D.PPLN_CD
+		   
 		 <where>
 		 	<if test="matOddDate != null and !matOddDate.equals('')">
 				MAT_OD_DD <![CDATA[>=]]> #{matOddDate}
@@ -869,7 +878,7 @@
 		 JOIN P_PLND P 
 		  ON B.PRD_CD = P.PRD_CD
 		  
-		WHERE P.PPLND_STS = '미지시'
+		WHERE P.PPLND_STS = 'PLN-STS2'
 		AND B.MTR_CD IS NOT NULL
 		
 		GROUP BY B.MTR_CD, B.BOM_AMT*P.PPLND_AMT, B.BOM_CD
@@ -1043,6 +1052,20 @@
 	</select>
 	
 	<!-- 10) 안전재고 업데이트 -->
+	<select id="selectSamt" resultType="com.mandu.yamyam.common.LowerKeyMap">
+		SELECT I.MTR_CD,
+		       M.MTR_NM,
+		       M.MTR_SFAMT,
+		       SUM(I.MAT_SAMT) AS "MAT_SAMT"
+		       
+		FROM M_IN I
+		
+		 JOIN C_MTR M
+		  ON M.MTR_CD = I.MTR_CD
+		  
+		GROUP BY I.MTR_CD, M.MTR_NM, M.MTR_SFAMT
+	</select>
+	
 	<update id="mtrSfUpdate" parameterType="com.mandu.yamyam.mat.service.MatVO">
 		UPDATE C_MTR
 		SET MTR_SFAMT = #{mtrSfamt}
