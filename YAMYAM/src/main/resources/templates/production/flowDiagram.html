@@ -12,17 +12,18 @@
 <body>
 	<!-- 본문 시작 -->
 	<div layout:fragment="content" class="container">
-		
+		<h3>제품 공정 흐름도</h3>
+		<hr>
 		<div class="row">
 			<div class="col-5">
-				<h3 style="margin-bottom:42px;">제품 공정 흐름도</h3>
+				<h4 style="margin-bottom:42px;">조회</h4>
 				<div id="flowGrid"></div>
 			</div>
 			<div class="col-7" >
 				 <table>
 					<tr>
 						<td colspan="4">
-							<h3>제품 공정 흐름도 관리</h3>
+							<h4>관리</h4>
 						</td>
 					</tr>
 					<tr>
@@ -112,7 +113,8 @@
 					name : 'prdCd',
 				}, {
 					header : '제품명',
-					name : 'prdNm'
+					name : 'prdNm',
+					align : 'center'
 					
 				}, {
 					header : '라인코드',
@@ -147,13 +149,16 @@
 					name : 'pproCd',
 				}, {
 					header : '공정명',
-					name : 'pproName'
+					name : 'pproName',
+					align : 'center'
 				}, {
 					header : '설비코드',
-					name : 'eqpCd'				
+					name : 'eqpCd',
+					align : 'center'
 				}, {
 					header : '설비명',
-					name : 'eqpNm'	
+					name : 'eqpNm',
+					align : 'center'
 				}]
 			});
 			return flowManage;
