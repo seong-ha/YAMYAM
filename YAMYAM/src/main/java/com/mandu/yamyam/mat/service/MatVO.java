@@ -61,6 +61,7 @@ public class MatVO {
 	private String mattrUn;		// 작업단위
 	private int mtrSfamt;		// 안잰재고수량
 	private String mtrSts;		// 제품구분
+	private int mtrPrc;			// 자재단가
 	
 	// 공통상세 테이블
 	private String commdCd;		// 상세공통코드
