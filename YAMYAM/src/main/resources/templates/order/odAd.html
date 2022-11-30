@@ -21,6 +21,7 @@ text-align: center;
 <div class="container" layout:fragment="content">
    <div id="od-title">
       <h3>주문서 관리</h3>
+      <hr>
    </div>
    
    <div id="odAd-content">
@@ -344,6 +345,7 @@ var header = $("meta[name='_csrf_header']").attr("content");
 		        editor: {
 		        	type : 'datePicker',
 	        		options: {
+	        			 selectableRanges: [ [new Date(), addDay(1)] ],
 			              format: 'yyyy-MM-dd',
 			              language : 'ko'
 			            }

@@ -96,6 +96,7 @@ public interface OrdMapper {
 	/*-----------------
 	// 완제품 재고 관리 Tab
 	-------------------*/
+	
 	// 완제품 유통기한 현황 리스트 조회
 	public List<OrdVO> getEdateList(OrdVO vo);
 	

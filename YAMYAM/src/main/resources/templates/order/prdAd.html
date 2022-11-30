@@ -25,6 +25,7 @@ text-align: center;
 
 	<div id="od-title">
 		<h3>완제품 재고 관리</h3>
+		<hr>
 	</div>
 	
 	<div id="prdAd-content">
@@ -160,12 +161,12 @@ var header = $("meta[name='_csrf_header']").attr("content");
 		    columns: [
 		      {
 		        header: '생산 일자',
-		        align : 'center',
+		        align : 'right',
 		        name  : 'podDate'
 		      },
 		      {
 		        header: '완제품LOT',
-		        align : 'center',
+		        align : 'left',
 		        name  : 'prdLot'
 		      },
 		      {
@@ -175,17 +176,17 @@ var header = $("meta[name='_csrf_header']").attr("content");
 		      },
 		      {
 		        header: '제품명',
-		        align : 'center',
+		        align : 'left',
 		        name  : 'prdNm'
 		      },
 		      {
 		        header: '재고량',
-		        align : 'center',
+		        align : 'right',
 		        name  : 'samt'
 		      },
 		      {
 		        header: '유통기한',
-		        align : 'center',
+		        align : 'right',
 		        name  : 'edate'
 		      },
 		      {
@@ -196,7 +197,7 @@ var header = $("meta[name='_csrf_header']").attr("content");
 	               styles: {
 	                    fontWeight: 'bold',
 	                    color: (props) => 
-	                    	props.value = '경고' ? '#FF4500' : '	#0000CD'
+		      				(props.value == '경고') ? '#FF4500' :'#0000CD'
 	                 }
 		            }
 	        
@@ -303,12 +304,12 @@ var header = $("meta[name='_csrf_header']").attr("content");
 	    columns: [
 	      {
 	        header: '생산 일자',
-	        align : 'center',
+	        align : 'right',
 	        name: 'podDate'
 	      },
 	      {
 	        header: '완제품LOT',
-	        align : 'center',
+	        align : 'left',
 	        name: 'prdLot'
 	      },
 	      {
@@ -318,12 +319,12 @@ var header = $("meta[name='_csrf_header']").attr("content");
 	      },
 	      {
 	        header: '제품명',
-	        align : 'center',
+	        align : 'left',
 	        name: 'prdNm'
 	      },
 	      {
 	        header: '폐기량',
-	        align : 'center',
+	        align : 'right',
 	        name: 'agAmt',
 	        editor: 'text',
 			// 필수 입력 값
@@ -334,7 +335,7 @@ var header = $("meta[name='_csrf_header']").attr("content");
 	      },
 	      {
 	        header: '유통기한',
-	        align : 'center',
+	        align : 'right',
 	        name: 'edate'
 	      }
 	    ]
@@ -406,7 +407,7 @@ var header = $("meta[name='_csrf_header']").attr("content");
 	      },
 	      {
 	        header: '제품명',
-	        name: 'prdNm',
+	        name: 'left',
 	        filter: {type: 'select'}
 	      }
 	    ]
