@@ -520,6 +520,9 @@ select option[value=""][disabled] {
 					        	method: 'DELETE',
 					        	contentType: 'application/JSON',
 								data: JSON.stringify(data),
+			                      beforeSend : function (xhr) {
+			                          xhr.setRequestHeader(header, token);
+			                      },
 								success: function(result){
 									console.log(result);
 									if(result >= 1){

@@ -80,6 +80,14 @@ public class MatController {
 		return result;
 	}
 	
+	// 자재 발주 관리 - insert (일반 탭)
+	@PostMapping("/insMatOd")
+	@ResponseBody
+	public int insertMatOdPplnCd(@RequestBody List<MatVO> list) {
+		int result = service.insertMatOdPplnCd(list);
+		return result;
+	}
+	
 	// 신규 생산계획 추가 데이터.
 	@PostMapping("/matAddNewPlan")
 	@ResponseBody

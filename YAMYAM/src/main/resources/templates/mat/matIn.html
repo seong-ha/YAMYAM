@@ -192,7 +192,11 @@
 					     dataType: 'datePicker',
 					     required: true
 					      }
-		        },
+		        },		        {
+		          header: '발주코드',
+		          name: 'matOdCd',
+		          
+		        }
 		      ]
 		    });
 		
@@ -383,6 +387,9 @@
 				        	method: 'DELETE',
 				        	contentType: 'application/JSON',
 							data: JSON.stringify(data),
+		                      beforeSend : function (xhr) {
+		                          xhr.setRequestHeader(header, token);
+		                      },
 							success: function(result){
 								console.log(result);
 								if(result >= 1){
@@ -433,6 +440,10 @@
 				        	// MAT_INSTS 'Y'로 업데이트
 				        	updateInsts(data);
 				        	
+	                    	 
+	                        //미지시 업데이트 함수
+	                        //updataSts(planData); 자재 입고 관리로 이사 중
+				        	
 							setTimeout(() => location.reload(),400);
 				        	
 						} else {
@@ -457,6 +468,9 @@
     		dataType: 'JSON',
     		async: false,
     		data: JSON.stringify(data),
+            beforeSend : function (xhr) {
+                xhr.setRequestHeader(header, token);
+            },
     		sussecc: function(result){
     			console.log('검수상태 Y로 업데이트 완료');
     		},
@@ -465,6 +479,26 @@
     		}
     	})
 	}
+    
+	   // pplnCd의 상태를 미지시로 업데이트(ajax 분리)
+	   function updataSts(planData){
+	      $.ajax({
+	          url: '',
+	          method: 'PUT',
+	          async: false,
+	          beforeSend : function (xhr) {
+	             xhr.setRequestHeader(header, token);
+	         },
+	          contentType: 'application/JSON',
+	         data: JSON.stringify(planData[0]),
+	         success: function(result){
+	            console.log(planData[0].pplnCd + ' 미지시로 업데이트 완료!')
+	         },
+	         error: function(reject){
+	            console.log(reject);
+	         }
+	      }) // ajax end
+	   }
 	
 	/*--------------------------------
 	// 조회 버튼 클릭 시 그리드 등장

@@ -38,6 +38,9 @@ public interface MatOdService {
 	// 자재 발주 관리 - 발주상세코드 insert(일반 탭)
 	public int insMatOdList(List<MatVO> list);
 	
+	// 자재 발주 관리 - insert2(상세계획서용 탭)
+	public int insertMatOdPplnCd(List<MatVO> list);
+	
 	// 신규 생산계획 조회(생산계획서용 탭)
 	public List<Map<String, Object>> newPlanList();
 	

@@ -133,7 +133,6 @@ public class MatVO {
 	private int odSts;			// 진행상황구분
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date pplnDats;		// 계획등록일자
-	private String planCd;		// 생산계획코드
 	
 	// 생산계획 테이블
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
