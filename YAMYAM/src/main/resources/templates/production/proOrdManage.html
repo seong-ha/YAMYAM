@@ -567,13 +567,15 @@ var header = $("meta[name='_csrf_header']").attr("content");
 				clearInterval(interval);
 				
 				let data = proGrid.getData();
-				
+				let eqpSts = '';
+				let eqpCd = '';
+				let plineCd = '';
 				for(let i = 0; i< data.length; i++){
-					let eqpSts = data[i].eqpSts;
+					eqpSts = data[i].eqpSts;
 					if(eqpSts == "가동"){
-					let eqpCd = data[i].eqpCd;
-					let plineCd = data[i].plineCd;
-					proGrid.setValue(i,'eqpSts','긴급중지');
+					eqpCd = data[i].eqpCd;
+					plineCd = data[i].plineCd;
+					//proGrid.setValue(i,'eqpSts','긴급중지');
 					// 설비상태 업데이트
 					$.ajax({
 						url : '/eqpUpdate',
