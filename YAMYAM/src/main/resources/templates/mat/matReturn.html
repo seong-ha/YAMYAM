@@ -125,9 +125,6 @@
 			grid.on('click', function(ev){
 				let data = grid.getRow(ev.rowKey);
 				
-				// 행에서 지울 데이터
-				//let idx = grid.getFocusedCell().rowKey;
-				
 				//matOdCd 넘겨서 조회해오기.
 				$.ajax({
 					url: '/matReturnLookup',
@@ -140,7 +137,8 @@
 					},
 					success: function(result){
 						grid2.resetData(result);
-						//grid.removeRow(idx); // 저장할때지울데이터
+						grid2.setValue(0, 'matRtDate', today);
+						
 					},
 					error: function(reject){
 						console.log(reject);

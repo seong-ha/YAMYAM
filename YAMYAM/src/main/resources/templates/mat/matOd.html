@@ -69,12 +69,11 @@
 								<input class="form-check-input" type="radio"
 									name="inlineRadioOptions" id="inlineRadio2" value="N">
 								<label class="form-check-label" for="inlineRadio2">N</label>
-							</div>
-							<!-- 검색버튼 -->
+							</div> <!-- 검색버튼 -->
 							<button class="btn btn-dark btn-sm" id="SearchBtn">조회</button>
-							<button class="btn btn-dark btn-sm" id="resetBtn">초기화</button>
-							<!-- CRUD버튼 -->
-							<button class="btn btn-dark btn-sm" id="insertBtn"style="margin-left: 68%;">추가</button>
+							<button class="btn btn-dark btn-sm" id="resetBtn">초기화</button> <!-- CRUD버튼 -->
+							<button class="btn btn-dark btn-sm" id="insertBtn"
+								style="margin-left: 68%;">추가</button>
 							<button class="btn btn-dark btn-sm" id="deleteBtn">삭제</button>
 							<button class="btn btn-dark btn-sm" id="saveBtn">저장</button></li>
 					</ul>
@@ -103,7 +102,7 @@
 					<div id="grid4"></div>
 					<div align="right">
 						<button class="btn btn-dark btn-sm" id="resetGridBtn">초기화</button>
-						<button class="btn btn-dark btn-sm" id="odSaveBtn">저장</button>
+						<button class="btn btn-dark btn-sm" id="odSaveBtn">발주하기</button>
 					</div>
 				</div>
 			</div>
@@ -943,7 +942,7 @@
 		let saveBtn = document.getElementById('saveBtn');
 		saveBtn.addEventListener('click', function(ev){
 			let data = odLookUp.getCheckedRows();
-			
+
 			Swal.fire({
 			      title: '저장 하시겠습니까?',
 			      icon: 'warning',
@@ -984,8 +983,8 @@
 			        })
 			      }
 			   })
-		})
-	}
+			})
+		}
 	
 	/*------------------------
 	// 자재발주 전체조회 행 여러건 삭제 버튼
@@ -1110,6 +1109,28 @@
 	   	});
 		
     }
+	/*--------------------------------
+	// 필요자재 올체크 이벤트
+	----------------------------------*/
+	function allCheckFn() {
+		needMat.on('checkAll', function(){
+			let data = needMat.getData();
+			let chkData = newPlan.getCheckedRows();
+			
+			odMat.resetData(data);
+			
+			// 발주량도 계산되어 같이 들어가도록 처리
+			for(let i=0; i<data.length; i++){
+				odMat.setValue(i, 'matOddAmt', (data[i].bomAmt * chkData[0].pplndAmt));
+				odMat.setValue(i, 'matOdDd', (today));
+			}
+		})
+		
+		needMat.on('uncheckAll', function(){
+			let data = [];
+			odMat.resetData(data);
+		})
+	}
 	
 	/*------------------------
 	// 자재 발주 그리드 저장 버튼
@@ -1120,7 +1141,23 @@
 			let data = odMat.getData();
 			let planData = newPlan.getCheckedRows();
 			
+			console.log(data);
+			
+			// 빈셀체크
+			let result = 0
+			for(let i=0; i<data.length; i++){
+				if(data[i].matOddMn == '' || data[i].matOddDate == '' || 
+				   data[i].matSum == ''){
+					result += 1;
+				} else {
+					result += 0;
+				}
+			}
+			
+			console.log('0일떄만 발주가능' + result);
+			
 			// 여러건 저장
+			if(result == 0) {
 			Swal.fire({
 			      title: '발주 하시겠습니까?',
 			      icon: 'warning',
@@ -1160,8 +1197,13 @@
 							console.log(reject);
 						}
 			        }) // ajax end
-			      }
+			      } 
 			   })
+			} else {
+				Swal.fire({
+					icon: 'error',
+					title :'빈 셀이 있습니다!'});
+			}
 			})
 		}
 	
@@ -1260,26 +1302,6 @@
 		})
 	}
 	
-	// 필요자재 올체크 이벤트
-	function allCheckFn() {
-		needMat.on('checkAll', function(){
-			let data = needMat.getData();
-			let chkData = newPlan.getCheckedRows();
-			console.log(chkData[0].pplndAmt)
-			
-			odMat.resetData(data);
-			
-			// 발주량도 계산되어 같이 들어가도록 처리
-			for(let i=0; i<data.length; i++){
-				odMat.setValue(i, 'matOddAmt', (data[i].bomAmt * chkData[0].pplndAmt));
-				odMat.setValue(i, 'matOdDd', (today));
-			}
-		})
-		
-		needMat.on('uncheckAll', function(){
-			let data = [];
-			odMat.resetData(data);
-		})
-	}
+
 </script>
 </div>
