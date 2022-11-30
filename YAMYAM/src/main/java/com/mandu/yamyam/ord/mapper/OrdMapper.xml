@@ -392,9 +392,11 @@
         </if>
 	</select>
 	
+	
 	<!--
 		완제품 재고 관리 Tab
 							 -->
+							 
 	<!-- 완제품 재고 관리 유통기한 현황 리스트 조회 -->			
 	<select id="getEdateList" resultType="com.mandu.yamyam.common.LowerKeyMap">
 		SELECT TO_CHAR(POD.PODD_DATES,'yyyy-MM-dd') AS POD_DATE, 
@@ -403,7 +405,7 @@
 			   P.PRD_NM,
 			   I.SAMT,
 			   TO_CHAR(I.EDATE,'yyyy-MM-dd') AS EDATE,
-			   CASE WHEN I.EDATE + 3 > CURRENT_DATE THEN '경고' ELSE '양호' END AS EDATE_YN
+			   CASE WHEN CURRENT_DATE + 4 <![CDATA[>]]> I.EDATE THEN '경고' ELSE '양호' END AS EDATE_YN
 			   
 		  FROM B_IN I
 		  
@@ -414,7 +416,7 @@
 			ON P.PRD_CD = I.PRD_CD
 		 WHERE I.SAMT > 0
 		<if test="prdCd != null and !prdCd.equals('')">
-         AND P.PRD_CD = #{prdCd}
+           AND P.PRD_CD = #{prdCd}
         </if>
 	  ORDER BY I.EDATE
 	</select>
@@ -428,9 +430,9 @@
 			   I.AG_AMT,
 			   TO_CHAR(I.EDATE,'yyyy-MM-dd') AS EDATE
 			   
-		FROM B_IN I
+		  FROM B_IN I
 		
-		JOIN P_ODD POD
+		  JOIN P_ODD POD
 			ON POD.PODD_CD = I.PODD_CD
 			
 		  JOIN C_PRD P
@@ -449,11 +451,11 @@
 		)
 		VALUES
 		(
-			#{podDate}
-			,#{prdLot}
-			,#{prdCd}
-			,#{agAmt}
-			,#{edate}
+			#{podDate},
+			#{prdLot},
+			#{prdCd},
+			#{agAmt},
+			#{edate}
 		)
 	</insert>
 
@@ -483,10 +485,10 @@
 		         WHERE PRD_CD = P.PRD_CD
 		         GROUP BY PRD_CD) AS SAMT
 		         
-		 FROM B_OD O 
-		 JOIN C_PRD P
-		   ON O.PRD_CD = P.PRD_CD
-	 ORDER BY O.OD_CD
+		  FROM B_OD O 
+		  JOIN C_PRD P
+		    ON O.PRD_CD = P.PRD_CD
+	  ORDER BY O.OD_CD
 	</select>
 				
 	
@@ -499,12 +501,12 @@
 		      	P.PRD_NM,
 		      	O.OD_AMT,
 		       	(SELECT SUM(SAMT)
-		        FROM B_IN
-		        WHERE PRD_CD = P.PRD_CD
-		        GROUP BY PRD_CD) AS SAMT,
+		           FROM B_IN
+		          WHERE PRD_CD = P.PRD_CD
+		       GROUP BY PRD_CD) AS SAMT,
 		      	D.RQT_AMT,
 		      	TO_CHAR(O.DE_DATE,'yyyy-MM-dd') AS DE_DATE,
-		      	D.RQT_STS
+		      	find_code_name(D.RQT_STS) AS RQT_STS
 		      	
 		   FROM B_POD D
 		
@@ -536,7 +538,7 @@
 	        	GROUP BY PRD_CD) AS SAMT,
 	      	D.RQT_AMT,
 	      	TO_CHAR(O.DE_DATE,'yyyy-MM-dd') AS DE_DATE,
-	      	D.RQT_STS
+	      	find_code_name(D.RQT_STS) AS RQT_STS
 	      	
 		FROM B_POD D 
 		JOIN B_OD O
@@ -548,7 +550,7 @@
         	 WHERE TRUNC(D.RQT_DATE) BETWEEN #{startDate} AND #{endDate}
         </if>
         <if test="rqtSts != null and !rqtSts.equals('')">
-        	AND D.RQT_STS = #{rqtSts}
+        	AND RQT_STS = #{rqtSts}
         </if>
 	</select>
 	
@@ -568,33 +570,29 @@
 		)
 		VALUES 
 		(
-			#{rqtNo}
-			,CURRENT_DATE
-			,#{odCd}
-			,#{prdCd}
-			,#{rqtAmt}
-			,'RQT-STS1'
+			#{rqtNo},
+			CURRENT_DATE,
+			#{odCd},
+			#{prdCd},
+			#{rqtAmt},
+			'RQT-STS1'
 		)
 	</insert>
 	
 	<!-- 생산 요청 관리 수정 -->
 	<update id="updatePodOrd" parameterType="com.mandu.yamyam.ord.service.OrdVO">
 		UPDATE B_POD
-		<if test="!rqtSts.equals('계획완료')">
 		<set>
 		RQT_DATE = #{rqtDate},
 		RQT_AMT = #{rqtAmt}
 		</set>
 		WHERE RQT_NO = #{rqtNo}
-		</if>
 	</update>
 	
 	<!-- 생산 요청 관리 삭제 -->
 	<delete id="deletePodOrd" parameterType="com.mandu.yamyam.ord.service.OrdVO">
         	DELETE FROM B_POD 
-	    <if test="!rqtSts.equals('미계획')">
         	WHERE RQT_NO = #{rqtNo}
-        </if>
 	</delete>
 	
 	

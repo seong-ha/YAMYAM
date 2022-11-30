@@ -20,6 +20,7 @@ text-align: center;
 <div class="container" layout:fragment="content">
 	<div id="od-title">
 		<h3>생산 요청 관리</h3>
+		<hr>
 	</div>
 	
 	<div id="odAd-content">
@@ -34,12 +35,12 @@ text-align: center;
 		</td>
 	
 		<td>
-		  <input class="form-check-input" type="radio" name="flexRadioDefault" id="podNo" value="미계획">
+		  <input class="form-check-input" type="radio" name="flexRadioDefault" id="podNo" value="RQT-STS1">
 		  <label class="form-check-label" for="podNo">미계획</label>
 		</td>
 		
 		<td>
-		  <input class="form-check-input" type="radio" name="flexRadioDefault" id="podIng" value="계획완료">
+		  <input class="form-check-input" type="radio" name="flexRadioDefault" id="podIng" value="RQT-STS2">
 		  <label class="form-check-label" for="podIng">계획완료</label>
 		</td>
 
@@ -87,7 +88,7 @@ text-align: center;
 	      
 	<div id="od-btn">
 	<th:block sec:authorize="hasAnyAuthority('JOB-GRD1', 'JOB-GRD2')">
-		<button class="btn btn-dark btn-sm" id="insertBtn">추가</button>
+		<button class="btn btn-dark btn-sm" id="insertBtn">행추가</button>
 		<button class="btn btn-dark btn-sm" id="deleteBtn">선택삭제</button>
 		<button class="btn btn-dark btn-sm" id="saveBtn">저장</button>
 	</th:block>
@@ -210,33 +211,28 @@ var header = $("meta[name='_csrf_header']").attr("content");
 		let podListGrid = new tui.Grid({
 		    el: document.getElementById('podListGrid'),
 		    rowHeaders: ['checkbox'],
+		    bodyHeight: 200,
 		    scrollX: false,
 		    scrollY: false,
+		    pageOptions: {
+                useClient: true,   // front에서만 페이징 하는 속성
+                perPage: 5
+          			    },
+         	pagination : true,
 		    columns: [
 		      {
 		        header: '생산요청 일자',
-		        align : 'center',
+		        align : 'right',
 		        name: 'rqtDate',
-		        editor: {
-		        	type : 'datePicker',
-	        		options: {
-			              format: 'yyyy-MM-dd',
-			              language : 'ko'
-			            }
-		        },
-		        validation: {
-				     dataType: 'datePicker',
-				     required: true
-				      }
 		      },
 		      {
 		        header: '요청 코드',
-		        align : 'center',
+		        align : 'left',
 		        name  : 'rqtNo'
 		      },
 		      {
 		        header: '주문 코드',
-		        align : 'center',
+		        align : 'left',
 		        name  : 'odCd'
 		      },
 		      {
@@ -251,17 +247,17 @@ var header = $("meta[name='_csrf_header']").attr("content");
 		      },
 		      {
 		        header: '주문량',
-		        align : 'center',
+		        align : 'right',
 		        name  : 'odAmt'
 		      },
 		      {
 		        header: '재고량',
-		        align : 'center',
+		        align : 'right',
 		        name  : 'samt'
 		      },
 		      {
 		        header: '요청수량',
-		        align : 'center',
+		        align : 'right',
 		        name  : 'rqtAmt',
 		        editor: 'text',
 				// 필수 입력 값
@@ -272,7 +268,7 @@ var header = $("meta[name='_csrf_header']").attr("content");
 		      },
 		      {
 		        header: '납기 일자',
-		        align : 'center',
+		        align : 'right',
 		        name  : 'deDate',
 		      },
 		      {
@@ -326,11 +322,11 @@ var header = $("meta[name='_csrf_header']").attr("content");
 
     
 	/*------------
-	// 주문서 추가 버튼
+	// 행추가 버튼
 	----------------*/
    $('#insertBtn').on('click',function(){
       let rowData = [{rqtDate: "", rqtNo: "", odCd: "", prdCd: "", prdNm: "", odAmt: "", samt : "" , rqtAmt: "", deDate: "", rqtSts:""}]
-      podListGrid.appendRow(rowData); 
+      podListGrid.appendRow(rowData,{at : 0}); 
 	});
 	
 	
@@ -378,10 +374,21 @@ var header = $("meta[name='_csrf_header']").attr("content");
 					              error : function(reject) {
 					                 console.log(reject);
 					              }
-							})
-				})
+					}) // end ajax
+				}) // end sweet
 			}else if(rqtNo != null) {
-				sweetConfirm('U', function(){
+				if(rqtSts == '계획완료') {
+					toastr.options = {
+							  "closeButton": true,
+							  "newestOnTop": true,
+							  "positionClass": "toast-bottom-full-width",
+							  "preventDuplicates": true,
+							  "extendedTimeOut" : 0, 
+							  "timeOut" : 0
+					}
+					toastr.error('계획완료된 생산요청서는 수정할 수 없습니다.');
+				}else {
+					sweetConfirm('U', function(){
 					$.ajax({
 						url : '/updatePodList',
 						type : 'post',
@@ -404,13 +411,13 @@ var header = $("meta[name='_csrf_header']").attr("content");
 			              error : function(reject) {
 			                 console.log(reject);
 			              }
-					})
-				})
-			}
-			
-		})
-		
-  }
+					}) // end ajax
+				}) // end sweet
+				} // end else
+			} // end else if
+			}) // end click
+		}
+	
    
    
 	
@@ -422,10 +429,23 @@ var header = $("meta[name='_csrf_header']").attr("content");
 		$('#deleteBtn').on('click',function(){
 			let rowData = podListGrid.getCheckedRows();
 			let list = [];
+			let rqtSts = '';
 			for (let i=0; i<rowData.length; i++) {
 				let rqtNo = rowData[i].rqtNo;
+				rqtSts = rowData[i].rqtSts;
 				list.push({rqtNo})
 			}
+			if(odSts == '계획완료') {
+				toastr.options = {
+						  "closeButton": true,
+						  "newestOnTop": true,
+						  "positionClass": "toast-bottom-full-width",
+						  "preventDuplicates": true,
+						  "extendedTimeOut" : 0, 
+						  "timeOut" : 0
+				}
+				toastr.error('계획완료된 생산요청서는 삭제할 수 없습니다.');
+			}else {
 			sweetConfirm('D', function(){
 		    	  $.ajax({
 		              url : '/deletePodList',
@@ -448,9 +468,11 @@ var header = $("meta[name='_csrf_header']").attr("content");
 		           })
 		        podListGrid.removeCheckedRows();   
 	})
+			}
 
-		});	
-	}
+
+	})
+   }
    
    
 	/*------------
@@ -459,13 +481,18 @@ var header = $("meta[name='_csrf_header']").attr("content");
 	function orderGridInit() {
 		let orderModalGrid = new tui.Grid({
 		    el: document.getElementById('orderModalGrid'),
+		    bodyHeight: 200,
 		    rowHeaders: ['rowNum'],
 		    scrollX: false,
 		    scrollY: false,
+		    pageOptions: {
+	            useClient: true,   // front에서만 페이징 하는 속성
+	            perPage: 5
+	      			    },
 		    columns: [
 		      {
 		        header: '주문 코드',
-		        align : 'center',
+		        align : 'left',
 		        name: 'odCd'
 		      },
 		      {
@@ -480,17 +507,17 @@ var header = $("meta[name='_csrf_header']").attr("content");
 		      },
 		      {
 		        header: '주문량',
-		        align : 'center',
+		        align : 'right',
 		        name: 'odAmt'
 		      },
 		      {
 		        header: '재고량',
-		        align : 'center',
+		        align : 'right',
 		        name: 'samt'
 		      },
 		      {
 		        header: '납기일자',
-		        align : 'center',
+		        align : 'right',
 		        name: 'deDate'
 		      }
 		    ]
