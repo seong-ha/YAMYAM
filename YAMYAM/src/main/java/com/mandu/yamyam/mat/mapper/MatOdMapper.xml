@@ -7,7 +7,8 @@
 	<!-- 공통 - 자재목록 모달 -->
 	<select id="matList" resultType="com.mandu.yamyam.common.LowerKeyMap">
 		SELECT MTR_CD, 
-			   MTR_NM
+			   MTR_NM,
+			   MTR_PRC
 		  FROM C_MTR M
 	</select>
 	
@@ -30,7 +31,7 @@
 		SELECT O.MAT_OD_CD,
 		       D.MTR_CD,
 		       C.MTR_NM,
-		       D.MAT_ODD_MN,
+		       FIND_MTR_PRICE(D.MTR_CD) AS "MAT_ODD_MN",
 		       D.MAT_ODD_AMT,
 		       O.MAT_SUM,
 			   A.ACT_CD,
@@ -623,11 +624,13 @@
 		 WHERE MAT_OD_CD = #{matOdCd}
 	</update>
 	
-	<!-- 수정 중 -->
-	<update id="" parameterType="com.mandu.yamyam.mat.service.MatVO">
+	<!-- 생산계획 지시상태 update -->
+	<update id="updatePpSts" parameterType="com.mandu.yamyam.mat.service.MatVO">
 		UPDATE P_PLND
 		SET PPLND_STS = 'PLN-STS2'
-		WHERE PPLN_CD = #{pplnCd}
+		WHERE PPLN_CD = (SELECT PPLN_CD
+		                 FROM M_ODD
+		                 WHERE MAT_OD_CD = #{matOdCd})
 	</update>
 	
 	<!-- delete -->
@@ -982,6 +985,7 @@
           
          JOIN C_ACT A
 		  ON A.ACT_CD = D.ACT_CD
+		  
          JOIN M_CHK K
           ON K.MAT_OD_CD = O.MAT_OD_CD
 		  

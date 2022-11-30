@@ -117,7 +117,10 @@ public interface MatOdMapper {
 	// insert
 	public int inManageSave(MatVO vo);
 	
-	// update
+	// 생산계획 update
+	public int updatePpSts(MatVO vo);
+	
+	// 검수상태 update
 	public int updateMatInsts(MatVO vo);
 	
 	// delete

@@ -40,7 +40,7 @@
 			<button class="btn btn-dark btn-sm" id="resetDpBtn">초기화</button>
 			<!-- CRUD 버튼 -->
 			<button class="btn btn-dark btn-sm" data-bs-toggle="modal"
-				data-bs-target="#addModal" style="margin-left: 53%;">추가</button>
+				data-bs-target="#addModal" style="margin-left: 50%;">추가</button>
 			<button class="btn btn-dark btn-sm" id="deleteBtn">삭제</button>
 			<button class="btn btn-dark btn-sm" id="saveBtn">저장</button></li>
 	</ul>
@@ -130,6 +130,8 @@
 	
 	matModalClickFn();				// 자재 모달 클릭 시 인풋 태그로
 	empModalClickFn();				// 직원 모달 클릭 시 인풋 태그로
+	
+	hideColumnFn();					// 발주코드 숨기기
 	
 	/*------------------------------
 	// 입고전체조회 그리드
@@ -354,11 +356,12 @@
 	function insertOrder() {
 		modalGrid3.on('click', function(ev){
 			let data = modalGrid3.getRow(ev.rowKey);
-			console.log(data);
+			
 			    let rowData = {mtrCd: data.mtrCd, mtrNm: data.mtrNm,
 			    			   matInAmt: data.paAmt, actNm: data.actNm,
-			    			   matInDate: today, matLot : "" };
- 		    grid.appendRow(rowData);
+			    			   matInDate: today, matLot : "", matOdCd: data.matOdCd};
+			    
+ 		    grid.prependRow(rowData);
 		})
 	}
 	
@@ -414,6 +417,7 @@
 		document.getElementById('saveBtn').addEventListener('click', function(){
 			let data = grid.getCheckedRows();
 			console.log(data);
+			
 			Swal.fire({
 		      title: '저장 하시겠습니까?',
 		      icon: 'warning',
@@ -440,6 +444,8 @@
 				        	// MAT_INSTS 'Y'로 업데이트
 				        	updateInsts(data);
 				        	
+				        	// 생산계획 상태 '미지시'로 업데이트
+				        	updataSts(data);
 	                    	 
 	                        //미지시 업데이트 함수
 	                        //updataSts(planData); 자재 입고 관리로 이사 중
@@ -459,7 +465,7 @@
 		})
 	}
 	
-    // 검수 테이블에 MAT_INSTS 'Y'로 업데이트
+    // 검수 테이블에 MAT_INSTS 'Y'로 업데이트(ajax 분리)
 	function updateInsts(data){
     	$.ajax({
     		url: '/updateInsts',
@@ -480,19 +486,19 @@
     	})
 	}
     
-	   // pplnCd의 상태를 미지시로 업데이트(ajax 분리)
-	   function updataSts(planData){
+	   // 생산계획의 상태를 미지시로 업데이트(ajax 분리)
+	   function updataSts(data){
 	      $.ajax({
-	          url: '',
-	          method: 'PUT',
+	          url: '/updatePp',
+	          method: 'POST',
 	          async: false,
 	          beforeSend : function (xhr) {
 	             xhr.setRequestHeader(header, token);
 	         },
 	          contentType: 'application/JSON',
-	         data: JSON.stringify(planData[0]),
+	         data: JSON.stringify(data),
 	         success: function(result){
-	            console.log(planData[0].pplnCd + ' 미지시로 업데이트 완료!')
+	            console.log('미지시로 업데이트 완료!')
 	         },
 	         error: function(reject){
 	            console.log(reject);
@@ -565,6 +571,12 @@
 			
 			empCloseBtn.click();
 		})
+	}
+	/*--------------------------------
+	// 발주코드 숨기기
+	----------------------------------*/
+	function hideColumnFn() {
+		grid.hideColumn('matOdCd');
 	}
 	</script>
 </div>

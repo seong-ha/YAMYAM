@@ -198,21 +198,22 @@
    var header = $("meta[name='_csrf_header']").attr("content");
    
       let odLookUp = tab1GridInit();      // 탭1 조회 그리드
-      SearchBtnFn();                  // 조회 버튼 클릭시 odLookUp 그리드 표시
+      SearchBtnFn();                      // 조회 버튼 클릭시 odLookUp 그리드 표시
       
-      let newPlan = tab2GridInit();      // 탭2 새로운생산계획 그리드
-      let needMat = tab3GridInit();      // 탭2 필요자재 그리드
+      let newPlan = tab2GridInit();       // 탭2 새로운생산계획 그리드
+      let needMat = tab3GridInit();       // 탭2 필요자재 그리드
       let odMat = tab4GridInit();         // 탭2 자재발주 그리드
       
-      let needMatModal = matList();      // 자재목록 모달
-      let actList = actListModal();      // 업체목록 모달
+      let needMatModal = matList();       // 자재목록 모달
+      let actList = actListModal();       // 업체목록 모달
       let planModal = addPlan();          // 생산계획서 모달
       
-      gridRef();                     // 그리드 리프레쉬
+      gridRef();                      // 그리드 리프레쉬
       modalRef();                     // 모달 리프레쉬
       
       getModal();                     // 헤더 클릭 모달/총합 이벤트
-      getSum();                     // 총합
+      getSum();                       // 생산계획서용 탭 총합
+      getSum2();					  // 일반 탭 총합
       
       matListSelect();               // 자재목록 행 클릭 이벤트
       actListSelect();               // 업체목록 행 클릭 이벤트
@@ -225,17 +226,17 @@
       
       datePicker();                   // datePicker
       datePicker2();                  // datePicker2
-      resetBtnEvent();               // 검색 조건 초기화 버튼
+      resetBtnEvent();                // 검색 조건 초기화 버튼
    
-      insertOrder();                  // 탭1 행 추가(일반 탭)
+      insertOrder();                   // 탭1 행 추가(일반 탭)
       deleteOrderList();               // 탭1 행 삭제(일반 탭)
-      saveOrder();                  // 탭1 행 저장(일반 탭)
+      saveOrder();                     // 탭1 행 저장(일반 탭)
       
-      odSaveBtn();                   // 탭2 자재발주 그리드 저장 버튼
+      odSaveBtn();                     // 탭2 자재발주 그리드 저장 버튼
       resetTab2Btn();                  // 탭2 초기화 버튼
-      newPlanLookUpBtn();               // 탭2 신규 생산 계획서 리스트 날짜 조회 버튼
+      newPlanLookUpBtn();              // 탭2 신규 생산 계획서 리스트 날짜 조회 버튼
       
-      allCheckFn();                  // 필요자재 그리드 올 체크 이벤트
+      allCheckFn();                    // 필요자재 그리드 올 체크 이벤트
       
    /*------------------------------
    // 자재발주관리 전체 조회(일반 탭)
@@ -280,8 +281,7 @@
              header: '단가(원)',
              name: 'matOddMn',
             align: 'right',
-             sortable: true,
-           editor: 'text'
+             sortable: true
            },
            {
              header: '발주량',
@@ -386,7 +386,7 @@
                let radioBtn = document.getElementsByName('inlineRadioOptions');
                radioBtn.forEach((node) => {
                   if(node.checked) {
-                     odLookUp.filter('matInsts', [{code: 'contain', value: node.value}]);
+                     odLookUp.filter('matOdSts', [{code: 'contain', value: node.value}]);
                   }
                })
             },
@@ -403,7 +403,7 @@
    function getModal() {
       odLookUp.on('click',function(ev){
          // 자재 목록 선택 시 행으로 가져오기
-            if(ev.columnName =='mtrCd' || ev.columnName =='mtrNm'){
+            if(ev.columnName =='mtrCd' || ev.columnName =='mtrNm' || ev.columnName =='matOddMn'){
                $('#matModal').modal('show');
                needMatModal.refreshLayout();
                
@@ -681,6 +681,14 @@
                  filter: {
                    type: 'select'           
                    }
+            },
+            {
+               header: '단가',
+               name: 'mtrPrc',
+               sortable: true,
+                 filter: {
+                   type: 'select'           
+                   }
             }
          ]
       });
@@ -730,6 +738,8 @@
          
          odLookUp.setValue(val, 'mtrCd', data.mtrCd);
          odLookUp.setValue(val, 'mtrNm', data.mtrNm);
+         odLookUp.setValue(val, 'matOddMn', data.mtrPrc);
+         
          matModalClose.click();
       })
    }
@@ -929,9 +939,9 @@
        let rowData = [{matOdCd: "", mtrCd: "", 
                       mtrNm: "", matOddMn: "", matOddAmt: "", matSum : "" ,
                       actCd: "", actNm: "", matOdDd: "", matOddDate:""}]
-          rowData.matOdDd = today;
-            rowData.matInsts = 'N';
-          odLookUp.appendRow(rowData);
+            rowData.matOdDd = today;
+            rowData.matOdSts = 'N';
+          odLookUp.prependRow(rowData);
       })
    }
    
@@ -1114,6 +1124,26 @@
             if(rowData.matOddMn != null && rowData.matOddAmt != null){
                odMat.setValue(change.rowKey, 'matSum', (rowData.matOddMn * rowData.matOddAmt));
             }
+            }
+         });
+      
+    }
+   
+   /*------------------------------
+   // 일반 탭 총액 구하기
+   ----------------------------------*/
+   function getSum2() {
+	   odLookUp.on('afterChange',function(ev){
+         let change = ev.changes[0];
+         let rowData = odLookUp.getRow(change.rowKey);
+         
+         console.log(change.rowKey);
+         
+            // 단가 * 발주량 = 총합
+            if (change.columnName == 'matOddAmt' || change.columnName == 'matOddMn'){
+	            if(rowData.matOddMn != null && rowData.matOddAmt != null){
+	            	odLookUp.setValue(change.rowKey, 'matSum', (rowData.matOddMn * rowData.matOddAmt));
+	            }
             }
          });
       

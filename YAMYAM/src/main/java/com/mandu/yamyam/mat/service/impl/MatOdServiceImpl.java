@@ -253,8 +253,18 @@ public class MatOdServiceImpl implements MatOdService {
 		}
 		return result;
 	}
+
+	// 생산계획 update
+	@Override
+	public int updatePpSts(List<MatVO> list) {
+		int result = 0;
+		for(int i=0; i<list.size(); i++) {
+			result += mapper.updatePpSts(list.get(i));
+		}
+		return result;
+	}
 	
-	// update
+	// 검수상태 update
 	@Override
 	public int updateMatInsts(List<MatVO> list) {
 		int result = 0;
@@ -420,6 +430,5 @@ public class MatOdServiceImpl implements MatOdService {
 	public int mtrSfUpdate(MatVO vo) {
 		return mapper.mtrSfUpdate(vo);
 	}
-
 
 }

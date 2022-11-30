@@ -221,7 +221,15 @@ public class MatController {
 		return result;
 	}
 	
-	// update 
+	// 생산계획 구분 update 
+	@PostMapping("/updatePp")
+	@ResponseBody
+	public int updatePpSts(@RequestBody List<MatVO> list) {
+		int result = service.updatePpSts(list);
+		return result;
+	}
+	
+	// 검수상태 update 
 	@PostMapping("/updateInsts")
 	@ResponseBody
 	public int updateMatInsts(@RequestBody List<MatVO> list) {

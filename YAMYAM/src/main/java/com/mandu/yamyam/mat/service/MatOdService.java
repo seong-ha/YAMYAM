@@ -116,7 +116,10 @@ public interface MatOdService {
 	// insert
 	public int inManageSave(List<MatVO> list);
 	
-	// update
+	// 생산계획 update
+	public int updatePpSts(List<MatVO> list);
+	
+	// 검수상태 update
 	public int updateMatInsts(List<MatVO> list);
 	
 	// delete

@@ -489,7 +489,7 @@ select option[value=""][disabled] {
 				console.log(data);
  			    let rowData = {matOdCd: data.matOdCd, mtrCd: data.mtrCd, 
  			    				matOddAmt: data.matOddAmt, mtrNm: data.mtrNm, 
- 			    				paAmt: "", erAmt : "" , empNm: "", matChkDate: "",
+ 			    				paAmt: "", erAmt : "" , empNm: "", matChkDate: today,
  			    				erCd: "", erInfo:""};
 	 		    grid.appendRow(rowData);
 			})
@@ -777,8 +777,16 @@ select option[value=""][disabled] {
 					}
 		   		}
 				
+			 	if (change.columnName == 'erAmt'){
+			 		if(erAmt == 0) {
+			 			grid.setValue(change.rowKey, 'erCd', 'ERR-MNP-001');
+			 			grid.setValue(change.rowKey, 'erInfo', '불량 없음');
+			 		}
+			 	}
+				
 			})
 		}
+		
 		
 	</script>
 </div>
