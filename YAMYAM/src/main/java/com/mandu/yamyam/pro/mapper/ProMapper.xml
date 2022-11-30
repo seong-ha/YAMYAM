@@ -389,8 +389,8 @@
 	
 	<!-- 공정 실적 조회 -->
 	<select id="getResultList" resultType="com.mandu.yamyam.common.LowerKeyMap">
-	    SELECT DISTINCT d.pod_cd,find_emp_name(r.ppro_emp_id) as ppro_emp_nm,
-      				    r.ppro_cd, r.pre_date, r.eqp_cd, r.ppro_name,
+	    SELECT DISTINCT d.pod_cd,find_emp_name(r.ppro_emp_id) AS ppro_emp_nm,
+      				    r.ppro_cd, r.pre_date, r.eqp_cd,find_eqp_name(r.eqp_cd) AS eqp_nm,r.ppro_name,
        				    r.ppro_emp_id, r.ppro_in_amt, r.ppro_er_amt, r.ppro_ot_amt,
        					TO_CHAR(r.ppro_s_time, 'yyyy-MM-dd HH24:MM:SS') AS ppro_s_time,
        					TO_CHAR(r.ppro_e_time, 'yyyy-MM-dd HH24:MM:SS') AS ppro_e_time,

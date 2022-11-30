@@ -27,9 +27,10 @@
 	<div layout:fragment="content" class="container"> <!-- display:none; -->
 		<!-- <div><button type="button" style=" background-color : #963446; color:#fcf8e3; float: right" id="scheduleBtn" class="btn btn-dark btn-sm">공정이동표</button></div> -->
 		<h3>생산 관리</h3>
-		
+		<hr>
 	<div class="row">
 		<h4>진행생산지시</h4>
+		
 		<div id="pOrderGrid"></div>
 	</div>
 	<div class="row">
@@ -127,7 +128,8 @@ var header = $("meta[name='_csrf_header']").attr("content");
 				},
 				{
 					header: '라인코드',
-					name: 'plineCd'
+					name: 'plineCd',
+					align : 'center'
 				}
 			]
 		});
@@ -158,23 +160,32 @@ var header = $("meta[name='_csrf_header']").attr("content");
 			columns: [
 				{
 					header: '공정코드',
-					name: 'pproCd'
+					name: 'pproCd',
+					width : '140'
 				},
 				{
 					header: '공정명',
-					name: 'pproName'
+					name: 'pproName',
+					align : 'center',
+					width : '100'
 				},
 				{
 					header: '설비코드',
-					name: 'eqpCd'
+					name: 'eqpCd',
+					align : 'center',
+					width : '100'
 				},
 				{
 					header: '설비명',
-					name: 'eqpNm'
+					name: 'eqpNm',
+					align : 'center',
+					width : '120'
 				},
 				{
 					header: '담당자',
-					name: 'pproEmpNm'
+					name: 'pproEmpNm',
+					width : '100',
+					align : 'center'
 				},
 				{
 					header: '투입량',
@@ -207,7 +218,7 @@ var header = $("meta[name='_csrf_header']").attr("content");
 				{
 					header: '상태', // 설비상태
 					name: 'eqpSts',
-					width : '20'
+					width : '120'
 				},
 			]
 		});

@@ -13,6 +13,7 @@
 	<!-- 본문 시작 -->
 	<div layout:fragment="content" class="container">
 		<h3>공정 관리</h3>
+		<hr>
 		<div>
 			<table style="width: 100%;">
 				<tr>
@@ -130,18 +131,22 @@
 					          {text: '포장', value: 'EQP-TYPE5'},
 				          	  {text: '박스', value: 'EQP-TYPE6'}]
 					      }
-					}
+					},
+					align : 'center'
 				}, {
 					header : '공정명',
 					name : 'pproName',
-					editor : 'text'
+					editor : 'text',
+					align : 'center'
 				}, {
 					header : '설비명',
 					name : 'eqpNm',
-					editor : 'text'
+					editor : 'text',
+					align : 'center'
 				}, {
 					header : '설비코드',
-					name : 'eqpCd'
+					name : 'eqpCd',
+					align : 'center'
 				}, {
 					header : '모델명',
 					name : 'mdNm',
@@ -150,10 +155,12 @@
 					name : 'pproEmpId',
 					editor: {
 					      type: 'select',
-					      options: 'text' }
+					      options: 'text' },
+					align : 'center'
 			    }, {
 					header : '담당자명',
-					name : 'pproEmpNm'
+					name : 'pproEmpNm',
+					align : 'center'
 				}]
 			});
 			
