@@ -137,7 +137,8 @@
 			FIND_CODE_NAME(MTR_STD) MTR_STD,
 			FIND_CODE_NAME(MTR_UN) MTR_UN,
 			MTR_SFAMT,
-			FIND_CODE_NAME(MTR_STS) MTR_STS
+			FIND_CODE_NAME(MTR_STS) MTR_STS,
+			MTR_PRC
 	FROM C_MTR
 	
 </select>
@@ -162,6 +163,7 @@
 	       MTR_STD,
 	       MTR_UN,
 	       MTR_SFAMT,
+	       MTR_PRC,
 	       MTR_STS
 	FROM C_MTR
 	WHERE MTR_CD = #{mtrCd}
@@ -182,6 +184,7 @@
 	MTR_UN,
 	ACT_CD,
 	MTR_SFAMT,
+	MTR_PRC,
 	MTR_STS
 	)
 	VALUES
@@ -192,6 +195,7 @@
 	#{mtrUn},
 	#{actCd},
 	#{mtrSfamt},
+	#{mtrPrc},
 	#{mtrSts}
 	)
 
@@ -207,7 +211,8 @@
 	MTR_UN = #{mtrUn},
 	ACT_CD = #{actCd},
 	MTR_SFAMT = #{mtrSfamt},
-	MTR_STS = #{mtrSts}
+	MTR_STS = #{mtrSts},
+	MTR_PRC = #{mtrPrc}
 	WHERE MTR_CD = #{mtrCd}
 
 </update>
@@ -291,6 +296,7 @@ WHERE MTR_CD = #{mtrCd}
 		FIND_CODE_NAME(PRD_UN) AS PRD_UN,
 		PRD_SFAMT 
 	FROM C_PRD
+	ORDER BY PRD_CD
 	<where>
 	
 	<if test = "prdStd !=null and prdStd != ''">
