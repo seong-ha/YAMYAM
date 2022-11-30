@@ -94,12 +94,12 @@
 					<div class="modal-header">
 						<h5 class="modal-title" id="eqpToChkModalLabel">점검 대상 설비</h5>
 						<button type="button" class="btn-close" data-bs-dismiss="modal"
-							aria-label="Close"></button>
+							aria-label="Close" id="eqpToChkModalClose"></button>
 					</div>
 					<div class="modal-body">
 						<div>
 							남은 설비 점검일수
-							<input type="number" id="leftDays">
+							<input type="number" id="leftDays" value="0">
 							<button class="btn btn-dark btn-sm" id="findEqpToChk">조회</button>
 							<button class="btn btn-dark btn-sm" id="resetLeftDays">초기화</button>
 						</div>
@@ -107,7 +107,7 @@
 							<div id="eqpToChkModalGrid"></div>
 						</div>
 						<div align="center">
-							<button class="btn btn-dark btn-sm" data-bs-dismiss="modal" id="addEqpToChk">추가</button>
+							<button class="btn btn-dark btn-sm" id="addEqpToChk">추가</button>
 							<button class="btn btn-dark btn-sm" data-bs-dismiss="modal">취소</button>
 						</div>
 					</div>
@@ -153,7 +153,7 @@
 			
 			eqpToChkModalRefresh();								// 점검 대상 설비 모달 시 eqpToChkModalGrid refreshLayout
 			findEqpToChk();										// 점검 대상 설비 모달의 조회 버튼 이벤트(남은 점검일수만큼 뿌려주기)
-			resetLeftDays();									// 점검 대상 설비 모달의 조회취소 버튼 이벤트(input 지우고 일주일치로 초기화)
+			resetLeftDays();									// 점검 대상 설비 모달의 조회취소 버튼 이벤트(input 지우고 당일치로 초기화)
 			addEqpToChk();										// 점검 대상 설비 모달의 추가 버튼 이벤트(체크한 것을 eqpChkGrid에 행추가)			
 			
 			
@@ -185,10 +185,14 @@
 			
 				let eqpChkGrid = new tui.Grid({
 				      el: document.getElementById('eqpChkGrid'),
-				      bodyHeight: 500, // 스크롤
+				      bodyHeight: 480, // 스크롤
 				      rowHeaders: ['checkbox'],
 				      scrollX: false,
 				      scrollY: true,
+				      pageOptions: {
+				    	  useClient: true,
+				    	  perPage: 12
+				      },
 				      columns: [
 				        {
 				          header: '설비코드',
@@ -211,7 +215,10 @@
 				        {
 				          header: '점검주기(일수)',
 				          name: 'chkCycle',
-					      align: 'right'
+					      align: 'right',
+					      validation: {
+					          dataType: 'number'
+					      }
 				        },
 				        {
 				          header: '점검일자',
@@ -262,7 +269,10 @@
 				        {
 				          header: '점검담당자번호',
 				          name: 'chkEmp',
-					      align: 'center'
+					      align: 'center',
+					      validation: {
+					          dataType: 'number'
+					      }
 				        },
 				        {
 				          header: '점검담당자명',
@@ -286,9 +296,9 @@
 				설비점검 그리드의 점검일자 값이 입력되면 차기점검일자가 자동으로 입력됨.
 				----------------*/
 				eqpChkGrid.on('afterChange', function(ev) {
-					let change = ev.changes[0];
-					let rowData = eqpChkGrid.getRow(change.rowKey);
-					eqpChkGrid.check(change.rowKey);
+					let change = ev.changes[0];						// change 발생한 row정보
+					let rowData = eqpChkGrid.getRow(change.rowKey); // change 발생한 eqpChkGrid row정보
+					eqpChkGrid.check(change.rowKey);				// change 발생한 row check해주기
 					
 					if (change.columnName == 'chkDate' && change.value != '') {
 						/* day.js 날짜 연산에 편함.					
@@ -324,7 +334,8 @@
 						{
 				          header: '설비코드',
 				          name: 'eqpCd',
-				          align: 'center'
+				          align: 'center',
+				          type: 'hidden'
 				        },
 				        {
 				          header: '설비명',
@@ -349,7 +360,10 @@
 				        {
 				          header: '점검주기',
 				          name: 'chkCycle',
-				          align: 'right'
+				          align: 'right',
+					      validation: {
+					          dataType: 'number'
+					      }
 				        }
 			        ] 
 				});
@@ -374,7 +388,10 @@
 						{
 				          header: '점검담당자번호',
 				          name: 'chkEmp',
-				          align: 'center'
+				          align: 'center',
+					      validation: {
+					          dataType: 'number'
+					      }
 				        },
 				        {
 				          header: '점검담당자명',
@@ -471,7 +488,7 @@
 					
 					// 미 입력시 0으로 입력
 					if (days == '') {
-						days = -100;
+						days = 0;
 					}
 					
 					eqpToChkModalGridData(days);
@@ -481,12 +498,12 @@
 			
 			
 			/* ---------------
-			점검 대상 설비 모달의 취소 버튼 이벤트(input 지우고 일주일치로 초기화)
+			점검 대상 설비 모달의 취소 버튼 이벤트(input 지우고 당일로 초기화)
 			--------------- */
 			function resetLeftDays() {
 				document.getElementById('resetLeftDays').addEventListener('click', function () {
 					document.getElementById('leftDays').value = '';
-					eqpToChkModalGridData(-100);
+					eqpToChkModalGridData(0);
 				})
 			}
 			
@@ -501,6 +518,11 @@
 				document.getElementById('addEqpToChk').addEventListener('click', function () {
 					let rowData = eqpToChkModalGrid.getCheckedRows();
 					
+					if (rowData.length == 0) {
+						toastr.warning('점검 대상 설비를 선택해주세요.');
+						return;
+					}
+					
 					for (let i = 0; i < rowData.length; i++) {
 						rowData[i].chkDate = '';
 						rowData[i].nextChkDate = '';
@@ -509,6 +531,7 @@
 					eqpChkGrid.clear();
 					
 					eqpChkGrid.appendRows(rowData);
+					document.getElementById('eqpToChkModalClose').click();
 				})
 			}
 			
