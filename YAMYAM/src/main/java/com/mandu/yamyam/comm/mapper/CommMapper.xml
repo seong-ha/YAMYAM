@@ -294,19 +294,19 @@ WHERE MTR_CD = #{mtrCd}
 	<where>
 	
 	<if test = "prdStd !=null and prdStd != ''">
-	prd_std = #{prdStd}
+		prd_std = #{prdStd}
 	</if>	
 
 	<if test = "prdUn !=null and prdUn != ''">
-	prd_un = #{prdUn}
+		AND prd_un = #{prdUn}
 	</if>
 	
 	<if test = "prdCd !=null and prdCd != ''">
-	prd_cd like '%' || Upper(#{prdCd}) || '%'
+		AND prd_cd like '%' || Upper(#{prdCd}) || '%'
 	</if>
 	
 	<if test = "prdNm !=null and prdNm != ''">
-	prd_nm like '%' || #{prdNm} || '%'
+		AND prd_nm like '%' || #{prdNm} || '%'
 	</if>	
 	
 	</where> 

@@ -14,43 +14,29 @@
 	<h3>완제품 코드 관리</h3>
 	<hr>
 	
-	<br>
-	<form id="frm">
+	<form id="frm" style="margin-top: 30px">
 	    <!-- <input type = "hidden" name="prdStd" id="standard">
 	    <input type = "hidden" name="prdUn" id="unit"> -->
-		<table>
-			<tr>
-				<td>
-					<ul class="ul-style">
-					<li><label for="matCode" style="width:130px">제품 코드</label><input id="prdCode" name="prdCd">
-					&nbsp;&nbsp;&nbsp;
-					<label for="matCode">제품명</label><input id="prdName" name="prdNm">
-					</li>
-					</ul>
-				</td>
-			</tr>
-			
-			<tr>
-				<td>
-					<ul class="ul-style">
-						<li class="d-flex">
-							<input type="hidden" name="prdStd"  id="prdStatus">
-							<label style="width:110px">규격</label>&nbsp;&nbsp;&nbsp;
-							<div style="width: 190px;" id="select-box"></div>
-							
-							<input type="hidden" name="prdUn" id="prdUnit">
-							<label style="width:100px">
-							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;단위</label>&nbsp;&nbsp;&nbsp;&nbsp;
-							<div style="width: 190px;" id="select-box2"></div>&nbsp;
-							
-							<button type ="button" class="btn btn-dark btn-sm" onclick="selectBoxPrd()">조회</button>&nbsp;
-							<input type="reset" class="btn btn-dark btn-sm" id="reset" name="reset" onclick="resetf()">
-					  	</li>
-				    </ul>
-				    
-				</td>
-			</tr>
-		</table>
+		<ul class="ul-style">
+			<li>
+				<label for="matCode" style="width:130px">제품 코드</label>
+				<input id="prdCode" name="prdCd">&nbsp;&nbsp;&nbsp;
+				<label for="matCode">제품명</label>
+				<input id="prdName" name="prdNm">
+			</li>
+			<li class="d-flex">
+				<input type="hidden" name="prdStd"  id="prdStatus">
+				<label style="width:130px">규격</label>
+				<div style="width: 190px;" id="select-box"></div>
+				
+				<input type="hidden" name="prdUn" id="prdUnit">
+				<label style="width:125px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;단위</label>
+				<div style="width: 190px;" id="select-box2"></div>&nbsp;
+				
+				<button type ="button" class="btn btn-dark btn-sm" onclick="selectBoxPrd()">조회</button>&nbsp;
+				<input type="reset" class="btn btn-dark btn-sm" id="reset" name="reset" onclick="resetf()">
+		  	</li>
+	    </ul>
 	</form>
 	
 	<div id="grid"></div>
@@ -237,39 +223,68 @@
 		var selectBox3 = new tui.SelectBox('#select-box3', {
 			placeholder : '규격',
 			data : [ {
+				label : '1kg',
+				value : 'STD1' // 코드 바꾸기
+			}, {
+				label : '2kg',
+				value : 'STD2'
+			},
+			{
+				label : '3kg',
+				value : 'STD3' // 코드 바꾸기
+			}, {
+				label : '4kg',
+				value : 'STD4'
+			},
+			{
+				label : '5kg',
+				value : 'STD5' // 코드 바꾸기
+			}, {
+				label : '6kg',
+				value : 'STD6'
+			},
+			{
+				label : '7kg',
+				value : 'STD7' // 코드 바꾸기
+			}, {
+				label : '8kg',
+				value : 'STD8'
+			}, {
+				label : '9kg',
+				value : 'STD9' // 코드 바꾸기
+			}, {
 				label : '10kg',
-				value : 'STD10' // 코드 바꾸기
+				value : 'STD10'
+			}, {
+				label : '11kg',
+				value : 'STD11' // 코드 바꾸기
+			}, {
+				label : '12kg',
+				value : 'STD12'
+			}, {
+				label : '13kg',
+				value : 'STD13' // 코드 바꾸기
+			}, {
+				label : '14kg',
+				value : 'STD14'
+			}, {
+				label : '15kg',
+				value : 'STD15' // 코드 바꾸기
+			}, {
+				label : '16kg',
+				value : 'STD16'
+			}, {
+				label : '17kg',
+				value : 'STD17' // 코드 바꾸기
+			}, {
+				label : '18kg',
+				value : 'STD18'
+			}, {
+				label : '19kg',
+				value : 'STD19' // 코드 바꾸기
 			}, {
 				label : '20kg',
 				value : 'STD20'
-			},
-			{
-				label : '30kg',
-				value : 'STD30' // 코드 바꾸기
-			}, {
-				label : '40kg',
-				value : 'STD40'
-			},
-			{
-				label : '50kg',
-				value : 'STD50' // 코드 바꾸기
-			}, {
-				label : '60kg',
-				value : 'STD60'
-			},
-			{
-				label : '70kg',
-				value : 'STD70' // 코드 바꾸기
-			}, {
-				label : '80kg',
-				value : 'STD80'
-			},
-			{
-				label : '90kg',
-				value : 'STD90' // 코드 바꾸기
-			}, {
-				label : '100kg',
-				value : 'STD100'
 			}],
 			autofocus : true
 		});	
