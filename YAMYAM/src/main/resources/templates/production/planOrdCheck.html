@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+	<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
 	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
 	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
@@ -249,8 +249,11 @@
 					{
 						header: '상세계획코드',
 						name: 'pplndCd'
-					},
-					{
+					},{
+						header: '계획등록일',
+						name: 'pplnDate',
+						align : 'right'
+					},{
 						header: '생산일수',
 						name: 'pplndDays',
 						align: 'right'
@@ -264,7 +267,7 @@
 			});
 			return planDGrid;
 		}
-
+		planDGrid.hideColumn('pplnDate');
 		
 		
 		/*------------
@@ -509,9 +512,10 @@
 					let prdNm  = grid.getRow(ev.rowKey).prdNm;
 					let pplndAmt = grid.getRow(ev.rowKey).pplndAmt;
 					let pplndDays = grid.getRow(ev.rowKey).pplndDays;
+					let pplnDate = grid.getRow(ev.rowKey).pplnDate;
 					let prdCd = grid.getRow(ev.rowKey).prdCd;
 					let pplndCd = grid.getRow(ev.rowKey).pplndCd;
-					let resetData = [{pplnCd: pplnCd, pplndDays:pplndDays, prdNm: prdNm, pplndAmt: pplndAmt,poddAmt: '',restAmt: '',pplndCd:pplndCd,prdCd:prdCd}];
+					let resetData = [{pplnDate:pplnDate,pplnCd: pplnCd, pplndDays:pplndDays, prdNm: prdNm, pplndAmt: pplndAmt,poddAmt: '',restAmt: '',pplndCd:pplndCd,prdCd:prdCd}];
 					planDGrid.resetData(resetData);
 					planOrder.clear();
 				});
@@ -558,12 +562,12 @@
 			
 
 			/*------------
-			// 계획 관리 그리드에서의 수정
+			// 계획 관리 그리드 클릭이벤트
 			----------------*/	
 			function planDGridChangeHandler(){
 				planDGrid.on('click', function(ev) {
 				 let poddAmt = planDGrid.getRow(ev.rowKey).pplndAmt;
-				 
+				 let pplnDate = planDGrid.getRow(ev.rowKey).pplnDate;
 				 let pplndCd = planDGrid.getRow(ev.rowKey).pplndCd;
 				 let pplndDays = planDGrid.getRow(ev.rowKey).pplndDays;
 				 let prdCd = planDGrid.getRow(ev.rowKey).prdCd;
@@ -572,7 +576,23 @@
 						method: "GET",
 						data : {"prdCd":prdCd,"pplndDays":pplndDays}
 					}).then(res=>{
-						planOrder.resetData(res);
+						let num = planDGrid.getValue(0,'pplndDays');
+						
+						let date =  new Date(pplnDate);
+						console.log(date)
+						let orderD = new Date(date.setDate(date.getDate()+3));
+						let orD = '';
+						
+						
+						for(let i=0; i<num; i++){
+							orderD = new Date(date.setDate(date.getDate()+i));
+							orD = getDateStr(orderD);
+							planOrder.appendRow();
+							planOrder.setValue(i,'plineCd',res[0].plineCd);
+							planOrder.setValue(i,'poddDates',orD);
+						}
+						
+						
 					})
 					
 					planOrder.refreshLayout();
@@ -581,6 +601,15 @@
 					
 				});
 			}
+			
+			
+			function getDateStr(n) {	
+				let today = n; 
+				today = today.getFullYear() +"-" + ("00"+ (today.getMonth()+1)).slice(-2) +"-" + ("00"+ today.getDate()).slice(-2)
+				return today;
+			}
+			
+			
 			/*------------
 			// 생산 지시 버튼 이벤트 핸들러 
 			----------------*/	

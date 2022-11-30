@@ -178,7 +178,6 @@
 		  JOIN p_line l
 		    ON p.prd_cd = l.prd_cd 
 		 WHERE p.PRD_CD = #{prdCd} 
-		 AND ROWNUM &lt;= #{pplndDays}
 	</select>
 	
 	
