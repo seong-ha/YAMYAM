@@ -195,6 +195,9 @@ public interface MatOdMapper {
 	//===============================================
 	// 10) 안전 재고 관리
 	//===============================================
+	// 전체 조회
+	public List<Map<String, Object>> selectSamt();
+	
 	// 안전 재고 관리
 	public int mtrSfUpdate(MatVO vo);
 }

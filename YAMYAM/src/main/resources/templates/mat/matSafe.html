@@ -11,7 +11,7 @@
 	<hr>
 
 	<div class="row">
-		<div class="col-5">
+		<div class="col-6">
 			<h3>자재 목록</h3>
 			<div id="grid"></div>
 			<!-- 안전 재고 수정  -->
@@ -19,9 +19,9 @@
 				<button class="btn btn-dark btn-sm" id="saveBtn">안전재고 수정</button>
 			</div>
 		</div>
-		<div class="col-1"></div>
+
 		<div class="col-6">
-			<h3 id="holdTitle">홀딩 수량</h3>
+			<h3 id="holdTitle">안전재고 정보</h3>
 			<div id="grid2"></div>
 		</div>
 	</div>
@@ -76,6 +76,7 @@
 	let grid2 = safeList();				// 홀딩 수량 조회 그리드
 	
 	saveBtnFn();						// 저장 버튼 이벤트
+	chkRowFn();							// 체크 이벤트
 
 	/*------------------------------
 	// 자재목록 그리드
@@ -133,7 +134,6 @@
 			grid.on('click', function(ev){
 				let data = grid.getRow(ev.rowKey);
 				let result = 0;
-				console.log(data)
 				
 				for(let i=0; i<[[${holdAmt}]].length; i++){
 					if(data.mtrCd == [[${holdAmt}]][i].mtrCd) {
@@ -158,7 +158,7 @@
 				let holdData = [{amt: result, holdP: data2, safeP: data3, safeG: data4}];
 				grid2.resetData(holdData);
 				
-				document.getElementById('holdTitle').innerText = data.mtrNm + "의 홀딩수량"
+				document.getElementById('holdTitle').innerText = data.mtrNm + "의 안전재고 정보"
 			})
 		
 		 return grid;
@@ -231,49 +231,78 @@
 	}
 	
 	/*------------------------------
-	// 저장 버튼 이벤트
+	// 수정 버튼 이벤트
 	--------------------------------*/
 	function saveBtnFn(){
 		document.getElementById('saveBtn').addEventListener('click', function(){
 			let data = grid.getCheckedRows();
-			console.log(data)
 			
-			Swal.fire({
-				      title: '저장 하시겠습니까?',
-				      icon: 'warning',
-				      showCancelButton: true,
-				      confirmButtonColor: '#3085d6',
-				      cancelButtonColor: '#d33',
-				      confirmButtonText: '승인',
-				      cancelButtonText: '취소',
-				      
-				    }).then((result) => {
-						$.ajax({
-							url: '/matSafe',
-							method: 'POST',
-							contentType: 'application/JSON',
-							dataType: 'JSON',
-							data: JSON.stringify(data[0]),
-							beforeSend : function (xhr) {
-							    xhr.setRequestHeader(header, token);
-							},
-							success: function(result){
-								Swal.fire({
-									icon: 'success',
-									title :'안전재고 수정 완료!'});
-								console.log(result)
-								setTimeout(() => location.reload(),500);
-							},
-							error: function(reject){
-								Swal.fire({
-									icon: 'error',
-									title :'수정 실패!'});
-								console.log(reject)
+			if(data.length > 0){
+				Swal.fire({
+					      title: '수정 하시겠습니까?',
+					      icon: 'warning',
+					      showCancelButton: true,
+					      confirmButtonColor: '#3085d6',
+					      cancelButtonColor: '#d33',
+					      confirmButtonText: '승인',
+					      cancelButtonText: '취소',
+					      
+					    }).then((result) => {
+					    	if (result.isConfirmed) {
+								$.ajax({
+									url: '/matSafe',
+									method: 'POST',
+									contentType: 'application/JSON',
+									dataType: 'JSON',
+									data: JSON.stringify(data[0]),
+									beforeSend : function (xhr) {
+									    xhr.setRequestHeader(header, token);
+									},
+									success: function(result){
+										Swal.fire({
+											icon: 'success',
+											title :'안전재고 수정 완료!'});
+										setTimeout(() => location.reload(),500);
+									},
+									error: function(reject){
+										Swal.fire({
+											icon: 'error',
+											title :'수정 실패!'});
+										console.log(reject)
+								}
+							})
 						}
 					})
-				})
+				} else {
+					Swal.fire({
+						icon: 'error',
+						title :'체크된 행이 없습니다!'});
+				}
 			})
 		}
 
+	/*------------------------------
+	// 체크 시 다른 체크박스 막기
+	--------------------------------*/
+	function chkRowFn(){
+		grid.on('check', function(ev){
+			let gridData = grid.getData();
+			let idx = grid.getRow(ev.rowKey).rowKey;
+			
+			for(let i=0; i<gridData.length; i++){
+				if(i != idx){
+					grid.disableRow(i,true);
+				}
+			}
+			
+		})
+		// 언체크시 풀기
+		grid.on('uncheck', function(ev){
+			grid.enable();
+			
+		})
+	}
+	
+	
 	</script>
 </div>

@@ -393,6 +393,12 @@ public class MatOdServiceImpl implements MatOdService {
 	public List<Map<String, Object>> mtrReturnAllList() {
 		return mapper.mtrReturnAllList();
 	}
+	
+	// 15개 자재만 전체조회
+	@Override
+	public List<Map<String, Object>> mtrSamtList() {
+		return mapper.selectSamt();
+	}
 
 	// 조건조회
 	@Override
@@ -404,5 +410,6 @@ public class MatOdServiceImpl implements MatOdService {
 	public int mtrSfUpdate(MatVO vo) {
 		return mapper.mtrSfUpdate(vo);
 	}
+
 
 }

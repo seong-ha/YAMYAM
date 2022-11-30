@@ -239,7 +239,6 @@
 											<li><a href="/matOut">자재 출고 관리</a></li>
 										</th:block>
 										<li><a href="/matInOut">자재 입출고 조회</a></li>
-										<li><a href="/matStockLookup">자재 재고 조회</a></li>
 										<th:block
 											sec:authorize="hasAnyAuthority('JOB-GRD1', 'JOB-GRD2')">
 											<li><a href="/matReturn">자재 반품 관리</a></li>
@@ -247,8 +246,9 @@
 										<li><a href="/matReturnLookup">자재 반품 조회</a></li>
 										<th:block
 											sec:authorize="hasAnyAuthority('JOB-GRD1', 'JOB-GRD2')">
-											<li><a href="/matSafe">안전 재고 관리</a></li>
+											<li><a href="/matSafe">자재 재고 관리</a></li>
 										</th:block>
+										<li><a href="/matStockLookup">LOT별 재고 조회</a></li>
 									</ul>
 								</div>
 							</div>
