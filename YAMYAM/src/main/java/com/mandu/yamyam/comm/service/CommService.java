@@ -74,6 +74,8 @@ public interface CommService {
 	public List<MtrVO> ajaxSelectMtrInfoModalBOM();
 	// ajax BOM 등록하기
 	public int ajaxInsertBOM(List<BOMVO> bomVO);
+	// ajax BOM 수정하기
+	public int ajaxUpdateBOM(List<BOMVO> bomVO);
 	// ajax BOM 삭제하기
 	public int ajaxDeleteBOM(List<BOMVO> bomVO);
 }

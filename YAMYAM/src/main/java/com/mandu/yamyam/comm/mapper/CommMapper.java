@@ -80,6 +80,8 @@ public interface CommMapper {
 	public List<MtrVO> ajaxSelectMtrInfoModalBOM();
 	// ajax BOM 등록하기
 	public int ajaxInsertBOM(BOMVO bomVO);
+	// ajax BOM 수정하기
+	public int ajaxUpdateBOM(BOMVO bomVO);
 	// ajax BOM 삭제하기
 	public int ajaxDeleteBOM(BOMVO bomVO);
 }
