@@ -1,6 +1,7 @@
 package com.mandu.yamyam.comm.web;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -21,6 +22,7 @@ import com.mandu.yamyam.comm.service.EmpService;
 import com.mandu.yamyam.comm.service.EmpVO;
 import com.mandu.yamyam.comm.service.MtrVO;
 import com.mandu.yamyam.comm.service.PrdVO;
+import com.mandu.yamyam.common.GridData;
 import com.mandu.yamyam.pro.service.ProVO;
 
 
@@ -124,28 +126,37 @@ public class EmpController {
 		return commService.ajaxFindCommd(commdVO);
 	}
 	
-	// ajax 상세 공통 코드 등록
-	@PostMapping("ajax/insertCommd")
+	// ajax 상세 공통 코드(등록, 수정, 삭제)
+	@PostMapping("ajax/modifiedCommd")
 	@ResponseBody
-	public int ajaxInsertCommd(@RequestBody List<CommdVO> commdVO) {
-		int result = commService.ajaxInsertDetailComm(commdVO);
-		return result;
+	public Map<String, Object> ajaxModifiedCommd(@RequestBody GridData<CommdVO> gridData) {
+		return commService.ajaxModifiedCommd(gridData);
 	}
 	
-	// ajax 상세 공통 코드 수정
-	@PostMapping("ajax/updateCommd")
-	@ResponseBody
-	public int ajaxUpdateCommd(@RequestBody List<CommdVO> commdVO) {
-		return commService.ajaxUpdateCommd(commdVO);
-	}
 	
-	// ajax 상세 공통 코드 삭제
-	@PostMapping("ajax/delCommd")
-	@ResponseBody
-	public int ajaxDeleteCommd(@RequestBody List<CommdVO> commdVO){
-		
-		return commService.ajaxDeleteDetailComm(commdVO);
-	}
+	/*
+	 * // ajax 상세 공통 코드 등록
+	 * 
+	 * @PostMapping("ajax/insertCommd")
+	 * 
+	 * @ResponseBody public int ajaxInsertCommd(@RequestBody List<CommdVO> commdVO)
+	 * { int result = commService.ajaxInsertDetailComm(commdVO); return result; }
+	 * 
+	 * // ajax 상세 공통 코드 수정
+	 * 
+	 * @PostMapping("ajax/updateCommd")
+	 * 
+	 * @ResponseBody public int ajaxUpdateCommd(@RequestBody List<CommdVO> commdVO)
+	 * { return commService.ajaxUpdateCommd(commdVO); }
+	 * 
+	 * // ajax 상세 공통 코드 삭제
+	 * 
+	 * @PostMapping("ajax/delCommd")
+	 * 
+	 * @ResponseBody public int ajaxDeleteCommd(@RequestBody List<CommdVO> commdVO){
+	 * 
+	 * return commService.ajaxDeleteDetailComm(commdVO); }
+	 */
 	
 	// ajax 공통 코드 등록
 	@PostMapping("ajax/insertComm")

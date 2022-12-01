@@ -1,6 +1,8 @@
 package com.mandu.yamyam.comm.service.impl;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,6 +15,7 @@ import com.mandu.yamyam.comm.service.CommVO;
 import com.mandu.yamyam.comm.service.CommdVO;
 import com.mandu.yamyam.comm.service.MtrVO;
 import com.mandu.yamyam.comm.service.PrdVO;
+import com.mandu.yamyam.common.GridData;
 import com.mandu.yamyam.pro.service.ProVO;
 
 @Service
@@ -38,6 +41,38 @@ public class CommServiceImpl implements CommService {
 	@Override
 	public CommdVO ajaxFindCommd(CommdVO commdVO) {
 		return commMapper.ajaxFindCommd(commdVO);
+	}
+	
+	@Override
+	public Map<String, Object> ajaxModifiedCommd(GridData<CommdVO> gridData) {
+		// modified된 정보별로 담기
+		List<CommdVO> update = gridData.getUpdatedRows();
+		List<CommdVO> create = gridData.getCreatedRows();
+		List<CommdVO> delete = gridData.getDeletedRows();
+		
+		// modified별 시행 건수
+		int uCount = 0;
+		int cCount = 0;
+		int dCount = 0;
+		
+		for (int i = 0; i < update.size(); i ++) {
+			uCount += commMapper.ajaxUpdateCommd(update.get(i));
+		}
+		
+		for (int i = 0; i < create.size(); i ++) {
+			cCount += commMapper.ajaxInsertDetailComm(create.get(i));
+		}
+		
+		for (int i = 0; i < delete.size(); i ++) {
+			dCount += commMapper.ajaxDeleteDetailComm(delete.get(i));
+		}
+		
+		Map<String, Object> map = new HashMap<>();
+		map.put("update", uCount);
+		map.put("create", cCount);
+		map.put("delete", dCount);
+		
+		return map;
 	}
 	
 	// ajax 상세 공통 코드 등록
@@ -250,7 +285,5 @@ public class CommServiceImpl implements CommService {
 		}
 		return result;
 	}
-	
-
 
 }

@@ -368,7 +368,6 @@
 				dataType: "json",
 				data : $('#frm').serialize(),
 				success : function(data){
-					console.log(data);
 					grid.resetData(data);
 				},
 				error : function(reject){
@@ -392,7 +391,6 @@
 						}
 					
 					// ajax 구매 거래처 등록
-					console.log("데이터 가져왔니?");
 					$.ajax({
 						url : "ajax/insertPrd",
 						type : "post",
@@ -456,25 +454,25 @@
 			
 		// bind 'change' event
 		selectBox.on('change', ev => {
-		  console.log(` ${ev.curr.getLabel()}    ${ev.curr.getValue()}`);
+		// console.log(` ${ev.curr.getLabel()}    ${ev.curr.getValue()}`);
 		  $('#prdStatus').val(ev.curr.getValue());
 		});
 		
 		
 		selectBox2.on('change', ev => {
-			  console.log(` ${ev.curr.getLabel()}    ${ev.curr.getValue()}`);
+	    // console.log(` ${ev.curr.getLabel()}    ${ev.curr.getValue()}`);
 			  $('#prdUnit').val(ev.curr.getValue());
 			});
 		
 		
 		selectBox3.on('change', ev => {
-			  console.log(` ${ev.curr.getLabel()}    ${ev.curr.getValue()}`);
+	    // console.log(` ${ev.curr.getLabel()}    ${ev.curr.getValue()}`);
 			  $('#prdStandardModal').val(ev.curr.getValue());
 			});
 		
 		
 		selectBox4.on('change', ev => {
-			  console.log(` ${ev.curr.getLabel()}    ${ev.curr.getValue()}`);
+	    // console.log(` ${ev.curr.getLabel()}    ${ev.curr.getValue()}`);
 			  $('#prdUnitModal').val(ev.curr.getValue());
 			});
 		

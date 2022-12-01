@@ -44,8 +44,7 @@
 						<button type="button" class="btn btn-dark btn-sm" id="addCode">행 추가</button>
 						<button type="button" class="btn btn-dark btn-sm" id="deleteRow" style="margin-right:10px">행 삭제</button>
 						<button type="button" class="btn btn-dark btn-sm" id="saveCode">저장</button>
-						<button type="button" class="btn btn-dark btn-sm" id="updateCode">수정</button>
-						<button type="button" class="btn btn-dark btn-sm" id="deleteCode">삭제</button>
+					
 					</div>
 
 
@@ -375,97 +374,78 @@
 		
 		document.getElementById('saveCode').addEventListener('click', function(){
 			grid2.blur();
-			let rowsData = grid2.getCheckedRows();
+			let rowDatas = grid2.getData();
+			console.log(rowDatas);
 			
-			// 유효성 체크 1. 저장할 행 체크했는지 확인
-			if (rowsData.length == 0) {
-				toastr.warning('저장할 행을 체크해주세요.');
+			// 유효성 체크 1. 공통코드를 선택했는지 유무 체크
+			if (selectedComm == null || selectedComm == '') {
+				toastr.warning('공통코드를 선택 후 상세공통코드를 추가해주세요.');
 				return;
 			}
 			
-			let insertList = [];	// 등록할 상세코드 객체를 담는 배열
-			
-			// 유효성 체크 2. DB 상세 공통 코드 중복 체크
-			for (let i = 0; i < rowsData.length; i++) {
-				let duplChk = 'N';
-				
-				$.ajax({
-					url : "ajax/findCommd",
-					type : "post",
-					data: {'commdCd' : rowsData[i].commdCd},
-					async: false,
-					beforeSend : function (xhr) {
-					    xhr.setRequestHeader(header, token);
-					},
-					success : function(data){
-						if (data != null && rowsData[i].commdCd == data.commdCd) {
-							toastr.warning('\'' + rowsData[i].commdCd + '\'' + '는 이미 존재하는 상세 공통 코드입니다.');
-							duplChk = 'Y';
-						}
-					},
-					error : function(reject){
-						console.log(reject);
-					}
-				});
-				
-				if (duplChk == 'Y') {
-					return;
-				}
-			}
-			
-			// 유효성 체크 3,4. 입력한 상세코드들 간의 중복 체크/모든 값 입력 유무 체크 
-			let chkDuplicate = '';	// 체크한 row들의 상세공통코드 중복 체크
-			for (let i = 0; i < rowsData.length; i++) {
-				if (i == 0) {
-					chkDuplicate = rowsData[i].commdCd;
-				} else {
-					if (rowsData[i].commdCd == chkDuplicate) {
-						toastr.warning('입력한 상세공통코드들에 중복이 존재합니다.');
-						insertList = [];	// 배열 초기화.
+			// 유효성 체크 2. 값 입력 유무 체크
+			for (let i = 0; i < rowDatas.length; i++) {
+				for (let prop in rowDatas[i]) {
+					if (rowDatas[i][prop] == null || rowDatas[i][prop].length == 0) {
+						toastr.warning('값을 모두 입력해주세요.');
 						return;
 					}
 				}
-				
-				if (rowsData[i].commdCd == null ||  rowsData[i].commdCd == '' ||
-						rowsData[i].commdNm == null || rowsData[i].commdNm == '' ||
-						rowsData[i].commdInfo == null || rowsData[i].commdInfo == '' ||
-						rowsData[i].commdUse == null || rowsData[i].commdUse == '') {
-					toastr.warning('값을 모두 입력해주세요.');
-					return;
-				}
-				
-				// 유효성 체크 5. 공통코드를 선택했는지 유무 체크
-				if (selectedComm == null || selectedComm == '') {
-					toastr.warning('공통코드를 선택 후 상세공통코드를 추가해주세요.');
-					return;
-				}
-				
-				
-				let insertObject = {
-						commdCd : rowsData[i].commdCd,
-						commCd : selectedComm,
-						commdNm : rowsData[i].commdNm,
-						commdInfo : rowsData[i].commdInfo,
-						commdUse : rowsData[i].commdUse	
-				};
-				
-				insertList.push(insertObject);
 			}
+			
+			// 유효성 체크 3. 상세공통코드 중복 체크
+			for(let i = 0; i < rowDatas.length; i++){
+				for(let j = i + 1; j < rowDatas.length; j++){
+					if (rowDatas[i].commdCd == rowDatas[j].commdCd) {
+						toastr.warning('중복된 상세공통코드 입니다.');
+						return; 
+					}
+				}
+			}
+			
+			let gridData = grid2.getModifiedRows();
+			
+			let cRows = gridData.createdRows;
+			let uRows = gridData.updatedRows;
+			let dRows = gridData.deletedRows;
+			
+			for (let i = 0; i < cRows.length; i++) {
+				cRows[i].commCd = selectedComm;
+			}
+			
+			for (let i = 0; i < uRows.length; i++) {
+				uRows[i].commCd = selectedComm;
+			}
+			
+			for (let i = 0; i < dRows.length; i++) {
+				dRows[i].commCd = selectedComm;
+			}
+			
+			console.log(gridData);
 			
 			sweetConfirm('C', function () {
 			
 				$.ajax({
-					url : "ajax/insertCommd",
+					url : "ajax/modifiedCommd",
 					type : "post",
 					contentType: "application/json",
-					data: JSON.stringify(insertList),
+					data: JSON.stringify(gridData),
 					beforeSend : function (xhr) {
 					    xhr.setRequestHeader(header, token);
 					},
 					success : function(data){
-						if (data > 0) {
-							toastr.success('정상적으로 등록되었습니다.');
-							grid2.uncheckAll();
+						if (data != null) {
+							if (data.create != 0) {
+								toastr.success('정상적으로 ' + data.create + '건이 저장되었습니다.');
+							}
+							
+							if (data.update != 0) {
+								toastr.success('정상적으로 ' + data.update + '건이 수정되었습니다.');
+							}
+							
+							if (data.delete != 0) {
+								toastr.success('정상적으로 ' + data.delete + '건이 삭제되었습니다.');
+							}
 						} else {
 							toastr.error('등록에 실패했습니다.');
 						}
@@ -478,152 +458,6 @@
 			})
 		})
 
-		
-		
-		// 상세 공통 코드 수정
-		document.getElementById('updateCode').addEventListener('click', function () {
-			let rowsData = grid2.getCheckedRows();
-			
-			// 유효성 체크 1. 저장할 행 체크했는지 확인
-			if (rowsData.length == 0) {
-				toastr.warning('저장할 행을 체크해주세요.');
-				return;
-			}
-			
-			let updateList = [];	// 수정할 상세코드 객체를 담는 배열
-			
-			// 유효성 체크 2. 수정할 상세 공통 코드가 DB에 존재하는 지 체크
-			for (let i = 0; i < rowsData.length; i++) {
-				let duplChk = 'N';
-				
-				$.ajax({
-					url : "ajax/findCommd",
-					type : "post",
-					data: {'commdCd' : rowsData[i].commdCd},
-					async: false,
-					beforeSend : function (xhr) {
-					    xhr.setRequestHeader(header, token);
-					},
-					success : function(data){
-						if (data == null && rowsData[i].commdCd != data.commdCd) {
-							toastr.warning('\'' + rowsData[i].commdCd + '\'' + '는 존재하지 않는 상세 공통 코드입니다.');
-							duplChk = 'Y';
-						}
-					},
-					error : function(reject){
-						console.log(reject);
-					}
-				});
-				
-				if (duplChk == 'Y') {
-					return;
-				}
-			}
-			
-			// 유효성 체크 3,4. 입력한 상세코드들 간의 중복 체크/모든 값 입력 유무 체크 
-			let chkDuplicate = '';	// 체크한 row들의 상세공통코드 중복 체크
-			for (let i = 0; i < rowsData.length; i++) {
-				if (i == 0) {
-					chkDuplicate = rowsData[i].commdCd;
-				} else {
-					if (rowsData[i].commdCd == chkDuplicate) {
-						toastr.warning('입력한 상세공통코드들에 중복이 존재합니다.');
-						insertList = [];	// 배열 초기화.
-						return;
-					}
-				}
-				
-				if (rowsData[i].commdCd == null ||  rowsData[i].commdCd == '' ||
-						rowsData[i].commdNm == null || rowsData[i].commdNm == '' ||
-						rowsData[i].commdInfo == null || rowsData[i].commdInfo == '' ||
-						rowsData[i].commdUse == null || rowsData[i].commdUse == '') {
-					toastr.warning('값을 모두 입력해주세요.');
-					return;
-				}
-				
-				// 유효성 체크 5. 공통코드를 선택했는지 유무 체크
-				if (selectedComm == null || selectedComm == '') {
-					toastr.warning('공통코드를 선택 후 상세공통코드를 추가해주세요.');
-					return;
-				}
-				
-				
-				let updateObject = {
-						commdCd : rowsData[i].commdCd,
-						commCd : selectedComm,
-						commdNm : rowsData[i].commdNm,
-						commdInfo : rowsData[i].commdInfo,
-						commdUse : rowsData[i].commdUse	
-				};
-				
-				updateList.push(updateObject);
-			}
-			
-			sweetConfirm('U', function () {
-				
-				$.ajax({
-					url : "ajax/updateCommd",
-					type : "post",
-					contentType: "application/json",
-					data: JSON.stringify(updateList),
-					beforeSend : function (xhr) {
-					    xhr.setRequestHeader(header, token);
-					},
-					success : function(data){
-						if (data > 0) {
-							toastr.success('정상적으로 수정되었습니다.');
-							grid2.uncheckAll();
-						} else {
-							toastr.error('수정에 실패했습니다.');
-						}
-					},
-					error : function(reject){
-						console.log(reject);
-					}
-				})
-			
-			})
-		});
-		
-		
-		
-		// 상세 공통 코드 삭제
-		document.getElementById('deleteCode').addEventListener('click',function(){
-			
-			sweetConfirm('D', function () {
-				let data = grid2.getCheckedRows(); 
-				// ajax 상세 정보 삭제
-				
-				$.ajax({
-					url : "ajax/delCommd",
-					type : "post",
-					data: JSON.stringify(data),
-					contentType: "application/json",
-					dataType: "json",
-					beforeSend : function (xhr) {
-					    xhr.setRequestHeader(header, token);
-					},
-					success : function(data){
-						if (data > 0) {
-							// ajax success
-				            toastr.success('정상적으로 삭제되었습니다.');
-				            grid2.removeCheckedRows();
-				            
-				            
-						} else {
-							// ajax fail
-				            toastr.error('삭제에 실패했습니다.');	
-						}
-					},
-						error : function(reject){
-							console.log(reject);
-						}
-					
-					});
-		            
-		         });
-					
-			});
 		
 		// 공통 코드 등록
 		

@@ -118,6 +118,12 @@
 				sortingType: 'desc',
 		        sortable: true,
 		        align: 'center',
+			},{
+				header : '거래처구분',
+				name : 'actDivNm',
+				sortingType: 'desc',
+		        sortable: true,
+		        align: 'center',
 			}, {
 				header : '거래 상태',
 				name : 'actSts',
@@ -136,7 +142,7 @@
 			}, 
 		],
 	});
-	    
+	    grid.hideColumn('actDiv');
 	    selectAct();	//ajax 거래처코드 불러오기
 		
 	// 렌더링 에디터 (라디오박스)
@@ -157,18 +163,18 @@
 	});
 	
 	var selectBox2 = new tui.SelectBox('#select-box2', {
-		placeholder : '거래처 구분',
-		data : [ {
-			label : '판매처',
-			value : 'ACT-TYPE1'
-		}, {
-			label : '자재업체',
-			value : 'ACT-TYPE2'
-		}, {
-			label : '설비업체',
-			value : 'ACT-TYPE3'
-		} ],
-});
+			placeholder : '거래처 구분',
+			data : [ {
+				label : '판매처',
+				value : 'ACT-TYPE1'
+			}, {
+				label : '자재업체',
+				value : 'ACT-TYPE2'
+			}, {
+				label : '설비업체',
+				value : 'ACT-TYPE3'
+			} ],
+	});
 	
 	
 	// bind 'change' event1
@@ -297,14 +303,14 @@
  		
 	 	grid.on('click', function(ev){
 			let rowData = grid.getRow(ev.rowKey);
-			
+			console.log(rowData);
 			$('#actName').val(grid.getRow(ev.rowKey).actNm); 
 			$('#actCode').val(grid.getRow(ev.rowKey).actCd); 
 			$('#actNumber').val(grid.getRow(ev.rowKey).actNum); 
 			$('#actTelephone').val(grid.getRow(ev.rowKey).actTel); 
 			$('#actDivision').val(grid.getRow(ev.rowKey).actDiv); 
 			$('#actStatus').val(grid.getRow(ev.rowKey).actSts);
-			
+
 			selectBox.select(rowData.actSts);
 			selectBox2.select(rowData.actDiv);
 			
