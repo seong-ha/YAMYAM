@@ -1,57 +1,59 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-   xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
-   xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-   layout:decorate="~{/layout/layout}">
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{/layout/layout}">
 
 <div class="container" layout:fragment="content">
-   <div id="mat-od-title">
-      <h3>자재 반품 관리</h3>
-   </div>
-   <hr>
+	<div id="mat-od-title">
+		<h3>자재 반품 관리</h3>
+	</div>
+	<hr>
 
-   <div class="row" style="margin-top: 75px;">
-      <div class="col-6">
-         <h3>반품 예정 목록</h3>
-         <div id="grid"></div>
-      </div>
-      <div class="col-6">
-         <div>
-            <h3>반품 신청</h3>
-            <div id="grid2"></div>
-            <div align="right"><button class="btn btn-dark btn-sm" id="saveBtn">반품요청</button></div>
-         </div>
-         <div>
-            <h3>반품 목록</h3>
-            <div id="grid3"></div>
-         </div>
-      </div>
-   </div>
-
-
-
-   <!-- 추가 버튼 모달 -->
-   <div class="modal" id="addModal" tabindex="-1"
-      aria-labelledby="addModalLabel" aria-hidden="true">
-      <div class="modal-dialog modal-xl">
-         <div class="modal-content">
-            <div class="modal-header">
-               <h5 class="modal-title" id="addModalLabel">반품 예정 목록</h5>
-               <button type="button" class="btn-close" data-bs-dismiss="modal"
-                  aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-               <div>
-                  <div id="modalGrid" style="width: 100%;"></div>
-               </div>
-            </div>
-
-         </div>
-      </div>
-   </div>
+	<div class="row" style="margin-top: 75px;">
+		<div class="col-6">
+			<h3>반품 예정 목록</h3>
+			<div id="grid"></div>
+		</div>
+		<div class="col-6">
+			<div>
+				<h3>반품 신청</h3>
+				<div align="right">
+					<button class="btn btn-dark btn-sm" id="saveBtn">반품요청</button>
+				</div>
+				<div id="grid2"></div>
+			</div><br>
+			<div>
+				<h3>반품된 자재 목록</h3>
+				<div id="grid3"></div>
+			</div>
+		</div>
+	</div>
 
 
-   <script th:inline="javascript">
+
+	<!-- 추가 버튼 모달 -->
+	<div class="modal" id="addModal" tabindex="-1"
+		aria-labelledby="addModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-xl">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="addModalLabel">반품 예정 목록</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal"
+						aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<div>
+						<div id="modalGrid" style="width: 100%;"></div>
+					</div>
+				</div>
+
+			</div>
+		</div>
+	</div>
+
+
+	<script th:inline="javascript">
    /* token */
    var token = $("meta[name='_csrf']").attr("content");
    var header = $("meta[name='_csrf_header']").attr("content");
@@ -68,7 +70,7 @@
    function matReList(){
       let grid = new tui.Grid({
             el: document.getElementById('grid'),
-            bodyHeight: 520,
+            bodyHeight: 540,
             data: [[${returnMtrList}]],
             rowHeaders: ['rowNum'],
             scrollX: false,
@@ -77,44 +79,45 @@
               {
                 header: '발주코드',
                 name: 'matOdCd',
+                align: 'center',
                 sortable: true,
-               filter: {
+                filter: {
                   type: 'text'
                }
               },
               {
                 header: '자재코드',
                 name: 'mtrCd',
-               align: 'center',
+                align: 'center',
                 sortable: true,
-               filter: {
+                filter: {
                   type: 'text'
                }
               },
               {
                 header: '자재명',
                 name: 'mtrNm',
-               align: 'center',
+                align: 'center',
                 sortable: true,
-               filter: {
+                filter: {
                   type: 'text'
                }
               },
               {
                 header: '업체명',
                 name: 'actNm',
-               align: 'center',
+                align: 'center',
                 sortable: true,
-               filter: {
+                filter: {
                   type: 'text'
                }
               },
               {
                 header: '불량수량',
                 name: 'erAmt',
-               align: 'center',
+                align: 'center',
                 sortable: true,
-               filter: {
+                filter: {
                   type: 'text'
                }
               }
@@ -164,7 +167,8 @@
                     {
                      header: '불량코드',
                      name: 'erCd',
-                      sortable: true,
+                     sortable: true,
+                     align: 'center',
                      filter: {
                         type: 'text'
                         }
@@ -173,7 +177,7 @@
                      header: '불량내용',
                      name: 'erInfo',
                      align: 'center',
-                      sortable: true,
+                     sortable: true,
                      filter: {
                         type: 'text'
                         }
@@ -181,18 +185,18 @@
                     {
                       header: '검사일자',
                       name: 'matChkDate',
-                     align: 'right',
+                      align: 'center',
                       sortable: true,
-                     filter: {
+                      filter: {
                         type: 'text'
                      }
                     },
                     {
                       header: '반품요청일',
                       name: 'matRtDate',
-                     align: 'right',
+                      align: 'center',
                       sortable: true,
-                     editor: {
+                      editor: {
                         type: 'datePicker',
                         options: {
                            format: 'yyyy-MM-dd',
@@ -228,26 +232,27 @@
                  {
                       header: '발주코드',
                       name: 'matOdCd',
+                      align: 'center',
                       sortable: true,
-                     filter: {
+                      filter: {
                         type: 'text'
                      }
                     },
                     {
                       header: '자재명',
                       name: 'mtrNm',
-                     align: 'center',
+                      align: 'center',
                       sortable: true,
-                     filter: {
+                      filter: {
                         type: 'text'
                      }
                     },
                     {
                       header: '업체명',
                       name: 'actNm',
-                     align: 'center',
+                      align: 'center',
                       sortable: true,
-                     filter: {
+                      filter: {
                         type: 'text'
                      }
                     },
@@ -255,7 +260,7 @@
                         header: '불량내용',
                         name: 'erInfo',
                         align: 'center',
-                         sortable: true,
+                        sortable: true,
                         filter: {
                            type: 'text'
                         }
@@ -263,18 +268,18 @@
                     {
                       header: '반품수량',
                       name: 'matRtAmt',
-                     align: 'center',
+                      align: 'center',
                       sortable: true,
-                     filter: {
+                      filter: {
                         type: 'text'
                      }
                     },
                     {
                       header: '반품요청일',
                       name: 'matRtDate',
-                     align: 'right',
+                      align: 'center',
                       sortable: true,
-                     filter: {
+                      filter: {
                         type: 'text'
                      }
                     }
