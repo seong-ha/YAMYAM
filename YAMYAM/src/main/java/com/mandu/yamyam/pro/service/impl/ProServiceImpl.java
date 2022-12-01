@@ -105,7 +105,6 @@ public class ProServiceImpl implements ProService {
 		int result = 0;
 		mapper.insertOrder(vo.get(0));
 		String podCd = vo.get(0).getPodCd();
-		
 		for(int i =0; i<vo.size(); i++) {
 			vo.get(i).setPodCd(podCd);
 			result += mapper.insertOrderDetail(vo.get(i));

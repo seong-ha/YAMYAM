@@ -615,21 +615,26 @@
 			----------------*/	
 			function orderBtnHandler(){
 			 $('#orderBtn').on('click',function(){
-					 
+		 
 				 let orderData = planOrder.getCheckedRows();
+				 let pplndCd = planDGrid.getValue(0,'pplndCd');
+				 let rK = grid.getFocusedCell().rowKey;
+				 let prdCd = grid.getValue(rK,'prdCd');
+				 console.log(prdCd);
 					 let dataList = [];
 					 // 생산지시 관련 테이블 C
 					 let poddAmt = '';
 					 let poddDates = '';
 					 let poddPrio = '';
+					 let plineCd = '';
 					 for(let i =0; i<orderData.length; i++){
-						 let plinceCd = orderData[0].plineCd;
-						 let prdCd = orderData[0].prdCd;
-						 let pplndCd = orderData[0].pplndCd;
+						 plineCd = orderData[0].plineCd;
+						 
+						 prdCd = orderData[i].prdCd;
 						 poddAmt = orderData[i].poddAmt;
 						 poddDates = orderData[i].poddDates;
 						 poddPrio = orderData[i].poddPrio;
-						 dataList.push({pplndCd,prdCd,poddAmt,poddDates,poddPrio});
+						 dataList.push({plineCd,pplndCd,prdCd,poddAmt,poddDates,poddPrio});
 					 }
 					 
 					 sweetConfirm('C', function(){
