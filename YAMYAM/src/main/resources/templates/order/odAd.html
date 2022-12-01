@@ -295,53 +295,59 @@ var header = $("meta[name='_csrf_header']").attr("content");
               			},
          	pagination : true,
 		    columns: [
+	    	 {
+		        header: '주문 일자',
+		        align : 'center',
+		        name: 'odDate'
+		      },
 		      {
 		        header: '주문 코드',
-		        width : 200,
-		        align : 'left',
+		        align : 'center',
 		        name: 'odCd'
 		      },
 		      {
 		        header: '제품 코드',
 		        align : 'center',
-		        name: 'prdCd'
+		        name  : 'prdCd',
+	        validation: {
+			     dataType: 'text',
+			     required: true
+			    		}
 		      },
 		      {
 		        header: '제품명',
-		        align : 'left',
+		        align : 'center',
 		        name: 'prdNm'
-		      },
-		      {
-		        header: '주문량',
-		        width : 100,
-		        align : 'right',
-		        name: 'odAmt',
-		        editor: 'text',
-				// 필수 입력 값
-				validation: {
-				     dataType: 'text',
-				     required: true
-				      }
 		      },
 		      {
 		        header: '거래처 코드',
 		        align : 'center',
-		        name: 'actCd'
+		        name  : 'actCd',
+			validation: {
+			     dataType: 'text',
+			     required: true
+			  			}
 		      },
 		      {
 		        header: '거래처명',
 		        align : 'left',
 		        name: 'actNm'
 		      },
-		      {
-		        header: '주문 일자',
+	     	  {
+		        header: '주문량',
+		        width : 100,
 		        align : 'right',
-		        name: 'odDate'
+		        name: 'odAmt',
+		        editor: 'text',
+			validation: {
+			     dataType: 'text',
+			     required: true
+			      		}
 		      },
-		      {
+	      	  {
 		        header: '납기 일자',
-		        align : 'right',
-		        name: 'deDate',
+		        align : 'center',
+		        name  : 'deDate',
 		        editor: {
 		        	type : 'datePicker',
 	        		options: {
@@ -357,7 +363,7 @@ var header = $("meta[name='_csrf_header']").attr("content");
 		      },
 		      {
 		        header: '진행 상황',
-		        align : 'left',
+		        align : 'center',
 		        name: 'odSts'
 		      }
 		    ]
@@ -427,15 +433,17 @@ var header = $("meta[name='_csrf_header']").attr("content");
    $('#insertBtn').on('click',function(){
       let rowData = [{odDate: "", odCd: "", prdCd: "", prdNm: "", odAmt: "", actCd : "" , actNm: "", deDate: "", odSts:""}]
       grid.appendRow(rowData,{at : 0}); 
+      
 	});
 	
 	
-	
+
     /*------------
 	// 저장 버튼 클릭
 	----------------*/ // 컨트롤러에서 if문으로 나눠주기
 	function SaveBtnHandler(){
 		$('#saveBtn').on('click',function(){
+			grid.blur();
 			let rowData = grid.getCheckedRows();
 			let ordList = [];
 			let odCd = '';
@@ -450,8 +458,8 @@ var header = $("meta[name='_csrf_header']").attr("content");
 				ordList.push({prdCd,odAmt,actCd,deDate,odCd});
 				console.log(rowData[i].odCd);
 				console.log(rowData[i].odSts);
+				
 			}
-			
 			if (odCd == null){
 				sweetConfirm('C', function(){
 							$.ajax({
