@@ -1,792 +1,792 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
-	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-	layout:decorate="~{/layout/layout}">
+   xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+   xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+   layout:decorate="~{/layout/layout}">
 <head>
 <style type="text/css">
 select option[value=""][disabled] {
-	display: none;
+   display: none;
 }
 </style>
 </head>
 <div class="container" layout:fragment="content">
-	<div id="mat-od-title">
-		<h3>자재 입고 검수 관리</h3>
-	</div>
-	<hr>
-	<ul class="ul-style">
-		<!-- select -->
-		<li><label style="margin-right: 1px;">불량내용</label><select class="form-select form-select-sm" name="erCd"
-			id="erCd" style="width: 200px; display: inline;">
-				<option value="" disabled selected>불량내용</option>
-				<option th:each="list : ${commList}" th:value="${list.commdCd}"
-					th:text="${list.commdNm}">
-		</select></li>
+   <div id="mat-od-title">
+      <h3>자재 입고 검수 관리</h3>
+   </div>
+   <hr>
+   <ul class="ul-style">
+      <!-- select -->
+      <li><label style="margin-right: 1px;">불량내용</label><select class="form-select form-select-sm" name="erCd"
+         id="erCd" style="width: 200px; display: inline;">
+            <option value="" disabled selected>불량내용</option>
+            <option th:each="list : ${commList}" th:value="${list.commdCd}"
+               th:text="${list.commdNm}">
+      </select></li>
 
-		<li><label for="matNm">자재명</label><input id="matNm"
-			data-bs-toggle="modal" data-bs-target="#matMg" readonly> <img
-			class="Magnifying-Glass-img" alt="image" data-bs-toggle="modal"
-			data-bs-target="#matMg" src="../images/Magnifying_Glass.png"> <input
-			id="matOdCd" type="text" data-bs-toggle="modal"
-			data-bs-target="#matMg" readonly></li>
-		<li><label for="empNm">담당자</label><input id="empNm"
-			data-bs-toggle="modal" data-bs-target="#empMg" readonly> <img
-			class="Magnifying-Glass-img" alt="image" data-bs-toggle="modal"
-			data-bs-target="#empMg" src="../images/Magnifying_Glass.png"> <input
-			id="empId" type="text" data-bs-toggle="modal" data-bs-target="#empMg"
-			readonly></li>
+      <li><label for="matNm">자재명</label><input id="matNm"
+         data-bs-toggle="modal" data-bs-target="#matMg" readonly> <img
+         class="Magnifying-Glass-img" alt="image" data-bs-toggle="modal"
+         data-bs-target="#matMg" src="../images/Magnifying_Glass.png"> <input
+         id="matOdCd" type="text" data-bs-toggle="modal"
+         data-bs-target="#matMg" readonly></li>
+      <li><label for="empNm">담당자</label><input id="empNm"
+         data-bs-toggle="modal" data-bs-target="#empMg" readonly> <img
+         class="Magnifying-Glass-img" alt="image" data-bs-toggle="modal"
+         data-bs-target="#empMg" src="../images/Magnifying_Glass.png"> <input
+         id="empId" type="text" data-bs-toggle="modal" data-bs-target="#empMg"
+         readonly></li>
 
-		<!-- Date Picker -->
-		<li><label for="startpicker-input">검사일자</label>
-			<div class="tui-datepicker-input tui-datetime-input tui-has-focus">
-				<input id="startpicker-input" type="text" aria-label="Date">
-				<span class="tui-ico-date"></span>
-				<div id="startpicker-container" style="margin-left: -1px;"></div>
-			</div> <span>-</span>
-			<div class="tui-datepicker-input tui-datetime-input tui-has-focus">
-				<input id="endpicker-input" type="text" aria-label="Date"> <span
-					class="tui-ico-date"></span>
-				<div id="endpicker-container" style="margin-left: -1px;"></div>
-			</div> 
-			<!-- 검색조건 버튼 -->
-			<button class="btn btn-dark btn-sm" id="SearchBtn">조회</button>
-			<button class="btn btn-dark btn-sm" id="resetBtn">초기화</button>
-			<!-- CRUD 버튼 -->
-			<button class="btn btn-dark btn-sm" data-bs-toggle="modal"
-				data-bs-target="#addModal" style="margin-left: 52%;">추가</button>
-			<button class="btn btn-dark btn-sm" id="deleteBtn">삭제</button>
-			<button class="btn btn-dark btn-sm" id="saveChkBtn">저장</button></li>
-	</ul>
+      <!-- Date Picker -->
+      <li><label for="startpicker-input">검사일자</label>
+         <div class="tui-datepicker-input tui-datetime-input tui-has-focus">
+            <input id="startpicker-input" type="text" aria-label="Date">
+            <span class="tui-ico-date"></span>
+            <div id="startpicker-container" style="margin-left: -1px;"></div>
+         </div> <span>-</span>
+         <div class="tui-datepicker-input tui-datetime-input tui-has-focus">
+            <input id="endpicker-input" type="text" aria-label="Date"> <span
+               class="tui-ico-date"></span>
+            <div id="endpicker-container" style="margin-left: -1px;"></div>
+         </div> 
+         <!-- 검색조건 버튼 -->
+         <button class="btn btn-dark btn-sm" id="SearchBtn">조회</button>
+         <button class="btn btn-dark btn-sm" id="resetBtn">초기화</button>
+         <!-- CRUD 버튼 -->
+         <button class="btn btn-dark btn-sm" data-bs-toggle="modal"
+            data-bs-target="#addModal" style="margin-left: 52%;">추가</button>
+         <button class="btn btn-dark btn-sm" id="deleteBtn">삭제</button>
+         <button class="btn btn-dark btn-sm" id="saveChkBtn">저장</button></li>
+   </ul>
 
-	<div id="grid"></div>
+   <div id="grid"></div>
 
-	<!-- 불량코드 목록 모달 -->
-	<div class="modal" id="errorModal" tabindex="-1"
-		aria-labelledby="errorModalLabel" aria-hidden="true">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h5 class="modal-title" id="errorModalLabel">자재 목록</h5>
-					<button type="button" class="btn-close" data-bs-dismiss="modal"
-						aria-label="Close" id="errorModalClose"></button>
-				</div>
-				<div class="modal-body">
-					<div>
-						<div id="modalGrid"></div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
+   <!-- 불량코드 목록 모달 -->
+   <div class="modal" id="errorModal" tabindex="-1"
+      aria-labelledby="errorModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+         <div class="modal-content">
+            <div class="modal-header">
+               <h5 class="modal-title" id="errorModalLabel">불량 목록</h5>
+               <button type="button" class="btn-close" data-bs-dismiss="modal"
+                  aria-label="Close" id="errorModalClose"></button>
+            </div>
+            <div class="modal-body">
+               <div>
+                  <div id="modalGrid"></div>
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
 
-	<!-- 담당자 목록 모달 -->
-	<div class="modal" id="empModal" tabindex="-1"
-		aria-labelledby="empModalLabel" aria-hidden="true">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h5 class="modal-title" id="empModalLabel">사원 목록</h5>
-					<button type="button" class="btn-close" data-bs-dismiss="modal"
-						aria-label="Close" id="empModalClose"></button>
-				</div>
-				<div class="modal-body">
-					<div>
-						<div id="modalGrid2"></div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
+   <!-- 담당자 목록 모달 -->
+   <div class="modal" id="empModal" tabindex="-1"
+      aria-labelledby="empModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+         <div class="modal-content">
+            <div class="modal-header">
+               <h5 class="modal-title" id="empModalLabel">사원 목록</h5>
+               <button type="button" class="btn-close" data-bs-dismiss="modal"
+                  aria-label="Close" id="empModalClose"></button>
+            </div>
+            <div class="modal-body">
+               <div>
+                  <div id="modalGrid2"></div>
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
 
-	<!-- 추가 버튼 모달 -->
-	<div class="modal" id="addModal" tabindex="-1"
-		aria-labelledby="addModalLabel" aria-hidden="true">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h5 class="modal-title" id="addModalLabel">검사 예정 목록</h5>
-					<button type="button" class="btn-close" data-bs-dismiss="modal"
-						aria-label="Close"></button>
-				</div>
-				<div class="modal-body">
-					<div>
-						<div id="modalGrid3" style="width: 100%;"></div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
+   <!-- 추가 버튼 모달 -->
+   <div class="modal" id="addModal" tabindex="-1"
+      aria-labelledby="addModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+         <div class="modal-content">
+            <div class="modal-header">
+               <h5 class="modal-title" id="addModalLabel">검사 예정 목록</h5>
+               <button type="button" class="btn-close" data-bs-dismiss="modal"
+                  aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+               <div>
+                  <div id="modalGrid3" style="width: 100%;"></div>
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
 
-	<!-- 자재 목록 모달 -->
-	<div class="modal" id="matMg" tabindex="-1"
-		aria-labelledby="matMgLabel" aria-hidden="true">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h5 class="modal-title" id="matMgLabel">자재 목록</h5>
-					<button type="button" class="btn-close" data-bs-dismiss="modal"
-						aria-label="Close" id="matMgCloseBtn"></button>
-				</div>
-				<div class="modal-body">
-					<div>
-						<div id="modalGrid4"></div>
-					</div>
-				</div>
+   <!-- 자재 목록 모달 -->
+   <div class="modal" id="matMg" tabindex="-1"
+      aria-labelledby="matMgLabel" aria-hidden="true">
+      <div class="modal-dialog">
+         <div class="modal-content">
+            <div class="modal-header">
+               <h5 class="modal-title" id="matMgLabel">자재 목록</h5>
+               <button type="button" class="btn-close" data-bs-dismiss="modal"
+                  aria-label="Close" id="matMgCloseBtn"></button>
+            </div>
+            <div class="modal-body">
+               <div>
+                  <div id="modalGrid4"></div>
+               </div>
+            </div>
 
-			</div>
-		</div>
-	</div>
+         </div>
+      </div>
+   </div>
 
-	<!-- 담당자 목록 모달 -->
-	<div class="modal" id="empMg" tabindex="-1"
-		aria-labelledby="empMgLabel" aria-hidden="true">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h5 class="modal-title" id="empMgLabel">사원 목록</h5>
-					<button type="button" class="btn-close" data-bs-dismiss="modal"
-						aria-label="Close" id="empMgCloseBtn"></button>
-				</div>
-				<div class="modal-body">
-					<div>
-						<div id="modalGrid5"></div>
-					</div>
-				</div>
+   <!-- 담당자 목록 모달 -->
+   <div class="modal" id="empMg" tabindex="-1"
+      aria-labelledby="empMgLabel" aria-hidden="true">
+      <div class="modal-dialog">
+         <div class="modal-content">
+            <div class="modal-header">
+               <h5 class="modal-title" id="empMgLabel">사원 목록</h5>
+               <button type="button" class="btn-close" data-bs-dismiss="modal"
+                  aria-label="Close" id="empMgCloseBtn"></button>
+            </div>
+            <div class="modal-body">
+               <div>
+                  <div id="modalGrid5"></div>
+               </div>
+            </div>
 
-			</div>
-		</div>
-	</div>
+         </div>
+      </div>
+   </div>
 
-	<script th:inline="javascript">
-	// token
-	var token = $("meta[name='_csrf']").attr("content");
-	var header = $("meta[name='_csrf_header']").attr("content");
-	
-		let grid = chkMatList();			// 자재전체조회 그리드
-		SearchBtnFn();						// 조회버튼 클릭시 전체조회 그리드 등장
-		
-		let modalGrid = errorList();		// 불량코드 목록 모달 그리드
-		let modalGrid2 = empList();			// 담당자 목록 모달 그리드
-		let modalGrid3 = addPlan();			// 추가 목록 모달 그리드
-		
-		let modalGrid4 = matMgList();		// 자재 목록 모달 그리드
-		let modalGrid5 = empMgList();		// 직원 목록 모달 그리드
-		
-		errorListSelect();					// 불량코드 목록 행 클릭 이벤트
-		empListSelect();					// 담당자 목록 행 클릭 이벤트
-		insertOrder();						// 추가 버튼 이벤트
-		deleteBtn();						// 삭제 버튼 이벤트
-		saveChkBtnFn();						// 저장 버튼 이벤트
-		
-		getModal();							// 담당자/불량코드 모달
-		modalRef();							// 모달 리프레쉬
-		
-		matModalClickFn();					// 자재 모달 클릭 시 인풋 태그로
-		empModalClickFn();					// 직원 모달 클릭 시 인풋 태그로
-		
-		datePicker();						// datepicker
-		resetBtn();							// 초기화
-		
-		selectFn();							// 셀렉트 이벤트
-		passAmtFn();						// 합격량 입력 이벤트
-		
-		/*------------------------------
-		// 자재전체조회 그리드
-		--------------------------------*/
-		function chkMatList(){
-			const grid = new tui.Grid({
-			      el: document.getElementById('grid'),
-				  pageOptions: {
-					    useClient: true,
-					    perPage: 8
-					  	},
-			      bodyHeight: 320,
-			      data: [[${chkOd}]],
-			      rowHeaders: ['checkbox', 'rowNum'],
-			      scrollX: false,
-			      scrollY: false,
-			      columns: [
-			        {
-			          header: '발주코드',
-			          name: 'matOdCd',
-			          sortable: true,
-					  filter: {
-					        type: 'select'			  
-					      }
-			        },
-			        {
-			          header: '자재코드',
-			          name: 'mtrCd',
-				      align: 'center',
-			          sortable: true,
-					  filter: {
-					        type: 'select'			  
-					      }
-			        },
-			        {
-			          header: '자재명',
-			          name: 'mtrNm',
-				      align: 'center',
-			          sortable: true,
-					  filter: {
-					        type: 'select'			  
-					      }
-			        },
-			        {
-			          header: '발주총량',
-			          name: 'matOddAmt',
-				      align: 'right',
-			          sortable: true
-			        },
-			        {
-			          header: '합격량',
-			          name: 'paAmt',
-				      align: 'right',
-			          sortable: true,
-					  editor: 'text'
-				    },
-			        {
-			          header: '불합격량',
-			          name: 'erAmt',
-				      align: 'right',
-			          sortable: true,
-					  editor: 'text'
-				    },
-			        {
-			          header: '담당자',
-			          name: 'empNm',
-				      align: 'center',
-			          sortable: true,
-					  filter: {
-					        type: 'select'			  
-					      }
-			        },
-			        {
-			            header: '불량코드',
-			            name: 'erCd',
-					    align: 'center',
-			            sortable: true,
-						  filter: {
-						        type: 'select'			  
-						      }
-			          },
-			          {
-			              header: '불량내용',
-			              name: 'erInfo',
-					      align: 'center',
-			              sortable: true,
-						  filter: {
-						        type: 'select'			  
-						      }
-			            },
-			        {
-			          header: '검사일자',
-			          name: 'matChkDate',
-				      align: 'right',
-			          sortable: true,
-				      editor: {
-				    	  type: 'datePicker',
-				    	  options: {
-				    		  format: 'yyyy-MM-dd',
-				    		  language: 'ko'
-				    	  }
-				      },
-					  validation: {
-							 dataType: 'datePicker',
-							 required: true
-						}
-			        }
-			      ]
-			    });
-			
-			    return grid;
-		}
-		
-		/*--------------------------------
-		// 조회 버튼 클릭 시 그리드 등장
-		----------------------------------*/
-		function SearchBtnFn() {
-			document.getElementById('SearchBtn').addEventListener('click',function() {
-				let matOdCd = document.getElementById('matOdCd').value; // 자재 코드
-				let empNm = document.getElementById('empNm').value; // 직원 이름
-				let matInDate = document.getElementById('startpicker-input').value; // 시작 날짜
-				let matEdate = document.getElementById('endpicker-input').value; // WHERE절 비교 용으로 유통기한에 end Date담음
-				
-				let data = {mtrCd: matOdCd, empNm: empNm, matInDate: matInDate, matEdate: matEdate};
-				
-				$.ajax({
-					url: '/matInChk',
-					method: 'POST',
-					contentType: 'application/JSON',
-					data: JSON.stringify(data),
-					beforeSend : function (xhr) {
-					    xhr.setRequestHeader(header, token);
-					},
-					success: function(result){
-						grid.resetData(result)
-					},
-					error: function(reject) {
-						console.log(reject);
-					}
-				})
-			})
-		}
-	
-		/*------------------------------
-		// 불량코드 모달 그리드
-		--------------------------------*/
-		function errorList(){
-			var modalGrid = new tui.Grid({
-				el: document.getElementById('modalGrid'),
-				bodyHeight: 250,
-				data: [[${errorList}]],
-				rowHeaders: ['rowNum'],
-				scrollX: false,
-				scrollY: true,
-				columns: [{
-			          header: '불량코드',
-			          name: 'commdCd',
-			          sortable: true
-			        },
-			        {
-			          header: '불량내용',
-			          name: 'commdNm',
-			          sortable: true
-			        }
-		     	 ] 
-			});
-			return modalGrid;
-		}
-		
-		/*------------------------------
-		// 담당자목록 모달 그리드
-		--------------------------------*/
-		function empList() {
-			let modalGrid2 = new tui.Grid({
-				el: document.getElementById('modalGrid2'),
-				bodyHeight: 300,
-				data: [[${empList}]],
-				rowHeaders: ['rowNum'],
-				scrollX: false,
-				scrollY: true,
-				columns: [
-					{
-						header: '이름',
-						name: 'empNm',
-						sortable: true
-					},
-					{
-						header: '아이디',
-						name: 'empId',
-						sortable: true
-					}
-				]
-			});
-			return modalGrid2;
-		}
-		
-		/*------------------------------
-		// 추가 모달 그리드
-		--------------------------------*/
-		function addPlan(){
-			let modalGrid3 = new tui.Grid({
-				el: document.getElementById('modalGrid3'),
-				bodyHeight: 400,
-				data: [[${addChkList}]],
-				rowHeaders: ['rowNum'],
-				scrollX: false,
-				scrollY: true,
-				columns: [{
-			          header: '발주코드',
-			          name: 'matOdCd',
-			          sortable: true
-			        },
-			        {
-			          header: '자재코드',
-			          name: 'mtrCd',
-			          sortable: true
-			        },
-			        {
-			          header: '자재명',
-			          name: 'matOddAmt',
-			          sortable: true
-			        },
-			        {
-				      header: '발주총량',
-				      name: 'mtrNm',
-				      sortable: true
-				    }
-		      ] 
-			});
-			return modalGrid3;
-		}
-		
-		/*------------------------------
-		// DatePicker
-		--------------------------------*/
-		function datePicker() {
-			rangeDatepickerInit('#startpicker-input', '#startpicker-container','#endpicker-input','#endpicker-container')
-			document.getElementById('startpicker-input').value = null;
-			document.getElementById('endpicker-input').value = null;
-		}
-		
-	    /*---------------------------------
-		// 해당하는 header의 모달창 띄우기(일반 탭)
-		-------------------------------------*/
-		function getModal() {
-			grid.on('click',function(ev){
-				// 불량코드 목록 선택 시 행으로 가져오기
-		   		if(ev.columnName =='erCd' || ev.columnName =='erInfo'){
-		   			$('#errorModal').modal('show');
-		   			modalGrid.refreshLayout();
-		   			
-		   		// 직원 목록 선택 시 행으로 가져오기
-		   		} else if (ev.columnName =='empNm'){
-		   	   			$('#empModal').modal('show');
-		   	   		modalGrid2.refreshLayout();
-		   	   		}
-			   	});
-	    }
-		
-		/*----------------------------------
-		// 불량코드 목록 클릭 시 행 안으로
-		------------------------------------*/
-		function errorListSelect() {
-			modalGrid.on('click', function(ev){
-				let data = modalGrid.getRow(ev.rowKey);
-				let val = grid.getFocusedCell().rowKey;
-				console.log(data);
-				console.log(val);
-				
-				grid.setValue(val, 'erInfo', data.commdNm);
-				grid.setValue(val, 'erCd', data.commdCd);
-				errorModalClose.click();
-			}) 
-		}
-		
-		/*----------------------------------
-		// 직원 목록 클릭 시 행 안으로
-		------------------------------------*/
-		function empListSelect() {
-			modalGrid2.on('click', function(ev){
-				let data = modalGrid2.getRow(ev.rowKey);
-				let val = grid.getFocusedCell().rowKey;
-				
-				grid.setValue(val,'empNm', data.empNm);
-				empModalClose.click();
-			})
-		}
-		
-		
-		
-		/*------------------------
-		// 행 추가 버튼
-		----------------------------*/
-		function insertOrder() {
-			modalGrid3.on('click', function(ev){
-				let data = modalGrid3.getRow(ev.rowKey);
-				console.log(data);
- 			    let rowData = {matOdCd: data.matOdCd, mtrCd: data.mtrCd, 
- 			    				matOddAmt: data.matOddAmt, mtrNm: data.mtrNm, 
- 			    				paAmt: "", erAmt : "" , empNm: "", matChkDate: today,
- 			    				erCd: "", erInfo:""};
-	 		    grid.appendRow(rowData);
-			})
-		}
-		
-		/*-----------
-		// 행 삭제 버튼
-		--------------*/
-		function deleteBtn() {
-			document.getElementById('deleteBtn').addEventListener('click', function(){
-				let data = grid.getCheckedRows();
-				console.log(data);
-			
-				Swal.fire({
-				      title: '정말로 삭제 하시겠습니까?',
-				      //text: "다시 되돌릴 수 없습니다. 신중하세요.",
-				      icon: 'warning',
-				      showCancelButton: true,
-				      confirmButtonColor: '#3085d6',
-				      cancelButtonColor: '#d33',
-				      confirmButtonText: '승인',
-				      cancelButtonText: '취소',
-				      //reverseButtons: true, // 버튼 순서 거꾸로
-				      
-				    }).then((result) => {
-				    	  $.ajax({
-					        	url: '/ChkOd',
-					        	method: 'DELETE',
-					        	contentType: 'application/JSON',
-								data: JSON.stringify(data),
-			                      beforeSend : function (xhr) {
-			                          xhr.setRequestHeader(header, token);
-			                      },
-								success: function(result){
-									console.log(result);
-									if(result >= 1){
-							        	Swal.fire('삭제가 완료되었습니다.');
-							        	grid.removeCheckedRows();
-									} else {
-										Swal.fire('삭제에 실패하였습니다.');
-									}
-								},
-								error: function(reject){
-									console.log(reject);
-								}
-				        })
-				})
-			})
-		}
-		
-		/*--------------------------------
-		// 초기화버튼 이벤트
-		----------------------------------*/
-		function resetBtn() {
-			document.getElementById('resetBtn').addEventListener('click',function(){
-				document.getElementById('startpicker-input').value = null;
-				document.getElementById('endpicker-input').value = null;
-				document.getElementById('matNm').value = '';
-				document.getElementById('matOdCd').value = '';
-				document.getElementById('empNm').value = '';
-				document.getElementById('empId').value = '';
-				
-				// 에러 셀렉트 초기화
-				document.getElementById('erCd').value = '';
-				
-				grid.resetData([[${chkOd}]])
-			});	
-		}
-		
-		/*--------------------------------
-		// 저장 버튼 insert 이벤트
-		----------------------------------*/
-		function saveChkBtnFn() {
-			document.getElementById('saveChkBtn').addEventListener('click', function(){
-				let data = grid.getCheckedRows();
-				console.log(data);
-				Swal.fire({
-			      title: '저장 하시겠습니까?',
-			      icon: 'warning',
-			      showCancelButton: true,
-			      confirmButtonColor: '#3085d6',
-			      cancelButtonColor: '#d33',
-			      confirmButtonText: '승인',
-			      cancelButtonText: '취소',
-			      
-			    }).then((result) => {
-			      if (result.isConfirmed) {
-			        $.ajax({
-			        	url: '/ChkOd',
-			        	method: 'POST',
-			        	contentType: 'application/JSON',
-						data: JSON.stringify(data),
-						beforeSend : function (xhr) {
-						    xhr.setRequestHeader(header, token);
-						},
-						success: function(result){
-							if(result >= 1){
-					        	Swal.fire('저장이 완료되었습니다.');
-					        	
-					        	// M_OD테이블의 검수상태 Y로 업데이트
-					        	$.ajax({
-					        		url: '/updateChk',
-					        		method: 'POST',
-					        		contentType: 'application/JSON',
-					        		dataType: 'JSON',
-					        		data: JSON.stringify(data),
-					        		beforeSend : function (xhr) {
-					        		    xhr.setRequestHeader(header, token);
-					        		},
-					        		sussecc: function(result){
-					        			if(result >= 1) {
-					        				console.log('검수상태 update 완료.')
-					        			}
-					        		},
-					        		error: function(reject){
-					        			console.log(reject);
-					        		}
-					        	})
-					        	
-								setTimeout(() => location.reload(),400);
-							} else {
-								Swal.fire('저장에 실패하였습니다.');
-							}
-						},
-						error: function(reject){
-							console.log(reject);
-						}
-			        })
-			      }
-			   })
-			})
-		}
-		
-		/*------------------------------
-		// 자재목록 모달 그리드
-		--------------------------------*/
-		function matMgList(){
-			let modalGrid4 = new tui.Grid({
-				el: document.getElementById('modalGrid4'),
-				bodyHeight: 250,
-				data: [[${matList}]],
-				rowHeaders: ['rowNum'],
-				scrollX: false,
-				scrollY: true,
-				columns: [{
-			          header: '자재코드',
-			          name: 'mtrCd',
-			          sortable: true,
-					  filter: {
-					        type: 'select'			  
-					      }
-			        },
-			        {
-			          header: '자재명',
-			          name: 'mtrNm',
-			          sortable: true,
-					  filter: {
-					        type: 'select'			  
-					      }
-			        }
-		     	] 
-			});
-			return modalGrid4;
-		}
-		
-		/*------------------------------
-		// 담당자목록 모달 그리드
-		--------------------------------*/
-		function empMgList(){
-			let modalGrid5 = new tui.Grid({
-				el: document.getElementById('modalGrid5'),
-				bodyHeight: 250,
-				data: [[${empList}]],
-				rowHeaders: ['rowNum'],
-				scrollX: false,
-				scrollY: true,
-				columns: [
-					{
-						header: '이름',
-						name: 'empNm',
-						sortable: true,
-						filter: {
-						        type: 'select'			  
-						      }
-					},
-					{
-						header: '아이디',
-						name: 'empId',
-						sortable: true,
-						filter: {
-						        type: 'select'			  
-						      }
-					}
-				]
-			});
-			return modalGrid5;
-		}
-		
-		/*--------------------------------
-		// 자재 모달 행 클릭시 인풋 태그로
-		----------------------------------*/
-		function matModalClickFn() {
-			modalGrid4.on('click', function(ev){
-				let data = modalGrid4.getRow(ev.rowKey);
-				console.log(data);
-				let matNm = document.getElementById('matNm');
-				let matCd = document.getElementById('matOdCd');
+   <script th:inline="javascript">
+   // token
+   var token = $("meta[name='_csrf']").attr("content");
+   var header = $("meta[name='_csrf_header']").attr("content");
+   
+      let grid = chkMatList();         // 자재전체조회 그리드
+      SearchBtnFn();                  // 조회버튼 클릭시 전체조회 그리드 등장
+      
+      let modalGrid = errorList();      // 불량코드 목록 모달 그리드
+      let modalGrid2 = empList();         // 담당자 목록 모달 그리드
+      let modalGrid3 = addPlan();         // 추가 목록 모달 그리드
+      
+      let modalGrid4 = matMgList();      // 자재 목록 모달 그리드
+      let modalGrid5 = empMgList();      // 직원 목록 모달 그리드
+      
+      errorListSelect();               // 불량코드 목록 행 클릭 이벤트
+      empListSelect();               // 담당자 목록 행 클릭 이벤트
+      insertOrder();                  // 추가 버튼 이벤트
+      deleteBtn();                  // 삭제 버튼 이벤트
+      saveChkBtnFn();                  // 저장 버튼 이벤트
+      
+      getModal();                     // 담당자/불량코드 모달
+      modalRef();                     // 모달 리프레쉬
+      
+      matModalClickFn();               // 자재 모달 클릭 시 인풋 태그로
+      empModalClickFn();               // 직원 모달 클릭 시 인풋 태그로
+      
+      datePicker();                  // datepicker
+      resetBtn();                     // 초기화
+      
+      selectFn();                     // 셀렉트 이벤트
+      passAmtFn();                  // 합격량 입력 이벤트
+      
+      /*------------------------------
+      // 자재전체조회 그리드
+      --------------------------------*/
+      function chkMatList(){
+         const grid = new tui.Grid({
+               el: document.getElementById('grid'),
+              pageOptions: {
+                   useClient: true,
+                   perPage: 8
+                    },
+               bodyHeight: 320,
+               data: [[${chkOd}]],
+               rowHeaders: ['checkbox', 'rowNum'],
+               scrollX: false,
+               scrollY: false,
+               columns: [
+                 {
+                   header: '발주코드',
+                   name: 'matOdCd',
+                   sortable: true,
+                 filter: {
+                       type: 'select'           
+                     }
+                 },
+                 {
+                   header: '자재코드',
+                   name: 'mtrCd',
+                  align: 'center',
+                   sortable: true,
+                 filter: {
+                       type: 'select'           
+                     }
+                 },
+                 {
+                   header: '자재명',
+                   name: 'mtrNm',
+                  align: 'center',
+                   sortable: true,
+                 filter: {
+                       type: 'select'           
+                     }
+                 },
+                 {
+                   header: '발주총량',
+                   name: 'matOddAmt',
+                  align: 'right',
+                   sortable: true
+                 },
+                 {
+                   header: '합격량',
+                   name: 'paAmt',
+                  align: 'right',
+                   sortable: true,
+                 editor: 'text'
+                },
+                 {
+                   header: '불합격량',
+                   name: 'erAmt',
+                  align: 'right',
+                   sortable: true,
+                 editor: 'text'
+                },
+                 {
+                   header: '담당자',
+                   name: 'empNm',
+                  align: 'center',
+                   sortable: true,
+                 filter: {
+                       type: 'select'           
+                     }
+                 },
+                 {
+                     header: '불량코드',
+                     name: 'erCd',
+                   align: 'center',
+                     sortable: true,
+                    filter: {
+                          type: 'select'           
+                        }
+                   },
+                   {
+                       header: '불량내용',
+                       name: 'erInfo',
+                     align: 'center',
+                       sortable: true,
+                    filter: {
+                          type: 'select'           
+                        }
+                     },
+                 {
+                   header: '검사일자',
+                   name: 'matChkDate',
+                  align: 'right',
+                   sortable: true,
+                  editor: {
+                     type: 'datePicker',
+                     options: {
+                        format: 'yyyy-MM-dd',
+                        language: 'ko'
+                     }
+                  },
+                 validation: {
+                      dataType: 'datePicker',
+                      required: true
+                  }
+                 }
+               ]
+             });
+         
+             return grid;
+      }
+      
+      /*--------------------------------
+      // 조회 버튼 클릭 시 그리드 등장
+      ----------------------------------*/
+      function SearchBtnFn() {
+         document.getElementById('SearchBtn').addEventListener('click',function() {
+            let matOdCd = document.getElementById('matOdCd').value; // 자재 코드
+            let empNm = document.getElementById('empNm').value; // 직원 이름
+            let matInDate = document.getElementById('startpicker-input').value; // 시작 날짜
+            let matEdate = document.getElementById('endpicker-input').value; // WHERE절 비교 용으로 유통기한에 end Date담음
+            
+            let data = {mtrCd: matOdCd, empNm: empNm, matInDate: matInDate, matEdate: matEdate};
+            
+            $.ajax({
+               url: '/matInChk',
+               method: 'POST',
+               contentType: 'application/JSON',
+               data: JSON.stringify(data),
+               beforeSend : function (xhr) {
+                   xhr.setRequestHeader(header, token);
+               },
+               success: function(result){
+                  grid.resetData(result)
+               },
+               error: function(reject) {
+                  console.log(reject);
+               }
+            })
+         })
+      }
+   
+      /*------------------------------
+      // 불량코드 모달 그리드
+      --------------------------------*/
+      function errorList(){
+         var modalGrid = new tui.Grid({
+            el: document.getElementById('modalGrid'),
+            bodyHeight: 250,
+            data: [[${errorList}]],
+            rowHeaders: ['rowNum'],
+            scrollX: false,
+            scrollY: true,
+            columns: [{
+                   header: '불량코드',
+                   name: 'commdCd',
+                   sortable: true
+                 },
+                 {
+                   header: '불량내용',
+                   name: 'commdNm',
+                   sortable: true
+                 }
+               ] 
+         });
+         return modalGrid;
+      }
+      
+      /*------------------------------
+      // 담당자목록 모달 그리드
+      --------------------------------*/
+      function empList() {
+         let modalGrid2 = new tui.Grid({
+            el: document.getElementById('modalGrid2'),
+            bodyHeight: 300,
+            data: [[${empList}]],
+            rowHeaders: ['rowNum'],
+            scrollX: false,
+            scrollY: true,
+            columns: [
+               {
+                  header: '이름',
+                  name: 'empNm',
+                  sortable: true
+               },
+               {
+                  header: '아이디',
+                  name: 'empId',
+                  sortable: true
+               }
+            ]
+         });
+         return modalGrid2;
+      }
+      
+      /*------------------------------
+      // 추가 모달 그리드
+      --------------------------------*/
+      function addPlan(){
+         let modalGrid3 = new tui.Grid({
+            el: document.getElementById('modalGrid3'),
+            bodyHeight: 400,
+            data: [[${addChkList}]],
+            rowHeaders: ['rowNum'],
+            scrollX: false,
+            scrollY: true,
+            columns: [{
+                   header: '발주코드',
+                   name: 'matOdCd',
+                   sortable: true
+                 },
+                 {
+                   header: '자재코드',
+                   name: 'mtrCd',
+                   sortable: true
+                 },
+                 {
+                   header: '자재명',
+                   name: 'matOddAmt',
+                   sortable: true
+                 },
+                 {
+                  header: '발주총량',
+                  name: 'mtrNm',
+                  sortable: true
+                }
+            ] 
+         });
+         return modalGrid3;
+      }
+      
+      /*------------------------------
+      // DatePicker
+      --------------------------------*/
+      function datePicker() {
+         rangeDatepickerInit('#startpicker-input', '#startpicker-container','#endpicker-input','#endpicker-container')
+         document.getElementById('startpicker-input').value = null;
+         document.getElementById('endpicker-input').value = null;
+      }
+      
+       /*---------------------------------
+      // 해당하는 header의 모달창 띄우기(일반 탭)
+      -------------------------------------*/
+      function getModal() {
+         grid.on('click',function(ev){
+            // 불량코드 목록 선택 시 행으로 가져오기
+               if(ev.columnName =='erCd' || ev.columnName =='erInfo'){
+                  $('#errorModal').modal('show');
+                  modalGrid.refreshLayout();
+                  
+               // 직원 목록 선택 시 행으로 가져오기
+               } else if (ev.columnName =='empNm'){
+                        $('#empModal').modal('show');
+                     modalGrid2.refreshLayout();
+                     }
+               });
+       }
+      
+      /*----------------------------------
+      // 불량코드 목록 클릭 시 행 안으로
+      ------------------------------------*/
+      function errorListSelect() {
+         modalGrid.on('click', function(ev){
+            let data = modalGrid.getRow(ev.rowKey);
+            let val = grid.getFocusedCell().rowKey;
+            console.log(data);
+            console.log(val);
+            
+            grid.setValue(val, 'erInfo', data.commdNm);
+            grid.setValue(val, 'erCd', data.commdCd);
+            errorModalClose.click();
+         }) 
+      }
+      
+      /*----------------------------------
+      // 직원 목록 클릭 시 행 안으로
+      ------------------------------------*/
+      function empListSelect() {
+         modalGrid2.on('click', function(ev){
+            let data = modalGrid2.getRow(ev.rowKey);
+            let val = grid.getFocusedCell().rowKey;
+            
+            grid.setValue(val,'empNm', data.empNm);
+            empModalClose.click();
+         })
+      }
+      
+      
+      
+      /*------------------------
+      // 행 추가 버튼
+      ----------------------------*/
+      function insertOrder() {
+         modalGrid3.on('click', function(ev){
+            let data = modalGrid3.getRow(ev.rowKey);
+            console.log(data);
+              let rowData = {matOdCd: data.matOdCd, mtrCd: data.mtrCd, 
+                          matOddAmt: data.matOddAmt, mtrNm: data.mtrNm, 
+                          paAmt: "", erAmt : "" , empNm: "", matChkDate: today,
+                          erCd: "", erInfo:""};
+              grid.appendRow(rowData);
+         })
+      }
+      
+      /*-----------
+      // 행 삭제 버튼
+      --------------*/
+      function deleteBtn() {
+         document.getElementById('deleteBtn').addEventListener('click', function(){
+            let data = grid.getCheckedRows();
+            console.log(data);
+         
+            Swal.fire({
+                  title: '정말로 삭제 하시겠습니까?',
+                  //text: "다시 되돌릴 수 없습니다. 신중하세요.",
+                  icon: 'warning',
+                  showCancelButton: true,
+                  confirmButtonColor: '#3085d6',
+                  cancelButtonColor: '#d33',
+                  confirmButtonText: '승인',
+                  cancelButtonText: '취소',
+                  //reverseButtons: true, // 버튼 순서 거꾸로
+                  
+                }).then((result) => {
+                     $.ajax({
+                          url: '/ChkOd',
+                          method: 'DELETE',
+                          contentType: 'application/JSON',
+                        data: JSON.stringify(data),
+                               beforeSend : function (xhr) {
+                                   xhr.setRequestHeader(header, token);
+                               },
+                        success: function(result){
+                           console.log(result);
+                           if(result >= 1){
+                                Swal.fire('삭제가 완료되었습니다.');
+                                grid.removeCheckedRows();
+                           } else {
+                              Swal.fire('삭제에 실패하였습니다.');
+                           }
+                        },
+                        error: function(reject){
+                           console.log(reject);
+                        }
+                    })
+            })
+         })
+      }
+      
+      /*--------------------------------
+      // 초기화버튼 이벤트
+      ----------------------------------*/
+      function resetBtn() {
+         document.getElementById('resetBtn').addEventListener('click',function(){
+            document.getElementById('startpicker-input').value = null;
+            document.getElementById('endpicker-input').value = null;
+            document.getElementById('matNm').value = '';
+            document.getElementById('matOdCd').value = '';
+            document.getElementById('empNm').value = '';
+            document.getElementById('empId').value = '';
+            
+            // 에러 셀렉트 초기화
+            document.getElementById('erCd').value = '';
+            
+            grid.resetData([[${chkOd}]])
+         });   
+      }
+      
+      /*--------------------------------
+      // 저장 버튼 insert 이벤트
+      ----------------------------------*/
+      function saveChkBtnFn() {
+         document.getElementById('saveChkBtn').addEventListener('click', function(){
+            let data = grid.getCheckedRows();
+            console.log(data);
+            Swal.fire({
+               title: '저장 하시겠습니까?',
+               icon: 'warning',
+               showCancelButton: true,
+               confirmButtonColor: '#3085d6',
+               cancelButtonColor: '#d33',
+               confirmButtonText: '승인',
+               cancelButtonText: '취소',
+               
+             }).then((result) => {
+               if (result.isConfirmed) {
+                 $.ajax({
+                    url: '/ChkOd',
+                    method: 'POST',
+                    contentType: 'application/JSON',
+                  data: JSON.stringify(data),
+                  beforeSend : function (xhr) {
+                      xhr.setRequestHeader(header, token);
+                  },
+                  success: function(result){
+                     if(result >= 1){
+                          Swal.fire('저장이 완료되었습니다.');
+                          
+                          // M_OD테이블의 검수상태 Y로 업데이트
+                          $.ajax({
+                             url: '/updateChk',
+                             method: 'POST',
+                             contentType: 'application/JSON',
+                             dataType: 'JSON',
+                             data: JSON.stringify(data),
+                             beforeSend : function (xhr) {
+                                 xhr.setRequestHeader(header, token);
+                             },
+                             sussecc: function(result){
+                                if(result >= 1) {
+                                   console.log('검수상태 update 완료.')
+                                }
+                             },
+                             error: function(reject){
+                                console.log(reject);
+                             }
+                          })
+                          
+                        setTimeout(() => location.reload(),400);
+                     } else {
+                        Swal.fire('저장에 실패하였습니다.');
+                     }
+                  },
+                  error: function(reject){
+                     console.log(reject);
+                  }
+                 })
+               }
+            })
+         })
+      }
+      
+      /*------------------------------
+      // 자재목록 모달 그리드
+      --------------------------------*/
+      function matMgList(){
+         let modalGrid4 = new tui.Grid({
+            el: document.getElementById('modalGrid4'),
+            bodyHeight: 250,
+            data: [[${matList}]],
+            rowHeaders: ['rowNum'],
+            scrollX: false,
+            scrollY: true,
+            columns: [{
+                   header: '자재코드',
+                   name: 'mtrCd',
+                   sortable: true,
+                 filter: {
+                       type: 'select'           
+                     }
+                 },
+                 {
+                   header: '자재명',
+                   name: 'mtrNm',
+                   sortable: true,
+                 filter: {
+                       type: 'select'           
+                     }
+                 }
+              ] 
+         });
+         return modalGrid4;
+      }
+      
+      /*------------------------------
+      // 담당자목록 모달 그리드
+      --------------------------------*/
+      function empMgList(){
+         let modalGrid5 = new tui.Grid({
+            el: document.getElementById('modalGrid5'),
+            bodyHeight: 250,
+            data: [[${empList}]],
+            rowHeaders: ['rowNum'],
+            scrollX: false,
+            scrollY: true,
+            columns: [
+               {
+                  header: '이름',
+                  name: 'empNm',
+                  sortable: true,
+                  filter: {
+                          type: 'select'           
+                        }
+               },
+               {
+                  header: '아이디',
+                  name: 'empId',
+                  sortable: true,
+                  filter: {
+                          type: 'select'           
+                        }
+               }
+            ]
+         });
+         return modalGrid5;
+      }
+      
+      /*--------------------------------
+      // 자재 모달 행 클릭시 인풋 태그로
+      ----------------------------------*/
+      function matModalClickFn() {
+         modalGrid4.on('click', function(ev){
+            let data = modalGrid4.getRow(ev.rowKey);
+            console.log(data);
+            let matNm = document.getElementById('matNm');
+            let matCd = document.getElementById('matOdCd');
 
-				
-				matNm.value = data.mtrNm;
-				matCd.value = data.mtrCd;
+            
+            matNm.value = data.mtrNm;
+            matCd.value = data.mtrCd;
 
-				
-				matMgCloseBtn.click();
-			})
-		}
-		
-		/*--------------------------------
-		// 직원 모달 행 클릭시 인풋 태그로
-		----------------------------------*/
-		function empModalClickFn() {
-			modalGrid5.on('click', function(ev){
-				let data = modalGrid5.getRow(ev.rowKey);
-				console.log(data);
-				
-				let empNm = document.getElementById('empNm');
-				let empId = document.getElementById('empId');
-				
-				empNm.value = data.empNm;
-				empId.value = data.empId;
-				
-				empMgCloseBtn.click();
-			})
-		}
-		
-		/*--------------------------------
-		// 그리드 리프레쉬
-		----------------------------------*/
-		function modalRef(){
-			document.addEventListener('shown.bs.modal', function (){
-				modalGrid.refreshLayout();
-			});
-			
-			document.addEventListener('shown.bs.modal', function (){
-				modalGrid2.refreshLayout();
-			});
-			
-			document.addEventListener('shown.bs.modal', function (){
-				modalGrid3.refreshLayout();
-			});
-			
-			document.addEventListener('shown.bs.modal', function (){
-				modalGrid4.refreshLayout();
-			});
-			
-			document.addEventListener('shown.bs.modal', function (){
-				modalGrid5.refreshLayout();
-			});
-		}
-		
-		/*--------------------------------
-		// 셀렉트박스 이벤트
-		----------------------------------*/
-		function selectFn() {
-			document.getElementById('erCd').addEventListener('change', function(){
-				let select = document.getElementById('erCd');
-				if (select.value != null || select.value != '') {
-					grid.filter('erCd', [{code: 'contain', value: select.value}]);
-				}
-			})
-		}
-		
-		/*--------------------------------
-		// 합격량 입력시 불햡격량 출력
-		----------------------------------*/
-		function passAmtFn(){
-			grid.on('afterChange', function(ev){
-				let change = ev.changes[0];
-				let rowData = grid.getRow(change.rowKey);
-				let erAmt = rowData.matOddAmt - rowData.paAmt
-				
-		   		if (change.columnName == 'paAmt'){
-					if(rowData.matOddAmt != null && rowData.paAmt != null){
-						grid.setValue(change.rowKey, 'erAmt', erAmt);
-					}
-		   		}
-				
-			 	if (change.columnName == 'erAmt'){
-			 		if(erAmt == 0) {
-			 			grid.setValue(change.rowKey, 'erCd', 'ERR-MNP-001');
-			 			grid.setValue(change.rowKey, 'erInfo', '불량 없음');
-			 		}
-			 	}
-				
-			})
-		}
-		
-		
-	</script>
+            
+            matMgCloseBtn.click();
+         })
+      }
+      
+      /*--------------------------------
+      // 직원 모달 행 클릭시 인풋 태그로
+      ----------------------------------*/
+      function empModalClickFn() {
+         modalGrid5.on('click', function(ev){
+            let data = modalGrid5.getRow(ev.rowKey);
+            console.log(data);
+            
+            let empNm = document.getElementById('empNm');
+            let empId = document.getElementById('empId');
+            
+            empNm.value = data.empNm;
+            empId.value = data.empId;
+            
+            empMgCloseBtn.click();
+         })
+      }
+      
+      /*--------------------------------
+      // 그리드 리프레쉬
+      ----------------------------------*/
+      function modalRef(){
+         document.addEventListener('shown.bs.modal', function (){
+            modalGrid.refreshLayout();
+         });
+         
+         document.addEventListener('shown.bs.modal', function (){
+            modalGrid2.refreshLayout();
+         });
+         
+         document.addEventListener('shown.bs.modal', function (){
+            modalGrid3.refreshLayout();
+         });
+         
+         document.addEventListener('shown.bs.modal', function (){
+            modalGrid4.refreshLayout();
+         });
+         
+         document.addEventListener('shown.bs.modal', function (){
+            modalGrid5.refreshLayout();
+         });
+      }
+      
+      /*--------------------------------
+      // 셀렉트박스 이벤트
+      ----------------------------------*/
+      function selectFn() {
+         document.getElementById('erCd').addEventListener('change', function(){
+            let select = document.getElementById('erCd');
+            if (select.value != null || select.value != '') {
+               grid.filter('erCd', [{code: 'contain', value: select.value}]);
+            }
+         })
+      }
+      
+      /*--------------------------------
+      // 합격량 입력시 불햡격량 출력
+      ----------------------------------*/
+      function passAmtFn(){
+         grid.on('afterChange', function(ev){
+            let change = ev.changes[0];
+            let rowData = grid.getRow(change.rowKey);
+            let erAmt = rowData.matOddAmt - rowData.paAmt
+            
+               if (change.columnName == 'paAmt'){
+               if(rowData.matOddAmt != null && rowData.paAmt != null){
+                  grid.setValue(change.rowKey, 'erAmt', erAmt);
+               }
+               }
+            
+             if (change.columnName == 'erAmt'){
+                if(erAmt == 0) {
+                   grid.setValue(change.rowKey, 'erCd', 'ERR-MNP-001');
+                   grid.setValue(change.rowKey, 'erInfo', '불량 없음');
+                }
+             }
+            
+         })
+      }
+      
+      
+   </script>
 </div>
