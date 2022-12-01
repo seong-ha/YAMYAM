@@ -222,18 +222,22 @@ var header = $("meta[name='_csrf_header']").attr("content");
 		    columns: [
 		      {
 		        header: '생산요청 일자',
-		        align : 'right',
+		        align : 'center',
 		        name: 'rqtDate',
 		      },
 		      {
 		        header: '요청 코드',
-		        align : 'left',
+		        align : 'center',
 		        name  : 'rqtNo'
 		      },
 		      {
 		        header: '주문 코드',
-		        align : 'left',
-		        name  : 'odCd'
+		        align : 'center',
+		        name  : 'odCd',
+			validation: {
+			     dataType: 'text',
+			     required: true
+			      		}
 		      },
 		      {
 		        header: '제품 코드',
@@ -268,7 +272,7 @@ var header = $("meta[name='_csrf_header']").attr("content");
 		      },
 		      {
 		        header: '납기 일자',
-		        align : 'right',
+		        align : 'center',
 		        name  : 'deDate',
 		      },
 		      {
@@ -335,6 +339,7 @@ var header = $("meta[name='_csrf_header']").attr("content");
 	----------------*/
 	function SaveBtnHandler(){
 		$('#saveBtn').on('click',function(){
+			podListGrid.blur();
 			let rowData = podListGrid.getCheckedRows();
 			let podList = [];
 			let rqtNo = '';
@@ -492,33 +497,35 @@ var header = $("meta[name='_csrf_header']").attr("content");
 		    columns: [
 		      {
 		        header: '주문 코드',
-		        align : 'left',
-		        name: 'odCd'
+		        align : 'center',
+		        name  : 'odCd'
 		      },
 		      {
 		        header: '제품 코드',
+		        width : 100,
 		        align : 'center',
-		        name: 'prdCd'
+		        name  : 'prdCd'
 		      },
 		      {
 		        header: '제품명',
 		        align : 'center',
-		        name: 'prdNm'
+		        name  : 'prdNm'
 		      },
 		      {
 		        header: '주문량',
 		        align : 'right',
-		        name: 'odAmt'
+		        width : 70,
+		        name  : 'odAmt'
 		      },
 		      {
 		        header: '재고량',
 		        align : 'right',
-		        name: 'samt'
+		        name  : 'samt'
 		      },
 		      {
 		        header: '납기일자',
-		        align : 'right',
-		        name: 'deDate'
+		        align : 'center',
+		        name  : 'deDate'
 		      }
 		    ]
 		  });
@@ -530,7 +537,7 @@ var header = $("meta[name='_csrf_header']").attr("content");
 	
 	
 	 /*------------
-	// 제품 모달에서 값 가져오기
+	// 주문서 모달에서 값 가져오기
 	----------------*/
   	orderModalGrid.on('click', ev => {
 	   let val = orderModalGrid.getRow(ev.rowKey); // 클릭한 그리드

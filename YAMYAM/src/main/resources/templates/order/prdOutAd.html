@@ -190,12 +190,12 @@ var header = $("meta[name='_csrf_header']").attr("content");
 	    columns: [
 	      {
 	        header: '주문 일자',
-	        align : 'right',
+	        align : 'center',
 	        name  : 'odDate'
 	      },
 	      {
 	        header: '주문 코드',
-	        align : 'left',
+	        align : 'center',
 	        name  : 'odCd'
 	      },
 	      {
@@ -205,8 +205,9 @@ var header = $("meta[name='_csrf_header']").attr("content");
 	      },
 	      {
 	        header: '제품명',
-	        align : 'left',
-	        name  : 'prdNm'
+	        align : 'center',
+	        name  : 'prdNm',
+	        filter: {type: 'select'}
 	      },
 	      {
 	        header: '거래처명',
@@ -252,8 +253,17 @@ var header = $("meta[name='_csrf_header']").attr("content");
 	----------------*/
 	
 	let ordOdAmt = 0;
-	
+	let selectedRowKey = null;
 		grid.on('click', function(ev) {
+			if(ev.rowKey <0){
+	            return;
+	         }
+	         if(selectedRowKey>=0) {
+	        	 grid.removeRowClassName(selectedRowKey, 'cell-change');
+	           }
+	         selectedRowKey = ev.rowKey;
+	         grid.addRowClassName(selectedRowKey, 'cell-change');
+	         
 			let odCode = grid.getValue(ev.rowKey, 'odCd');
 			let prdName = grid.getValue(ev.rowKey, 'prdNm');
 			let prdCd = grid.getValue(ev.rowKey, 'prdCd');
@@ -312,6 +322,7 @@ var header = $("meta[name='_csrf_header']").attr("content");
 	----------------*/
 	function SaveBtnHandler(){
 		$('#saveBtn').on('click',function(){
+			insertOutGrid.blur();
 			let rowData = insertOutGrid.getCheckedRows();
 			let list = [];
 			let prdLot = '';
