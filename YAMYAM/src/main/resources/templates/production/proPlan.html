@@ -369,7 +369,6 @@
 				    }
 				  });
 			}); 
-		detailPGrid
 		return detailPGrid;	
 	}
 	
@@ -593,13 +592,11 @@
 				    }
 				  });
 			}); 
-		insertGrid.on('mouseover', function(ev){
-			insertGrid.addColumnClassName('prdCd','cell-pointer');
-		})
 		return insertGrid;
-		
 	}		
-
+	insertGrid.on('mouseover', function(ev){
+		insertGrid.addColumnClassName('prdCd','cell-pointer');
+	})
 	
 	/*------------
 	// 생산요청서 모달에 뜨는 그리드
@@ -611,7 +608,6 @@
 			scrollX : false,
 			scrollY : false,
 			rowHeaders: ['rowNum'],
-			
 			columns : [ {
 				header : '주문코드',
 				name : 'odCd',

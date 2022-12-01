@@ -22,30 +22,30 @@
 			<div class="col-7" >
 				 <table>
 					<tr>
-						<td colspan="4">
+						<td colspan="5">
 							<h4>관리</h4>
 						</td>
 					</tr>
 					<tr>
-						<td>제품코드 : </td>
-						<td><input type="text" id="pName" name="pName"></td>
-						<td>라인코드 : </td>
+						<td style="width:90px;">제품코드 : </td>
+						<td style="width:130px;"><input type="text" id="pName" name="pName"></td>
+						<td style="width:90px;">라인코드 : </td>
 						<td><input type="text" id="lineName" name="lineName"></td>
+						<td style="width:400px;">
+							<th:block sec:authorize="hasAnyAuthority('JOB-GRD1', 'JOB-GRD2')">
+								<button type="button" id="insertBtn" class="btn btn-dark btn-sm" style="float:right; margin-right:5px;">저장</button>
+								<button type="button" id="deleteBtn" class="btn btn-dark btn-sm" style="float:right; margin-right:5px;">행 삭제</button>	
+								<button type="button" id="plusBtn" class="btn btn-dark btn-sm" style="float:right; margin-right:5px;">행 추가</button>
+							</th:block>	
+						</td>
 					</tr>
-						 
+					<tr>
+						<td colspan="5">
+							<div id="flowManage"></div>
+						</td>
+					</tr>
 				 </table>
-
-				<div id="flowManage"></div>
-				<div style="float:right;">
-					<th:block sec:authorize="hasAnyAuthority('JOB-GRD1', 'JOB-GRD2')">
-						<button type="button" id="plusBtn" class="btn btn-dark btn-sm">행 추가</button>
-						<button type="button" id="deleteBtn" class="btn btn-dark btn-sm">행 삭제</button>	
-						<button type="button" id="insertBtn" class="btn btn-dark btn-sm">저장</button>
-					</th:block>	
-				</div>
-				
 			</div>
-		
 	</div>
 		
 	<!-- 공정목록 그리드 모달 -->
@@ -142,6 +142,7 @@
 				el : document.getElementById('flowManage'),
 				scrollX : false,
 				scrollY : false,
+				minBodyHeight : 240,
 				rowHeaders: ['checkbox','rowNum'],				
 				columns : [ 
 				{
@@ -161,6 +162,10 @@
 					align : 'center'
 				}]
 			});
+			flowManage.on('mouseover', function(ev){
+				flowManage.addColumnClassName('pproCd','cell-pointer');
+				flowManage.addColumnClassName('pproName','cell-pointer');
+			})
 			return flowManage;
 		}
 		
@@ -203,11 +208,16 @@
 		// 공정흐름도 그리드 클릭 이벤트
 		----------------*/
 		function flowGridClick(){
+			let selectedRowKey = null;
 			flowGrid.on('click',function(ev){
-				if(ev.rowKey==null){
+				if(ev.rowKey <0){
 					return;
 				}
-				
+				if(selectedRowKey>=0) {
+					flowGrid.removeRowClassName(selectedRowKey, 'cell-change');
+				  }
+				selectedRowKey = ev.rowKey;
+				flowGrid.addRowClassName(selectedRowKey, 'cell-change');
 				let prdCd = flowGrid.getValue(ev.rowKey, 'prdCd');
 				let plineCd = flowGrid.getValue(ev.rowKey, 'plineCd');
 				$('#pName').val(prdCd);
@@ -233,21 +243,30 @@
 		// 흐름도 관리 그리드 클릭 이벤트
 		----------------*/
 		function flowManageClick(){
-			flowManage.on('focusChange',function(ev){
-				
-				let code = flowManage.getValue(ev.rowKey, 'pproCd')
-				let prdCd = $('#pName').val();
+			let selectedRowKey = null;
+			flowManage.on('click',function(ev){
+				if(ev.rowKey <0){
+					return;
+				}
+				let mData = flowManage.getData();
+				for(let i =0; i<mData.length; i++){
+					if(!mData[i].pproCd){
+						let code = flowManage.getValue(ev.rowKey, 'pproCd')
+						let prdCd = $('#pName').val();
 
-				$.ajax({
-					url : '/viewProgress',
-					method: "GET",
-					data : {"prdCd" : prdCd}
-				}).then(res=>{
-					listModalGrid.resetData(res);
-				})
+						$.ajax({
+							url : '/viewProgress',
+							method: "GET",
+							data : {"prdCd" : prdCd}
+						}).then(res=>{
+							listModalGrid.resetData(res);
+						})
+						
+			   			$('#listModal').modal('show');
+			   			listModalGrid.refreshLayout();
+					}
+				}
 				
-	   			$('#listModal').modal('show');
-	   			listModalGrid.refreshLayout();
 				
 			})
 		}
@@ -289,14 +308,19 @@
 		function deleteBtnHandler(){
 			// grid 선택 행 삭제
 			$('#deleteBtn').on('click',function(){
-				// sweetalert2
-				sweetConfirm('D', function(){
-					Swal.fire('삭제가 완료되었습니다');
-					// grid에서 삭제
-					flowManage.removeCheckedRows();
-					// 실패
-				})
+				let del = flowManage.getCheckedRows();
+				let delLeng = del.length;
 				
+				if(delLeng == 0){
+					Swal.fire('삭제할 행을 선택하세요');
+				}else {
+					sweetConfirm('D', function(){
+						Swal.fire('삭제가 완료되었습니다');
+						// grid에서 삭제
+						flowManage.removeCheckedRows();
+						// 실패
+					})
+				}
 			});	
 		}
 		
