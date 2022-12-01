@@ -179,7 +179,7 @@
 		
 		
 		/*------------
-		// modalGrid 초기화
+		// 생산지시조회 modalGrid 초기화
 		----------------*/
 		function modalGridInit(){
 			let modalGrid = new tui.Grid({
@@ -356,6 +356,12 @@
 			        }
 			      }
 			});
+			planOrder.on('mouseover', function(ev){
+				planOrder.addColumnClassName('poddDates','cell-pointer');
+				planOrder.addColumnClassName('poddAmt','cell-pointer');
+				planOrder.addColumnClassName('poddPrio','cell-pointer');
+			})
+			
 			return planOrder;
 		}
 		planOrder.hideColumn('pplndCd');
@@ -509,7 +515,17 @@
 			----------------*/	
 			function gridClickHandler(){
 			// 미지시계획조회 모달창의 그리드 선택시 자료를 상세생산계획 Grid에 넣어주기
+			let selectedRowKey = null;
 				grid.on('click',function(ev){
+					if(ev.rowKey <0){
+						return;
+					}
+					if(selectedRowKey>=0) {
+						grid.removeRowClassName(selectedRowKey, 'cell-change');
+					  }
+					selectedRowKey = ev.rowKey;
+					grid.addRowClassName(selectedRowKey, 'cell-change');
+					
 					let pplnCd = grid.getRow(ev.rowKey).pplnCd;
 					let prdNm  = grid.getRow(ev.rowKey).prdNm;
 					let pplndAmt = grid.getRow(ev.rowKey).pplndAmt;
@@ -567,38 +583,48 @@
 			// 계획 관리 그리드 클릭이벤트
 			----------------*/	
 			function planDGridChangeHandler(){
+				let selectedRowKey = null;
 				planDGrid.on('click', function(ev) {
-				 let poddAmt = planDGrid.getRow(ev.rowKey).pplndAmt;
-				 let pplnDate = planDGrid.getRow(ev.rowKey).pplnDate;
-				 let pplndCd = planDGrid.getRow(ev.rowKey).pplndCd;
-				 let pplndDays = planDGrid.getRow(ev.rowKey).pplndDays;
-				 let prdCd = planDGrid.getRow(ev.rowKey).prdCd;
-				 $.ajax({
-						url : '/proOrderList',
-						method: "GET",
-						data : {"prdCd":prdCd,"pplndDays":pplndDays}
-					}).then(res=>{
-						let num = planDGrid.getValue(0,'pplndDays');
+					if(ev.rowKey <0){
+						return;
+					}
+					if(selectedRowKey>=0) {
+						planDGrid.removeRowClassName(selectedRowKey, 'cell-change');
+					  }
+					selectedRowKey = ev.rowKey;
+					planDGrid.addRowClassName(selectedRowKey, 'cell-change');
+				
+					 let poddAmt = planDGrid.getRow(ev.rowKey).pplndAmt;
+					 let pplnDate = planDGrid.getRow(ev.rowKey).pplnDate;
+					 let pplndCd = planDGrid.getRow(ev.rowKey).pplndCd;
+					 let pplndDays = planDGrid.getRow(ev.rowKey).pplndDays;
+					 let prdCd = planDGrid.getRow(ev.rowKey).prdCd;
+					 $.ajax({
+							url : '/proOrderList',
+							method: "GET",
+							data : {"prdCd":prdCd,"pplndDays":pplndDays}
+						}).then(res=>{
+							let num = planDGrid.getValue(0,'pplndDays');
+							
+							let date =  new Date(pplnDate);
+							console.log(date)
+							let orderD = new Date(date.setDate(date.getDate()+3));
+							let orD = '';
+							
+							
+							for(let i=0; i<num; i++){
+								orderD = new Date(date.setDate(date.getDate()+i));
+								orD = getDateStr(orderD);
+								planOrder.appendRow();
+								planOrder.setValue(i,'plineCd',res[0].plineCd);
+								planOrder.setValue(i,'poddDates',orD);
+							}
+							
+							
+						})
 						
-						let date =  new Date(pplnDate);
-						console.log(date)
-						let orderD = new Date(date.setDate(date.getDate()+3));
-						let orD = '';
-						
-						
-						for(let i=0; i<num; i++){
-							orderD = new Date(date.setDate(date.getDate()+i));
-							orD = getDateStr(orderD);
-							planOrder.appendRow();
-							planOrder.setValue(i,'plineCd',res[0].plineCd);
-							planOrder.setValue(i,'poddDates',orD);
-						}
-						
-						
-					})
-					
-					planOrder.refreshLayout();
-					 
+						planOrder.refreshLayout();
+						 
 					
 					
 				});

@@ -411,7 +411,7 @@
 	            AND TRUNC(pl.ppln_date) BETWEEN #{startDate} AND #{endDate}
 	        </if>
 
-        ORDER BY pod_dates DESC, r.eqp_cd
+        ORDER BY ppro_s_time DESC, pod_dates DESC, r.eqp_cd
 	</select>
 	
 	<!-- 공정관리 조회 -->
