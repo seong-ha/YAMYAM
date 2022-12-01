@@ -65,6 +65,7 @@ public class ProServiceImpl implements ProService {
 		int cnt = mapper.detailCnt(vo.get(0));
 		if(cnt == 0) {
 			mapper.deletePlan(vo.get(0));
+			mapper.updateBpod2(vo.get(0));
 		}
 		return result;
 	}

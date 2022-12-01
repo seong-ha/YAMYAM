@@ -25,7 +25,6 @@
 <body>
 	<!-- 본문 시작 -->
 	<div layout:fragment="content" class="container"> <!-- display:none; -->
-		<!-- <div><button type="button" style=" background-color : #963446; color:#fcf8e3; float: right" id="scheduleBtn" class="btn btn-dark btn-sm">공정이동표</button></div> -->
 		<h3>생산 관리</h3>
 		<hr>
 	<div class="row">
@@ -376,31 +375,6 @@ var header = $("meta[name='_csrf_header']").attr("content");
 	}
 	
 	
-	/*------------
-	// 재시작 버튼 이벤트 핸들러
-	----------------*/
-	function restartBtnHandler(){
-		
-		$('#restartBtn').on('click',function(){
-			// sweetalert2
-			sweetConfirm('R', 'info', function(){
-				let eqpSts = proGrid.getValue(0,'eqpSts');
-				let data = proGrid.getData();
-				
-				if(eqpSts == '긴급중지'){
-					for(let i=0; i<data.length; i++){
-						proGrid.setValue(i,'eqpSts','대기');	
-					}
-				}
-				//변수 = setInterval(콜백함수, 시간);
-				interval = setInterval(viewProgress,1000);
-				
-				if(n>=6){	// 공정이 끝나면 interval끝
-					clearInterval(reInterval);
-				}
-			})
-		})
-	}
 	
 	/*------------
 	// 시작 버튼 이벤트 핸들러
@@ -477,8 +451,9 @@ var header = $("meta[name='_csrf_header']").attr("content");
 	function startEqp(n,time){
 		// 처음이면
 		let pG = pOrderGrid.getFocusedCell().rowKey;
-
+	
 		let pproInAmt;
+		
 		if(n==0){
 			pproInAmt = pOrderGrid.getValue(pG,'poddAmt');
 			
@@ -531,7 +506,7 @@ var header = $("meta[name='_csrf_header']").attr("content");
 		let pproErAmt = 0;	
 		let pproOtAmt = pproInAmt - pproErAmt; 
 		
-		if(eqpSts == "가동"){
+		if(eqpSts == "가동" || eqpSts == "재시작"){
 			// 설비상태 업데이트
 			$.ajax({
 				url : '/eqpUpdate',
@@ -575,41 +550,39 @@ var header = $("meta[name='_csrf_header']").attr("content");
 					if(eqpSts == "가동"){
 					eqpCd = data[i].eqpCd;
 					plineCd = data[i].plineCd;
-					//proGrid.setValue(i,'eqpSts','긴급중지');
-					// 설비상태 업데이트
-					$.ajax({
-						url : '/eqpUpdate',
-						method: 'POST',
-						data : {"eqpCd" : eqpCd, "plineCd" : plineCd},
-						dataType : 'json',
-						beforeSend : function (xhr) {
-						    xhr.setRequestHeader(header, token);
-						},
-						success : function(data){
-								// grid에서 수정
-								proGrid.resetData(data);
-								for(let i=0; i<data.length; i++){
-									proGrid.setValue(i,'eqpSts','긴급중지');	
-								}
-								proGrid.refreshLayout();
-								},
-						error : function(reject){
-								console.log(reject);
-								// 실패
-						}			 		  
-					});	// end of ajax
+					for(let i=n; i<data.length; i++){
+						proGrid.setValue(i,'eqpSts','긴급중지');	
+					}
 				}	 
-					
 				}
-				
-				
-				
 			})
-			
 		})
 	}
 	
-	
+
+	/*------------
+	// 재시작 버튼 이벤트 핸들러
+	----------------*/
+	function restartBtnHandler(){
+		
+		$('#restartBtn').on('click',function(){
+			// sweetalert2
+			sweetConfirm('R', 'info', function(){
+				let eqpSts = proGrid.getValue(0,'eqpSts');
+				let data = proGrid.getData();
+				
+				for(let i=n; i<data.length; i++){
+					proGrid.setValue(i,'eqpSts','재시작');	
+				}
+				//변수 = setInterval(콜백함수, 시간);
+				interval = setInterval(viewProgress,1000);
+				
+				if(n>=6){	// 공정이 끝나면 interval끝
+					clearInterval(reInterval);
+				}
+			})
+		})
+	}
 	
 
 	

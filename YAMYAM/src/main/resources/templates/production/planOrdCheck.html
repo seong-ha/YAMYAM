@@ -1,4 +1,4 @@
-	<!DOCTYPE html>
+<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
 	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
 	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
@@ -20,7 +20,8 @@
 	<!-- 본문 시작 -->
 	<div layout:fragment="content" class="container">
 	<th:block sec:authorize="hasAnyAuthority('JOB-GRD1', 'JOB-GRD2')">
-	<button type="button" id="showNOModal" class="btn btn-dark btn-sm" style="width: 140px; float:right;" data-bs-toggle="modal" data-bs-target="#orderModal"> 생산지시 조회</button>
+	<button type="button" id="showNOModal" class="btn btn-dark btn-sm" style="width: 140px; float:right;"
+	data-bs-toggle="tooltip" data-bs-html="true" title="생산 지시 이력을<br> 조회 할 수 있는 버튼입니다" data-bs-target="#orderModal"> 생산지시 조회</button>
 	</th:block>
 		<h3>생산지시 관리 및 조회</h3>
 		<hr>
@@ -108,7 +109,8 @@
 	/* token */
 	var token = $("meta[name='_csrf']").attr("content");
 	var header = $("meta[name='_csrf_header']").attr("content");
-		
+	var showNOModalEl = document.getElementById('showNOModal');
+	var tooltip = new bootstrap.Tooltip(showNOModalEl,{placement : 'bottom'});
 	
 		//date picker 초기화
 		searchInit(); 
@@ -629,8 +631,6 @@
 					 let plineCd = '';
 					 for(let i =0; i<orderData.length; i++){
 						 plineCd = orderData[0].plineCd;
-						 
-						 prdCd = orderData[i].prdCd;
 						 poddAmt = orderData[i].poddAmt;
 						 poddDates = orderData[i].poddDates;
 						 poddPrio = orderData[i].poddPrio;
@@ -648,7 +648,11 @@
 								},
 								dataType : 'json',
 								success : function(data){
-									Swal.fire('생산지시가 등록되었습니다.'); console.log(data);
+									Swal.fire('생산지시가 등록되었습니다.');
+									grid.refreshLayout();
+									planDGrid.clear();
+									planOrder.clear();
+									location.reload();
 									},
 								error : function(reject){Swal.fire('등록에 실패했습니다.'); console.log(reject);}				
 						 })
