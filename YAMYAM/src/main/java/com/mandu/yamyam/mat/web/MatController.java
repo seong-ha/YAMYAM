@@ -39,6 +39,7 @@ public class MatController {
 		model.addAttribute("oderN", service.matOderN7());			// 기본 전체 조회
 		model.addAttribute("newPlanList", service.newPlanList());	// 신규생산계획조회(생산계획서용 탭)
 		model.addAttribute("addNewPlan", service.addNewPlan());		// 신규 생산 계획서 모델 선택 모달창(생산계획서용 탭)
+		model.addAttribute("matStList", service.mtrSamtList());		// 자재별 전체 재고 조회
 		return "mat/matOd";
 	}
 	

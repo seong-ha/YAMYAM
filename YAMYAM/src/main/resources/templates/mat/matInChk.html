@@ -210,6 +210,7 @@ select option[value=""][disabled] {
                  {
                    header: '발주코드',
                    name: 'matOdCd',
+                   align: 'center',
                    sortable: true,
                  filter: {
                        type: 'select'           
@@ -218,7 +219,7 @@ select option[value=""][disabled] {
                  {
                    header: '자재코드',
                    name: 'mtrCd',
-                  align: 'center',
+                   align: 'center',
                    sortable: true,
                  filter: {
                        type: 'select'           
@@ -227,7 +228,7 @@ select option[value=""][disabled] {
                  {
                    header: '자재명',
                    name: 'mtrNm',
-                  align: 'center',
+                   align: 'center',
                    sortable: true,
                  filter: {
                        type: 'select'           
@@ -236,56 +237,56 @@ select option[value=""][disabled] {
                  {
                    header: '발주총량',
                    name: 'matOddAmt',
-                  align: 'right',
+                   align: 'center',
                    sortable: true
                  },
                  {
                    header: '합격량',
                    name: 'paAmt',
-                  align: 'right',
+                   align: 'center',
                    sortable: true,
-                 editor: 'text'
+                   editor: 'text'
                 },
                  {
                    header: '불합격량',
                    name: 'erAmt',
-                  align: 'right',
+                   align: 'center',
                    sortable: true,
-                 editor: 'text'
+                   editor: 'text'
                 },
                  {
                    header: '담당자',
                    name: 'empNm',
-                  align: 'center',
+                   align: 'center',
                    sortable: true,
-                 filter: {
+                   filter: {
                        type: 'select'           
                      }
                  },
                  {
                      header: '불량코드',
                      name: 'erCd',
-                   align: 'center',
+                     align: 'center',
                      sortable: true,
-                    filter: {
+                     filter: {
                           type: 'select'           
                         }
                    },
                    {
                        header: '불량내용',
                        name: 'erInfo',
-                     align: 'center',
+                       align: 'center',
                        sortable: true,
-                    filter: {
+                       filter: {
                           type: 'select'           
                         }
                      },
                  {
                    header: '검사일자',
                    name: 'matChkDate',
-                  align: 'right',
+                   align: 'center',
                    sortable: true,
-                  editor: {
+                   editor: {
                      type: 'datePicker',
                      options: {
                         format: 'yyyy-MM-dd',
@@ -347,11 +348,13 @@ select option[value=""][disabled] {
             columns: [{
                    header: '불량코드',
                    name: 'commdCd',
+                   align: 'center',
                    sortable: true
                  },
                  {
                    header: '불량내용',
                    name: 'commdNm',
+                   align: 'center',
                    sortable: true
                  }
                ] 
@@ -374,11 +377,13 @@ select option[value=""][disabled] {
                {
                   header: '이름',
                   name: 'empNm',
+                  align: 'center',
                   sortable: true
                },
                {
                   header: '아이디',
                   name: 'empId',
+                  align: 'center',
                   sortable: true
                }
             ]
@@ -400,21 +405,25 @@ select option[value=""][disabled] {
             columns: [{
                    header: '발주코드',
                    name: 'matOdCd',
+                   align: 'center',
                    sortable: true
                  },
                  {
                    header: '자재코드',
                    name: 'mtrCd',
+                   align: 'center',
                    sortable: true
                  },
                  {
                    header: '자재명',
                    name: 'matOddAmt',
+                   align: 'center',
                    sortable: true
                  },
                  {
                   header: '발주총량',
                   name: 'mtrNm',
+                  align: 'center',
                   sortable: true
                 }
             ] 
@@ -491,7 +500,7 @@ select option[value=""][disabled] {
                           matOddAmt: data.matOddAmt, mtrNm: data.mtrNm, 
                           paAmt: "", erAmt : "" , empNm: "", matChkDate: today,
                           erCd: "", erInfo:""};
-              grid.appendRow(rowData);
+              grid.prependRow(rowData);
          })
       }
       
@@ -638,7 +647,8 @@ select option[value=""][disabled] {
                    header: '자재코드',
                    name: 'mtrCd',
                    sortable: true,
-                 filter: {
+                   align: 'center',
+                   filter: {
                        type: 'select'           
                      }
                  },
@@ -646,7 +656,8 @@ select option[value=""][disabled] {
                    header: '자재명',
                    name: 'mtrNm',
                    sortable: true,
-                 filter: {
+                   align: 'center',
+                   filter: {
                        type: 'select'           
                      }
                  }
@@ -671,6 +682,7 @@ select option[value=""][disabled] {
                   header: '이름',
                   name: 'empNm',
                   sortable: true,
+                  align: 'center',
                   filter: {
                           type: 'select'           
                         }
@@ -679,6 +691,7 @@ select option[value=""][disabled] {
                   header: '아이디',
                   name: 'empId',
                   sortable: true,
+                  align: 'center',
                   filter: {
                           type: 'select'           
                         }
