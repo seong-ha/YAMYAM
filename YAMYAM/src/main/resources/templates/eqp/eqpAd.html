@@ -331,13 +331,13 @@
 				          header: '제작일자',
 				          name: 'mkDate',
 					      sortable: true,
-					      align: 'right'
+					      align: 'center'
 				        },
 				        {
 				          header: '구매일자',
 				          name: 'buyDate',
 					      sortable: true,
-					      align: 'right'
+					      align: 'center'
 				        },
 				        {
 				          header: '최고온도',
@@ -358,7 +358,7 @@
 					      }
 				        },
 				        {
-				          header: '점검주기(주기일수)',
+				          header: '점검주기(일수)',
 				          name: 'chkCycle',
 					      sortable: true,
 					      align: 'right',
@@ -370,12 +370,12 @@
 				          header: '마지막점검일',
 				          name: 'chkDate',
 					      sortable: true,
-					      align: 'right'
+					      align: 'center'
 				        },
 				        {
 				          header: '설비구분',
 				          name: 'eqpType',
-					      align: 'left',
+					      align: 'center',
 					      filter: {
 					    	  type: 'select'
 					      }
@@ -383,7 +383,7 @@
 				        {
 				          header: '설비상태',
 				          name: 'eqpSts',
-					      align: 'left',
+					      align: 'center',
 					      filter: {
 					    	  type: 'select'
 					      }
@@ -575,6 +575,7 @@
 					url:'/getEqpList',
 					dataType: 'json',
 					success: function (data) {
+						console.log(data);
 						selectEqpGrid.resetData(data);
 					},
 					error: function (reject) {

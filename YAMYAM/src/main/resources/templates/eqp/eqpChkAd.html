@@ -75,7 +75,7 @@
 								<button id="insertEqpChk" class="btn btn-dark btn-sm" style="float:right; margin-right:5px;">저장</button>
 								<button id="updateEqpChk" class="btn btn-dark btn-sm" style="float:right; margin-right:5px;">수정</button>
 								<button id="eqpTypeSearch" class="btn btn-dark btn-sm"
-									data-bs-toggle="modal" data-bs-target="#eqpToChkModal"style="float:right; margin-right:30px;">설비조회</button>
+									data-bs-toggle="modal" data-bs-target="#eqpToChkModal"style="float:right; margin-right:30px;">설비 조회</button>
 							</th:block>
 						</li>
 					</ul>
@@ -224,7 +224,7 @@
 				          header: '점검일자',
 				          name: 'chkDate',
 					      sortable: true,
-					      align: 'right',
+					      align: 'center',
 					      editor: {
 					          type : 'datePicker',
 				        	  options: {
@@ -241,7 +241,7 @@
 				          header: '차기점검일자',
 				          name: 'nextChkDate',
 					      sortable: true,
-					      align: 'right'
+					      align: 'center'
 				        },
 				        {
 				          header: '판정',
@@ -531,6 +531,7 @@
 					eqpChkGrid.clear();
 					
 					eqpChkGrid.appendRows(rowData);
+					eqpChkGrid
 					document.getElementById('eqpToChkModalClose').click();
 				})
 			}

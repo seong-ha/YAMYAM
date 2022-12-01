@@ -4,19 +4,20 @@
 
 	<!-- 설비관리/비가동 - 설비전체조회 -->
 	<select id="getEqpList" resultType="com.mandu.yamyam.common.LowerKeyMap"> 
-		SELECT eqp_cd,
-		       eqp_nm,
-		       md_nm,
-		       find_act_name(act_cd) as "act_nm",
-		       TO_CHAR(mk_date, 'yyyy-MM-dd') as "mk_date",
-		       TO_CHAR(buy_date, 'yyyy-MM-dd') as "buy_date",
-		       high_temp,
-		       low_temp,
-		       chk_cycle,
-		       find_code_name(eqp_type) AS "eqp_type",
-		       find_code_name(eqp_sts) AS "eqp_sts"
-		 FROM e_eqp
-		 ORDER BY eqp_cd
+		SELECT e.eqp_cd,
+		       e.eqp_nm,
+		       e.md_nm,
+		       find_act_name(e.act_cd) as "act_nm",
+		       TO_CHAR(e.mk_date, 'yyyy-MM-dd') as "mk_date",
+		       TO_CHAR(e.buy_date, 'yyyy-MM-dd') as "buy_date",
+		       e.high_temp,
+		       e.low_temp,
+		       e.chk_cycle,
+               TO_CHAR((select MAX(chk_date) from e_chk where eqp_cd = e.eqp_cd), 'yyyy-MM-dd') AS chk_date,
+		       find_code_name(e.eqp_type) AS eqp_type,
+		       find_code_name(e.eqp_sts) AS eqp_sts
+		 FROM e_eqp e
+		 ORDER BY e.eqp_cd
 	</select>
 	
 	<!-- 설비단건 조회 -->
@@ -134,7 +135,7 @@
 		       to_char(uop_etime, 'yyyy-mm-dd hh24:mi') AS uop_etime
 		FROM e_uop
 		WHERE uop_stime BETWEEN TRUNC(CURRENT_DATE - 7) AND TRUNC(CURRENT_DATE + 1)
-		ORDER BY uop_cd
+		ORDER BY uop_stime DESC
 	</select>
 	
 	<!-- 비가동 - 비가동 리스트 조건 조회 -->
@@ -148,7 +149,6 @@
 		       to_char(uop_stime, 'yyyy-mm-dd hh24:mi') AS uop_stime,
 		       to_char(uop_etime, 'yyyy-mm-dd hh24:mi') AS uop_etime
 		FROM e_uop
-		
 		<where>
 			<if test="eqpCd != null and !eqpCd.equals('')">
 				eqp_cd = #{eqpCd}
@@ -158,7 +158,7 @@
             </if>
         </where>
         
-		ORDER BY uop_cd
+		ORDER BY uop_stime DESC
 	</select>
 	
 	<!-- 비가동 - 비가동 등록 -->
@@ -202,6 +202,7 @@
 		FROM e_uop
 		WHERE eqp_cd = #{value}
 		  AND uop_etime IS NULL
+		ORDER BY uop_stime DESC
 	</select>
 	
 	<!-- 설비점검 - 설비 점검 전체 조회(일주일치) -->
@@ -219,7 +220,7 @@
 		FROM e_eqp e JOIN e_chk c
 		  ON e.eqp_cd = c.eqp_cd
 		WHERE c.chk_date BETWEEN TRUNC(CURRENT_DATE - 7) AND (CURRENT_DATE + 1)
-		ORDER BY c.chk_date
+		ORDER BY c.chk_date DESC
 	</select>
 	
 	<!-- 설비 직원 리스트 조회 -->
@@ -249,6 +250,7 @@
            on c.eqp_cd = e.eqp_cd
         WHERE chk_date IS NULL
 		  OR  (trunc(c.chk_date) + trunc(c.chk_cycle) - trunc(CURRENT_DATE)) <![CDATA[<=]]> #{value}
+		ORDER BY c.chk_date DESC
 	</select>
 	
 	<!-- 설비 점검 등록 -->
@@ -305,7 +307,7 @@
 				</otherwise>
 			</choose>
 		
-		ORDER BY c.chk_date
+		ORDER BY c.chk_date DESC
 	</select>
 	
 	<delete id="deleteEqpChk" parameterType="com.mandu.yamyam.eqp.service.ChkVO">
