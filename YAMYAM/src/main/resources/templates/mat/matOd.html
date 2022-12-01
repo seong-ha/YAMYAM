@@ -213,7 +213,7 @@
       
       getModal();                     // 헤더 클릭 모달/총합 이벤트
       getSum();                       // 생산계획서용 탭 총합
-      getSum2();					  // 일반 탭 총합
+      getSum2();                 // 일반 탭 총합
       
       matListSelect();               // 자재목록 행 클릭 이벤트
       actListSelect();               // 업체목록 행 클릭 이벤트
@@ -237,6 +237,7 @@
       newPlanLookUpBtn();              // 탭2 신규 생산 계획서 리스트 날짜 조회 버튼
       
       allCheckFn();                    // 필요자재 그리드 올 체크 이벤트
+      hideMnFn();                  // 필요자재 단가 숨기기
       
    /*------------------------------
    // 자재발주관리 전체 조회(일반 탭)
@@ -523,6 +524,14 @@
                    header: '업체명',
                    name: 'actNm',
                    sortable: true
+                 },
+                 {
+                    header: '단가',
+                    name: 'mtrPrc',
+                    sortable: true,
+                      filter: {
+                        type: 'select'           
+                        }
                  }
             ]
           });
@@ -569,8 +578,7 @@
                  {
                   header: '단가(원)',
                   name: 'matOddMn',
-                  sortable: true,
-                 editor: 'text'
+                  sortable: true
                 },
                 {
                  header: '발주량',
@@ -854,15 +862,16 @@
          let dataPlan = newPlan.getCheckedRows();
          let pplndAmt = dataPlan[0].pplndAmt;
          
-         
          // 자재목록 체크 데이터
          let data = needMat.getCheckedRows();
          let idx = data.length-1
          
+         console.log(data[idx])
+         
           let rowData = {mtrCd: data[idx].mtrCd, mtrNm: data[idx].mtrNm,
                       matOddMn: "", matOddAmt: pplndAmt*data[idx].bomAmt, 
                       matSum : "" , actCd: data[idx].actCd, actNm:data[idx].actNm, 
-                      matOdDd: today, matOddDate:""}
+                      matOdDd: today, matOddDate:"", matOddMn:data[idx].mtrPrc}
           
          
          odMat.appendRow(rowData);
@@ -1117,8 +1126,6 @@
          let change = ev.changes[0];
          let rowData = odMat.getRow(change.rowKey);
          
-         console.log(change.rowKey);
-         
             // 단가 * 발주량 = 총합
             if (change.columnName == 'matOddMn'){
             if(rowData.matOddMn != null && rowData.matOddAmt != null){
@@ -1133,17 +1140,15 @@
    // 일반 탭 총액 구하기
    ----------------------------------*/
    function getSum2() {
-	   odLookUp.on('afterChange',function(ev){
+      odLookUp.on('afterChange',function(ev){
          let change = ev.changes[0];
          let rowData = odLookUp.getRow(change.rowKey);
          
-         console.log(change.rowKey);
-         
             // 단가 * 발주량 = 총합
             if (change.columnName == 'matOddAmt' || change.columnName == 'matOddMn'){
-	            if(rowData.matOddMn != null && rowData.matOddAmt != null){
-	            	odLookUp.setValue(change.rowKey, 'matSum', (rowData.matOddMn * rowData.matOddAmt));
-	            }
+               if(rowData.matOddMn != null && rowData.matOddAmt != null){
+                  odLookUp.setValue(change.rowKey, 'matSum', (rowData.matOddMn * rowData.matOddAmt));
+               }
             }
          });
       
@@ -1162,6 +1167,8 @@
          for(let i=0; i<data.length; i++){
             odMat.setValue(i, 'matOddAmt', (data[i].bomAmt * chkData[0].pplndAmt));
             odMat.setValue(i, 'matOdDd', (today));
+            
+            odMat.setValue(i, 'matOddMn', data[i].mtrPrc);
          }
       })
       
@@ -1197,13 +1204,13 @@
          let arrData = [];
          
          for(let i=0; i<data.length; i++){
-        	 let rowData = {actCd: data[i].actCd, actNm: data[i].actNm, 
-        			 		matOdDd: data[i].matOdDd, matOddAmt: data[i].matOddAmt, 
-        			 		matOddDate: data[i].matOddDate, matOddMn: data[i].matOddMn, 
-        			 		matSum: data[i].matSum, mtrCd: data[i].mtrCd, mtrNm: data[i].mtrNm,
-        			 		'pplnCd' : pplnCd}
-        	 
-        	 arrData.push(rowData);
+            let rowData = {actCd: data[i].actCd, actNm: data[i].actNm, 
+                        matOdDd: data[i].matOdDd, matOddAmt: data[i].matOddAmt, 
+                        matOddDate: data[i].matOddDate, matOddMn: data[i].matOddMn, 
+                        matSum: data[i].matSum, mtrCd: data[i].mtrCd, mtrNm: data[i].mtrNm,
+                        'pplnCd' : pplnCd}
+            
+            arrData.push(rowData);
          }
          
          console.log(arrData)
@@ -1333,6 +1340,11 @@
       })
    }
    
-
+   /*--------------------------------
+   // 필요자재 단가 숨기기
+   ----------------------------------*/
+   function hideMnFn() {
+      needMat.hideColumn('mtrPrc');
+   }
 </script>
 </div>

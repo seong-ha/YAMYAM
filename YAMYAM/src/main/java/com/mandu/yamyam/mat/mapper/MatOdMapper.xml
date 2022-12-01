@@ -4,253 +4,253 @@
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.mandu.yamyam.mat.mapper.MatOdMapper">
 
-	<!-- 공통 - 자재목록 모달 -->
-	<select id="matList" resultType="com.mandu.yamyam.common.LowerKeyMap">
-		SELECT MTR_CD, 
-			   MTR_NM,
-			   MTR_PRC
-		  FROM C_MTR M
-	</select>
-	
-	<!-- 공통 - 업체목록 모달 -->
-	<select id="actList" resultType="com.mandu.yamyam.common.LowerKeyMap">
-		SELECT ACT_CD, 
-			   ACT_NM
-		  FROM C_ACT
-	</select>
-	
-	<!-- 공통 - 직원목록 모달 -->
-	<select id="empLookUp" resultType="com.mandu.yamyam.common.LowerKeyMap">
-		SELECT EMP_NM, EMP_ID
-		FROM C_EMP
-	</select>
-	
-	<!-- 1) 자재 발주 관리 -->
-	<!-- 자재 발주 관리(일반 탭) - 전체 조회 -->
-	<select id="matOrderList" resultType="com.mandu.yamyam.common.LowerKeyMap">
-		SELECT O.MAT_OD_CD,
-		       D.MTR_CD,
-		       C.MTR_NM,
-		       FIND_MTR_PRICE(D.MTR_CD) AS "MAT_ODD_MN",
-		       D.MAT_ODD_AMT,
-		       O.MAT_SUM,
-			   A.ACT_CD,
-		       A.ACT_NM,
-		       TO_CHAR(O.MAT_OD_DD, 'yyyy-MM-dd') AS "MAT_OD_DD",
-			   TO_CHAR(D.MAT_ODD_DATE,'yyyy-MM-dd') AS "MAT_ODD_DATE",
+   <!-- 공통 - 자재목록 모달 -->
+   <select id="matList" resultType="com.mandu.yamyam.common.LowerKeyMap">
+      SELECT MTR_CD, 
+            MTR_NM,
+            MTR_PRC
+        FROM C_MTR M
+   </select>
+   
+   <!-- 공통 - 업체목록 모달 -->
+   <select id="actList" resultType="com.mandu.yamyam.common.LowerKeyMap">
+      SELECT ACT_CD, 
+            ACT_NM
+        FROM C_ACT
+   </select>
+   
+   <!-- 공통 - 직원목록 모달 -->
+   <select id="empLookUp" resultType="com.mandu.yamyam.common.LowerKeyMap">
+      SELECT EMP_NM, EMP_ID
+      FROM C_EMP
+   </select>
+   
+   <!-- 1) 자재 발주 관리 -->
+   <!-- 자재 발주 관리(일반 탭) - 전체 조회 -->
+   <select id="matOrderList" resultType="com.mandu.yamyam.common.LowerKeyMap">
+      SELECT O.MAT_OD_CD,
+             D.MTR_CD,
+             C.MTR_NM,
+             FIND_MTR_PRICE(D.MTR_CD) AS "MAT_ODD_MN",
+             D.MAT_ODD_AMT,
+             O.MAT_SUM,
+            A.ACT_CD,
+             A.ACT_NM,
+             TO_CHAR(O.MAT_OD_DD, 'yyyy-MM-dd') AS "MAT_OD_DD",
+            TO_CHAR(D.MAT_ODD_DATE,'yyyy-MM-dd') AS "MAT_ODD_DATE",
                O.MAT_OD_STS
-		 FROM  M_OD O 
-		 
-		 JOIN  M_ODD D 
-		   ON O.MAT_OD_CD = D.MAT_OD_CD
-		 
-		 JOIN  C_MTR C 
-		   ON D.MTR_CD = C.MTR_CD
-		 
-		 JOIN  C_ACT A 
-		   ON D.ACT_CD = A.ACT_CD
+       FROM  M_OD O 
+       
+       JOIN  M_ODD D 
+         ON O.MAT_OD_CD = D.MAT_OD_CD
+       
+       JOIN  C_MTR C 
+         ON D.MTR_CD = C.MTR_CD
+       
+       JOIN  C_ACT A 
+         ON D.ACT_CD = A.ACT_CD
 
-		  <where>
-         	<if test = "mtrCd != null and !mtrCd.equals('')">
-	         	D.MTR_CD = #{mtrCd}
-	         </if>
- 	         <if test = "actNm != null and !actNm.equals('')">
-	         	AND A.ACT_NM = #{actNm}
-	         </if>
-	         <if test = "matInDate != null and !matInDate.equals('')">
-	         	AND O.MAT_OD_DD <![CDATA[>=]]> #{matInDate}
-	         </if>
-	         <if test = "matEdate != null and !matEdate.equals('')">
-	         	AND O.MAT_OD_DD <![CDATA[<=]]> #{matEdate}
-	         </if>
+        <where>
+            <if test = "mtrCd != null and !mtrCd.equals('')">
+               D.MTR_CD = #{mtrCd}
+            </if>
+             <if test = "actNm != null and !actNm.equals('')">
+               AND A.ACT_NM = #{actNm}
+            </if>
+            <if test = "matInDate != null and !matInDate.equals('')">
+               AND O.MAT_OD_DD <![CDATA[>=]]> #{matInDate}
+            </if>
+            <if test = "matEdate != null and !matEdate.equals('')">
+               AND O.MAT_OD_DD <![CDATA[<=]]> #{matEdate}
+            </if>
          </where>
-		  
-		 ORDER BY O.MAT_OD_DD
-	</select>
-	
-	<!-- 자재 발주 관리(일반 탭) - 들어갔을 떄 바로 조회되는 데이터 검수상태 N이고 발주일 7일치 -->
-	<select id="matOderN7" resultType="com.mandu.yamyam.common.LowerKeyMap">
-		SELECT O.MAT_OD_CD,
-		       D.MTR_CD,
-		       C.MTR_NM,
-		       D.MAT_ODD_MN,
-		       D.MAT_ODD_AMT,
-		       O.MAT_SUM,
-			   A.ACT_CD,
-		       A.ACT_NM,
-		       TO_CHAR(O.MAT_OD_DD, 'yyyy-MM-dd') AS "MAT_OD_DD",
-			   TO_CHAR(D.MAT_ODD_DATE,'yyyy-MM-dd') AS "MAT_ODD_DATE",
+        
+       ORDER BY O.MAT_OD_DD
+   </select>
+   
+   <!-- 자재 발주 관리(일반 탭) - 들어갔을 떄 바로 조회되는 데이터 검수상태 N이고 발주일 7일치 -->
+   <select id="matOderN7" resultType="com.mandu.yamyam.common.LowerKeyMap">
+      SELECT O.MAT_OD_CD,
+             D.MTR_CD,
+             C.MTR_NM,
+             D.MAT_ODD_MN,
+             D.MAT_ODD_AMT,
+             O.MAT_SUM,
+            A.ACT_CD,
+             A.ACT_NM,
+             TO_CHAR(O.MAT_OD_DD, 'yyyy-MM-dd') AS "MAT_OD_DD",
+            TO_CHAR(D.MAT_ODD_DATE,'yyyy-MM-dd') AS "MAT_ODD_DATE",
                O.MAT_OD_STS
-		 FROM  M_OD O 
-		 
-		 JOIN  M_ODD D 
-		   ON O.MAT_OD_CD = D.MAT_OD_CD
-		 
-		 JOIN  C_MTR C 
-		   ON D.MTR_CD = C.MTR_CD
-		 
-		 JOIN  C_ACT A 
-		   ON D.ACT_CD = A.ACT_CD
-		   
-		 WHERE O.MAT_OD_STS = 'N'
-		 AND MAT_OD_DD BETWEEN (CURRENT_DATE-7) AND (CURRENT_DATE+7)
-		  
-		 ORDER BY O.MAT_OD_DD
-	</select>
-	
-	<!-- 자재 발주 관리(일반 탭) - 날짜 기준 조건 적용 -->
-	<select id="odListDtLookUpBtn" parameterType="com.mandu.yamyam.mat.service.MatVO" 
-								   resultType="com.mandu.yamyam.common.LowerKeyMap">
-		SELECT O.MAT_OD_CD,
-		       D.MTR_CD,
-		       C.MTR_NM,
-		       D.MAT_ODD_MN,
-		       D.MAT_ODD_AMT,
-		       O.MAT_SUM,
-			   A.ACT_CD,
-		       A.ACT_NM,
-		       TO_CHAR(O.MAT_OD_DD, 'yyyy-MM-dd') AS "MAT_OD_DD",
-			   TO_CHAR(D.MAT_ODD_DATE,'yyyy-MM-dd') AS "MAT_ODD_DATE"
-		 FROM  M_OD O 
-		 
-		 JOIN  M_ODD D 
-		   ON O.MAT_OD_CD = D.MAT_OD_CD
-		 
-		 JOIN  C_MTR C 
-		   ON D.MTR_CD = C.MTR_CD
-		 
-		 JOIN  C_ACT A 
-		   ON D.ACT_CD = A.ACT_CD
-		   
-		 <where>
-		 	<if test="matOddDate != null and !matOddDate.equals('')">
-				MAT_OD_DD <![CDATA[>=]]> #{matOddDate}
-		 	</if>
-		 	<if test="matOdDd != null and !matOdDd.equals('')">
-				AND MAT_OD_DD <![CDATA[<=]]> #{matOdDd}
-		 	</if>
-		 </where>
-		  
-		 ORDER BY O.MAT_OD_DD
-	</select>
-	
-	<!-- 자재 발주 관리(일반 탭) - 삭제버튼 -->
-	<delete id="delMatOd" parameterType="com.mandu.yamyam.mat.service.MatVO" statementType="CALLABLE">
-		CALL SG_DEL_PROC(#{matOdCd})
-	</delete>
-	
-	<!-- 자재 발주 관리(일반 탭) - 여러 건 삭제버튼 -->
-	<delete id="delMatOdList" parameterType="com.mandu.yamyam.mat.service.MatVO">
-		DELETE FROM M_OD
-		WHERE MAT_OD_CD = #{matOdCd}
-	</delete>
-	
-	<!-- 자재 발주 관리(일반 탭) - 여러 건 삭제버튼 -->
-	<delete id="delMatOddList" parameterType="com.mandu.yamyam.mat.service.MatVO">
-		DELETE FROM M_ODD
-		WHERE MAT_OD_CD = #{matOdCd}
-	</delete>
-	
-	<!-- 자재 발주 관리(일반 탭) - 저장버튼 -->
-	<insert id="insMatOdList" parameterType="com.mandu.yamyam.mat.service.MatVO">
-		INSERT ALL
-		 INTO M_OD (MAT_OD_CD,
-		            MAT_OD_DD,
-		            MAT_OD_STS,
-		            MAT_SUM)
-		 VALUES('OMAT-' || TO_CHAR(CURRENT_DATE,'YYYYMMDD-') || LPAD(MAT_OD_SEQ.NEXTVAL,3,0)
-		        ,CURRENT_DATE
-		        ,'N'<!-- 처음 등록하면 검수NO -->
-		        ,#{matSum})<!-- 총액 -->
-		 
-		 INTO M_ODD (MAT_ODD_CD,
-		             MAT_OD_CD, MTR_CD,
-		             ACT_CD,
-		             MAT_ODD_MN,
-		             MAT_ODD_AMT,
-		             MAT_ODD_DATE)
-		 VALUES('DMAT-' || LPAD(MAT_ODD_SEQ.NEXTVAL,3,0)
-		        ,'OMAT-' || TO_CHAR(CURRENT_DATE,'YYYYMMDD-') || LPAD(MAT_OD_SEQ.NEXTVAL,3,0)
-		        ,#{mtrCd}<!-- 선택한 자재코드 -->
-		        ,#{actCd}<!-- 선택한 업체코드 -->
-		        ,#{matOddMn}<!-- 입력받은 단가 -->
-		        ,#{matOddAmt}<!-- 입력받은 발주량 -->
-		        ,#{matOddDate})<!-- 입력받은 납기일자 -->
-		 
-		 SELECT * FROM DUAL
-	</insert>
-	
-	<!-- 자재 발주 관리(생산계획서용 탭) - 발주 버튼 -->
-	<insert id="insertMatOdPplnCd" parameterType="com.mandu.yamyam.mat.service.MatVO">
-		INSERT ALL
-		 INTO M_OD (MAT_OD_CD,
-		            MAT_OD_DD,
-		            MAT_OD_STS,
-		            MAT_SUM)
-		 VALUES('OMAT-' || TO_CHAR(CURRENT_DATE,'YYYYMMDD-') || LPAD(MAT_OD_SEQ.NEXTVAL,3,0)
-		        ,CURRENT_DATE
-		        ,'N'<!-- 처음 등록하면 검수NO -->
-		        ,#{matSum}<!-- 총액 -->
-		         )
-		 
-		 INTO M_ODD (MAT_ODD_CD,
-		             MAT_OD_CD,
-		             MTR_CD,
-		             ACT_CD,
-		             MAT_ODD_MN,
-		             MAT_ODD_AMT,
-		             MAT_ODD_DATE,
-		             PPLN_CD)
-		 VALUES('DMAT-' || LPAD(MAT_ODD_SEQ.NEXTVAL,3,0)
-		        ,'OMAT-' || TO_CHAR(CURRENT_DATE,'YYYYMMDD-') || LPAD(MAT_OD_SEQ.NEXTVAL,3,0)
-		        ,#{mtrCd}<!-- 선택한 자재코드 -->
-		        ,#{actCd}<!-- 선택한 업체코드 -->
-		        ,#{matOddMn}<!-- 입력받은 단가 -->
-		        ,#{matOddAmt}<!-- 입력받은 발주량 -->
-		        ,#{matOddDate}
-		        ,#{pplnCd})<!-- 입력받은 납기일자 -->
-		 
-		 SELECT * FROM DUAL
-	</insert>
-	
-	<!-- 자재 발주 관리(생산계획서용 탭) - 신규 생산 계획 조회 -->
-	<select id="newPlanList" resultType="com.mandu.yamyam.common.LowerKeyMap">
-		SELECT D.PPLN_CD, 
-			   D.PRD_CD, 
-			   P.PRD_NM, 
-			   D.PPLND_AMT, 
-			   TO_CHAR(B.DE_DATE, 'yyyy-MM-dd') AS "DE_DATE"
-		 FROM P_PLND D
-		
-		 JOIN C_PRD P 
-			 ON D.PRD_CD = P.PRD_CD
-		 JOIN B_OD B 
-			 ON B.PRD_CD = P.PRD_CD
-	</select>
-	
-	<!-- 자재 발주 관리(생산계획서용 탭) - 신규 생산 계획서 선택 모달창 -->
-	<select id="addNewPlan" resultType="com.mandu.yamyam.common.LowerKeyMap">
-		SELECT P.PPLN_CD,
-        	   P.PPLN_NAME,
-        	   TO_CHAR(P.PPLN_DATE, 'yyyy-MM-dd') AS "PPLN_DATE"
-		FROM P_PLN P
-		
-		 JOIN P_PLND D
-		  ON P.PPLN_CD = D.PPLN_CD
-		  
-		WHERE D.PPLND_STS = 'PLN-STS1'
-	</select>
-	
-	<!-- 자재 발주 관리(생산계획서용 탭) - 신규 생산 계획서 리스트 선택 모달창 -->
-	<select id="newPlanLookUpBtn" parameterType="com.mandu.yamyam.mat.service.MatVO" 
-							resultType="com.mandu.yamyam.common.LowerKeyMap">
-		SELECT P.PPLN_CD,
+       FROM  M_OD O 
+       
+       JOIN  M_ODD D 
+         ON O.MAT_OD_CD = D.MAT_OD_CD
+       
+       JOIN  C_MTR C 
+         ON D.MTR_CD = C.MTR_CD
+       
+       JOIN  C_ACT A 
+         ON D.ACT_CD = A.ACT_CD
+         
+       WHERE O.MAT_OD_STS = 'N'
+       AND MAT_OD_DD BETWEEN (CURRENT_DATE-7) AND (CURRENT_DATE+7)
+        
+       ORDER BY O.MAT_OD_DD
+   </select>
+   
+   <!-- 자재 발주 관리(일반 탭) - 날짜 기준 조건 적용 -->
+   <select id="odListDtLookUpBtn" parameterType="com.mandu.yamyam.mat.service.MatVO" 
+                           resultType="com.mandu.yamyam.common.LowerKeyMap">
+      SELECT O.MAT_OD_CD,
+             D.MTR_CD,
+             C.MTR_NM,
+             D.MAT_ODD_MN,
+             D.MAT_ODD_AMT,
+             O.MAT_SUM,
+            A.ACT_CD,
+             A.ACT_NM,
+             TO_CHAR(O.MAT_OD_DD, 'yyyy-MM-dd') AS "MAT_OD_DD",
+            TO_CHAR(D.MAT_ODD_DATE,'yyyy-MM-dd') AS "MAT_ODD_DATE"
+       FROM  M_OD O 
+       
+       JOIN  M_ODD D 
+         ON O.MAT_OD_CD = D.MAT_OD_CD
+       
+       JOIN  C_MTR C 
+         ON D.MTR_CD = C.MTR_CD
+       
+       JOIN  C_ACT A 
+         ON D.ACT_CD = A.ACT_CD
+         
+       <where>
+          <if test="matOddDate != null and !matOddDate.equals('')">
+            MAT_OD_DD <![CDATA[>=]]> #{matOddDate}
+          </if>
+          <if test="matOdDd != null and !matOdDd.equals('')">
+            AND MAT_OD_DD <![CDATA[<=]]> #{matOdDd}
+          </if>
+       </where>
+        
+       ORDER BY O.MAT_OD_DD
+   </select>
+   
+   <!-- 자재 발주 관리(일반 탭) - 삭제버튼 -->
+   <delete id="delMatOd" parameterType="com.mandu.yamyam.mat.service.MatVO" statementType="CALLABLE">
+      CALL SG_DEL_PROC(#{matOdCd})
+   </delete>
+   
+   <!-- 자재 발주 관리(일반 탭) - 여러 건 삭제버튼 -->
+   <delete id="delMatOdList" parameterType="com.mandu.yamyam.mat.service.MatVO">
+      DELETE FROM M_OD
+      WHERE MAT_OD_CD = #{matOdCd}
+   </delete>
+   
+   <!-- 자재 발주 관리(일반 탭) - 여러 건 삭제버튼 -->
+   <delete id="delMatOddList" parameterType="com.mandu.yamyam.mat.service.MatVO">
+      DELETE FROM M_ODD
+      WHERE MAT_OD_CD = #{matOdCd}
+   </delete>
+   
+   <!-- 자재 발주 관리(일반 탭) - 저장버튼 -->
+   <insert id="insMatOdList" parameterType="com.mandu.yamyam.mat.service.MatVO">
+      INSERT ALL
+       INTO M_OD (MAT_OD_CD,
+                  MAT_OD_DD,
+                  MAT_OD_STS,
+                  MAT_SUM)
+       VALUES('OMAT-' || TO_CHAR(CURRENT_DATE,'YYYYMMDD-') || LPAD(MAT_OD_SEQ.NEXTVAL,3,0)
+              ,CURRENT_DATE
+              ,'N'<!-- 처음 등록하면 검수NO -->
+              ,#{matSum})<!-- 총액 -->
+       
+       INTO M_ODD (MAT_ODD_CD,
+                   MAT_OD_CD, MTR_CD,
+                   ACT_CD,
+                   MAT_ODD_MN,
+                   MAT_ODD_AMT,
+                   MAT_ODD_DATE)
+       VALUES('DMAT-' || LPAD(MAT_ODD_SEQ.NEXTVAL,3,0)
+              ,'OMAT-' || TO_CHAR(CURRENT_DATE,'YYYYMMDD-') || LPAD(MAT_OD_SEQ.NEXTVAL,3,0)
+              ,#{mtrCd}<!-- 선택한 자재코드 -->
+              ,#{actCd}<!-- 선택한 업체코드 -->
+              ,#{matOddMn}<!-- 입력받은 단가 -->
+              ,#{matOddAmt}<!-- 입력받은 발주량 -->
+              ,#{matOddDate})<!-- 입력받은 납기일자 -->
+       
+       SELECT * FROM DUAL
+   </insert>
+   
+   <!-- 자재 발주 관리(생산계획서용 탭) - 발주 버튼 -->
+   <insert id="insertMatOdPplnCd" parameterType="com.mandu.yamyam.mat.service.MatVO">
+      INSERT ALL
+       INTO M_OD (MAT_OD_CD,
+                  MAT_OD_DD,
+                  MAT_OD_STS,
+                  MAT_SUM)
+       VALUES('OMAT-' || TO_CHAR(CURRENT_DATE,'YYYYMMDD-') || LPAD(MAT_OD_SEQ.NEXTVAL,3,0)
+              ,CURRENT_DATE
+              ,'N'<!-- 처음 등록하면 검수NO -->
+              ,#{matSum}<!-- 총액 -->
+               )
+       
+       INTO M_ODD (MAT_ODD_CD,
+                   MAT_OD_CD,
+                   MTR_CD,
+                   ACT_CD,
+                   MAT_ODD_MN,
+                   MAT_ODD_AMT,
+                   MAT_ODD_DATE,
+                   PPLN_CD)
+       VALUES('DMAT-' || LPAD(MAT_ODD_SEQ.NEXTVAL,3,0)
+              ,'OMAT-' || TO_CHAR(CURRENT_DATE,'YYYYMMDD-') || LPAD(MAT_OD_SEQ.NEXTVAL,3,0)
+              ,#{mtrCd}<!-- 선택한 자재코드 -->
+              ,#{actCd}<!-- 선택한 업체코드 -->
+              ,#{matOddMn}<!-- 입력받은 단가 -->
+              ,#{matOddAmt}<!-- 입력받은 발주량 -->
+              ,#{matOddDate}
+              ,#{pplnCd})<!-- 입력받은 납기일자 -->
+       
+       SELECT * FROM DUAL
+   </insert>
+   
+   <!-- 자재 발주 관리(생산계획서용 탭) - 신규 생산 계획 조회 -->
+   <select id="newPlanList" resultType="com.mandu.yamyam.common.LowerKeyMap">
+      SELECT D.PPLN_CD, 
+            D.PRD_CD, 
+            P.PRD_NM, 
+            D.PPLND_AMT, 
+            TO_CHAR(B.DE_DATE, 'yyyy-MM-dd') AS "DE_DATE"
+       FROM P_PLND D
+      
+       JOIN C_PRD P 
+          ON D.PRD_CD = P.PRD_CD
+       JOIN B_OD B 
+          ON B.PRD_CD = P.PRD_CD
+   </select>
+   
+   <!-- 자재 발주 관리(생산계획서용 탭) - 신규 생산 계획서 선택 모달창 -->
+   <select id="addNewPlan" resultType="com.mandu.yamyam.common.LowerKeyMap">
+      SELECT P.PPLN_CD,
+              P.PPLN_NAME,
+              TO_CHAR(P.PPLN_DATE, 'yyyy-MM-dd') AS "PPLN_DATE"
+      FROM P_PLN P
+      
+       JOIN P_PLND D
+        ON P.PPLN_CD = D.PPLN_CD
+        
+      WHERE D.PPLND_STS = 'PLN-STS1'
+   </select>
+   
+   <!-- 자재 발주 관리(생산계획서용 탭) - 신규 생산 계획서 리스트 선택 모달창 -->
+   <select id="newPlanLookUpBtn" parameterType="com.mandu.yamyam.mat.service.MatVO" 
+                     resultType="com.mandu.yamyam.common.LowerKeyMap">
+      SELECT P.PPLN_CD,
                P.PPLN_NAME,
                TO_CHAR(P.PPLN_DATE, 'yyyy-MM-dd') AS "PPLN_DATE",
                TO_CHAR(O.MAT_OD_DD, 'yyyy-MM-dd') AS "MAT_OD_DD"
                
-		FROM P_PLN P 
-		
+      FROM P_PLN P 
+      
           JOIN B_OD B
            ON B.OD_CD = P.OD_CD
            
@@ -264,857 +264,859 @@
            ON O.MAT_OD_CD = D.MAT_OD_CD
            
           JOIN P_PLND D
-		   ON P.PPLN_CD = D.PPLN_CD
-		   
-		 <where>
-		 	<if test="matOddDate != null and !matOddDate.equals('')">
-				MAT_OD_DD <![CDATA[>=]]> #{matOddDate}
-		 	</if>
-		 	<if test="matOdDd != null and !matOdDd.equals('')">
-			 	AND MAT_OD_DD <![CDATA[<=]]> #{matOdDd}
-		 	</if>
-		  		AND D.PPLND_STS = 'PLN-STS1'
-		 </where>
-	</select>
-	
-	<!-- 자재 발주 관리(생산계획서용 탭) - 신규생산계획서에서 추가한 생산계획을 조회 -->
-	<select id="newPlanInfo" parameterType="String" 
-							 resultType="com.mandu.yamyam.common.LowerKeyMap">
-		SELECT D.PPLN_CD,
-		       D.PRD_CD,
-		       C.PRD_NM,
-		       D.PPLND_AMT,
-		       TO_CHAR(B.DE_DATE, 'YYYY-MM-DD') AS "DE_DATE"
-		FROM   P_PLND D 
-		
-		JOIN P_PLN P
-		  ON (D.PPLN_CD = P.PPLN_CD)
-		  
-		JOIN C_PRD C
-		  ON (D.PRD_CD = C.PRD_CD)
-		  
-		JOIN B_OD B
-		  ON (B.OD_CD = P.OD_CD)
-		
-		WHERE D.PPLN_CD = #{value}
-	</select>
-	
-	<!-- 자재 발주 관리(생산계획서용 탭) - 필요 자재 리스트 -->
-	<select id="needMatList" parameterType="String" 
-							 resultType="com.mandu.yamyam.common.LowerKeyMap">
-		SELECT M.MTR_CD,
-		       M.MTR_NM,
-		       B.BOM_AMT,
-		       A.ACT_CD,
-		       A.ACT_NM
-		       
-		  FROM C_MTR M
-		  
-		  JOIN C_BOM B
-		    ON B.MTR_CD = M.MTR_CD
-		    
-		  JOIN C_ACT A
-		    ON A.ACT_CD = M.ACT_CD
-		    
+         ON P.PPLN_CD = D.PPLN_CD
+         
+       <where>
+          <if test="matOddDate != null and !matOddDate.equals('')">
+            MAT_OD_DD <![CDATA[>=]]> #{matOddDate}
+          </if>
+          <if test="matOdDd != null and !matOdDd.equals('')">
+             AND MAT_OD_DD <![CDATA[<=]]> #{matOdDd}
+          </if>
+              AND D.PPLND_STS = 'PLN-STS1'
+       </where>
+   </select>
+   
+   <!-- 자재 발주 관리(생산계획서용 탭) - 신규생산계획서에서 추가한 생산계획을 조회 -->
+   <select id="newPlanInfo" parameterType="String" 
+                      resultType="com.mandu.yamyam.common.LowerKeyMap">
+      SELECT D.PPLN_CD,
+             D.PRD_CD,
+             C.PRD_NM,
+             D.PPLND_AMT,
+             TO_CHAR(B.DE_DATE, 'YYYY-MM-DD') AS "DE_DATE"
+      FROM   P_PLND D 
+      
+      JOIN P_PLN P
+        ON (D.PPLN_CD = P.PPLN_CD)
+        
+      JOIN C_PRD C
+        ON (D.PRD_CD = C.PRD_CD)
+        
+      JOIN B_OD B
+        ON (B.OD_CD = P.OD_CD)
+      
+      WHERE D.PPLN_CD = #{value}
+   </select>
+   
+   <!-- 자재 발주 관리(생산계획서용 탭) - 필요 자재 리스트 -->
+   <select id="needMatList" parameterType="String" 
+                      resultType="com.mandu.yamyam.common.LowerKeyMap">
+      SELECT M.MTR_CD,
+             M.MTR_NM,
+             B.BOM_AMT,
+             A.ACT_CD,
+             A.ACT_NM,
+             M.MTR_PRC
+             
+        FROM C_MTR M
+        
+        JOIN C_BOM B
+          ON B.MTR_CD = M.MTR_CD
+          
+        JOIN C_ACT A
+          ON A.ACT_CD = M.ACT_CD
+          
           WHERE B.PRD_CD = #{value}
-	</select>
-	
-	<!-- 미지시로 업데이트 (자재 입고 쪽으로 이동)-->
-	<update id="updatePlndSts" parameterType="com.mandu.yamyam.mat.service.MatVO">
-		UPDATE P_PLND 
-		 SET PPLND_STS = 'PLN-STS2'
-		WHERE PPLN_CD = #{pplnCd}
-	</update>
-	
-	<!-- 2) 자재 발주 조회 -->
-	<!-- 자재 발주 전체 조회 -->
-	<select id="matOdLookUpList" resultType="com.mandu.yamyam.common.LowerKeyMap">
-		SELECT O.MAT_OD_CD,
-		       D.MTR_CD,
-		       C.MTR_NM,
-		       D.MAT_ODD_MN,
-		       D.MAT_ODD_AMT,
-		       O.MAT_SUM,
-			   A.ACT_CD,
-		       A.ACT_NM,
-		       TO_CHAR(O.MAT_OD_DD, 'yyyy-MM-dd') AS "MAT_OD_DD",
-			   TO_CHAR(D.MAT_ODD_DATE,'yyyy-MM-dd') AS "MAT_ODD_DATE"
-		 FROM  M_OD O 
-		 
-		 JOIN  M_ODD D 
-		   ON O.MAT_OD_CD = D.MAT_OD_CD
-		 
-		 JOIN  C_MTR C 
-		   ON D.MTR_CD = C.MTR_CD
-		 
-		 JOIN  C_ACT A 
-		   ON D.ACT_CD = A.ACT_CD
-		   
-		 ORDER BY MAT_OD_DD
-	</select>
-	<!-- 발주 신청일 검색 조회 -->
-	<select id="odListSearch" parameterType="com.mandu.yamyam.mat.service.MatVO"
-							  resultType="com.mandu.yamyam.common.LowerKeyMap">
-		SELECT MAT_OD_CD, TO_CHAR(MAT_OD_DD,'YYYY-MM-DD') AS "MAT_OD_DD"
-		 FROM M_OD
-		 <where>
-		 	<if test="matEdate != null and !matEdate.equals('')">
-			 	MAT_OD_DD <![CDATA[>=]]> #{matEdate}
-		 	</if>
-		 	<if test="matOdDd != null and !matOdDd.equals('')">
-			 	AND MAT_OD_DD <![CDATA[<=]]> #{matOdDd}
-		 	</if>
-		 </where>
-		  
-	</select>
-	
-	<!-- 발주 상세 조회 그리드 -->
-	<select id="clickOdDate" resultType="com.mandu.yamyam.common.LowerKeyMap">
-		SELECT O.MAT_OD_CD, M.MTR_NM, D.MAT_ODD_MN,
-	       D.MAT_ODD_AMT, O.MAT_SUM, A.ACT_NM, TO_CHAR(D.MAT_ODD_DATE,'yyyy-MM-dd') AS "MAT_ODD_DATE"
-		  FROM M_OD O
-		   JOIN M_ODD D
-		    ON O.MAT_OD_CD = D.MAT_OD_CD
-		   JOIN C_MTR M
-		    ON M.ACT_CD  = D.ACT_CD
-		   JOIN C_ACT A
-		    ON A.ACT_CD = M.ACT_CD
-		    
-		   WHERE O.MAT_OD_CD = #{matOdCd}
-	</select>
-	
-	<!-- 3) 자재 입고 검수 관리 -->
-	<!-- 자재 입고 검수 관리 - 전체조회 -->
-	<select id="chkOdList7" resultType="com.mandu.yamyam.common.LowerKeyMap">
-		SELECT O.MAT_OD_CD,
-			   D.MTR_CD,
-			   C.MTR_NM,
-			   D.MAT_ODD_AMT, 
-			   K.PA_AMT,
-			   K.ER_AMT,
-	       	   K.EMP_NM, 
-	       	   TO_CHAR(K.MAT_CHK_DATE, 'yyyy-MM-dd') AS "MAT_CHK_DATE",
-	       	   K.ER_CD,
-	       	   K.ER_INFO
-		FROM M_OD O
-		
-		 JOIN M_ODD D
-		  ON D.MAT_OD_CD = O.MAT_OD_CD
-		  
-		 JOIN C_MTR C
-		  ON C.MTR_CD = D.MTR_CD
-		  
-		 JOIN M_CHK K
-		  ON K.MAT_OD_CD = O.MAT_OD_CD
-		  
-		 WHERE NOT ER_CD = 'ERR-MNP-006'
-		 AND MAT_CHK_DATE 
-		 	 BETWEEN CURRENT_DATE-7 
-		 	 AND CURRENT_DATE+7
-	</select>
-	
-	<!-- 자재 입고 검수 관리 - 전체조회 -->
-	<select id="chkOdMatList" parameterType="com.mandu.yamyam.mat.service.MatVO"
-							  resultType="com.mandu.yamyam.common.LowerKeyMap">
-		SELECT O.MAT_OD_CD,
-			   D.MTR_CD,
-			   C.MTR_NM,
-			   D.MAT_ODD_AMT, 
-			   K.PA_AMT,
-			   K.ER_AMT,
-	       	   K.EMP_NM, 
-	       	   TO_CHAR(K.MAT_CHK_DATE, 'yyyy-MM-dd') AS "MAT_CHK_DATE",
-	       	   K.ER_CD,
-	       	   K.ER_INFO
-		FROM M_OD O
-		
-		 JOIN M_ODD D
-		  ON D.MAT_OD_CD = O.MAT_OD_CD
-		  
-		 JOIN C_MTR C
-		  ON C.MTR_CD = D.MTR_CD
-		  
-		 JOIN M_CHK K
-		  ON K.MAT_OD_CD = O.MAT_OD_CD
-		  
-		 
-		 <where>
-		 	NOT ER_CD = 'ERR-MNP-006'
-         	<if test = "mtrCd != null and !mtrCd.equals('')">
-	         	AND C.MTR_CD = #{mtrCd}
-	         </if>
- 	         <if test = "empNm != null and !empNm.equals('')">
-	         	AND K.EMP_NM = #{empNm}
-	         </if>
-	         <if test = "matInDate != null and !matInDate.equals('')">
-	         	AND K.MAT_CHK_DATE <![CDATA[>=]]> #{matInDate}
-	         </if>
-	         <if test = "matEdate != null and !matEdate.equals('')">
-	         	AND K.MAT_CHK_DATE <![CDATA[<=]]> #{matEdate}
-	         </if>
+   </select>
+   
+   <!-- 미지시로 업데이트 (자재 입고 쪽으로 이동)-->
+   <update id="updatePlndSts" parameterType="com.mandu.yamyam.mat.service.MatVO">
+      UPDATE P_PLND 
+       SET PPLND_STS = 'PLN-STS2'
+      WHERE PPLN_CD = #{pplnCd}
+   </update>
+   
+   <!-- 2) 자재 발주 조회 -->
+   <!-- 자재 발주 전체 조회 -->
+   <select id="matOdLookUpList" resultType="com.mandu.yamyam.common.LowerKeyMap">
+      SELECT O.MAT_OD_CD,
+             D.MTR_CD,
+             C.MTR_NM,
+             D.MAT_ODD_MN,
+             D.MAT_ODD_AMT,
+             O.MAT_SUM,
+            A.ACT_CD,
+             A.ACT_NM,
+             TO_CHAR(O.MAT_OD_DD, 'yyyy-MM-dd') AS "MAT_OD_DD",
+            TO_CHAR(D.MAT_ODD_DATE,'yyyy-MM-dd') AS "MAT_ODD_DATE"
+       FROM  M_OD O 
+       
+       JOIN  M_ODD D 
+         ON O.MAT_OD_CD = D.MAT_OD_CD
+       
+       JOIN  C_MTR C 
+         ON D.MTR_CD = C.MTR_CD
+       
+       JOIN  C_ACT A 
+         ON D.ACT_CD = A.ACT_CD
+         
+       ORDER BY MAT_OD_DD
+   </select>
+   <!-- 발주 신청일 검색 조회 -->
+   <select id="odListSearch" parameterType="com.mandu.yamyam.mat.service.MatVO"
+                       resultType="com.mandu.yamyam.common.LowerKeyMap">
+      SELECT MAT_OD_CD, TO_CHAR(MAT_OD_DD,'YYYY-MM-DD') AS "MAT_OD_DD"
+       FROM M_OD
+       <where>
+          <if test="matEdate != null and !matEdate.equals('')">
+             MAT_OD_DD <![CDATA[>=]]> #{matEdate}
+          </if>
+          <if test="matOdDd != null and !matOdDd.equals('')">
+             AND MAT_OD_DD <![CDATA[<=]]> #{matOdDd}
+          </if>
+       </where>
+        
+   </select>
+   
+   <!-- 발주 상세 조회 그리드 -->
+   <select id="clickOdDate" resultType="com.mandu.yamyam.common.LowerKeyMap">
+      SELECT O.MAT_OD_CD, M.MTR_NM, D.MAT_ODD_MN,
+          D.MAT_ODD_AMT, O.MAT_SUM, A.ACT_NM, TO_CHAR(D.MAT_ODD_DATE,'yyyy-MM-dd') AS "MAT_ODD_DATE"
+        FROM M_OD O
+         JOIN M_ODD D
+          ON O.MAT_OD_CD = D.MAT_OD_CD
+         JOIN C_MTR M
+          ON M.ACT_CD  = D.ACT_CD
+         JOIN C_ACT A
+          ON A.ACT_CD = M.ACT_CD
+          
+         WHERE O.MAT_OD_CD = #{matOdCd}
+   </select>
+   
+   <!-- 3) 자재 입고 검수 관리 -->
+   <!-- 자재 입고 검수 관리 - 전체조회 -->
+   <select id="chkOdList7" resultType="com.mandu.yamyam.common.LowerKeyMap">
+      SELECT O.MAT_OD_CD,
+            D.MTR_CD,
+            C.MTR_NM,
+            D.MAT_ODD_AMT, 
+            K.PA_AMT,
+            K.ER_AMT,
+                K.EMP_NM, 
+                TO_CHAR(K.MAT_CHK_DATE, 'yyyy-MM-dd') AS "MAT_CHK_DATE",
+                K.ER_CD,
+                K.ER_INFO
+      FROM M_OD O
+      
+       JOIN M_ODD D
+        ON D.MAT_OD_CD = O.MAT_OD_CD
+        
+       JOIN C_MTR C
+        ON C.MTR_CD = D.MTR_CD
+        
+       JOIN M_CHK K
+        ON K.MAT_OD_CD = O.MAT_OD_CD
+        
+       WHERE NOT ER_CD = 'ERR-MNP-006'
+       AND MAT_CHK_DATE 
+           BETWEEN CURRENT_DATE-7 
+           AND CURRENT_DATE+7
+   </select>
+   
+   <!-- 자재 입고 검수 관리 - 전체조회 -->
+   <select id="chkOdMatList" parameterType="com.mandu.yamyam.mat.service.MatVO"
+                       resultType="com.mandu.yamyam.common.LowerKeyMap">
+      SELECT O.MAT_OD_CD,
+            D.MTR_CD,
+            C.MTR_NM,
+            D.MAT_ODD_AMT, 
+            K.PA_AMT,
+            K.ER_AMT,
+                K.EMP_NM, 
+                TO_CHAR(K.MAT_CHK_DATE, 'yyyy-MM-dd') AS "MAT_CHK_DATE",
+                K.ER_CD,
+                K.ER_INFO
+      FROM M_OD O
+      
+       JOIN M_ODD D
+        ON D.MAT_OD_CD = O.MAT_OD_CD
+        
+       JOIN C_MTR C
+        ON C.MTR_CD = D.MTR_CD
+        
+       JOIN M_CHK K
+        ON K.MAT_OD_CD = O.MAT_OD_CD
+        
+       
+       <where>
+          NOT ER_CD = 'ERR-MNP-006'
+            <if test = "mtrCd != null and !mtrCd.equals('')">
+               AND C.MTR_CD = #{mtrCd}
+            </if>
+             <if test = "empNm != null and !empNm.equals('')">
+               AND K.EMP_NM = #{empNm}
+            </if>
+            <if test = "matInDate != null and !matInDate.equals('')">
+               AND K.MAT_CHK_DATE <![CDATA[>=]]> #{matInDate}
+            </if>
+            <if test = "matEdate != null and !matEdate.equals('')">
+               AND K.MAT_CHK_DATE <![CDATA[<=]]> #{matEdate}
+            </if>
          </where>
-	</select>
-	
-	<!-- 자재 입고 검수 관리 - 추가 모달창 -->
-	<select id="addChkModal" resultType="com.mandu.yamyam.common.LowerKeyMap">
-		SELECT O.MAT_OD_CD, D.MTR_CD, D.MAT_ODD_AMT,C.MTR_NM
-		FROM M_OD O
-		 JOIN M_ODD D 
-		  ON D.MAT_OD_CD = O.MAT_OD_CD
-		 JOIN C_MTR C
-		  ON C.MTR_CD = D.MTR_CD
-		 WHERE MAT_OD_STS = 'N'
-	</select>
-	
-	<!-- 불량코드/불량내용 조회 -->
-	<select id="erCdErInfoLookUp" resultType="com.mandu.yamyam.common.LowerKeyMap">
-		SELECT COMMD_CD, COMMD_NM
-		FROM C_COMMD
-		WHERE COMM_CD = 'ERR-MNP'
-	</select>
-	
-	<!-- 자재 입고 검수 관리 insert  -->
-	<insert id="insertChkOd" parameterType="com.mandu.yamyam.mat.service.MatVO">
-		<selectKey keyProperty="matChkCd" resultType="String" order="BEFORE">
-			SELECT MK_MATCHK_CD FROM DUAL
-		</selectKey>
-		INSERT INTO M_CHK 
-		     (MAT_CHK_CD,
-			  MAT_OD_CD,
-			  PA_AMT,
-			  ER_AMT,
-			  EMP_NM,
-			  MAT_CHK_DATE,
-			  ER_CD,
-			  ER_INFO,
-			  MAT_INSTS)
-		VALUES (#{matChkCd},
-				#{matOdCd},
-				#{paAmt},
-				#{erAmt},
-				#{empNm},
-				#{matChkDate},
-				#{erCd},
-				#{erInfo},
-				'N')
-	</insert>
-	
-	<update id="updateMatOdSts" parameterType="com.mandu.yamyam.mat.service.MatVO">
-		UPDATE M_OD
-		SET MAT_OD_STS = 'Y'
-		WHERE MAT_OD_CD = #{matOdCd}
-	</update>
-	
-	<!-- 자재 입고 검수 관리 delete -->
-	<delete id="deletetChkOd" parameterType="com.mandu.yamyam.mat.service.MatVO">
-		DELETE
-		FROM M_CHK
-		WHERE MAT_OD_CD = #{matOdCd}
-		AND ER_CD = #{erCd}
-	</delete>
-	
-	
-	<!-- 4) 자재 입고 관리 -->
-	<!-- 조회버튼 클릭 시 쿼리 -->
-	<select id="matInAllList" parameterType="com.mandu.yamyam.mat.service.MatVO"
-							  resultType="com.mandu.yamyam.common.LowerKeyMap">
-		SELECT I.MTR_CD, 
-		       FIND_MTR_NAME(I.MTR_CD) AS "MTR_NM",
-		       FIND_ACT_NAME(I.ACT_CD) AS "ACT_NM", 
-		       I.MAT_IN_AMT, 
-		       I.MAT_LOT,
-		       TO_CHAR(I.MAT_IN_DATE, 'yyyy-MM-dd') AS "MAT_IN_DATE"
-		FROM M_IN I
-		 JOIN C_ACT A
-		  ON A.ACT_CD = I.ACT_CD
+   </select>
+   
+   <!-- 자재 입고 검수 관리 - 추가 모달창 -->
+   <select id="addChkModal" resultType="com.mandu.yamyam.common.LowerKeyMap">
+      SELECT O.MAT_OD_CD, D.MTR_CD, D.MAT_ODD_AMT,C.MTR_NM
+      FROM M_OD O
+       JOIN M_ODD D 
+        ON D.MAT_OD_CD = O.MAT_OD_CD
+       JOIN C_MTR C
+        ON C.MTR_CD = D.MTR_CD
+       WHERE MAT_OD_STS = 'N'
+   </select>
+   
+   <!-- 불량코드/불량내용 조회 -->
+   <select id="erCdErInfoLookUp" resultType="com.mandu.yamyam.common.LowerKeyMap">
+      SELECT COMMD_CD, COMMD_NM
+      FROM C_COMMD
+      WHERE COMM_CD = 'ERR-MNP'
+      AND COMMD_CD != 'ERR-MNP-006'
+   </select>
+   
+   <!-- 자재 입고 검수 관리 insert  -->
+   <insert id="insertChkOd" parameterType="com.mandu.yamyam.mat.service.MatVO">
+      <selectKey keyProperty="matChkCd" resultType="String" order="BEFORE">
+         SELECT MK_MATCHK_CD FROM DUAL
+      </selectKey>
+      INSERT INTO M_CHK 
+           (MAT_CHK_CD,
+           MAT_OD_CD,
+           PA_AMT,
+           ER_AMT,
+           EMP_NM,
+           MAT_CHK_DATE,
+           ER_CD,
+           ER_INFO,
+           MAT_INSTS)
+      VALUES (#{matChkCd},
+            #{matOdCd},
+            #{paAmt},
+            #{erAmt},
+            #{empNm},
+            #{matChkDate},
+            #{erCd},
+            #{erInfo},
+            'N')
+   </insert>
+   
+   <update id="updateMatOdSts" parameterType="com.mandu.yamyam.mat.service.MatVO">
+      UPDATE M_OD
+      SET MAT_OD_STS = 'Y'
+      WHERE MAT_OD_CD = #{matOdCd}
+   </update>
+   
+   <!-- 자재 입고 검수 관리 delete -->
+   <delete id="deletetChkOd" parameterType="com.mandu.yamyam.mat.service.MatVO">
+      DELETE
+      FROM M_CHK
+      WHERE MAT_OD_CD = #{matOdCd}
+      AND ER_CD = #{erCd}
+   </delete>
+   
+   
+   <!-- 4) 자재 입고 관리 -->
+   <!-- 조회버튼 클릭 시 쿼리 -->
+   <select id="matInAllList" parameterType="com.mandu.yamyam.mat.service.MatVO"
+                       resultType="com.mandu.yamyam.common.LowerKeyMap">
+      SELECT I.MTR_CD, 
+             FIND_MTR_NAME(I.MTR_CD) AS "MTR_NM",
+             FIND_ACT_NAME(I.ACT_CD) AS "ACT_NM", 
+             I.MAT_IN_AMT, 
+             I.MAT_LOT,
+             TO_CHAR(I.MAT_IN_DATE, 'yyyy-MM-dd') AS "MAT_IN_DATE"
+      FROM M_IN I
+       JOIN C_ACT A
+        ON A.ACT_CD = I.ACT_CD
            
          <where>
-         	<if test = "mtrCd != null and !mtrCd.equals('')">
-	         	I.MTR_CD = #{mtrCd}
-	         </if>
-         	<if test = "actNm != null and !actNm.equals('')">
-	         	AND A.ACT_NM = #{actNm}
-	         </if>
-	         <if test = "matInDate != null and !matInDate.equals('')">
-	         	AND I.MAT_IN_DATE <![CDATA[>=]]> #{matInDate}
-	         </if>
-	         <if test = "matEdate != null and !matEdate.equals('')">
-	         	AND I.MAT_IN_DATE <![CDATA[<=]]> #{matEdate}
-	         </if>
+            <if test = "mtrCd != null and !mtrCd.equals('')">
+               I.MTR_CD = #{mtrCd}
+            </if>
+            <if test = "actNm != null and !actNm.equals('')">
+               AND A.ACT_NM = #{actNm}
+            </if>
+            <if test = "matInDate != null and !matInDate.equals('')">
+               AND I.MAT_IN_DATE <![CDATA[>=]]> #{matInDate}
+            </if>
+            <if test = "matEdate != null and !matEdate.equals('')">
+               AND I.MAT_IN_DATE <![CDATA[<=]]> #{matEdate}
+            </if>
          </where>
          
          ORDER BY MAT_LOT
-	</select>
-	
-	<!-- 기본 조회 -->
-	<select id="matInList" 	  parameterType="com.mandu.yamyam.mat.service.MatVO"
-							  resultType="com.mandu.yamyam.common.LowerKeyMap">
-		SELECT I.MTR_CD, 
-		       FIND_MTR_NAME(I.MTR_CD) AS "MTR_NM",
-		       FIND_ACT_NAME(I.ACT_CD) AS "ACT_NM", 
-		       I.MAT_IN_AMT, 
-		       I.MAT_LOT,
-		       TO_CHAR(I.MAT_IN_DATE, 'yyyy-MM-dd') AS "MAT_IN_DATE"
-		FROM M_IN I
-		 JOIN C_ACT A
-		  ON A.ACT_CD = I.ACT_CD
+   </select>
+   
+   <!-- 기본 조회 -->
+   <select id="matInList"      parameterType="com.mandu.yamyam.mat.service.MatVO"
+                       resultType="com.mandu.yamyam.common.LowerKeyMap">
+      SELECT I.MTR_CD, 
+             FIND_MTR_NAME(I.MTR_CD) AS "MTR_NM",
+             FIND_ACT_NAME(I.ACT_CD) AS "ACT_NM", 
+             I.MAT_IN_AMT, 
+             I.MAT_LOT,
+             TO_CHAR(I.MAT_IN_DATE, 'yyyy-MM-dd') AS "MAT_IN_DATE"
+      FROM M_IN I
+       JOIN C_ACT A
+        ON A.ACT_CD = I.ACT_CD
            
          <where>
-			I.MAT_IN_DATE 
-				BETWEEN CURRENT_DATE-7 
-				AND CURRENT_DATE+7
+         I.MAT_IN_DATE 
+            BETWEEN CURRENT_DATE-7 
+            AND CURRENT_DATE+7
          </where>
          
          ORDER BY I.MAT_IN_DATE
-	</select>
-	
-	<!-- 입고 예정 리스트 모달 -->
-	<select id="beforeInList" resultType="com.mandu.yamyam.common.LowerKeyMap">
-		SELECT K.MAT_OD_CD, 
-		       D.MTR_CD, 
-		       M.MTR_NM, 
-		       A.ACT_NM, 
-		       K.PA_AMT, 
-		       TO_CHAR(K.MAT_CHK_DATE,'yyyy-MM-dd') AS "MAT_CHK_DATE"
-		       
-		FROM M_CHK K
-		
-		 JOIN M_ODD D
-		  ON D.MAT_OD_CD = K.MAT_OD_CD
-		  
-		 JOIN C_MTR M
-		  ON M.MTR_CD = D.MTR_CD
-		  
-		 JOIN C_ACT A
-		  ON A.ACT_CD = D.ACT_CD
-		  
-		 WHERE K.MAT_INSTS = 'N'
-		  AND NOT ER_CD = 'ERR-MNP-006'
+   </select>
+   
+   <!-- 입고 예정 리스트 모달 -->
+   <select id="beforeInList" resultType="com.mandu.yamyam.common.LowerKeyMap">
+      SELECT K.MAT_OD_CD, 
+             D.MTR_CD, 
+             M.MTR_NM, 
+             A.ACT_NM, 
+             K.PA_AMT, 
+             TO_CHAR(K.MAT_CHK_DATE,'yyyy-MM-dd') AS "MAT_CHK_DATE"
+             
+      FROM M_CHK K
+      
+       JOIN M_ODD D
+        ON D.MAT_OD_CD = K.MAT_OD_CD
+        
+       JOIN C_MTR M
+        ON M.MTR_CD = D.MTR_CD
+        
+       JOIN C_ACT A
+        ON A.ACT_CD = D.ACT_CD
+        
+       WHERE K.MAT_INSTS = 'N'
+        AND NOT ER_CD = 'ERR-MNP-006'
            
          ORDER BY K.MAT_OD_CD
-	</select>
-	
-	<!-- insert -->
-	<insert id="inManageSave" parameterType="com.mandu.yamyam.mat.service.MatVO">
-		<selectKey keyProperty="matLot" resultType="String" order="BEFORE">
-			SELECT MK_MAT_LOT(#{mtrCd}) FROM DUAL
-		</selectKey>
-		INSERT INTO M_IN
-				(MAT_LOT,
-				 MTR_CD,
-				 ACT_CD,
-				 MAT_IN_AMT,
-				 MAT_SAMT,
-				 MAT_EDATE,
-				 MAT_IN_DATE
-				)
-		 VALUES(#{matLot},
-		        #{mtrCd},
-		        FIND_ACT_CD(#{actNm}),
-		        #{matInAmt},
-		        #{matInAmt}, <!-- 입고될 떄 수량이 재고 -->
-		        #{matInDate}+90,
-		        #{matInDate})
-	</insert>
-	
-	<!-- 검사상태 Y로 update -->
-	<update id="updateMatInsts" parameterType="com.mandu.yamyam.mat.service.MatVO">
-		 UPDATE M_CHK 
-		 SET MAT_INSTS = 'Y'
-		 WHERE MAT_OD_CD = #{matOdCd}
-	</update>
-	
-	<!-- 생산계획 지시상태 update -->
-	<update id="updatePpSts" parameterType="com.mandu.yamyam.mat.service.MatVO">
-		UPDATE P_PLND
-		SET PPLND_STS = 'PLN-STS2'
-		WHERE PPLN_CD = (SELECT PPLN_CD
-		                 FROM M_ODD
-		                 WHERE MAT_OD_CD = #{matOdCd})
-	</update>
-	
-	<!-- delete -->
-	<delete id="inManageDelete" parameterType="com.mandu.yamyam.mat.service.MatVO">
-		DELETE FROM M_IN
-		WHERE MAT_LOT = #{matLot}
-	</delete>
-	
-	<!-- 5) 자재 출고 관리 -->
-	<!-- 생산지시 전체 조회 -->
-	<select id="pOdAllList" resultType="com.mandu.yamyam.common.LowerKeyMap">
-		SELECT D.PODD_CD,
-		       O.POD_CD,
-		       O.PRD_CD,
-		       D.PODD_AMT,
-		       TO_CHAR(D.PODD_DATES, 'yyyy-MM-dd') AS "PODD_DATES",
-		       TO_CHAR(O.POD_DATES, 'yyyy-MM-dd') AS "POD_DATES",
-		       FIND_COMMD_NAME(D.PODD_STS) AS "PODD_STS"
-		       
-		FROM P_OD O
-		
-		 JOIN P_ODD D
-		  ON D.POD_CD = O.POD_CD
-		  
-		WHERE D.PODD_STS = 'PLN-STS1'
-	</select>
-	
-	<!-- 추가 모달창 -->
-	<select id="nowSamtList" resultType="com.mandu.yamyam.common.LowerKeyMap">
-		SELECT T.MAT_LOT,
-		       T.MTR_CD,
-		       M.MTR_NM,
-		       A.ACT_NM,
-		       I.MAT_SAMT,
-		       TO_CHAR(I.MAT_EDATE,'yyyy-MM-dd') AS "MAT_EDATE"
-		
-		 FROM M_OUT T
-		
-		  JOIN C_MTR M
-		    ON  M.MTR_CD = T.MTR_CD
-		    
-		  JOIN C_ACT A
-		    ON M.ACT_CD = A.ACT_CD
-		    
-		  JOIN M_IN I
-		    ON I.ACT_CD = A.ACT_CD
-	</select>
-	
-	<!-- 필요자재 -->
-	<select id="needMtrList" parameterType="com.mandu.yamyam.mat.service.MatVO"
-							 resultType="com.mandu.yamyam.common.LowerKeyMap">
-		SELECT P.PRD_CD,
-		       B.MTR_CD,
-		       (SELECT FIND_MTR_NAME(B.MTR_CD) FROM DUAL) AS "MTR_NM" ,
-		       ((SELECT FIND_BOM_AMT(D.PRD_CD,B.MTR_CD) FROM DUAL) * #{poddAmt}) AS "AMT"
-		FROM C_PRD P
-		
-		 JOIN C_BOM B
-		  ON B.PRD_CD = P.PRD_CD
-		  
-		  JOIN P_OD D
-		   ON D.PRD_CD = P.PRD_CD
-		  
-		   JOIN P_ODD O
-		    ON O.POD_CD = D.POD_CD
-		    
-		WHERE P.PRD_CD = #{prdCd}
-		AND O.PODD_CD = #{poddCd}
-		AND B.MTR_CD IS NOT NULL
-	</select>
-	
-	<!-- 필요자재 LOT 목록 -->
-	<select id="needMtrLotList" parameterType="com.mandu.yamyam.mat.service.MatVO"
-				  			    resultType="com.mandu.yamyam.common.LowerKeyMap">
-		SELECT I.MAT_LOT,
-		       M.MTR_NM,
-		       I.MAT_SAMT,
-		       TO_CHAR(I.MAT_EDATE, 'yyyy-MM-dd') AS "MAT_EDATE"
-		       
-		FROM M_IN I
-		
-		 JOIN C_MTR M
-		  ON M.MTR_CD = I.MTR_CD
-		  
-		WHERE M.MTR_NM = #{mtrNm}
-	</select>
-	
-	<!-- 출고 테이블로 insert -->
-	<insert id="insertMatOut" parameterType="com.mandu.yamyam.mat.service.MatVO">
-		<selectKey keyProperty="matOutNo" resultType="int" order="BEFORE">
-			SELECT NVL(MAX(MAT_OUT_NO),0)+1 FROM M_OUT
-		</selectKey>
-		INSERT INTO M_OUT(MAT_OUT_NO,
-		                  POD_CD,
-		                  MTR_CD,
-		                  MAT_LOT,
-		                  MAT_OUT_AMT,
-		                  MAT_OUT_DATE)
-		            VALUES(#{matOutNo},
-		                   #{podCd},
-		                   FIND_MTR_CD(#{mtrNm}),
-		                   #{matLot},
-		                   #{matOutAmt},
-		                   CURRENT_DATE)
-	</insert>
-	
-	<!-- 출고 처리 (재고-출고량) -->
- 	<update id="updateOutOd" parameterType="com.mandu.yamyam.mat.service.MatVO">
-		UPDATE M_IN
-		
-		 SET 
-		   MAT_SAMT = (MAT_SAMT - #{amt})
-		  
-	     WHERE MAT_LOT = #{matLot}
-	</update>
-	
-	<!-- 출고구분 완료로 변경 -->
-	<update id="updateOutSts" parameterType="com.mandu.yamyam.mat.service.MatVO">
-		UPDATE P_ODD
-		
-		 SET
-		   PODD_STS = 'PLN-STS3'
-		   
-		WHERE PODD_CD = #{poddCd}
-	</update>
-	
-	<!-- 6) 자재 입출고 조회 -->
-	<!-- 출고 전체조회 -->
-	<select id="inOutAllList" resultType="com.mandu.yamyam.common.LowerKeyMap">
-		SELECT O.MAT_OD_CD,
-	       D.MTR_CD,
-	       C.MTR_NM,
+   </select>
+   
+   <!-- insert -->
+   <insert id="inManageSave" parameterType="com.mandu.yamyam.mat.service.MatVO">
+      <selectKey keyProperty="matLot" resultType="String" order="BEFORE">
+         SELECT MK_MAT_LOT(#{mtrCd}) FROM DUAL
+      </selectKey>
+      INSERT INTO M_IN
+            (MAT_LOT,
+             MTR_CD,
+             ACT_CD,
+             MAT_IN_AMT,
+             MAT_SAMT,
+             MAT_EDATE,
+             MAT_IN_DATE
+            )
+       VALUES(#{matLot},
+              #{mtrCd},
+              FIND_ACT_CD(#{actNm}),
+              #{matInAmt},
+              #{matInAmt}, <!-- 입고될 떄 수량이 재고 -->
+              #{matInDate}+90,
+              #{matInDate})
+   </insert>
+   
+   <!-- 검사상태 Y로 update -->
+   <update id="updateMatInsts" parameterType="com.mandu.yamyam.mat.service.MatVO">
+       UPDATE M_CHK 
+       SET MAT_INSTS = 'Y'
+       WHERE MAT_OD_CD = #{matOdCd}
+   </update>
+   
+   <!-- 생산계획 지시상태 update -->
+   <update id="updatePpSts" parameterType="com.mandu.yamyam.mat.service.MatVO">
+      UPDATE P_PLND
+      SET PPLND_STS = 'PLN-STS2'
+      WHERE PPLN_CD = (SELECT PPLN_CD
+                       FROM M_ODD
+                       WHERE MAT_OD_CD = #{matOdCd})
+   </update>
+   
+   <!-- delete -->
+   <delete id="inManageDelete" parameterType="com.mandu.yamyam.mat.service.MatVO">
+      DELETE FROM M_IN
+      WHERE MAT_LOT = #{matLot}
+   </delete>
+   
+   <!-- 5) 자재 출고 관리 -->
+   <!-- 생산지시 전체 조회 -->
+   <select id="pOdAllList" resultType="com.mandu.yamyam.common.LowerKeyMap">
+      SELECT D.PODD_CD,
+             O.POD_CD,
+             O.PRD_CD,
+             D.PODD_AMT,
+             TO_CHAR(D.PODD_DATES, 'yyyy-MM-dd') AS "PODD_DATES",
+             TO_CHAR(O.POD_DATES, 'yyyy-MM-dd') AS "POD_DATES",
+             FIND_COMMD_NAME(D.PODD_STS) AS "PODD_STS"
+             
+      FROM P_OD O
+      
+       JOIN P_ODD D
+        ON D.POD_CD = O.POD_CD
+        
+      WHERE D.PODD_STS = 'PLN-STS1'
+   </select>
+   
+   <!-- 추가 모달창 -->
+   <select id="nowSamtList" resultType="com.mandu.yamyam.common.LowerKeyMap">
+      SELECT T.MAT_LOT,
+             T.MTR_CD,
+             M.MTR_NM,
+             A.ACT_NM,
+             I.MAT_SAMT,
+             TO_CHAR(I.MAT_EDATE,'yyyy-MM-dd') AS "MAT_EDATE"
+      
+       FROM M_OUT T
+      
+        JOIN C_MTR M
+          ON  M.MTR_CD = T.MTR_CD
+          
+        JOIN C_ACT A
+          ON M.ACT_CD = A.ACT_CD
+          
+        JOIN M_IN I
+          ON I.ACT_CD = A.ACT_CD
+   </select>
+   
+   <!-- 필요자재 -->
+   <select id="needMtrList" parameterType="com.mandu.yamyam.mat.service.MatVO"
+                      resultType="com.mandu.yamyam.common.LowerKeyMap">
+      SELECT P.PRD_CD,
+             B.MTR_CD,
+             (SELECT FIND_MTR_NAME(B.MTR_CD) FROM DUAL) AS "MTR_NM" ,
+             ((SELECT FIND_BOM_AMT(D.PRD_CD,B.MTR_CD) FROM DUAL) * #{poddAmt}) AS "AMT"
+      FROM C_PRD P
+      
+       JOIN C_BOM B
+        ON B.PRD_CD = P.PRD_CD
+        
+        JOIN P_OD D
+         ON D.PRD_CD = P.PRD_CD
+        
+         JOIN P_ODD O
+          ON O.POD_CD = D.POD_CD
+          
+      WHERE P.PRD_CD = #{prdCd}
+      AND O.PODD_CD = #{poddCd}
+      AND B.MTR_CD IS NOT NULL
+   </select>
+   
+   <!-- 필요자재 LOT 목록 -->
+   <select id="needMtrLotList" parameterType="com.mandu.yamyam.mat.service.MatVO"
+                           resultType="com.mandu.yamyam.common.LowerKeyMap">
+      SELECT I.MAT_LOT,
+             M.MTR_NM,
+             I.MAT_SAMT,
+             TO_CHAR(I.MAT_EDATE, 'yyyy-MM-dd') AS "MAT_EDATE"
+             
+      FROM M_IN I
+      
+       JOIN C_MTR M
+        ON M.MTR_CD = I.MTR_CD
+        
+      WHERE M.MTR_NM = #{mtrNm}
+   </select>
+   
+   <!-- 출고 테이블로 insert -->
+   <insert id="insertMatOut" parameterType="com.mandu.yamyam.mat.service.MatVO">
+      <selectKey keyProperty="matOutNo" resultType="int" order="BEFORE">
+         SELECT NVL(MAX(MAT_OUT_NO),0)+1 FROM M_OUT
+      </selectKey>
+      INSERT INTO M_OUT(MAT_OUT_NO,
+                        POD_CD,
+                        MTR_CD,
+                        MAT_LOT,
+                        MAT_OUT_AMT,
+                        MAT_OUT_DATE)
+                  VALUES(#{matOutNo},
+                         #{podCd},
+                         FIND_MTR_CD(#{mtrNm}),
+                         #{matLot},
+                         #{matOutAmt},
+                         CURRENT_DATE)
+   </insert>
+   
+   <!-- 출고 처리 (재고-출고량) -->
+    <update id="updateOutOd" parameterType="com.mandu.yamyam.mat.service.MatVO">
+      UPDATE M_IN
+      
+       SET 
+         MAT_SAMT = (MAT_SAMT - #{amt})
+        
+        WHERE MAT_LOT = #{matLot}
+   </update>
+   
+   <!-- 출고구분 완료로 변경 -->
+   <update id="updateOutSts" parameterType="com.mandu.yamyam.mat.service.MatVO">
+      UPDATE P_ODD
+      
+       SET
+         PODD_STS = 'PLN-STS3'
+         
+      WHERE PODD_CD = #{poddCd}
+   </update>
+   
+   <!-- 6) 자재 입출고 조회 -->
+   <!-- 출고 전체조회 -->
+   <select id="inOutAllList" resultType="com.mandu.yamyam.common.LowerKeyMap">
+      SELECT O.MAT_OD_CD,
+          D.MTR_CD,
+          C.MTR_NM,
            A.ACT_NM,
            I.MAT_IN_AMT,
            TO_CHAR(I.MAT_IN_DATE,'yyyy-MM-dd') AS "MAT_IN_DATE",
-	       I.MAT_LOT,
-		   TO_CHAR(I.MAT_EDATE,'yyyy-MM-dd') AS "MAT_EDATE"
-		   
-		 FROM  M_OD O 
-		 
-		  JOIN  M_ODD D 
-		    ON O.MAT_OD_CD = D.MAT_OD_CD
-		 
-		 JOIN  C_MTR C 
-		    ON D.MTR_CD = C.MTR_CD
-		 
-		  JOIN  C_ACT A 
-		    ON D.ACT_CD = A.ACT_CD
+          I.MAT_LOT,
+         TO_CHAR(I.MAT_EDATE,'yyyy-MM-dd') AS "MAT_EDATE"
+         
+       FROM  M_OD O 
+       
+        JOIN  M_ODD D 
+          ON O.MAT_OD_CD = D.MAT_OD_CD
+       
+       JOIN  C_MTR C 
+          ON D.MTR_CD = C.MTR_CD
+       
+        JOIN  C_ACT A 
+          ON D.ACT_CD = A.ACT_CD
            
           JOIN M_IN I
             ON I.MTR_CD = C.MTR_CD
             
           ORDER BY O.MAT_OD_CD
-	</select>
-	
-	<!-- 입고 전체조회 -->
-	<select id="outInAllList" resultType="com.mandu.yamyam.common.LowerKeyMap">
-		SELECT I.MAT_LOT,
-		       C.MTR_CD,
-		       C.MTR_NM,
-		       A.ACT_NM,
-		       T.MAT_OUT_AMT,
-		       TO_CHAR(T.MAT_OUT_DATE,'yyyy-MM-dd') AS "MAT_OUT_DATE",
-		       TO_CHAR(I.MAT_EDATE, 'yyyy-MM-dd') AS "MAT_EDATE"
-		       
-		FROM M_IN I
-		
-		 JOIN C_MTR C
-		  ON I.MTR_CD = C.MTR_CD
-		  
-		 JOIN C_ACT A
-		  ON A.ACT_CD = I.ACT_CD
-		  
-		 JOIN M_OUT T
-		  ON C.MTR_CD = T.MTR_CD
-		  
-		 ORDER BY I.MAT_LOT
-	</select>
-	
-	<!-- 입고 조건조회 -->
-	<select id="selectInOutAllList" resultType="com.mandu.yamyam.common.LowerKeyMap">
-		SELECT O.MAT_OD_CD,
-	       D.MTR_CD,
-	       C.MTR_NM,
+   </select>
+   
+   <!-- 입고 전체조회 -->
+   <select id="outInAllList" resultType="com.mandu.yamyam.common.LowerKeyMap">
+      SELECT I.MAT_LOT,
+             C.MTR_CD,
+             C.MTR_NM,
+             A.ACT_NM,
+             T.MAT_OUT_AMT,
+             TO_CHAR(T.MAT_OUT_DATE,'yyyy-MM-dd') AS "MAT_OUT_DATE",
+             TO_CHAR(I.MAT_EDATE, 'yyyy-MM-dd') AS "MAT_EDATE"
+             
+      FROM M_IN I
+      
+       JOIN C_MTR C
+        ON I.MTR_CD = C.MTR_CD
+        
+       JOIN C_ACT A
+        ON A.ACT_CD = I.ACT_CD
+        
+       JOIN M_OUT T
+        ON C.MTR_CD = T.MTR_CD
+        
+       ORDER BY I.MAT_LOT
+   </select>
+   
+   <!-- 입고 조건조회 -->
+   <select id="selectInOutAllList" resultType="com.mandu.yamyam.common.LowerKeyMap">
+      SELECT O.MAT_OD_CD,
+          D.MTR_CD,
+          C.MTR_NM,
            A.ACT_NM,
            I.MAT_IN_AMT,
            TO_CHAR(I.MAT_IN_DATE,'yyyy-MM-dd') AS "MAT_IN_DATE",
-	       I.MAT_LOT,
-		   TO_CHAR(I.MAT_EDATE,'yyyy-MM-dd') AS "MAT_EDATE"
-		   
-		 FROM  M_OD O 
-		 
-		  JOIN  M_ODD D 
-		    ON O.MAT_OD_CD = D.MAT_OD_CD
-		 
-		 JOIN  C_MTR C 
-		    ON D.MTR_CD = C.MTR_CD
-		 
-		  JOIN  C_ACT A 
-		    ON D.ACT_CD = A.ACT_CD
+          I.MAT_LOT,
+         TO_CHAR(I.MAT_EDATE,'yyyy-MM-dd') AS "MAT_EDATE"
+         
+       FROM  M_OD O 
+       
+        JOIN  M_ODD D 
+          ON O.MAT_OD_CD = D.MAT_OD_CD
+       
+       JOIN  C_MTR C 
+          ON D.MTR_CD = C.MTR_CD
+       
+        JOIN  C_ACT A 
+          ON D.ACT_CD = A.ACT_CD
            
           JOIN M_IN I
             ON I.MTR_CD = C.MTR_CD
-		  
-		  <where>
-         	<if test = "mtrCd != null and !mtrCd.equals('')">
-	         	D.MTR_CD = #{mtrCd}
-	         </if>
- 	         <if test = "actNm != null and !actNm.equals('')">
-	         	AND A.ACT_NM = #{actNm}
-	         </if>
-	         <if test = "matInDate != null and !matInDate.equals('')">
-	         	AND O.MAT_OD_DD <![CDATA[>=]]> #{matInDate}
-	         </if>
-	         <if test = "matEdate != null and !matEdate.equals('')">
-	         	AND O.MAT_OD_DD <![CDATA[<=]]> #{matEdate}
-	         </if>
+        
+        <where>
+            <if test = "mtrCd != null and !mtrCd.equals('')">
+               D.MTR_CD = #{mtrCd}
+            </if>
+             <if test = "actNm != null and !actNm.equals('')">
+               AND A.ACT_NM = #{actNm}
+            </if>
+            <if test = "matInDate != null and !matInDate.equals('')">
+               AND O.MAT_OD_DD <![CDATA[>=]]> #{matInDate}
+            </if>
+            <if test = "matEdate != null and !matEdate.equals('')">
+               AND O.MAT_OD_DD <![CDATA[<=]]> #{matEdate}
+            </if>
          </where>
-		  
-		 ORDER BY O.MAT_OD_CD
-	</select>
-	
-	<!-- 출고 조건조회 -->
-	<select id="selectOutInAllList" resultType="com.mandu.yamyam.common.LowerKeyMap">
-		SELECT I.MAT_LOT,
-		       C.MTR_CD,
-		       C.MTR_NM,
-		       A.ACT_NM,
-		       T.MAT_OUT_AMT,
-		       TO_CHAR(T.MAT_OUT_DATE,'yyyy-MM-dd') AS "MAT_OUT_DATE",
-		       TO_CHAR(I.MAT_EDATE, 'yyyy-MM-dd') AS "MAT_EDATE"
-		       
-		FROM M_IN I
-		
-		 JOIN C_MTR C
-		  ON I.MTR_CD = C.MTR_CD
-		  
-		 JOIN C_ACT A
-		  ON A.ACT_CD = I.ACT_CD
-		  
-		 JOIN M_OUT T
-		  ON C.MTR_CD = T.MTR_CD
-		  
-		  <where>
-         	<if test = "mtrCd != null and !mtrCd.equals('')">
-	         	C.MTR_CD = #{mtrCd}
-	         </if>
- 	         <if test = "actNm != null and !actNm.equals('')">
-	         	AND A.ACT_NM = #{actNm}
-	         </if>
-	         <if test = "matInDate != null and !matInDate.equals('')">
-	         	AND T.MAT_OUT_DATE <![CDATA[>=]]> #{matInDate}
-	         </if>
-	         <if test = "matEdate != null and !matEdate.equals('')">
-	         	AND T.MAT_OUT_DATE <![CDATA[<=]]> #{matEdate}
-	         </if>
+        
+       ORDER BY O.MAT_OD_CD
+   </select>
+   
+   <!-- 출고 조건조회 -->
+   <select id="selectOutInAllList" resultType="com.mandu.yamyam.common.LowerKeyMap">
+      SELECT I.MAT_LOT,
+             C.MTR_CD,
+             C.MTR_NM,
+             A.ACT_NM,
+             T.MAT_OUT_AMT,
+             TO_CHAR(T.MAT_OUT_DATE,'yyyy-MM-dd') AS "MAT_OUT_DATE",
+             TO_CHAR(I.MAT_EDATE, 'yyyy-MM-dd') AS "MAT_EDATE"
+             
+      FROM M_IN I
+      
+       JOIN C_MTR C
+        ON I.MTR_CD = C.MTR_CD
+        
+       JOIN C_ACT A
+        ON A.ACT_CD = I.ACT_CD
+        
+       JOIN M_OUT T
+        ON C.MTR_CD = T.MTR_CD
+        
+        <where>
+            <if test = "mtrCd != null and !mtrCd.equals('')">
+               C.MTR_CD = #{mtrCd}
+            </if>
+             <if test = "actNm != null and !actNm.equals('')">
+               AND A.ACT_NM = #{actNm}
+            </if>
+            <if test = "matInDate != null and !matInDate.equals('')">
+               AND T.MAT_OUT_DATE <![CDATA[>=]]> #{matInDate}
+            </if>
+            <if test = "matEdate != null and !matEdate.equals('')">
+               AND T.MAT_OUT_DATE <![CDATA[<=]]> #{matEdate}
+            </if>
          </where>
-		  
-		 ORDER BY I.MAT_LOT
-	</select>
-	
-	<!-- 7) 자재 재고 조회 -->
-	<select id="matStockList" resultType="com.mandu.yamyam.common.LowerKeyMap">
-		SELECT I.MAT_LOT,
-		       C.MTR_CD,
-		       C.MTR_NM,
-		       A.ACT_NM,
-		       I.MAT_SAMT,
-		       TO_CHAR(I.MAT_EDATE, 'yyyy-MM-dd') AS "MAT_EDATE",
-		       C.MTR_SFAMT
-		       
-		FROM M_IN I
-		
-		 JOIN C_MTR C
-		  ON I.MTR_CD = C.MTR_CD
-		  
-		 JOIN C_ACT A
-		  ON A.ACT_CD = I.ACT_CD
+        
+       ORDER BY I.MAT_LOT
+   </select>
+   
+   <!-- 7) 자재 재고 조회 -->
+   <select id="matStockList" resultType="com.mandu.yamyam.common.LowerKeyMap">
+      SELECT I.MAT_LOT,
+             C.MTR_CD,
+             C.MTR_NM,
+             A.ACT_NM,
+             I.MAT_SAMT,
+             TO_CHAR(I.MAT_EDATE, 'yyyy-MM-dd') AS "MAT_EDATE",
+             C.MTR_SFAMT
+             
+      FROM M_IN I
+      
+       JOIN C_MTR C
+        ON I.MTR_CD = C.MTR_CD
+        
+       JOIN C_ACT A
+        ON A.ACT_CD = I.ACT_CD
 
-	</select>
-	
-	<!-- 홀딩수량 구하기 -->
-	<select id="getHoldAmt" resultType="com.mandu.yamyam.common.LowerKeyMap">
-		SELECT B.MTR_CD,
-		       FIND_MTR_NAME(B.MTR_CD) AS "MTR_NM",
-		       B.BOM_AMT*P.PPLND_AMT AS "AMT"
-		       
-		FROM C_BOM B
-		
-		 JOIN P_PLND P 
-		  ON B.PRD_CD = P.PRD_CD
-		  
-		WHERE P.PPLND_STS = 'PLN-STS2'
-		AND B.MTR_CD IS NOT NULL
-		
-		GROUP BY B.MTR_CD, B.BOM_AMT*P.PPLND_AMT, B.BOM_CD
-		
-		ORDER BY B.MTR_CD, B.BOM_CD
+   </select>
+   
+   <!-- 홀딩수량 구하기 -->
+   <select id="getHoldAmt" resultType="com.mandu.yamyam.common.LowerKeyMap">
+      SELECT B.MTR_CD,
+             FIND_MTR_NAME(B.MTR_CD) AS "MTR_NM",
+             B.BOM_AMT*P.PPLND_AMT AS "AMT"
+             
+      FROM C_BOM B
+      
+       JOIN P_PLND P 
+        ON B.PRD_CD = P.PRD_CD
+        
+      WHERE P.PPLND_STS = 'PLN-STS2'
+      AND B.MTR_CD IS NOT NULL
+      
+      GROUP BY B.MTR_CD, B.BOM_AMT*P.PPLND_AMT, B.BOM_CD
+      
+      ORDER BY B.MTR_CD, B.BOM_CD
 
-	</select>
-		
-	<!-- 조건조회 -->
-	<select id="matStockSelectList" resultType="com.mandu.yamyam.common.LowerKeyMap">
-			SELECT I.MAT_LOT,
-			       C.MTR_CD,
-			       C.MTR_NM,
-			       A.ACT_NM,
-			       I.MAT_SAMT,
-			       TO_CHAR(I.MAT_EDATE, 'yyyy-MM-dd') AS "MAT_EDATE"
-			       
-			FROM M_IN I
-			
-			 JOIN C_MTR C
-			  ON I.MTR_CD = C.MTR_CD
-			  
-			 JOIN C_ACT A
-			  ON A.ACT_CD = I.ACT_CD
-			  
-		 <where>
-         	<if test = "mtrCd != null and !mtrCd.equals('')">
-	         	C.MTR_CD = #{mtrCd}
-	         </if>
- 	         <if test = "actNm != null and !actNm.equals('')">
-	         	AND A.ACT_NM = #{actNm}
-	         </if>
-	         <if test = "matInDate != null and !matInDate.equals('')">
-	         	AND I.MAT_EDATE <![CDATA[>=]]> #{matInDate}
-	         </if>
-	         <if test = "matEdate != null and !matEdate.equals('')">
-	         	AND I.MAT_EDATE <![CDATA[<=]]> #{matEdate}
-	         </if>
+   </select>
+      
+   <!-- 조건조회 -->
+   <select id="matStockSelectList" resultType="com.mandu.yamyam.common.LowerKeyMap">
+         SELECT I.MAT_LOT,
+                C.MTR_CD,
+                C.MTR_NM,
+                A.ACT_NM,
+                I.MAT_SAMT,
+                TO_CHAR(I.MAT_EDATE, 'yyyy-MM-dd') AS "MAT_EDATE"
+                
+         FROM M_IN I
+         
+          JOIN C_MTR C
+           ON I.MTR_CD = C.MTR_CD
+           
+          JOIN C_ACT A
+           ON A.ACT_CD = I.ACT_CD
+           
+       <where>
+            <if test = "mtrCd != null and !mtrCd.equals('')">
+               C.MTR_CD = #{mtrCd}
+            </if>
+             <if test = "actNm != null and !actNm.equals('')">
+               AND A.ACT_NM = #{actNm}
+            </if>
+            <if test = "matInDate != null and !matInDate.equals('')">
+               AND I.MAT_EDATE <![CDATA[>=]]> #{matInDate}
+            </if>
+            <if test = "matEdate != null and !matEdate.equals('')">
+               AND I.MAT_EDATE <![CDATA[<=]]> #{matEdate}
+            </if>
          </where>
-	</select>
-	
-	<!-- 8) 자재 반품 관리 -->
-	<!-- 반품목록 모달 -->
-	<select id="returnMtrList" resultType="com.mandu.yamyam.common.LowerKeyMap">
-  		SELECT O.MAT_OD_CD,
-  		       I.MTR_CD,
-  		       FIND_MTR_NAME(I.MTR_CD) AS "MTR_NM",
-  		       A.ACT_NM, 
-  		       K.ER_AMT,
-  		       TO_CHAR(K.MAT_CHK_DATE, 'yyyy-MM-dd') AS "MAT_CHK_DATE"
-		
-		FROM M_IN I
-		
-		 JOIN M_ODD D
-		  ON I.MTR_CD = D.MTR_CD
-		  
-		 JOIN M_OD O
-		  ON O.MAT_OD_CD = D.MAT_OD_CD
+   </select>
+   
+   <!-- 8) 자재 반품 관리 -->
+   <!-- 반품목록 모달 -->
+   <select id="returnMtrList" resultType="com.mandu.yamyam.common.LowerKeyMap">
+        SELECT DISTINCT 
+                 O.MAT_OD_CD,
+                     I.MTR_CD,
+                     FIND_MTR_NAME(I.MTR_CD) AS "MTR_NM",
+                    A.ACT_NM, 
+                     K.ER_AMT,
+                     TO_CHAR(K.MAT_CHK_DATE, 'yyyy-MM-dd') AS "MAT_CHK_DATE"
+      
+      FROM M_IN I
+      
+       JOIN M_ODD D
+        ON I.MTR_CD = D.MTR_CD
+        
+       JOIN M_OD O
+        ON O.MAT_OD_CD = D.MAT_OD_CD
           
          JOIN C_ACT A
-		  ON A.ACT_CD = D.ACT_CD
-		  
+        ON A.ACT_CD = D.ACT_CD
+        
          JOIN M_CHK K
           ON K.MAT_OD_CD = O.MAT_OD_CD
-		  
-		  WHERE K.ER_CD != 'ERR-MNP-006'
-		  AND K.ER_AMT > 0
-		  
-		  ORDER BY K.MAT_OD_CD
-	</select>
-	
-	<!-- insert -->
-	<insert id="insertRtOd" parameterType="com.mandu.yamyam.mat.service.MatVO">
-	<selectKey keyProperty="matRtCd" resultType="String" order="BEFORE">
-		SELECT MK_MATRT_CD FROM DUAL
-	</selectKey>
-		INSERT INTO M_RT(
-						  MAT_RT_CD,
-						  MAT_CHK_CD,
-						  MTR_CD,
-						  ACT_CD,
-						  MAT_RT_AMT,
-						  MAT_RT_DATE
-						  )
-				  VALUES (
-				          #{matRtCd},
-				          (SELECT GET_RECHK_CD(#{matOdCd}) FROM DUAL),
-				          (SELECT GET_REMTR_CD(#{matOdCd}) FROM DUAL),
-				          (SELECT GET_REACT_CD(#{matOdCd}) FROM DUAL),
-				          (SELECT GET_REAMT_CD(#{matOdCd}) FROM DUAL),
-				          #{matRtDate}
-				          )
-	</insert>
-	
-	<!-- 반품요청되면 자재검수 테이블에서 해당 건 UPDATE -->
-	<update id="updateRtOd" parameterType="com.mandu.yamyam.mat.service.MatVO">
-		UPDATE M_CHK
-		SET ER_CD = 'ERR-MNP-006'
-		WHERE MAT_OD_CD = #{matOdCd}
-	</update>
-	
-	
-	<!-- 클릭시 반품정보 -->
-	<select id="returnInfo" resultType="com.mandu.yamyam.common.LowerKeyMap">
-		SELECT O.MAT_OD_CD,
-		       K.ER_CD, K.ER_INFO,
-		       TO_CHAR(K.MAT_CHK_DATE,'yyyy-MM-dd') AS "MAT_CHK_DATE"
-		
-		 FROM M_OD O
-		 
-		   JOIN M_CHK K
-		    ON K.MAT_OD_CD = O.MAT_OD_CD
-		    
-		   WHERE O.MAT_OD_CD = #{matOdCd}
-	</select>
-	
-	<!-- 9) 자재 반품 조회 -->
-	<select id="mtrReturnAllList" resultType="com.mandu.yamyam.common.LowerKeyMap">
-		SELECT K.MAT_OD_CD,
-		       T.MTR_CD,
-		       FIND_MTR_NAME(T.MTR_CD) AS "MTR_NM",
-		       A.ACT_NM,
-	           T.MAT_RT_AMT,
-	           TO_CHAR(T.MAT_RT_DATE,'yyyy-MM-dd') AS "MAT_RT_DATE",
-	           TO_CHAR(K.MAT_CHK_DATE,'yyyy-MM-dd') AS "MAT_CHK_DATE",
-	           K.ER_CD,
-	           K.ER_INFO
-		FROM M_RT T
-		
-		 JOIN M_CHK K
-		  ON T.MAT_CHK_CD = K.MAT_CHK_CD
-		  
-		 JOIN C_ACT A
-		  ON A.ACT_CD = T.ACT_CD
-		  
-		WHERE T.MAT_RT_AMT > 0
-	</select>
-	
-	<!-- 조건조회 -->
-	<select id="matReturnSearch" resultType="com.mandu.yamyam.common.LowerKeyMap">
-		SELECT K.MAT_OD_CD,
-	       T.MTR_CD,
-	       FIND_MTR_NAME(T.MTR_CD) AS "MTR_NM",
-	       A.ACT_NM,
+        
+        WHERE K.ER_CD != 'ERR-MNP-006'
+        AND K.ER_AMT > 0
+        
+   </select>
+   
+   <!-- insert -->
+   <insert id="insertRtOd" parameterType="com.mandu.yamyam.mat.service.MatVO">
+   <selectKey keyProperty="matRtCd" resultType="String" order="BEFORE">
+      SELECT MK_MATRT_CD FROM DUAL
+   </selectKey>
+      INSERT INTO M_RT(
+                    MAT_RT_CD,
+                    MAT_CHK_CD,
+                    MTR_CD,
+                    ACT_CD,
+                    MAT_RT_AMT,
+                    MAT_RT_DATE
+                    )
+              VALUES (
+                      #{matRtCd},
+                      (SELECT GET_RECHK_CD(#{matOdCd}) FROM DUAL),
+                      (SELECT GET_REMTR_CD(#{matOdCd}) FROM DUAL),
+                      (SELECT GET_REACT_CD(#{matOdCd}) FROM DUAL),
+                      (SELECT GET_REAMT_CD(#{matOdCd}) FROM DUAL),
+                      #{matRtDate}
+                      )
+   </insert>
+   
+   <!-- 반품요청되면 자재검수 테이블에서 해당 건 UPDATE -->
+   <update id="updateRtOd" parameterType="com.mandu.yamyam.mat.service.MatVO">
+      UPDATE M_CHK
+      SET ER_CD = 'ERR-MNP-006'
+      WHERE MAT_OD_CD = #{matOdCd}
+   </update>
+   
+   
+   <!-- 클릭시 반품정보 -->
+   <select id="returnInfo" resultType="com.mandu.yamyam.common.LowerKeyMap">
+      SELECT O.MAT_OD_CD,
+             K.ER_CD, K.ER_INFO,
+             TO_CHAR(K.MAT_CHK_DATE,'yyyy-MM-dd') AS "MAT_CHK_DATE"
+      
+       FROM M_OD O
+       
+         JOIN M_CHK K
+          ON K.MAT_OD_CD = O.MAT_OD_CD
+          
+         WHERE O.MAT_OD_CD = #{matOdCd}
+   </select>
+   
+   <!-- 9) 자재 반품 조회 -->
+   <select id="mtrReturnAllList" resultType="com.mandu.yamyam.common.LowerKeyMap">
+      SELECT K.MAT_OD_CD,
+             T.MTR_CD,
+             FIND_MTR_NAME(T.MTR_CD) AS "MTR_NM",
+             A.ACT_NM,
+              T.MAT_RT_AMT,
+              TO_CHAR(T.MAT_RT_DATE,'yyyy-MM-dd') AS "MAT_RT_DATE",
+              TO_CHAR(K.MAT_CHK_DATE,'yyyy-MM-dd') AS "MAT_CHK_DATE",
+              K.ER_CD,
+              K.ER_INFO
+      FROM M_RT T
+      
+       JOIN M_CHK K
+        ON T.MAT_CHK_CD = K.MAT_CHK_CD
+        
+       JOIN C_ACT A
+        ON A.ACT_CD = T.ACT_CD
+        
+      WHERE T.MAT_RT_AMT > 0
+   </select>
+   
+   <!-- 조건조회 -->
+   <select id="matReturnSearch" resultType="com.mandu.yamyam.common.LowerKeyMap">
+      SELECT K.MAT_OD_CD,
+          T.MTR_CD,
+          FIND_MTR_NAME(T.MTR_CD) AS "MTR_NM",
+          A.ACT_NM,
            T.MAT_RT_AMT,
            TO_CHAR(T.MAT_RT_DATE,'yyyy-MM-dd') AS "MAT_RT_DATE",
            TO_CHAR(K.MAT_CHK_DATE,'yyyy-MM-dd') AS "MAT_CHK_DATE",
            K.ER_INFO
-		FROM M_RT T
-		
-		 JOIN M_CHK K
-		  ON T.MAT_CHK_CD = K.MAT_CHK_CD
-		  
-		 JOIN C_ACT A
-		  ON A.ACT_CD = T.ACT_CD
-		  
-		  <where>
-         	<if test = "mtrCd != null and !mtrCd.equals('')">
-	         	T.MTR_CD = #{mtrCd}
-	         </if>
- 	         <if test = "actNm != null and !actNm.equals('')">
-	         	AND A.ACT_NM = #{actNm}
-	         </if>
-	         <if test = "matInDate != null and !matInDate.equals('')">
-	         	AND MAT_RT_DATE <![CDATA[>=]]> #{matInDate}
-	         </if>
-	         <if test = "matEdate != null and !matEdate.equals('')">
-	         	AND MAT_RT_DATE <![CDATA[<=]]> #{matEdate}
-	         </if>
-	         AND T.MAT_RT_AMT > 0
+      FROM M_RT T
+      
+       JOIN M_CHK K
+        ON T.MAT_CHK_CD = K.MAT_CHK_CD
+        
+       JOIN C_ACT A
+        ON A.ACT_CD = T.ACT_CD
+        
+        <where>
+            <if test = "mtrCd != null and !mtrCd.equals('')">
+               T.MTR_CD = #{mtrCd}
+            </if>
+             <if test = "actNm != null and !actNm.equals('')">
+               AND A.ACT_NM = #{actNm}
+            </if>
+            <if test = "matInDate != null and !matInDate.equals('')">
+               AND MAT_RT_DATE <![CDATA[>=]]> #{matInDate}
+            </if>
+            <if test = "matEdate != null and !matEdate.equals('')">
+               AND MAT_RT_DATE <![CDATA[<=]]> #{matEdate}
+            </if>
+            AND T.MAT_RT_AMT > 0
          </where>
-	</select>
-	
-	<!-- 10) 안전재고 업데이트 -->
-	<select id="selectSamt" resultType="com.mandu.yamyam.common.LowerKeyMap">
-		SELECT I.MTR_CD,
-		       M.MTR_NM,
-		       M.MTR_SFAMT,
-		       SUM(I.MAT_SAMT) AS "MAT_SAMT"
-		       
-		FROM M_IN I
-		
-		 JOIN C_MTR M
-		  ON M.MTR_CD = I.MTR_CD
-		  
-		GROUP BY I.MTR_CD, M.MTR_NM, M.MTR_SFAMT
-	</select>
-	
-	<update id="mtrSfUpdate" parameterType="com.mandu.yamyam.mat.service.MatVO">
-		UPDATE C_MTR
-		SET MTR_SFAMT = #{mtrSfamt}
-		WHERE MTR_CD = #{mtrCd}
-	</update>
+   </select>
+   
+   <!-- 10) 안전재고 업데이트 -->
+   <select id="selectSamt" resultType="com.mandu.yamyam.common.LowerKeyMap">
+      SELECT I.MTR_CD,
+             M.MTR_NM,
+             M.MTR_SFAMT,
+             SUM(I.MAT_SAMT) AS "MAT_SAMT"
+             
+      FROM M_IN I
+      
+       JOIN C_MTR M
+        ON M.MTR_CD = I.MTR_CD
+        
+      GROUP BY I.MTR_CD, M.MTR_NM, M.MTR_SFAMT
+   </select>
+   
+   <update id="mtrSfUpdate" parameterType="com.mandu.yamyam.mat.service.MatVO">
+      UPDATE C_MTR
+      SET MTR_SFAMT = #{mtrSfamt}
+      WHERE MTR_CD = #{mtrCd}
+   </update>
 </mapper>
