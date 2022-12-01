@@ -163,12 +163,10 @@
 	 	    ON p.ppln_cd = d.ppln_cd
           JOIN c_prd c
             ON c.prd_cd = d.prd_cd
-		<where>
+          WHERE d.pplnd_sts='PLN-STS2'
             <if test='startDate!= null and endDate != null'>
-               TRUNC(d.ppln_date) BETWEEN #{startDate} AND #{endDate} AND
+               AND TRUNC(d.ppln_date) BETWEEN #{startDate} AND #{endDate} 
             </if>
-               d.pplnd_sts='PLN-STS2'
-        </where>
 	</select>
 	
 	<!-- 생산라인 조회 -->
@@ -196,7 +194,7 @@
 				   		   #{podCd},
 				   		   #{pplndCd},
 				   		   #{prdCd},
-				   		   (SELECT pline_cd FROM p_line WHERE prd_cd = #{prdCd}))
+				   		   #{plineCd})
 	</insert>
 	
 	
