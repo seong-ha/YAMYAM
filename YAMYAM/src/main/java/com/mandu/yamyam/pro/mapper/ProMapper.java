@@ -43,7 +43,6 @@ public interface ProMapper {
 	// 제품목록 조회
 	public List<Map<String,Object>> materialList();
 	
-
 	// 생산계획 등록
 	public int insertPlan(ProVO vo);
 	
@@ -60,6 +59,9 @@ public interface ProMapper {
 	----------------*/
 	// 미지시 계획 조회
 	public List<ProVO> noOrderList(ProVO vo);
+	
+	// 생산지시 일자 조회
+	public int getPoddPrio(ProVO vo);
 	
 	// 생산라인 조회
 	public List<Map<String,Object>> lineList(ProVO vo);
@@ -122,6 +124,11 @@ public interface ProMapper {
 	----------------*/
 	public List<ProVO> getResultList(ProVO vo);
 	
+	// 에러코드 가져오기
+	public List<ProVO> getErrorList();
+	
+	// 에러코드 업데이트
+	public int updateError(ProVO vo);
 	
 	/*---------------
 	// 공정 관리
