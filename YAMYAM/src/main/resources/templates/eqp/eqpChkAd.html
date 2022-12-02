@@ -108,7 +108,7 @@
 						</div>
 						<div align="center">
 							<button class="btn btn-dark btn-sm" id="addEqpToChk">추가</button>
-							<button class="btn btn-dark btn-sm" data-bs-dismiss="modal">취소</button>
+							<button class="btn btn-dark btn-sm" data-bs-dismiss="modal" id="cancel">취소</button>
 						</div>
 					</div>
 				</div>
@@ -153,8 +153,9 @@
 			
 			eqpToChkModalRefresh();								// 점검 대상 설비 모달 시 eqpToChkModalGrid refreshLayout
 			findEqpToChk();										// 점검 대상 설비 모달의 조회 버튼 이벤트(남은 점검일수만큼 뿌려주기)
-			resetLeftDays();									// 점검 대상 설비 모달의 조회취소 버튼 이벤트(input 지우고 당일치로 초기화)
+			resetLeftDays();									// 점검 대상 설비 모달의 초기화 버튼 이벤트(input 지우고 당일치로 초기화)
 			addEqpToChk();										// 점검 대상 설비 모달의 추가 버튼 이벤트(체크한 것을 eqpChkGrid에 행추가)			
+			eqpToChkModalGridCancel();							// 점검 대상 설비 모달의 취소 버튼 이벤트(input 지우고 당일로 초기화)
 			
 			
 			// toastr
@@ -438,7 +439,7 @@
 			
 			
 			/*------------
-			점검 대상 설비 데이터 초기화(days 값이 -100이면 기본적으로 일주일치를 가져온다.)
+			점검 대상 설비 데이터 초기화
 			----------------*/
 			function eqpToChkModalGridData(days) {
 				$.ajax({
@@ -459,7 +460,7 @@
 				});
 			}
 			
-			
+
 			
 			/*------------
 			설비 직원 데이터 초기화
@@ -498,16 +499,26 @@
 			
 			
 			/* ---------------
-			점검 대상 설비 모달의 취소 버튼 이벤트(input 지우고 당일로 초기화)
+			점검 대상 설비 모달의 초기화 버튼 이벤트(input 지우고 당일로 초기화)
 			--------------- */
 			function resetLeftDays() {
 				document.getElementById('resetLeftDays').addEventListener('click', function () {
-					document.getElementById('leftDays').value = '';
+					document.getElementById('leftDays').value = '0';
 					eqpToChkModalGridData(0);
 				})
 			}
 			
 			
+			
+			/* ---------------
+			점검 대상 설비 모달의 취소 버튼 이벤트(input 지우고 당일로 초기화)
+			--------------- */
+			function eqpToChkModalGridCancel() {
+				document.getElementById('cancel').addEventListener('click', function () {
+					document.getElementById('leftDays').value = '0';
+					eqpToChkModalGrid.clear();
+				});
+			}
 			
 			
 			
