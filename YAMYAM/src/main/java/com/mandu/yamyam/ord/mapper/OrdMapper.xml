@@ -81,10 +81,6 @@
 		  JOIN B_IN I
 			ON I.PRD_LOT = OU.PRD_LOT
 			
-		  JOIN B_RT R
-		 	ON R.PRD_LOT = I.PRD_LOT
-		
-		 WHERE R.RE_CD IS NULL
 	  ORDER BY OD.OD_CD
 	</select>
 	
@@ -328,9 +324,11 @@
 		<set>
 			OD_STS = 'ORD-STS2'
 		</set>
-	  WHERE OD_STS = (SELECT OD.OD_STS
-                	  FROM B_OD OD, B_OUT OU
-                	  WHERE OD.OD_CD = #{odCd})
+	  WHERE OD_STS = (SELECT DISTINCT OD.OD_STS
+	                  FROM B_OD OD
+	                  LEFT OUTER JOIN B_OUT OU
+	                  ON OD.OD_CD = OU.OD_CD
+	                  WHERE OD.OD_CD = #{odCd})
        AND OD_CD = #{odCd}
 	</update>
 	
