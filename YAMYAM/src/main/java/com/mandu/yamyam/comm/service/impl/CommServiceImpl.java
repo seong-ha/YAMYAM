@@ -43,6 +43,7 @@ public class CommServiceImpl implements CommService {
 		return commMapper.ajaxFindCommd(commdVO);
 	}
 	
+	// ajax 상세공통 등록, 수정, 삭제
 	@Override
 	public Map<String, Object> ajaxModifiedCommd(GridData<CommdVO> gridData) {
 		// modified된 정보별로 담기
@@ -285,5 +286,44 @@ public class CommServiceImpl implements CommService {
 		}
 		return result;
 	}
+	
+	// ajax BOM 등록, 수정, 삭제
+		@Override
+		public Map<String, Object> ajaxModifiedBOM(GridData<BOMVO> gridData) {
+			// modified된 정보별로 담기
+			List<BOMVO> update = gridData.getUpdatedRows();
+			List<BOMVO> create = gridData.getCreatedRows();
+			List<BOMVO> delete = gridData.getDeletedRows();
+		
+			// modified별 시행 건수
+			int uCount = 0;
+			int cCount = 0;
+			int dCount = 0;
+			
+			for (int i = 0; i < update.size(); i ++) {
+				uCount += commMapper.ajaxUpdateBOM(update.get(i));
+			}
+			
+			for (int i = 0; i < create.size(); i ++) {
+				cCount += commMapper.ajaxInsertBOM(create.get(i));
+			}
+			
+			for (int i = 0; i < delete.size(); i ++) {
+				dCount += commMapper.ajaxDeleteBOM(delete.get(i));
+			}
+			
+			Map<String, Object> map = new HashMap<>();
+			map.put("update", uCount);
+			map.put("create", cCount);
+			map.put("delete", dCount);
+			
+			return map;
+		}
+	
+	// ajax BOM Filter
+		@Override
+		public List<BOMVO> ajaxFilterBOM(BOMVO bomVO) {
+			return commMapper.ajaxFilterBOM(bomVO);
+		}
 
 }

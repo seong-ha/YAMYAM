@@ -386,6 +386,13 @@ public class EmpController {
 		return commService.ajaxSelectMtrInfoModalBOM();
 	}
 	
+	// ajax 상세 공통 코드(등록, 수정, 삭제)
+	@PostMapping("ajax/modifiedBOM")
+	@ResponseBody
+	public Map<String, Object> ajaxModifiedBOM(@RequestBody GridData<BOMVO> gridData) {
+		return commService.ajaxModifiedBOM(gridData);
+	}
+	
 	// ajax BOM 추가 후 저장하기
 	@PostMapping("ajax/insertBOM")
 	@ResponseBody
@@ -414,5 +421,11 @@ public class EmpController {
 		return result;
 	}
 	
+	// ajax BOM Filter
+	@PostMapping("ajax/selectFilterBOM")
+	@ResponseBody
+	public List<BOMVO> ajaxFilterBOM(BOMVO bomVO) {
+		return commService.ajaxFilterBOM(bomVO);
+	}
 	
 }
