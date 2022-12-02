@@ -171,22 +171,26 @@ var header = $("meta[name='_csrf_header']").attr("content");
 	    columns: [
 	      {
 	        header: '반품 일자',
-	        align : 'right',
+	        align : 'center',
 	        name: 'reDate'
 	      },
 	      {
 	        header: '반품 코드',
-	        align : 'left',
+	        align : 'center',
 	        name: 'reCd'
 	      },
 	      {
 	        header: '완제품 LOT',
-	        align : 'left',
-	        name: 'prdLot'
+	        align : 'center',
+	        name: 'prdLot',
+			validation: {
+			     dataType: 'text',
+			     required: true
+			      }
 	      },
 	      {
 	        header: '제품명',
-	        align : 'left',
+	        align : 'center',
 	        name: 'prdNm'
 	      },
 	      {
@@ -393,17 +397,17 @@ var header = $("meta[name='_csrf_header']").attr("content");
 	    columns: [
 	      {
 	        header: '주문 코드',
-	        align : 'left',
+	        align : 'center',
 	        name  : 'odCd'
 	      },
 	      {
 	        header: '완제품LOT',
-	        align : 'left',
+	        align : 'center',
 	        name  : 'prdLot'
 	      },
 	      {
 	        header: '제품명',
-	        align : 'left',
+	        align : 'center',
 	        name  : 'prdNm'
 	      },
 	      {
@@ -428,7 +432,7 @@ var header = $("meta[name='_csrf_header']").attr("content");
 		  },
 		  {
 	        header: '출고 일자',
-	        align : 'right',
+	        align : 'center',
 	        name  : 'bdates'
 		   }
 	    ]

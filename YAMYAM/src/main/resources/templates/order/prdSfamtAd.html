@@ -17,7 +17,10 @@ text-align: center;
 <body>
 <div class="container" layout:fragment="content">
 	<div id="od-title">
-		<h3>제품 안전 재고 관리</h3>
+		<h3>제품 안전 재고 관리
+		<img class="Magnifying-Glass-img" id="infoMandu" alt="image" src="../images/info.png" 
+		data-bs-toggle="tooltip" data-bs-placement="bottom" title="안전재고 30% 이하 시, 위험　안전재고 20% 이하 시, 경고 안전재고 10% 이하 시, 관심">
+		</h3>
 		<hr>
 	</div>
 	
@@ -98,6 +101,16 @@ var header = $("meta[name='_csrf_header']").attr("content");
 			})
 		});
 	}
+	
+	
+	/*------------
+	// 만두 Info
+	----------------*/
+	var exampleEl = document.getElementById('infoMandu')
+	var tooltip = new bootstrap.Tooltip(exampleEl, {placement:'right'})
+	$(document).ready(function(){
+	    $('[data-toggle="tooltip"]').tooltip();
+	});
    
 	
    /*------------
