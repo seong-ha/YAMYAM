@@ -101,41 +101,44 @@
                  {
                    header: '상세생산지시코드',
                    name: 'poddCd',
+                   align: 'center',
                    sortable: true
                  },
                  {
                    header: '생산지시코드',
                    name: 'podCd',
+                   align: 'center',
                    sortable: true
                  },
                  {
                    header: '완제품코드',
-                  align: 'center',
+                   align: 'center',
+                   align: 'center',
                    name: 'prdCd',
                    sortable: true
                  },
                  {
                    header: '작업지시량',
-                  align: 'right',
+                   align: 'center',
                    name: 'poddAmt',
                    sortable: true
                  },
                  {
                    header: '생산일자',
                    name: 'poddDates',
-                  align: 'right',
+                   align: 'center',
                    sortable: true,
                  },
                  {
                    header: '지시등록일자',
                    name: 'podDates',
-                  align: 'right',
+                   align: 'center',
                    sortable: true,
                  },
                  {
                    header: '진행구분',
                    name: 'poddSts',
-                  align: 'center',
+                   align: 'center',
                    sortable: true
                  }
                ]
@@ -158,18 +161,22 @@
                {
                   header: '제품코드',
                   name: 'prdCd',
+                  align: 'center'
                },
                {
                   header: '자재코드',
-                  name: 'mtrCd'
+                  name: 'mtrCd',
+                  align: 'center'
                },
                {
                   header: '자재명',
-                  name: 'mtrNm'
+                  name: 'mtrNm',
+                  align: 'center'
                },
                {
                   header: '소모량',
-                  name: 'amt'
+                  name: 'amt',
+                  align: 'center'
                }
             ]
          });
@@ -233,18 +240,22 @@
                {
                   header: '자재명',
                   name: 'mtrNm',
+                  align: 'center'
                },
                {
                   header: '자재LOT번호',
-                  name: 'matLot'
+                  name: 'matLot',
+                  align: 'center'
                },
                {
                   header: '사용수량',
-                  name: 'amt'
+                  name: 'amt',
+                  align: 'center'
                },
                {
                   header: '유통기한',
-                  name: 'matEdate'
+                  name: 'matEdate',
+                  align: 'center'
                }
                
             ]
@@ -267,24 +278,29 @@
             columns: [
                {
                   header: '자재LOT번호',
-                  name: 'matLot'
+                  name: 'matLot',
+                  align: 'center'
                },
                {
                   header: '자재이름',
-                  name: 'mtrNm'
+                  name: 'mtrNm',
+                  align: 'center'
                },
                {
                   header: '현재고',
-                  name: 'matSamt'
+                  name: 'matSamt',
+                  align: 'center'
                },
                {
                   header: '사용수량',
                   name: 'amt',
-                  editor: 'text'
+                  editor: 'text',
+                  align: 'center'
                },
                {
                   header: '유통기한',
-                  name: 'matEdate'
+                  name: 'matEdate',
+                  align: 'center'
                },
             ],
             summary: {
@@ -326,6 +342,7 @@
                   header: '자재코드',
                   name: 'mtrCd',
                   sortable: true,
+                  align: 'center',
                     filter: {
                        type: 'select'           
                        }
@@ -333,6 +350,7 @@
                {
                   header: '자재명',
                   name: 'mtrNm',
+                  align: 'center',
                   sortable: true,
                     filter: {
                       type: 'select'           

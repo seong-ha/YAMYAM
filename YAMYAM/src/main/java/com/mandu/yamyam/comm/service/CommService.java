@@ -1,7 +1,9 @@
 package com.mandu.yamyam.comm.service;
 
 import java.util.List;
+import java.util.Map;
 
+import com.mandu.yamyam.common.GridData;
 import com.mandu.yamyam.pro.service.ProVO;
 
 public interface CommService {
@@ -12,6 +14,8 @@ public interface CommService {
 	public List<CommdVO> ajaxSelectDetailComm(CommdVO commdVO);
 	// ajax 상세 공통 코드 한건 불러오기
 	public CommdVO ajaxFindCommd(CommdVO commdVO);
+	// ajax 상세 공통 코드(등록, 수정, 삭제)
+	Map<String, Object> ajaxModifiedCommd(GridData<CommdVO> gridData);
 	// ajax 상세 공통 코드 등록
 	public int ajaxInsertDetailComm(List<CommdVO> commdVO);
 	// ajax 상세 공통 코드 수정	

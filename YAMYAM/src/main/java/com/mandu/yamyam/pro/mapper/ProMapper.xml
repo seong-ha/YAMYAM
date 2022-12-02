@@ -94,7 +94,7 @@
 						   )
 	</insert>
 	
-	<!-- 생산요청서 진행사항 수정 -->
+	<!-- 생산요청서 진행사항 수정(계획등록시) -->
 	<update id="updateBpod" parameterType="com.mandu.yamyam.pro.service.ProVO">
 		UPDATE b_pod
 		SET rqt_sts = 'RQT-STS2'
@@ -105,14 +105,10 @@
 	<!-- 생산계획 우선순위, 생산일자 수정 -->
 	<update id="updatePlanDetail" parameterType="com.mandu.yamyam.pro.service.ProVO">
 		UPDATE p_plnd
-		   <set>
-		   		<if test="pplndPrio != null">
+		   SET
 		   			pplnd_prio = #{pplndPrio},
-		   		</if>
-		   		<if test="pplndDays != null">
-		   			pplnd_days = #{pplndDays}
-		   		</if>
-		   </set>
+		   			pplnd_days = #{pplndDays},
+		   			pplnd_amt = #{pplndAmt}
 		 WHERE pplnd_cd = #{pplndCd}
 	</update>
 	
@@ -121,6 +117,13 @@
 		DELETE FROM p_plnd
 		WHERE pplnd_cd = #{pplndCd}
 	</delete>
+	
+	<!-- 생산요청서 진행사항 수정(계획삭제시) -->
+	<update id="updateBpod2" parameterType="com.mandu.yamyam.pro.service.ProVO">
+		UPDATE b_pod
+		SET rqt_sts = 'RQT-STS1'
+		WHERE od_cd = #{odCd}
+	</update>
 	
 	<!-- 생산계획 삭제 -->
 	<delete id="deletePlan" parameterType="com.mandu.yamyam.pro.service.ProVO">
@@ -145,6 +148,7 @@
           JOIN c_prd c
             ON c.prd_cd = b.prd_cd
 	 	 WHERE p.rqt_sts = 'RQT-STS1'
+	 	 ORDER BY de_date DESC
 	</select>
 	
 	<!-- 제품목록 조회 -->
@@ -163,12 +167,10 @@
 	 	    ON p.ppln_cd = d.ppln_cd
           JOIN c_prd c
             ON c.prd_cd = d.prd_cd
-		<where>
+          WHERE d.pplnd_sts='PLN-STS2'
             <if test='startDate!= null and endDate != null'>
-               TRUNC(d.ppln_date) BETWEEN #{startDate} AND #{endDate} AND
+               AND TRUNC(d.ppln_date) BETWEEN #{startDate} AND #{endDate} 
             </if>
-               d.pplnd_sts='PLN-STS2'
-        </where>
 	</select>
 	
 	<!-- 생산라인 조회 -->
@@ -196,7 +198,7 @@
 				   		   #{podCd},
 				   		   #{pplndCd},
 				   		   #{prdCd},
-				   		   (SELECT pline_cd FROM p_line WHERE prd_cd = #{prdCd}))
+				   		   #{plineCd})
 	</insert>
 	
 	
@@ -229,11 +231,11 @@
 		    ON o.pod_cd= od.pod_cd
 	      JOIN c_prd c
 	        ON o.prd_cd = c.prd_cd
-	    <where>
+	    WHERE
+	    	TRUNC(od.podd_dates) BETWEEN (od.podd_dates-7) AND (od.podd_dates+7)
 	        <if test='startDate!= null and endDate != null'>
-	            TRUNC(od.podd_dates) BETWEEN #{startDate} AND #{endDate}
+	            AND TRUNC(od.podd_dates) BETWEEN #{startDate} AND #{endDate}
 	        </if>
-        </where>
 		order by 1,2,7             	
 	</select>
 	
@@ -260,7 +262,7 @@
           LEFT OUTER JOIN b_in b
             ON b.podd_cd = d.podd_cd
           WHERE b.podd_cd is null
-		  AND TRUNC(CURRENT_DATE) = TRUNC(d.podd_dates)
+		 <!--  AND TRUNC(CURRENT_DATE) = TRUNC(d.podd_dates) -->
           AND d.podd_sts = 'PLN-STS3'
 		 ORDER BY 3
 	</select>
@@ -409,7 +411,7 @@
 	            AND TRUNC(pl.ppln_date) BETWEEN #{startDate} AND #{endDate}
 	        </if>
 
-        ORDER BY pod_dates DESC, r.eqp_cd
+        ORDER BY ppro_s_time DESC, pod_dates DESC, r.eqp_cd
 	</select>
 	
 	<!-- 공정관리 조회 -->

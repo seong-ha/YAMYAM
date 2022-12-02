@@ -18,27 +18,24 @@
 			<table style="width: 100%;">
 				<tr>
 					<td style="width: 85px;">공정 구분 &nbsp;</td>
-				
 					<td>
-					<select id="pList" name="pList">
-					<option th:each="pCode : ${pCode}" th:text="${pCode.commdNm}" th:value="${pCode.commdCd}"></option>			
-					</select>
+						<select id="pList" name="pList">
+						<option th:each="pCode : ${pCode}" th:text="${pCode.commdNm}" th:value="${pCode.commdCd}"></option>			
+						</select>
 						<button type="button" id="cancelBtn" class="btn btn-dark btn-sm">초기화</button>
+					</td>
+					<td style="text-align: right;">
+						<th:block sec:authorize="hasAnyAuthority('JOB-GRD1', 'JOB-GRD2')">
+							<button type="button" id="plusBtn" class="btn btn-dark btn-sm">행 추가</button>
+							<button type="button" id="removeBtn" class="btn btn-dark btn-sm">행 삭제</button>
+							<button type="button" id="insertBtn" class="btn btn-dark btn-sm">입력</button>
+							<button type="button" id="updateBtn" class="btn btn-dark btn-sm">수정</button>
+						</th:block>	
 					</td>
 				</tr>
 				<tr>
 					<td colspan="3">
 						<div id="grid"></div>
-					</td>
-				</tr>
-				<tr>
-					<td colspan="3" style="text-align: right;">
-					<th:block sec:authorize="hasAnyAuthority('JOB-GRD1', 'JOB-GRD2')">
-						<button type="button" id="plusBtn" class="btn btn-dark btn-sm">행 추가</button>
-						<button type="button" id="removeBtn" class="btn btn-dark btn-sm">행 삭제</button>
-						<button type="button" id="insertBtn" class="btn btn-dark btn-sm">입력</button>
-						<button type="button" id="updateBtn" class="btn btn-dark btn-sm">수정</button>
-					</th:block>	
 					</td>
 				</tr>
 			</table>
@@ -170,11 +167,14 @@
 			}).then(res=>{
 				grid.resetData(res);
 			})
-			
-			
 			return grid;
 		}
-		
+		grid.on('mouseover', function(ev){
+			grid.addColumnClassName('eqpNm','cell-pointer');
+			grid.addColumnClassName('eqpCd','cell-pointer');
+			grid.addColumnClassName('pproEmpId','cell-pointer');
+			grid.addColumnClassName('pproEmpNm','cell-pointer');
+		})
 		
 		/*------------
 		// 생산담당자 모달 grid
