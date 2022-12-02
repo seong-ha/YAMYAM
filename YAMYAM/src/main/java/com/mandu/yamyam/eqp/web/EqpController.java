@@ -27,14 +27,17 @@ public class EqpController {
 
 	@RequestMapping("/uopAd")
 	public String uopAd(Model model) {
+		// 비가동 구분 종류 가져오기
 		model.addAttribute("uopTypeList", commService.getCommdCdNm("UOP-TYPE"));
 		return "eqp/uopAd";
 	}
 	
 	@RequestMapping("/eqpChkAd")
 	public String eqpChkAd(Model model) {
-		// 비가동중인 설비 비가동 정보 가져오기
+		// 설비 구분 가져오기
 		model.addAttribute("eqpTypeList", commService.getCommdCdNm("EQP-TYPE"));
+		// 설비 점검 판정 구분 가져오기
+		model.addAttribute("eqpChkRstList", commService.getCommdCdNm("EQP-CHKRST"));
 		return "eqp/eqpChkAd";
 	}
 	

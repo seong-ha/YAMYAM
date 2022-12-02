@@ -263,7 +263,7 @@
                   chk_emp
                   )
            VALUES (
-                   #{chkDate},
+                   TRUNC(#{chkDate}),
                    #{eqpCd},
                    name_to_code(#{chkRst}),
                    #{chkRecord},
@@ -277,7 +277,7 @@
 		SET    chk_rst = name_to_code(#{chkRst}),
 		       chk_record = #{chkRecord},
 		       chk_emp = #{chkEmp}
-		WHERE  chk_date = #{chkDate}
+		WHERE  chk_date = TRUNC(#{chkDate})
 		  AND  eqp_cd = #{eqpCd}
 	</update>
 	
@@ -312,7 +312,7 @@
 	
 	<delete id="deleteEqpChk" parameterType="com.mandu.yamyam.eqp.service.ChkVO">
 		DELETE FROM e_chk
-		WHERE chk_date = #{chkDate}
+		WHERE chk_date = TRUNC(#{chkDate})
 		  AND eqp_cd = #{eqpCd}
 	</delete>
 </mapper>
