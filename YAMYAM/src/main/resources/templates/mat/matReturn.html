@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
-	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-	layout:decorate="~{/layout/layout}">
+   xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+   xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+   layout:decorate="~{/layout/layout}">
 
 <div class="container" layout:fragment="content">
-	<div id="mat-od-title">
-		<h3>자재 반품 관리</h3>
-	</div>
-	<hr>
+   <div id="mat-od-title">
+      <h3>자재 반품 관리</h3>
+   </div>
+   <hr>
 
 	<div class="row" style="margin-top: 75px;">
 		<div class="col-6">
@@ -32,25 +32,25 @@
 
 
 
-	<!-- 추가 버튼 모달 -->
-	<div class="modal" id="addModal" tabindex="-1"
-		aria-labelledby="addModalLabel" aria-hidden="true">
-		<div class="modal-dialog modal-xl">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h5 class="modal-title" id="addModalLabel">반품 예정 목록</h5>
-					<button type="button" class="btn-close" data-bs-dismiss="modal"
-						aria-label="Close"></button>
-				</div>
-				<div class="modal-body">
-					<div>
-						<div id="modalGrid" style="width: 100%;"></div>
-					</div>
-				</div>
+   <!-- 추가 버튼 모달 -->
+   <div class="modal" id="addModal" tabindex="-1"
+      aria-labelledby="addModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-xl">
+         <div class="modal-content">
+            <div class="modal-header">
+               <h5 class="modal-title" id="addModalLabel">반품 예정 목록</h5>
+               <button type="button" class="btn-close" data-bs-dismiss="modal"
+                  aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+               <div>
+                  <div id="modalGrid" style="width: 100%;"></div>
+               </div>
+            </div>
 
-			</div>
-		</div>
-	</div>
+         </div>
+      </div>
+   </div>
 
 
 	<script th:inline="javascript">

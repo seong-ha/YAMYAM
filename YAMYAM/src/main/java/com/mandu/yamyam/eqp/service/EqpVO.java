@@ -29,6 +29,10 @@ public class EqpVO {
 	private int highTemp;
 	private int lowTemp;
 	
+	@DateTimeFormat(pattern = "yyyy-mm-dd")
+	@JsonFormat(pattern = "yyyy-MM-dd")
+	private String chkDate;
+	
 	// 가동여부 상세공통
 	private String commdCd;
 	private String commdNm;

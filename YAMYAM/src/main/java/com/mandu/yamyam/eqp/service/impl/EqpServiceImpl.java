@@ -124,11 +124,7 @@ public class EqpServiceImpl implements EqpService {
 	// 점검 대상 설비 조회
 	@Override
 	public List<ChkVO> getEqpToChkList(int days) {
-		if (days == -100) {	// 기본은 차기점검일이 당일인것
-			return eqpMapper.getEqpToChkList(0);
-		} else {
-			return eqpMapper.getEqpToChkList(days);
-		}
+		return eqpMapper.getEqpToChkList(days);
 	}
 
 	// 설비 점검 등록
