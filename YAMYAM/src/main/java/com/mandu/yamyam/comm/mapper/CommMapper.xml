@@ -234,7 +234,8 @@ WHERE MTR_CD = #{mtrCd}
 			ACT_NUM,
 			ACT_TEL,
 			ACT_STS,
-			FIND_CODE_NAME(ACT_DIV) AS ACT_DIV
+			ACT_DIV,
+			FIND_CODE_NAME(ACT_DIV) AS ACT_DIV_NM
 	FROM C_ACT
 	ORDER BY ACT_NM
 	
@@ -296,26 +297,26 @@ WHERE MTR_CD = #{mtrCd}
 		FIND_CODE_NAME(PRD_UN) AS PRD_UN,
 		PRD_SFAMT 
 	FROM C_PRD
-	ORDER BY PRD_CD
 	<where>
 	
-	<if test = "prdStd !=null and prdStd != ''">
-		prd_std = #{prdStd}
-	</if>	
-
-	<if test = "prdUn !=null and prdUn != ''">
-		AND prd_un = #{prdUn}
-	</if>
+		<if test = "prdStd !=null and prdStd != ''">
+			prd_std = #{prdStd}
+		</if>	
 	
-	<if test = "prdCd !=null and prdCd != ''">
-		AND prd_cd like '%' || Upper(#{prdCd}) || '%'
-	</if>
-	
-	<if test = "prdNm !=null and prdNm != ''">
-		AND prd_nm like '%' || #{prdNm} || '%'
-	</if>	
-	
+		<if test = "prdUn !=null and prdUn != ''">
+			AND prd_un = #{prdUn}
+		</if>
+		
+		<if test = "prdCd !=null and prdCd != ''">
+			AND prd_cd like '%' || Upper(#{prdCd}) || '%'
+		</if>
+		
+		<if test = "prdNm !=null and prdNm != ''">
+			AND prd_nm like '%' || #{prdNm} || '%'
+		</if>	
+		
 	</where> 
+	ORDER BY PRD_CD
 </select>
 
 <!-- 완제품 코드 등록하기 -->

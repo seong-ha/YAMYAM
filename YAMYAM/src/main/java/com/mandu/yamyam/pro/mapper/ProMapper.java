@@ -17,13 +17,6 @@ public interface ProMapper {
 	
 	// 상세생산계획조회
 	public List<ProVO> getPlanDetail(ProVO vo);
-
-	// 생산계획 등록
-	public int insertPlan(ProVO vo);
-	
-	// 상세생산계획 등록
-	public int insertPlanDetail(ProVO vo);
-
 	
 	// 상세생산계획 수정 (작업우선순위, 생산일자)
 	public int updatePlanDetail(ProVO vo);
@@ -33,6 +26,9 @@ public interface ProMapper {
 	
 	// 생산계획 삭제
 	public int deletePlan(ProVO vo);
+	
+	// 생산 요청서 업데이트(진행상황 : 미계획)
+	public int updateBpod2(ProVO vo);
 	
 	// 생산계획 상세 개수
 	public int detailCnt(ProVO vo);
@@ -47,7 +43,14 @@ public interface ProMapper {
 	// 제품목록 조회
 	public List<Map<String,Object>> materialList();
 	
-	// 생산 요청서 업데이트(진행상황 : 진행)
+	// 생산계획 등록
+	public int insertPlan(ProVO vo);
+	
+	// 상세생산계획 등록
+	public int insertPlanDetail(ProVO vo);
+
+	
+	// 생산 요청서 업데이트(진행상황 : 계획완료)
 	public int updateBpod(ProVO vo);
 	
 	
@@ -56,6 +59,9 @@ public interface ProMapper {
 	----------------*/
 	// 미지시 계획 조회
 	public List<ProVO> noOrderList(ProVO vo);
+	
+	// 생산지시 일자 조회
+	public int getPoddPrio(ProVO vo);
 	
 	// 생산라인 조회
 	public List<Map<String,Object>> lineList(ProVO vo);
@@ -118,6 +124,11 @@ public interface ProMapper {
 	----------------*/
 	public List<ProVO> getResultList(ProVO vo);
 	
+	// 에러코드 가져오기
+	public List<ProVO> getErrorList();
+	
+	// 에러코드 업데이트
+	public int updateError(ProVO vo);
 	
 	/*---------------
 	// 공정 관리

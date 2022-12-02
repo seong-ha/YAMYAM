@@ -13,6 +13,8 @@ public class ActVO {
 	private String actSts; // 거래 상태
 	private String actDiv; // 거래처 구분
 	
+	private String actDivNm; // 거래처 구분이름
+	
 	// 프로시저 결과값
 	private int result;
 }

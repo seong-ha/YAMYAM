@@ -295,17 +295,18 @@
 		        find_emp_name(c.chk_emp) as chk_emp_nm
 		FROM e_eqp e JOIN e_chk c
 		  ON e.eqp_cd = c.eqp_cd
-		<where>
-			<if test="!eqpType.equals('')">
-				e.eqp_type = #{eqpType}
-			</if>
-			<if test="!chkRst.equals('')">
-				AND chk_rst = #{chkRst}
-			</if>
-			<if test="startDate != null and !startDate.equals('') and endDate != null and !endDate.equals('')">
-		  		AND c.chk_date BETWEEN TRUNC(#{startDate}) AND TRUNC(#{endDate})
-			</if>
-		</where>
+		
+			<choose>
+				<when test="eqpType.equals('eqpType')">
+					WHERE e.eqp_type = e.eqp_type
+			  		AND c.chk_date BETWEEN TRUNC(#{startDate}) AND TRUNC(#{endDate})
+				</when>
+				<otherwise>
+					WHERE e.eqp_type = #{eqpType}
+			  		AND c.chk_date BETWEEN TRUNC(#{startDate}) AND TRUNC(#{endDate})
+				</otherwise>
+			</choose>
+		
 		ORDER BY c.chk_date DESC
 	</select>
 	

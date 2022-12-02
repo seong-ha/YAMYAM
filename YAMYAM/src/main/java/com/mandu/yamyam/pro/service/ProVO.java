@@ -51,7 +51,7 @@ public class ProVO {
 	private int poddAmt;		// 작업지시량
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date poddDates;		// 생산일자
-	private int poddPrio;		// 지시우선순위
+	private Integer poddPrio;		// 지시우선순위
 	
 	// 생산공정 테이블 P_PRO eqp_nm, eqp_cd, md_nm
 	private String pproCd;		// 공정코드
@@ -96,6 +96,8 @@ public class ProVO {
 	private Date podDate;
 	private Integer binAmt;
 	private Integer samt;
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date edate;
-	
+	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+	private Date preDate; // 생산날짜
 }

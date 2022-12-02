@@ -55,11 +55,14 @@
 				<div class="modal-header">
 					<h5 class="modal-title" id="addModalLabel">입고 예정 목록</h5>
 					<button type="button" class="btn-close" data-bs-dismiss="modal"
-						aria-label="Close"></button>
+						aria-label="Close" id="addModalClose"></button>
 				</div>
 				<div class="modal-body">
 					<div>
 						<div id="modalGrid" style="width: 100%;"></div>
+						<div align="center">
+						<button class="btn btn-dark btn-sm" id="closeMdBtn" style="margin-top: 10px;">닫기</button>
+						</div>
 					</div>
 				</div>
 
@@ -132,6 +135,7 @@
 	empModalClickFn();				// 직원 모달 클릭 시 인풋 태그로
 	
 	hideColumnFn();					// 발주코드 숨기기
+	addModalCloseFn();				// 닫기 버튼
 	
 	/*------------------------------
 	// 입고전체조회 그리드
@@ -152,6 +156,7 @@
 		        {
 		          header: '자재LOT번호',
 		          name: 'matLot',
+		          align: 'center',
 		          sortable: true
 		        },
 		        {
@@ -175,13 +180,13 @@
 		        {
 		          header: '입고량',
 		          name: 'matInAmt',
-			      align: 'right',
+		          align: 'center',
 		          sortable: true
 		        },
 		        {
 		          header: '입고일',
 		          name: 'matInDate',
-			      align: 'right',
+		          align: 'center',
 		          sortable: true,
 			      editor: {
 			    	  type: 'datePicker',
@@ -213,41 +218,78 @@
 			el: document.getElementById('modalGrid'),
 			bodyHeight: 400,
 			data: [[${bfInList}]],
-			rowHeaders: ['rowNum'],
+			rowHeaders: ['checkbox', 'rowNum'],
 			scrollX: false,
 			scrollY: true,
 			columns: [{
 		          header: '발주코드',
 		          name: 'matOdCd',
+		          align: 'center',
 		          sortable: true
 		        },
 		        {
 		          header: '자재코드',
 		          name: 'mtrCd',
+		          align: 'center',
 		          sortable: true
 		        },
 		        {
 		          header: '자재명',
 		          name: 'mtrNm',
+		          align: 'center',
 		          sortable: true
 		        },
 		        {
 			      header: '업체명',
 			      name: 'actNm',
+			      align: 'center',
 			      sortable: true
 			    },
 		        {
 				  header: '입고량',
 				  name: 'paAmt',
+				  align: 'center',
 				  sortable: true
 				},
 			    {
 				  header: '검사일자',
 				  name: 'matChkDate',
+				  align: 'center',
 				  sortable: true
 				}
-	      ] 
+	      	] 
 		});
+		
+		// 올체크 시 전체 행 추가
+		modalGrid.on('checkAll', function() {
+			let data = modalGrid3.getCheckedRows();
+			
+			let arrData = [];
+			
+			for(let i=0; i<data.length; i++) {
+				let row = {mtrCd: data[i].mtrCd, mtrNm: data[i].mtrNm,
+			    		   matInAmt: data[i].paAmt, actNm: data[i].actNm,
+			    		   matInDate: today, matLot : "", matOdCd: data[i].matOdCd};
+ 			    arrData.push(row)
+			}
+			
+			// 행 추가
+			for(let i=0; i<arrData.length; i++){
+	 		    grid.prependRow(arrData[i]);
+			}
+			
+			let arrIdx = arrData.length	// 추가하는 배열의 길이
+			let idx = grid.getData().length	// 추가하고 난 뒤의 전체 그리드의 길이
+			
+			// 추가된 행 체크처리
+			for(let i=0; i<arrIdx; i++){
+			 	grid.check((idx-arrIdx)+i)
+			}
+		 	
+			
+			
+		})
+		
 		return modalGrid;
 	}
 	
@@ -266,10 +308,12 @@
 				{
 					header: '업체 코드',
 					name: 'actCd',
+					align: 'center'
 				},
 				{
 					header: '업체명',
 					name: 'actNm',
+					align: 'center'
 				}
 			]
 		});
@@ -290,6 +334,7 @@
 			columns: [{
 		          header: '자재코드',
 		          name: 'mtrCd',
+		          align: 'center',
 		          sortable: true,
 				  filter: {
 				        type: 'select'			  
@@ -298,6 +343,7 @@
 		        {
 		          header: '자재명',
 		          name: 'mtrNm',
+		          align: 'center',
 		          sortable: true,
 				  filter: {
 				        type: 'select'			  
@@ -354,7 +400,7 @@
 	// 행 추가
 	----------------------------*/
 	function insertOrder() {
-		modalGrid3.on('click', function(ev){
+		modalGrid3.on('check', function(ev){
 			let data = modalGrid3.getRow(ev.rowKey);
 			
 			    let rowData = {mtrCd: data.mtrCd, mtrNm: data.mtrNm,
@@ -572,11 +618,21 @@
 			empCloseBtn.click();
 		})
 	}
+	
 	/*--------------------------------
 	// 발주코드 숨기기
 	----------------------------------*/
 	function hideColumnFn() {
 		grid.hideColumn('matOdCd');
+	}
+
+	/*--------------------------------
+	// 추가모달 닫기 버튼
+	----------------------------------*/
+	function addModalCloseFn() {
+		document.getElementById('closeMdBtn').addEventListener('click', function() {
+			addModalClose.click();
+		})
 	}
 	</script>
 </div>

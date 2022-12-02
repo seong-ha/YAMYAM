@@ -88,6 +88,24 @@
 	  ORDER BY OD.OD_CD
 	</select>
 	
+		<!-- 주문서 관리 모달 (생산 요청 관리 Tab) -->
+	<select id="ordList" resultType="com.mandu.yamyam.common.LowerKeyMap">
+		SELECT O.OD_CD, 
+		       P.PRD_CD, 
+		       P.PRD_NM, 
+		       O.OD_AMT, 
+		       TO_CHAR(O.DE_DATE,'yyyy-MM-dd') AS DE_DATE,
+			   (SELECT SUM(SAMT)
+		          FROM B_IN
+		         WHERE PRD_CD = P.PRD_CD
+		         GROUP BY PRD_CD) AS SAMT
+		         
+		  FROM B_OD O 
+		  JOIN C_PRD P
+		    ON O.PRD_CD = P.PRD_CD
+	  ORDER BY O.OD_CD DESC
+	</select>
+	
 	<!--
 			주문 관리 Tab
 					 		-->
@@ -123,7 +141,7 @@
 	    <if test="actCd != null and !actCd.equals('')">
 	       AND ACT.ACT_CD = #{actCd}
 	    </if>
-      ORDER BY OD_DATE
+      ORDER BY OD_DATE DESC, DE_DATE
 	</select>
 	
 	
@@ -176,17 +194,6 @@
                               AND POD.OD_CD = #{odCd})
 	</delete>
 	
-	<!-- 출고 등록 후, 주문 진행상황 업데이트 -->
-	<update id="updateOrdStsList" parameterType="com.mandu.yamyam.ord.service.OrdVO">
-		UPDATE B_OD
-		<set>
-			OD_STS = 'ORD-STS2'
-		</set>
-	  WHERE OD_STS = (SELECT OD.OD_STS
-                	  FROM B_OD OD, B_OUT OU
-                	  WHERE OD.OD_CD = #{odCd})
-       AND OD_CD = #{odCd}
-	</update>
 	
 	<!--
 			완제품 출고 조회 Tab
@@ -259,13 +266,17 @@
 		  JOIN B_IN I
 		 	ON OD.PRD_CD = I.PRD_CD
 		 	
+		  JOIN B_POD POD
+		 	ON OD.OD_CD = POD.OD_CD
+		 	
 		 WHERE OD.OD_STS = 'ORD-STS1'
 		   AND I.SAMT > 0
+		   AND POD.RQT_STS = 'RQT-STS2'
 		 
 		<if test='startDate != null and endDate != null'>
 		   AND TRUNC(OD.OD_DATE) BETWEEN #{startDate} AND #{endDate}
         </if>
-      ORDER BY OD_DATE
+      ORDER BY OD_DATE DESC
 	</select>
 
 	
@@ -309,6 +320,18 @@
                        			   WHERE PRD_LOT = #{prdLot})
 			</set>
 				 WHERE PRD_LOT = #{prdLot}
+	</update>
+	
+	<!-- 출고 등록 후, 주문 진행상황 업데이트 -->
+	<update id="updateOrdStsList" parameterType="com.mandu.yamyam.ord.service.OrdVO">
+		UPDATE B_OD
+		<set>
+			OD_STS = 'ORD-STS2'
+		</set>
+	  WHERE OD_STS = (SELECT OD.OD_STS
+                	  FROM B_OD OD, B_OUT OU
+                	  WHERE OD.OD_CD = #{odCd})
+       AND OD_CD = #{odCd}
 	</update>
 	
 	
@@ -403,12 +426,12 @@
 		  
 		JOIN C_PRD P
 		  ON P.PRD_CD = I.PRD_CD
-		  
+	   WHERE I.SAMT > 0
         <if test="prdCd != null and !prdCd.equals('')">
-        WHERE P.PRD_CD = #{prdCd}
+         AND P.PRD_CD = #{prdCd}
         </if>
         <if test="prdLot != null and !prdLot.equals('')">
-        AND I.PRD_LOT = #{prdLot}
+         AND I.PRD_LOT = #{prdLot}
         </if>
 	</select>
 	
@@ -481,25 +504,7 @@
 	
 	<!--
 		생산 요청 관리 Tab
-							 -->
-	<!-- 주문서 관리 모달 -->
-	<select id="ordList" resultType="com.mandu.yamyam.common.LowerKeyMap">
-		SELECT O.OD_CD, 
-		       P.PRD_CD, 
-		       P.PRD_NM, 
-		       O.OD_AMT, 
-		       TO_CHAR(O.DE_DATE,'yyyy-MM-dd') AS DE_DATE,
-			   (SELECT SUM(SAMT)
-		          FROM B_IN
-		         WHERE PRD_CD = P.PRD_CD
-		         GROUP BY PRD_CD) AS SAMT
-		         
-		  FROM B_OD O 
-		  JOIN C_PRD P
-		    ON O.PRD_CD = P.PRD_CD
-	  ORDER BY O.OD_CD
-	</select>
-				
+							 -->				
 	
 	<!-- 생산 요청 관리 리스트 조회 -->	
 	<select id="getPodList" resultType="com.mandu.yamyam.common.LowerKeyMap">
@@ -532,6 +537,7 @@
 		<if test="prdLot != null and !prdLot.equals('')">
           AND I.PRD_LOT = #{prdLot}
         </if>
+        ORDER BY RQT_DATE DESC, RQT_NO DESC
 	</select>
 	
 	<!-- 생산 요청 관리 조건조회 -->

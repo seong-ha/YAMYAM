@@ -164,8 +164,10 @@
   display: inline;
   white-space: nowrap;
 }
+
 .tui-grid-container input[type='text'],
 .tui-grid-container input[type='password'] {
+
   outline: none;
   box-sizing: border-box;
   line-height: normal;
@@ -1208,3 +1210,10 @@
   display: inline-block;
 }
 
+.tui-grid-cell.cell-change {
+  	background-color: #FFE4E1
+ }
+ 
+ .tui-grid-cell.cell-pointer {
+  	cursor: pointer;
+ }

@@ -11,12 +11,14 @@
 #od-btn {
 	display: inline-block; margin: 0 5px; float: right;
 }
-#exportBtn {
+#exportBtn{
 	display: inline-block; margin: 0 5px; float: right;
 }
-
 #prdCd, #prdCd2 {
 text-align: center;
+}
+#infoMandu {
+margin: 0 5px;
 }
 </style>
 </head>
@@ -59,7 +61,10 @@ text-align: center;
 	</div>	
 
 	<div id="od-content-2">
-		<h3>유통기한 현황 리스트</h3>
+		<h3>유통기한 현황 리스트
+		<img class="Magnifying-Glass-img" id="infoMandu" alt="image" src="../images/info.png" 
+		data-bs-toggle="tooltip" data-bs-placement="bottom" title="유통기한 일주일 이하 시, 　'경고' 표시 (폐기등록 필요)">
+		</h3>
 		 <button class="btn btn-dark btn-sm" id="exportBtn">엑셀 파일 출력</button>
 	</div>
 	<div id="expirationDateGrid"></div>
@@ -124,6 +129,17 @@ var header = $("meta[name='_csrf_header']").attr("content");
 			   })
 		});
 	}
+	
+	
+	
+	/*------------
+	// 만두 Info
+	----------------*/
+	var exampleEl = document.getElementById('infoMandu')
+	var tooltip = new bootstrap.Tooltip(exampleEl, {placement:'right'})
+	$(document).ready(function(){
+	    $('[data-toggle="tooltip"]').tooltip();
+	});
 	
 	
     /*------------

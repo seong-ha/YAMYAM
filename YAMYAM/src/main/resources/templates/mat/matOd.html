@@ -123,10 +123,6 @@
             <div class="modal-body">
                <div>
                   <div align="center">
-                     <label for="matModalFilter">자재명</label> <input
-                        id="matModalFilter" type="text">
-                     <button class="btn btn-dark btn-sm">검색</button>
-                     <br>
                   </div>
                   <div id="modalGrid"></div>
                </div>
@@ -148,10 +144,6 @@
             <div class="modal-body">
                <div>
                   <div align="center">
-                     <label for="actModalFilter">업체명</label> <input
-                        id="actModalFilter" type="text">
-                     <button class="btn btn-dark btn-sm">검색</button>
-                     <br>
                      <div id="modalGrid2"></div>
                   </div>
                </div>
@@ -258,6 +250,7 @@
            {
              header: '발주코드',
              name: 'matOdCd',
+             align: 'center',
              sortable: true,
             filter: {
                type: 'text'
@@ -281,20 +274,20 @@
            {
              header: '단가(원)',
              name: 'matOddMn',
-            align: 'right',
+             align: 'center',
              sortable: true
            },
            {
              header: '발주량',
              name: 'matOddAmt',
-            align: 'right',
+             align: 'center',
              sortable: true,
            editor: 'text'
            },
            {
              header: '총액',
              name: 'matSum',
-            align: 'right',
+             align: 'center',
              sortable: true
            },
            {
@@ -318,13 +311,13 @@
            {
              header: '발주신청일',
              name: 'matOdDd',
-            align: 'right',
+             align: 'center',
              sortable: true
            },
            {
              header: '납기요청일',
              name: 'matOddDate',
-            align: 'right',
+             align: 'center',
              sortable: true,
             editor: {
                type: 'datePicker',
@@ -341,7 +334,7 @@
            {
              header: '검수상태',
              name: 'matOdSts',
-            align: 'center',
+             align: 'center',
              sortable: true,
             filter: {
                type: 'text'
@@ -350,6 +343,22 @@
          ]
        });
        
+      odLookUp.on('mouseover', function(ev){
+    	  odLookUp.addColumnClassName('mtrCd','cell-pointer');
+  	})
+      odLookUp.on('mouseover', function(ev){
+    	  odLookUp.addColumnClassName('mtrNm','cell-pointer');
+  	})
+      odLookUp.on('mouseover', function(ev){
+    	  odLookUp.addColumnClassName('matOddMn','cell-pointer');
+  	})
+      odLookUp.on('mouseover', function(ev){
+    	  odLookUp.addColumnClassName('actCd','cell-pointer');
+  	})
+      odLookUp.on('mouseover', function(ev){
+    	  odLookUp.addColumnClassName('actNm','cell-pointer');
+  	})
+      
        return odLookUp;
    }
       
@@ -418,9 +427,10 @@
             else if (ev.columnName == 'matSum'){
                let data = odLookUp.getRow(ev.rowKey);
                let val =  odLookUp.getFocusedCell().rowKey;
-            if(data.matOddMn != null && data.matOddAmt != null){
-               odLookUp.setValue(val, 'matSum', (data.matOddMn * data.matOddAmt));
-            }
+               
+	            if(data.matOddMn != null && data.matOddAmt != null){
+	               odLookUp.setValue(val, 'matSum', (data.matOddMn * data.matOddAmt));
+	            }
             }
          });
       
@@ -441,11 +451,13 @@
               {
                 header: '생산계획코드',
                 name: 'pplnCd',
+                align: 'center',
                 sortable: true
               },
               {
                 header: '제품코드',
                 name: 'prdCd',
+                align: 'center',
                 sortable: true,
               filter: {
                    type: 'select'           
@@ -454,6 +466,7 @@
               {
                 header: '제품명',
                 name: 'prdNm',
+                align: 'center',
                 sortable: true,
               filter: {
                    type: 'select'           
@@ -462,11 +475,13 @@
               {
                 header: '계획량',
                 name: 'pplndAmt',
+                align: 'center',
                 sortable: true
               },
               {
                 header: '주문납기일',
                 name: 'deDate',
+                align: 'center',
                 sortable: true
               }
             ]
@@ -474,6 +489,10 @@
       
       newPlan.on('click', function(){
          newPlan.on('uncheck',function(ev){
+            let data = [];
+            needMat.resetData(data);
+         })
+         newPlan.on('uncheckAll',function(ev){
             let data = [];
             needMat.resetData(data);
          })
@@ -497,6 +516,7 @@
                {
                    header: '자재코드',
                    name: 'mtrCd',
+                   align: 'center',
                    sortable: true,
                  filter: {
                       type: 'select'           
@@ -505,6 +525,7 @@
                  {
                    header: '자재명',
                    name: 'mtrNm',
+                   align: 'center',
                    sortable: true,
                  filter: {
                       type: 'select'           
@@ -513,16 +534,19 @@
                  {
                    header: '소모량',
                    name: 'bomAmt',
+                   align: 'center',
                    sortable: true
                  },
                  {
                    header: '업체코드',
                    name: 'actCd',
+                   align: 'center',
                    sortable: true
                  },
                  {
                    header: '업체명',
                    name: 'actNm',
+                   align: 'center',
                    sortable: true
                  },
                  {
@@ -536,14 +560,23 @@
             ]
           });
       
-      needMat.on('click', function(){
-         needMat.on('uncheck',function(){
-            let data = odMat.getData();
-            let idx = (data.length);
-            odMat.removeRow(idx-1);
-         })
-      })
-      
+      // 단건 언체크 시 일치하는 행만 삭제.
+      // 체크된 row로 resetData. (미완료)
+      needMat.on('uncheck',function(){
+         let needData = needMat.getCheckedRows();
+         let odData = odMat.getData();
+
+         let list = [];
+         
+         for(let i=0; i<needData.length; i++){
+	         if(needData[i].mtrCd == odData[i].mtrCd) {
+	        	 list.push(odData[i])
+	         }
+         }
+       	 odMat.resetData(list);
+         
+         
+        })
          return needMat;
    }
    
@@ -562,6 +595,7 @@
                {
                    header: '자재코드',
                    name: 'mtrCd',
+                   align: 'center',
                    sortable: true,
                  filter: {
                       type: 'select'           
@@ -570,6 +604,7 @@
                  {
                    header: '자재명',
                    name: 'mtrNm',
+                   align: 'center',
                    sortable: true,
                  filter: {
                       type: 'select'           
@@ -578,22 +613,33 @@
                  {
                   header: '단가(원)',
                   name: 'matOddMn',
+                  align: 'center',
                   sortable: true
                 },
                 {
                  header: '발주량',
                  name: 'matOddAmt',
+                 align: 'center',
                  sortable: true,
                  editor: 'text'
+               },
+                {
+                 header: '현재고',
+                 name: 'matSamt',
+                 align: 'center',
+                 sortable: true,
+                 validation: { dataType: 'string' }
                },
                {
                  header: '총액',
                  name: 'matSum',
+                 align: 'center',
                  sortable: true
                },
                {
                  header: '업체코드',
                  name: 'actCd',
+                 align: 'center',
                  sortable: true,
                  filter: {
                       type: 'select'           
@@ -602,6 +648,7 @@
                {
                  header: '업체명',
                  name: 'actNm',
+                 align: 'center',
                  sortable: true,
                  filter: {
                       type: 'select'           
@@ -610,6 +657,7 @@
                {
                  header: '발주신청일',
                  name: 'matOdDd',
+                 align: 'center',
                  sortable: true,
                   editor: {
                      type: 'datePicker',
@@ -626,6 +674,7 @@
                {
                  header: '납기요청일',
                  name: 'matOddDate',
+                 align: 'center',
                  sortable: true,
                   editor: {
                      type: 'datePicker',
@@ -832,7 +881,28 @@
    // 신규생산계획 체크 시 자재목록으로 넘어가도록 처리.(생산계획서용 탭)
    ----------------------------------------------------------*/
    function chkPlanMat() {
-      newPlan.on('click', function(){
+      newPlan.on('check', function(){
+         let data = newPlan.getCheckedRows();
+         $.ajax({
+            url: '/needMatList',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(data[0]),
+            beforeSend : function (xhr) {
+                xhr.setRequestHeader(header, token);
+            },
+            success: function(result) {
+               needMat.resetData(result);
+            },
+            error: function(reject) {
+               console.log(reject);
+            }
+         })
+         
+      })
+      
+      // 올체크도 동일하게 처리. (한 행만 받게)
+      newPlan.on('checkAll', function(){
          let data = newPlan.getCheckedRows();
          $.ajax({
             url: '/needMatList',
@@ -854,7 +924,7 @@
     } 
     
     /*-----------------------------------------
-   // 필요자재 체크 시 자재발주 리스트로(생산계획서용 탭)
+   // 필요자재 개별 체크 시 자재발주 리스트로(생산계획서용 탭)
    -------------------------------------------*/
    function chkMatList() {
       needMat.on('check', function(){
@@ -862,16 +932,32 @@
          let dataPlan = newPlan.getCheckedRows();
          let pplndAmt = dataPlan[0].pplndAmt;
          
+         // 납기요청일 = 오늘날짜 + 3
+         let date =  new Date();
+         let year = date.getFullYear() 
+         let month = ('0' + (date.getMonth() + 1)).slice(-2);
+         let day = ('0' + (date.getDate()+3)).slice(-2);
+         
+         let OddDate = year + '-' + month + '-' + day
+         
          // 자재목록 체크 데이터
          let data = needMat.getCheckedRows();
          let idx = data.length-1
          
-         console.log(data[idx])
+         // 현재고 구해오기
+         let mtrSamt = 0;
+         let list = [[${matStList}]];
+         
+         for(let i=0; i<list.length; i++){
+	         if(list[i].mtrCd == data[idx].mtrCd) {
+	        	 mtrSamt = list[i].matSamt;
+	         }
+         }
          
           let rowData = {mtrCd: data[idx].mtrCd, mtrNm: data[idx].mtrNm,
-                      matOddMn: "", matOddAmt: pplndAmt*data[idx].bomAmt, 
-                      matSum : "" , actCd: data[idx].actCd, actNm:data[idx].actNm, 
-                      matOdDd: today, matOddDate:"", matOddMn:data[idx].mtrPrc}
+                      matOddMn: "", matOddAmt: (dataPlan[0].pplndAmt*data[idx].bomAmt), 
+                      matSum : ((dataPlan[0].pplndAmt*data[idx].bomAmt)*data[idx].mtrPrc) , actCd: data[idx].actCd, actNm:data[idx].actNm, 
+                      matOdDd: today, matOddDate:OddDate, matOddMn:data[idx].mtrPrc, matSamt: mtrSamt}
           
          
          odMat.appendRow(rowData);
@@ -959,9 +1045,11 @@
    ----------------------------*/
    function saveOrder(){
       let saveBtn = document.getElementById('saveBtn');
+      
       saveBtn.addEventListener('click', function(ev){
+		 odLookUp.blur(); 
          let data = odLookUp.getCheckedRows();
-
+		 
          Swal.fire({
                title: '저장 하시겠습니까?',
                icon: 'warning',
@@ -1163,12 +1251,33 @@
          
          odMat.resetData(data);
          
+         // 납기요청일 = 오늘날짜 + 3
+         let date =  new Date();
+         let year = date.getFullYear() 
+         let month = ('0' + (date.getMonth() + 1)).slice(-2);
+         let day = ('0' + (date.getDate()+3)).slice(-2);
+         
+         let OddDate = year + '-' + month + '-' + day
+         
+         // 현재고 구해오기
+         let mtrSamt = 0;
+         let list = [[${matStList}]];
+         
+         for(let i=0; i<data.length; i++) {
+	       	 for(let k=0; k<list.length; k++){
+	        	 if(data[i].mtrCd == list[k].mtrCd){
+	        		 mtrSamt = list[k].matSamt;
+		             odMat.setValue(i, 'matSamt', mtrSamt);
+	        	 }
+	       	 }
+         }
+       
          // 발주량도 계산되어 같이 들어가도록 처리
          for(let i=0; i<data.length; i++){
             odMat.setValue(i, 'matOddAmt', (data[i].bomAmt * chkData[0].pplndAmt));
             odMat.setValue(i, 'matOdDd', (today));
-            
             odMat.setValue(i, 'matOddMn', data[i].mtrPrc);
+            odMat.setValue(i, 'matOddDate', OddDate);
          }
       })
       
@@ -1184,16 +1293,28 @@
    function odSaveBtn() {
       let odSaveBtn = document.getElementById('odSaveBtn');
       odSaveBtn.addEventListener('click',function(){
+    	  odMat.blur();
+    	  
          let data = odMat.getData();
          let planData = newPlan.getCheckedRows();
          let pplnCd = planData[0].pplnCd
          
-         console.log(data)
+         let dataList = [];
+         
+         // 수량이 0 이상인 것만 발주 하도록
+         for(let i=0; i<data.length; i++){
+        	 if(data[i].matOddAmt > 0){
+        		 dataList.push(data[i]);
+        	 }
+         }
+         
+         console.log(dataList);
+         
          // 빈셀체크
          let result = 0
-         for(let i=0; i<data.length; i++){
-            if(data[i].matOddMn == '' || data[i].matOddDate == '' || 
-               data[i].matSum == ''){
+         for(let i=0; i<dataList.length; i++){
+            if(dataList[i].matOddMn == '' || dataList[i].matOddDate == '' || 
+               dataList[i].matSum == ''){
                result += 1;
             } else {
                result += 0;
@@ -1203,17 +1324,15 @@
          // insert할 데이터 만들기
          let arrData = [];
          
-         for(let i=0; i<data.length; i++){
-            let rowData = {actCd: data[i].actCd, actNm: data[i].actNm, 
-                        matOdDd: data[i].matOdDd, matOddAmt: data[i].matOddAmt, 
-                        matOddDate: data[i].matOddDate, matOddMn: data[i].matOddMn, 
-                        matSum: data[i].matSum, mtrCd: data[i].mtrCd, mtrNm: data[i].mtrNm,
+         for(let i=0; i<dataList.length; i++){
+            let rowData = {actCd: dataList[i].actCd, actNm: dataList[i].actNm, 
+                        matOdDd: dataList[i].matOdDd, matOddAmt: dataList[i].matOddAmt, 
+                        matOddDate: dataList[i].matOddDate, matOddMn: dataList[i].matOddMn, 
+                        matSum: dataList[i].matSum, mtrCd: dataList[i].mtrCd, mtrNm: dataList[i].mtrNm,
                         'pplnCd' : pplnCd}
             
             arrData.push(rowData);
          }
-         
-         console.log(arrData)
          
          if(result == 0) {
          Swal.fire({

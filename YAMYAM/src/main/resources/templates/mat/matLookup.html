@@ -155,7 +155,7 @@
 				columns : [ {
 					header : '자재코드',
 					name : 'matOdCd',
-				    align: 'left',
+					align: 'center',
 					sortable : true,
 					width : 140
 				}, {
@@ -169,17 +169,17 @@
 				}, {
 					header : '단가(원)',
 					name : 'matOddMn',
-				    align: 'right',
+					align: 'center',
 					sortable : true
 				}, {
 					header : '발주량',
 					name : 'matOddAmt',
-				    align: 'right',
+					align: 'center',
 					sortable : true
 				}, {
 					header : '총액',
 					name : 'matSum',
-				    align: 'right',
+					align: 'center',
 					sortable : true
 				}, {
 					header : '업체명',
@@ -193,7 +193,7 @@
 				}, {
 					header : '납기요청일',
 					name : 'matOddDate',
-				    align: 'right',
+					align: 'center',
 					width : 100,
 					sortable : true
 				} ]
@@ -217,10 +217,12 @@
 					{
 						header: '업체 코드',
 						name: 'actCd',
+						align: 'center'
 					},
 					{
 						header: '업체명',
 						name: 'actNm',
+						align: 'center'
 					}
 				]
 			});
@@ -241,6 +243,7 @@
 				columns: [{
 			          header: '자재코드',
 			          name: 'mtrCd',
+			          align: 'center',
 			          sortable: true,
 					  filter: {
 					        type: 'select'			  
@@ -249,6 +252,7 @@
 			        {
 			          header: '자재명',
 			          name: 'mtrNm',
+			          align: 'center',
 			          sortable: true,
 					  filter: {
 					        type: 'select'			  

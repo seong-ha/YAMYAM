@@ -80,13 +80,8 @@
 								</div>
 								<div class="col-7">
 										<h4>상세생산계획</h4>
-										<table style="width: 100%; margin-top:39px;">
+										<table style="width: 100%;">
 											<tr><td></td></tr>
-											<tr>
-												<td colspan="3">
-													<div id="detailPGrid"></div>
-												</td>
-											</tr>
 											<tr>
 												<td style="text-align: right;">
 												<th:block sec:authorize="hasAnyAuthority('JOB-GRD1', 'JOB-GRD2')">
@@ -95,6 +90,11 @@
 													<button type="button" id="deleteBtn"
 														class="btn btn-dark btn-sm">계획취소</button>
 												</th:block>
+												</td>
+											</tr>
+											<tr>
+												<td colspan="3">
+													<div id="detailPGrid"></div>
 												</td>
 											</tr>
 										</table>
@@ -109,12 +109,10 @@
 						<div style="margin: 15px;">
 							<table style="width: 100%;">
 								<tr>
-									<td style="width: 140px;">생산 계획명 &nbsp;</td>
-									<td><input type="text" name="pplnName" id="pplnName" placeholder="계획명을 입력하세요"></td>
-								</tr>
-								<tr>
-									<td>생산 계획 일자 &nbsp;</td>
-									<td>
+									<td style="width: 100px;">생산 계획명 &nbsp;</td>
+									<td style="width: 180px;"><input type="text" name="pplnName" id="pplnName" placeholder="계획명을 입력하세요"></td>
+									<td style="width: 140px; padding-left:10px;">생산 계획 일자 &nbsp;</td>
+									<td style="width: 180px;">
 										<div
 											class="tui-datepicker-input tui-datetime-input tui-has-focus">
 											<input type="text" id="datepicker-input"
@@ -122,14 +120,10 @@
 										</div>
 										<div id="wrapper" style="margin-top: -1px;"></div>
 									</td>
+									<td></td>
 								</tr>
 								<tr>
-									<td colspan="2">
-										<div id="insertGrid" style="width: 100%;"></div>
-									</td>
-								</tr>
-								<tr>
-									<td style="text-align: left;" colspan="2">
+									<td style="text-align: right;" colspan="5">
 										<button type="button" id="showBtn"
 											class="btn btn-dark btn-sm"
 											data-bs-toggle="modal" data-bs-target="#requestModal">생산요청서
@@ -140,6 +134,11 @@
 											class="btn btn-dark btn-sm">행 추가</button>
 										<button type="button" id="removeBtn"
 											class="btn btn-dark btn-sm btn-danger">행 삭제</button>
+									</td>
+								</tr>
+								<tr>
+									<td colspan="5">
+										<div id="insertGrid" style="width: 100%;"></div>
 									</td>
 								</tr>
 							</table>
@@ -191,7 +190,6 @@
 	var token = $("meta[name='_csrf']").attr("content");
 	var header = $("meta[name='_csrf_header']").attr("content");
 
-
 	//date picker 초기화
 	searchInit();  
 	
@@ -209,7 +207,7 @@
 	plusBtnHandler(); 	 	  // 그리드 행 추가 이벤트 핸들러
 	tabBtnHandler();	 	  // 탭 핸들러 이벤트
 	removeBtnHandler();  	  // 데이터 삭제버튼 핸들러 이벤트
-	gridClickHandler();  	  // 그리드 클릭 이벤트 핸들러
+	gridClickHandler();  	  // materialGrid 그리드 클릭 이벤트 핸들러
 	insertBtnHandler();  	  // 등록버튼 이벤트 핸들러
 	showBtnHandler();	 	  // 모달 버튼 클릭 이벤트 핸들러
 	cancelBtnHandler();  	  // date picker input 값 초기화 버튼
@@ -249,6 +247,8 @@
 	}
 	
 
+	
+	
 	/*------------
 	// 생산계획 관리 탭
 	----------------*/	
@@ -260,6 +260,7 @@
 				    perPage: 5
 				  },
 			width : 630,
+			minBodyHeight : 200,
 			pagination : true,
 			scrollX : false,
 			scrollY : false,
@@ -268,7 +269,8 @@
 			{
 				header : '생산계획코드',
 				name : 'pplnCd',
-				width : 140
+				width : 140,
+				cursor: 'pointer'
 			}, {
 				header : '계획명',
 				name : 'pplnName'
@@ -280,15 +282,22 @@
 				header : '계획날짜',
 				name : 'pplnDate',
 				align: "right",
-				width : 100
+				width : 100,
+				_attributes: {
+			        className: {
+			          column: { name: ['cell-red'] }
+			        }
+			      }	
 			}]
 		});
+			
 		$.ajax({
 			url : '/planList',
 			method: "GET",			
 		}).then(res=>{
 			manageGrid.resetData(res);
 		})
+
 		return manageGrid;	
 	}
 	
@@ -301,6 +310,7 @@
 			el : document.getElementById('detailPGrid'),
 			scrollX : false,
 			scrollY : false,
+			minBodyHeight : 200,
 			rowHeaders: ['checkbox','rowNum'],
 			columns : [ 
 			{
@@ -319,7 +329,8 @@
 				header : '계획량',
 				name : 'pplndAmt',
 				align: "right",
-				width : 120
+				width : 120,
+				editor: "text"
 
 			}, {
 				header : '우선순위',
@@ -358,7 +369,6 @@
 				    }
 				  });
 			}); 
-		
 		return detailPGrid;	
 	}
 	
@@ -368,27 +378,38 @@
 	// 생산계획 관리 그리드 선택시 상세계획 그리드에 출력
 	----------------*/	
 	function getDetailBtnhandler(){
-	// 계획 관리 그리드 클릭시 상세계획그리드에 출력
-	manageGrid.on('click', function(ev) {
-		let data = manageGrid.getRow(ev.rowKey);
-		let pplnCd = data.pplnCd;
-		$.ajax({
-		url : '/plandList',
-		method: "GET",
-		data : {"pplnCd" : pplnCd},
-		dataType : 'json',
-		}).then(res=>{
-			detailPGrid.resetData(res);
-		})
+		// 계획 관리 그리드 클릭시 상세계획그리드에 출력
+		let selectedRowKey = null;
+		manageGrid.on('click', function(ev) {
+			if(ev.rowKey <0){
+				return;
+			}
+			if(selectedRowKey>=0) {
+				manageGrid.removeRowClassName(selectedRowKey, 'cell-change');
+			  }
+			selectedRowKey = ev.rowKey;
+			manageGrid.addRowClassName(selectedRowKey, 'cell-change');
+	
+			let data = manageGrid.getRow(ev.rowKey);
+			let pplnCd = data.pplnCd;
+			$.ajax({
+				url : '/plandList',
+				method: "GET",
+				data : {"pplnCd" : pplnCd},
+				dataType : 'json',
+			}).then(res=>{
+				detailPGrid.resetData(res);
+			})
 		}); 
 	}
 	
 	
 	/*------------
-	// 수정 버튼 클릭(우선순위, 생산일수 변경)
+	// 수정 버튼 클릭(우선순위, 생산일수, 계획량 변경)
 	----------------*/		
 	function updateBtnhandler(){
 		$('#updateBtn').on('click',function(){
+			detailPGrid.blur();
 			let list = [];
 			let ckRow = detailPGrid.getCheckedRows();
 			for(let i=0; i<ckRow.length;i++){
@@ -398,36 +419,37 @@
 				let pplndDays = ckRow[i].pplndDays;
 				let pplndCd = ckRow[i].pplndCd;
 				let pplndSts = ckRow[i].pplndSts
-				console.log(pplndSts);
-				list.push({pplndPrio,pplndDays,pplndCd})
+				let pplndAmt = ckRow[i].pplndAmt;
+				console.log(pplndAmt);
+				list.push({pplndPrio,pplndDays,pplndCd,pplndAmt})
 			 
-			if(pplndSts == '완료'){
-				let messeage = `지시완료된 상태는<br> 수정할 수 없습니다.`
-				Swal.fire({icon: 'error',title:messeage});
-			}else{
-			sweetConfirm('U', function(){
-				$.ajax({
-				url : '/planUpdate',
-				method: 'POST',
-				contentType : 'application/json',
-				data :  JSON.stringify(list),
-				dataType : 'json',
-				beforeSend : function (xhr) {
-				    xhr.setRequestHeader(header, token);
-				},
-				success : function(data){
-						  Swal.fire('수정이 완료되었습니다');
-						// grid에서 수정
-						  detailPGrid.refreshLayout();
+				if(pplndSts == '완료' || pplndSts == '미지시'){
+					let messeage = `계획완료 혹은 미지시 상태는<br> 수정할 수 없습니다.`
+					Swal.fire({icon: 'error',title:messeage});
+				}else{
+					sweetConfirm('U', function(){
+						$.ajax({
+						url : '/planUpdate',
+						method: 'POST',
+						contentType : 'application/json',
+						data :  JSON.stringify(list),
+						dataType : 'json',
+						beforeSend : function (xhr) {
+						    xhr.setRequestHeader(header, token);
 						},
-				error : function(reject){
-						console.log(reject);
-						// 실패
-						Swal.fire('수정이 실패했습니다.');	
-				}			 		  
-				});	
-			})
-			}
+						success : function(data){
+								  Swal.fire('수정이 완료되었습니다');
+								// grid에서 수정
+								  detailPGrid.refreshLayout();
+								},
+						error : function(reject){
+								console.log(reject);
+								// 실패
+								Swal.fire('수정이 실패했습니다.');	
+						}			 		  
+						});	
+					})
+				}
 			}
 		});	
 	}
@@ -444,11 +466,13 @@
 		$('#deleteBtn').on('click',function(ev){
 			let ckRow = detailPGrid.getCheckedRows();
 			let list = [];
+			let rK = manageGrid.getFocusedCell().rowKey;
+			let odCd = manageGrid.getValue(rK,'odCd');
 			for(let i=0; i<ckRow.length;i++){
 				let pplndCd = ckRow[i].pplndCd;
 				let pplndSts = ckRow[i].pplndSts;
 				let pplnCd = ckRow[i].pplnCd;
-				list.push({pplndCd,pplnCd});
+				list.push({pplndCd,pplnCd,odCd});
 			if(pplndSts == '완료'){
 				let messeage = `지시완료된 상태는<br> 삭제할 수 없습니다.`
 				Swal.fire({icon: 'error',title:messeage});
@@ -511,6 +535,7 @@
 			el : document.getElementById('insertGrid'),
 			scrollX : false,
 			scrollY : false,
+			minBodyHeight : 200,
 			rowHeaders: ['checkbox','rowNum'],
 			columns : [ {
 				header : '주문코드',
@@ -568,9 +593,10 @@
 				  });
 			}); 
 		return insertGrid;
-		
 	}		
-
+	insertGrid.on('mouseover', function(ev){
+		insertGrid.addColumnClassName('prdCd','cell-pointer');
+	})
 	
 	/*------------
 	// 생산요청서 모달에 뜨는 그리드
@@ -582,7 +608,6 @@
 			scrollX : false,
 			scrollY : false,
 			rowHeaders: ['rowNum'],
-			
 			columns : [ {
 				header : '주문코드',
 				name : 'odCd',
@@ -642,12 +667,6 @@
 					}
 				}
 			}
-				
-			
-			
-				/* insertGrid.appendRow(val);
-				insertGrid.setValue(ev.rowKey,'pplndAmt',pplndAmt)
-				$('#requestModal').modal("hide");	 */
 		})
 	}
 	
@@ -664,13 +683,12 @@
 	function insertClickHandler(){
 		// 빈창 클릭시 데이터
 		insertGrid.on('click', (ev) => {
-			console.log(ev.rowKey);
-			  if(!ev.rowKey){
+			 if(ev.rowKey < 0){
 				return;
 			 }
 			let prdNm = insertGrid.getValue(ev.rowKey, 'prdNm')
-				
-			if(prdNm == null){
+			let data = insertGrid.getFocusedCell().columnName;
+			if(data == 'prdCd' && prdNm == null && ev.rowKey != null){
 				$("#materialModal").modal("show");
 				 materialGrid.refreshLayout();
 				$.ajax({
@@ -819,6 +837,7 @@
 	
 		$('#insertBtn').on('click',function(){
 			// 생산 계획명
+			insertGrid.blur();
 			let pplnName = $('#pplnName').val();
 			// 생산 계획 일자
 			let pplnDate = $('#datepicker-input').val();
@@ -865,6 +884,9 @@
 						success : function(data){
 								 Swal.fire('등록이 완료되었습니다');
 								// grid에서 수정
+								  insertGrid.clear();
+								  $('#pplnName').val('');
+								  $('#datepicker-input').val(getTodayStr());
 								  insertGrid.refreshLayout();
 								},
 						error : function(reject){
