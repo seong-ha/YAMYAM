@@ -92,7 +92,7 @@
        JOIN  C_ACT A 
          ON D.ACT_CD = A.ACT_CD
          
-       WHERE O.MAT_OD_STS = 'N'
+       WHERE O.MAT_OD_STS = 'Y'
        AND MAT_OD_DD BETWEEN (CURRENT_DATE-7) AND (CURRENT_DATE+7)
         
        ORDER BY D.MAT_ODD_DATE DESC
@@ -351,7 +351,7 @@
        JOIN  C_ACT A 
          ON D.ACT_CD = A.ACT_CD
          
-       ORDER BY MAT_OD_DD
+       ORDER BY MAT_OD_DD DESC
    </select>
    <!-- 발주 신청일 검색 조회 -->
    <select id="odListSearch" parameterType="com.mandu.yamyam.mat.service.MatVO"

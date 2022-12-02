@@ -123,10 +123,6 @@
             <div class="modal-body">
                <div>
                   <div align="center">
-                     <label for="matModalFilter">자재명</label> <input
-                        id="matModalFilter" type="text">
-                     <button class="btn btn-dark btn-sm">검색</button>
-                     <br>
                   </div>
                   <div id="modalGrid"></div>
                </div>
@@ -148,10 +144,6 @@
             <div class="modal-body">
                <div>
                   <div align="center">
-                     <label for="actModalFilter">업체명</label> <input
-                        id="actModalFilter" type="text">
-                     <button class="btn btn-dark btn-sm">검색</button>
-                     <br>
                      <div id="modalGrid2"></div>
                   </div>
                </div>
@@ -351,6 +343,22 @@
          ]
        });
        
+      odLookUp.on('mouseover', function(ev){
+    	  odLookUp.addColumnClassName('mtrCd','cell-pointer');
+  	})
+      odLookUp.on('mouseover', function(ev){
+    	  odLookUp.addColumnClassName('mtrNm','cell-pointer');
+  	})
+      odLookUp.on('mouseover', function(ev){
+    	  odLookUp.addColumnClassName('matOddMn','cell-pointer');
+  	})
+      odLookUp.on('mouseover', function(ev){
+    	  odLookUp.addColumnClassName('actCd','cell-pointer');
+  	})
+      odLookUp.on('mouseover', function(ev){
+    	  odLookUp.addColumnClassName('actNm','cell-pointer');
+  	})
+      
        return odLookUp;
    }
       
@@ -553,14 +561,23 @@
             ]
           });
       
-      needMat.on('click', function(){
-         needMat.on('uncheck',function(){
-            let data = odMat.getData();
-            let idx = (data.length);
-            odMat.removeRow(idx-1);
-         })
-      })
-      
+      // 단건 언체크 시 일치하는 행만 삭제.
+      // 체크된 row로 resetData. (미완료)
+      needMat.on('uncheck',function(){
+         let needData = needMat.getCheckedRows();
+         let odData = odMat.getData();
+
+         let list = [];
+         
+         for(let i=0; i<needData.length; i++){
+	         if(needData[i].mtrCd == odData[i].mtrCd) {
+	        	 list.push(odData[i])
+	         }
+         }
+       	 odMat.resetData(list);
+         
+         
+        })
          return needMat;
    }
    
@@ -917,9 +934,12 @@
          let pplndAmt = dataPlan[0].pplndAmt;
          
          // 납기요청일 = 오늘날짜 + 3
-         let date =  new Date(today);
-         let OddDate =  new Date(date.setDate(date.getDate()+3)).toLocaleDateString().replace(/\./g, '').replace(/\s/g, '-');;
+         let date =  new Date();
+         let year = date.getFullYear() 
+         let month = ('0' + (date.getMonth() + 1)).slice(-2);
+         let day = ('0' + (date.getDate()+3)).slice(-2);
          
+         let OddDate = year + '-' + month + '-' + day
          
          // 자재목록 체크 데이터
          let data = needMat.getCheckedRows();
@@ -1030,7 +1050,7 @@
       saveBtn.addEventListener('click', function(ev){
 		 odLookUp.blur(); 
          let data = odLookUp.getCheckedRows();
-
+		 
          Swal.fire({
                title: '저장 하시겠습니까?',
                icon: 'warning',
@@ -1233,8 +1253,12 @@
          odMat.resetData(data);
          
          // 납기요청일 = 오늘날짜 + 3
-         let date =  new Date(today);
-         let OddDate =  new Date(date.setDate(date.getDate()+3)).toLocaleDateString().replace(/\./g, '').replace(/\s/g, '-');;
+         let date =  new Date();
+         let year = date.getFullYear() 
+         let month = ('0' + (date.getMonth() + 1)).slice(-2);
+         let day = ('0' + (date.getDate()+3)).slice(-2);
+         
+         let OddDate = year + '-' + month + '-' + day
          
          // 현재고 구해오기
          let mtrSamt = 0;
@@ -1276,12 +1300,22 @@
          let planData = newPlan.getCheckedRows();
          let pplnCd = planData[0].pplnCd
          
-         console.log(data)
+         let dataList = [];
+         
+         // 수량이 0 이상인 것만 발주 하도록
+         for(let i=0; i<data.length; i++){
+        	 if(data[i].matOddAmt > 0){
+        		 dataList.push(data[i]);
+        	 }
+         }
+         
+         console.log(dataList);
+         
          // 빈셀체크
          let result = 0
-         for(let i=0; i<data.length; i++){
-            if(data[i].matOddMn == '' || data[i].matOddDate == '' || 
-               data[i].matSum == ''){
+         for(let i=0; i<dataList.length; i++){
+            if(dataList[i].matOddMn == '' || dataList[i].matOddDate == '' || 
+               dataList[i].matSum == ''){
                result += 1;
             } else {
                result += 0;
@@ -1291,17 +1325,15 @@
          // insert할 데이터 만들기
          let arrData = [];
          
-         for(let i=0; i<data.length; i++){
-            let rowData = {actCd: data[i].actCd, actNm: data[i].actNm, 
-                        matOdDd: data[i].matOdDd, matOddAmt: data[i].matOddAmt, 
-                        matOddDate: data[i].matOddDate, matOddMn: data[i].matOddMn, 
-                        matSum: data[i].matSum, mtrCd: data[i].mtrCd, mtrNm: data[i].mtrNm,
+         for(let i=0; i<dataList.length; i++){
+            let rowData = {actCd: dataList[i].actCd, actNm: dataList[i].actNm, 
+                        matOdDd: dataList[i].matOdDd, matOddAmt: dataList[i].matOddAmt, 
+                        matOddDate: dataList[i].matOddDate, matOddMn: dataList[i].matOddMn, 
+                        matSum: dataList[i].matSum, mtrCd: dataList[i].mtrCd, mtrNm: dataList[i].mtrNm,
                         'pplnCd' : pplnCd}
             
             arrData.push(rowData);
          }
-         
-         console.log(arrData)
          
          if(result == 0) {
          Swal.fire({
