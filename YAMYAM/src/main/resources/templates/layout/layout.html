@@ -142,12 +142,12 @@
 								data-bs-parent="#accordionFlushExample">
 								<div class="accordion-body side-menu-content">
 									<ul class="mylist">
-										<li><a href="/employeeAD">직원 관리</a></li>
-										<li><a href="/commonCodeAD">공통 코드 관리</a></li>
-										<li><a href="/matCodeAD">자재 코드 관리</a></li>
-										<li><a href="/actCodeAD">거래처 코드 관리</a></li>
-										<li><a href="/pdtCodeAD">완제품 코드 관리</a></li>
-										<li><a href="/BOMAD">BOM 관리</a></li>
+										<li><a href="/employeeAD">　직원 관리</a></li>
+										<li><a href="/commonCodeAD">　공통 코드 관리</a></li>
+										<li><a href="/matCodeAD">　자재 코드 관리</a></li>
+										<li><a href="/actCodeAD">　거래처 코드 관리</a></li>
+										<li><a href="/pdtCodeAD">　완제품 코드 관리</a></li>
+										<li><a href="/BOMAD">　BOM 관리</a></li>
 									</ul>
 								</div>
 							</div>
@@ -165,20 +165,20 @@
 								data-bs-parent="#accordionFlushExample">
 								<div class="accordion-body side-menu-content">
 									<ul class="mylist">
-										<li><a href="/odAd">주문 관리</a></li>
-										<li><a href="/prdOutList">완제품 출고 조회</a></li>
+										<li><a href="/odAd">　주문 관리</a></li>
+										<li><a href="/prdOutList">　완제품 출고 조회</a></li>
 										<th:block
 											sec:authorize="hasAnyAuthority('JOB-GRD1', 'JOB-GRD2')">
-											<li><a href="/prdOutAd">완제품 출고 관리</a></li>
+											<li><a href="/prdOutAd">　완제품 출고 관리</a></li>
 										</th:block>
-										<li><a href="/prdReAd">완제품 반품 관리</a></li>
-										<li><a href="/prdList">완제품 재고 조회</a></li>
+										<li><a href="/prdReAd">　완제품 반품 관리</a></li>
+										<li><a href="/prdList">　완제품 재고 조회</a></li>
 										<th:block
 											sec:authorize="hasAnyAuthority('JOB-GRD1', 'JOB-GRD2')">
-											<li><a href="/prdAd">완제품 재고 관리</a></li>
+											<li><a href="/prdAd">　완제품 재고 관리</a></li>
 										</th:block>
-										<li><a href="/podOrderAd">생산 요청 관리</a></li>
-										<li><a href="/prdSfamtAd">제품 안전 재고 관리</a></li>
+										<li><a href="/podOrderAd">　생산 요청 관리</a></li>
+										<li><a href="/prdSfamtAd">　제품 안전 재고 관리</a></li>
 									</ul>
 								</div>
 							</div>
@@ -196,14 +196,14 @@
 								data-bs-parent="#accordionFlushExample">
 								<div class="accordion-body side-menu-content">
 									<ul class="mylist">
-										<li><a href="/proPlan">생산 계획 관리</a></li>
-										<li><a href="/planOrdCheck">생산 지시 </a></li>
-										<li><a href="/proOrdManage">생산 관리</a></li>
+										<li><a href="/proPlan">　생산 계획 관리</a></li>
+										<li><a href="/planOrdCheck">　생산 지시 </a></li>
+										<li><a href="/proOrdManage">　생산 관리</a></li>
 										<th:block sec:authorize="hasAnyAuthority('JOB-GRD1', 'JOB-GRD2')">
-											<li><a href="/proResult">공정 실적 조회</a></li>
+											<li><a href="/proResult">　공정 실적 조회</a></li>
 										</th:block>
-										<li><a href="/proManage">공정 관리</a></li>
-										<li><a href="/flowDiagram">제품 공정 흐름도</a></li>
+										<li><a href="/proManage">　공정 관리</a></li>
+										<li><a href="/flowDiagram">　제품 공정 흐름도</a></li>
 									</ul>
 								</div>
 							</div>
@@ -221,34 +221,34 @@
 								data-bs-parent="#accordionFlushExample">
 								<div class="accordion-body side-menu-content">
 									<ul class="mylist">
+										<li><a href="/matLookup">　자재 발주 조회</a></li>
 										<th:block
 											sec:authorize="hasAnyAuthority('JOB-GRD1', 'JOB-GRD2')">
-											<li><a href="/matOd">자재 발주 관리</a></li>
-										</th:block>
-										<li><a href="/matLookup">자재 발주 조회</a></li>
-										<th:block
-											sec:authorize="hasAnyAuthority('JOB-GRD1', 'JOB-GRD2')">
-											<li><a href="/matInChk">자재 입고 검수 관리</a></li>
+											<li><a href="/matOd">　자재 발주 관리</a></li>
 										</th:block>
 										<th:block
 											sec:authorize="hasAnyAuthority('JOB-GRD1', 'JOB-GRD2')">
-											<li><a href="/matIn">자재 입고 관리</a></li>
+											<li><a href="/matInChk">　자재 입고 검수 관리</a></li>
+										</th:block>
+										<li><a href="/matInOut">　자재 입출고 조회</a></li>
+										<th:block
+											sec:authorize="hasAnyAuthority('JOB-GRD1', 'JOB-GRD2')">
+											<li><a href="/matIn">　자재 입고 관리</a></li>
 										</th:block>
 										<th:block
 											sec:authorize="hasAnyAuthority('JOB-GRD1', 'JOB-GRD2')">
-											<li><a href="/matOut">자재 출고 관리</a></li>
+											<li><a href="/matOut">　자재 출고 관리</a></li>
 										</th:block>
-										<li><a href="/matInOut">자재 입출고 조회</a></li>
+										<li><a href="/matReturnLookup">　자재 반품 조회</a></li>
 										<th:block
 											sec:authorize="hasAnyAuthority('JOB-GRD1', 'JOB-GRD2')">
-											<li><a href="/matReturn">자재 반품 관리</a></li>
+											<li><a href="/matReturn">　자재 반품 관리</a></li>
 										</th:block>
-										<li><a href="/matReturnLookup">자재 반품 조회</a></li>
 										<th:block
 											sec:authorize="hasAnyAuthority('JOB-GRD1', 'JOB-GRD2')">
-											<li><a href="/matSafe">자재 재고 관리</a></li>
+											<li><a href="/matSafe">　자재 재고 관리</a></li>
 										</th:block>
-										<li><a href="/matStockLookup">LOT별 재고 조회</a></li>
+										<li><a href="/matStockLookup">　LOT별 재고 조회</a></li>
 									</ul>
 								</div>
 							</div>
@@ -266,9 +266,9 @@
 								data-bs-parent="#accordionFlushExample">
 								<div class="accordion-body side-menu-content">
 									<ul class="mylist">
-										<li><a href="/eqpAd">설비 관리</a></li>
-										<li><a href="/uopAd">설비 비가동 관리</a></li>
-										<li><a href="/eqpChkAd">설비 점검 관리</a></li>
+										<li><a href="/eqpAd">　설비 관리</a></li>
+										<li><a href="/uopAd">　설비 비가동 관리</a></li>
+										<li><a href="/eqpChkAd">　설비 점검 관리</a></li>
 									</ul>
 								</div>
 							</div>

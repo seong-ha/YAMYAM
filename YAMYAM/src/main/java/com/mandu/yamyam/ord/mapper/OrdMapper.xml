@@ -426,12 +426,12 @@
 		  
 		JOIN C_PRD P
 		  ON P.PRD_CD = I.PRD_CD
-		  
+	   WHERE I.SAMT > 0
         <if test="prdCd != null and !prdCd.equals('')">
-        WHERE P.PRD_CD = #{prdCd}
+         AND P.PRD_CD = #{prdCd}
         </if>
         <if test="prdLot != null and !prdLot.equals('')">
-        AND I.PRD_LOT = #{prdLot}
+         AND I.PRD_LOT = #{prdLot}
         </if>
 	</select>
 	
