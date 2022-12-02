@@ -273,13 +273,13 @@ select option[value=""][disabled] {
                         }
                    },
                    {
-                       header: '불량내용',
-                       name: 'erInfo',
-                       align: 'center',
-                       sortable: true,
-                       filter: {
-                          type: 'select'           
-                        }
+                     header: '불량내용',
+                     name: 'erInfo',
+                     align: 'center',
+                     sortable: true,
+                     filter: {
+                        type: 'select'           
+                      }
                      },
                  {
                    header: '검사일자',
@@ -301,6 +301,16 @@ select option[value=""][disabled] {
                ]
              });
          
+         grid.on('mouseover', function(ev){
+        	 grid.addColumnClassName('empNm','cell-pointer');
+     	})
+         grid.on('mouseover', function(ev){
+        	 grid.addColumnClassName('erCd','cell-pointer');
+     	})
+         grid.on('mouseover', function(ev){
+        	 grid.addColumnClassName('erInfo','cell-pointer');
+     	})
+     	
              return grid;
       }
       

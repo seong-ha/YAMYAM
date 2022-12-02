@@ -6,7 +6,7 @@
 
 <div class="container" layout:fragment="content">
 	<div id="mat-od-title">
-		<h3>안전 재고 관리</h3>
+		<h3>자재 재고 관리</h3>
 	</div>
 	<hr>
 
@@ -141,7 +141,7 @@
 					}
 				}
 				
-				let data2 = (data.matSamt/result) * 100
+				let data2 = (result/data.matSamt) * 100
 				let data3 = (data.matSamt/data.mtrSfamt) * 100
 				let data4 = '';
 				
@@ -155,7 +155,7 @@
 					data4 = "안전"
 				}
 				
-				let holdData = [{amt: result, holdP: data2, safeP: data3, safeG: data4}];
+				let holdData = [{amt: result, holdP: Math.round(data2), safeP: Math.round(data3), safeG: data4}];
 				grid2.resetData(holdData);
 				
 				document.getElementById('holdTitle').innerText = data.mtrNm + "의 안전재고 정보"
@@ -192,7 +192,10 @@
 				  align: 'center',
 				  filter: {
 						 type: 'select'			  
-						 }
+						 },
+				 formatter({value}) {
+				      return `${value}%`;
+				    }
 		        },
 		        {
 		          header: '안전재고율(%)',
@@ -205,7 +208,10 @@
 			      validation: {
 			          min: 20,
 			          max: 1000000000
-			        }						 
+			        },
+		          formatter({value}) {
+		            return `${value}%`;
+		            }
 		        },
 		        {
 		          header: '안전재고수준',
