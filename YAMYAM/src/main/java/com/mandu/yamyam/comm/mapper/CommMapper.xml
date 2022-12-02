@@ -110,6 +110,7 @@
 	WHERE  comm_cd = #{value}
 </select>
 
+
 <!-- ajax 공통 코드 수정 -->
 <update id="ajaxUpdateComm" parameterType="com.mandu.yamyam.comm.service.CommVO">
 	UPDATE c_comm
@@ -356,10 +357,15 @@ WHERE MTR_CD = #{mtrCd}
 
 <select id="ajaxSelectBOM" resultType="com.mandu.yamyam.common.LowerKeyMap">
 
-	SELECT B.BOM_NO, P.PPRO_CD, P.PPRO_NAME, B.BOM_CD, B.PRD_CD, B.MTR_CD, C.MTR_NM, B.BOM_AMT, B.BOM_USE
-	FROM C_BOM B, P_PRO P, C_MTR C
-	WHERE  B.PPRO_CD = P.PPRO_CD
-	AND B.MTR_CD = C.MTR_CD
+	SELECT BOM_NO, PPRO_CD,
+	       find_PPRO_name(PPRO_CD) AS PPRO_NAME,
+	       BOM_CD,
+	       PRD_CD,
+	       MTR_CD,
+	       FIND_MTR_NAME(MTR_CD) AS MTR_NM,
+	       BOM_AMT,
+	       BOM_USE
+	FROM   C_BOM B
 	
 </select>
 
@@ -446,5 +452,21 @@ WHERE MTR_CD = #{mtrCd}
 	WHERE BOM_NO = #{bomNo}
 
 </delete>
+
+<!-- ajax BOM Filter -->
+
+<select id="ajaxFilterBOM" resultType="com.mandu.yamyam.common.LowerKeyMap">
+	
+	SELECT BOM_NO, PPRO_CD,
+	       find_PPRO_name(PPRO_CD) AS PPRO_NAME,
+	       BOM_CD,
+	       PRD_CD,
+	       MTR_CD,
+	       FIND_MTR_NAME(MTR_CD) AS MTR_NM,
+	       BOM_AMT,
+	       BOM_USE
+	FROM   C_BOM B
+    WHERE PRD_CD = #{prdCd}
+</select>
 
 </mapper>

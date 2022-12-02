@@ -22,9 +22,9 @@
 		</ul>
 		<div align="right">
 			<button type="button" class="btn btn-dark btn-sm" id="insertRowBtn">행 추가</button>
-			<button type="button" class="btn btn-dark btn-sm" id="deleteRowBtn" style="margin-right:15px">행 삭제</button>
-			<button type="button" class="btn btn-dark btn-sm" id="saveBtn">저장/수정</button>
-			<button type="button" class="btn btn-dark btn-sm" id="deleteBtn">삭제</button>
+			<button type="button" class="btn btn-dark btn-sm" id="deleteRowBtn" style="margin-right:10px">행 삭제</button>
+			<button type="button" class="btn btn-dark btn-sm" id="saveBtn">저장</button>
+			
 		</div>
 	</form>
 	<div id="grid"></div>
@@ -198,7 +198,6 @@
 				header : '제품 코드',
 				name : 'prdCd',
 				align : 'center',
-				filter : 'text'
 			}, {
 				header : '자재 코드',
 				name : 'mtrCd',
@@ -494,8 +493,34 @@
 	   // 제품 코드 검색 기능     
 		
 	     document.getElementById('selectBtn').addEventListener('click', function(){
-	    	 grid.filter('prdCd', [{code: 'eq', value: prdCode.value}]);
+			if(document.getElementById('prdCode').value == '' || document.getElementById('prdName').value == null){
+				selectBOM();
+			} else {
+				
+				$.ajax({
+					url : "ajax/selectFilterBOM",
+					type : "post",
+					data: {'prdCd' : document.getElementById('prdCode').value},
+					dataType: "json",
+					beforeSend : function (xhr) {
+					    xhr.setRequestHeader(header, token);
+					},
+					success : function(data){
+						console.log(data);
+						grid.resetData(data);
+					},
+					error : function(reject){
+						console.log(reject);
+					}
+				})
+			}
 	     });
+	   
+	   
+	   // 초기화 누를시 그리드 clear!
+		document.getElementById('searchReset').addEventListener('click', function(){
+			grid.clear();
+		})
 	     
 	   
 	   // 엔터키로 검색 가능
@@ -505,14 +530,66 @@
 	         }
 	     })
 	     
-	   // 초기화 버튼 누를시 다시 데이터 원상복구
 	     
-	     document.getElementById("searchReset").addEventListener('click', function(){
+	   // 초기화 버튼 누를시 다시 데이터 원상복구
+/* 	     document.getElementById("searchReset").addEventListener('click', function(){
 	    	grid.unfilter('prdCd', [{code: 'eq', value: prdCode.value}]);
-	     });
+	     }); */
 	   
 	   
-	   // ajax BOM 추가/수정 (BOM코드가 있으면 수정 BOM코드가 없으면 등록)
+	  // BOM코드 추가 후 저장시 등록
+			document.getElementById('saveBtn').addEventListener('click', function(){
+				grid.blur();
+				let rowDatas = grid.getData();
+				console.log(rowDatas);
+				
+				
+				let gridData = grid.getModifiedRows();
+				
+				let cRows = gridData.createdRows;
+				let uRows = gridData.updatedRows;
+				let dRows = gridData.deletedRows;
+				
+				console.log(gridData);
+				
+				sweetConfirm('C', function () {
+				
+					$.ajax({
+						url : "ajax/modifiedBOM",
+						type : "post",
+						contentType: "application/json",
+						data: JSON.stringify(gridData),
+						beforeSend : function (xhr) {
+						    xhr.setRequestHeader(header, token);
+						},
+						success : function(data){
+							if (data != null) {
+								if (data.create != 0) {
+									toastr.success('정상적으로 ' + data.create + '건이 저장되었습니다.');
+								}
+								
+								if (data.update != 0) {
+									toastr.success('정상적으로 ' + data.update + '건이 수정되었습니다.');
+								}
+								
+								if (data.delete != 0) {
+									toastr.success('정상적으로 ' + data.delete + '건이 삭제되었습니다.');
+								}
+							} else {
+								toastr.error('등록에 실패했습니다.');
+							}
+						},
+						error : function(reject){
+							console.log(reject);
+						}
+					})
+				
+				})
+			})
+	   
+	   
+	   
+	  /*  // ajax BOM 추가/수정 (BOM코드가 있으면 수정 BOM코드가 없으면 등록)
 	   document.getElementById('saveBtn').addEventListener('click', function(){
 		   let rowData = grid.getCheckedRows();
 		   
@@ -620,7 +697,7 @@
 					
 				});
 		   })
-	   })
+	   }) */
 	    
 		
     </script>

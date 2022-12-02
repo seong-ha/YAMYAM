@@ -84,4 +84,6 @@ public interface CommMapper {
 	public int ajaxUpdateBOM(BOMVO bomVO);
 	// ajax BOM 삭제하기
 	public int ajaxDeleteBOM(BOMVO bomVO);
+	// ajax BOM filter
+	public List<BOMVO> ajaxFilterBOM(BOMVO bomVO);
 }

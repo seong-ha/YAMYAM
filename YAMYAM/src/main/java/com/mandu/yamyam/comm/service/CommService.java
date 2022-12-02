@@ -76,10 +76,14 @@ public interface CommService {
 	public List<PrdVO> ajaxSelectPrdInfoModalBOM();
 	// ajax BOM 사용공정명(모달창(grid5))
 	public List<MtrVO> ajaxSelectMtrInfoModalBOM();
+	// ajax 상세 공통 코드(등록, 수정, 삭제)
+	Map<String, Object> ajaxModifiedBOM(GridData<BOMVO> gridData);
 	// ajax BOM 등록하기
 	public int ajaxInsertBOM(List<BOMVO> bomVO);
 	// ajax BOM 수정하기
 	public int ajaxUpdateBOM(List<BOMVO> bomVO);
 	// ajax BOM 삭제하기
 	public int ajaxDeleteBOM(List<BOMVO> bomVO);
+	// ajax BOM filter
+	public List<BOMVO> ajaxFilterBOM(BOMVO bomVO);
 }
