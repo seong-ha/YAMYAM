@@ -247,7 +247,7 @@
 	
 	<!-- 진행중인 주문서 리스트조회 (전체, 조건조회) -->			
 	<select id="getIngOrdList" resultType="com.mandu.yamyam.common.LowerKeyMap">
-		SELECT TO_CHAR(OD.OD_DATE,'yyyy-MM-dd') AS OD_DATE, 
+		SELECT DISTINCT TO_CHAR(OD.OD_DATE,'yyyy-MM-dd') AS OD_DATE, 
 		       OD.OD_CD, 
 		       P.PRD_CD, 
 		       P.PRD_NM, 
