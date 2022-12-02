@@ -293,10 +293,10 @@ var header = $("meta[name='_csrf_header']").attr("content");
 			let rowData = grid.getCheckedRows();
 			let list = [];
 			let prdLot = '';
-			
+			let reCd = '';
 			for (let i=0; i<rowData.length; i++) {
 				prdLot = rowData[i].prdLot;
-				let reCd = rowData[i].reCd;
+				reCd = rowData[i].reCd;
 				let actCd = rowData[i].actCd;
 				let reAmt = rowData[i].reAmt;
 				let odAmt = rowData[i].odAmt;
