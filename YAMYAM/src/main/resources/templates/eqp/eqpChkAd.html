@@ -48,9 +48,14 @@
 						<li>
 							<label for="searchEqpType">설비구분</label>
 							<!-- <select th:each="type : eqpTypes" 사용해서 option태그 반복 -->
-							<select name="eqpType" id="searchEqpType" class="form-select-sm">
-								<option value="eqpType">전체</option>
+							<select name="eqpType" id="searchEqpType" class="form-select-sm" style="margin-right: 50px">
+								<option value="">전체</option>
 								<option th:each="eqpType : ${eqpTypeList}" th:value="${eqpType.commdCd}" th:text="${eqpType.commdNm}"></option>
+						    </select>
+							<label for="searchEqpChkRst">판정구분</label>
+							<select name="chkRst" id="searchEqpChkRst" class="form-select-sm">
+								<option value="">전체</option>
+								<option th:each="chkRst : ${eqpChkRstList}" th:value="${chkRst.commdCd}" th:text="${chkRst.commdNm}"></option>
 						    </select>
 						</li>
 	
@@ -278,7 +283,7 @@
 				        {
 				          header: '점검담당자명',
 				          name: 'chkEmpNm',
-					      align: 'left',
+					      align: 'center',
 				        }
 				      ]
 				});
@@ -659,6 +664,7 @@
 			저장 버튼 누를 시 체크된 행을 등록
 			--------------- */
 			function insertEqpChk() {
+				eqpChkGrid.blur();
 				document.getElementById('insertEqpChk').addEventListener('click', function () {
 					let rowDatas = eqpChkGrid.getCheckedRows();
 					
@@ -703,6 +709,7 @@
 			저장 버튼 누를 시 체크된 행을 수정
 			--------------- */
 			function updateEqpChk() {
+				eqpChkGrid.blur();
 				document.getElementById('updateEqpChk').addEventListener('click', function () {
 					let rowDatas = eqpChkGrid.getCheckedRows();
 					

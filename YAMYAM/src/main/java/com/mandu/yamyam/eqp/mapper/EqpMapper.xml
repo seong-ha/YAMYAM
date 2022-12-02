@@ -263,7 +263,7 @@
                   chk_emp
                   )
            VALUES (
-                   #{chkDate},
+                   TRUNC(#{chkDate}),
                    #{eqpCd},
                    name_to_code(#{chkRst}),
                    #{chkRecord},
@@ -277,7 +277,7 @@
 		SET    chk_rst = name_to_code(#{chkRst}),
 		       chk_record = #{chkRecord},
 		       chk_emp = #{chkEmp}
-		WHERE  chk_date = #{chkDate}
+		WHERE  chk_date = TRUNC(#{chkDate})
 		  AND  eqp_cd = #{eqpCd}
 	</update>
 	
@@ -295,24 +295,23 @@
 		        find_emp_name(c.chk_emp) as chk_emp_nm
 		FROM e_eqp e JOIN e_chk c
 		  ON e.eqp_cd = c.eqp_cd
-		
-			<choose>
-				<when test="eqpType.equals('eqpType')">
-					WHERE e.eqp_type = e.eqp_type
-			  		AND c.chk_date BETWEEN TRUNC(#{startDate}) AND TRUNC(#{endDate})
-				</when>
-				<otherwise>
-					WHERE e.eqp_type = #{eqpType}
-			  		AND c.chk_date BETWEEN TRUNC(#{startDate}) AND TRUNC(#{endDate})
-				</otherwise>
-			</choose>
-		
+		<where>
+			<if test="!eqpType.equals('')">
+				e.eqp_type = #{eqpType}
+			</if>
+			<if test="!chkRst.equals('')">
+				AND chk_rst = #{chkRst}
+			</if>
+			<if test="startDate != null and !startDate.equals('') and endDate != null and !endDate.equals('')">
+		  		AND c.chk_date BETWEEN TRUNC(#{startDate}) AND TRUNC(#{endDate})
+			</if>
+		</where>
 		ORDER BY c.chk_date DESC
 	</select>
 	
 	<delete id="deleteEqpChk" parameterType="com.mandu.yamyam.eqp.service.ChkVO">
 		DELETE FROM e_chk
-		WHERE chk_date = #{chkDate}
+		WHERE chk_date = TRUNC(#{chkDate})
 		  AND eqp_cd = #{eqpCd}
 	</delete>
 </mapper>
