@@ -93,6 +93,12 @@ public class ProServiceImpl implements ProService {
 		return mapper.noOrderList(vo);
 	}
 	
+	// 생산지시 일자 조회
+	@Override
+	public int getPoddPrio(ProVO vo) {
+		return mapper.getPoddPrio(vo);
+	}
+	
 	// 생산라인 조회
 	@Override
 	public List<Map<String, Object>> lineList(ProVO vo) {
@@ -223,6 +229,22 @@ public class ProServiceImpl implements ProService {
 	}
 	
 	
+	// 에러코드 가져오기
+	@Override
+	public List<ProVO> getErrorList(){
+		return mapper.getErrorList();
+	};
+	
+	// 에러코드 업데이트
+	public int updateError(List<ProVO> vo) {
+		int result = 0;
+		for(int i=0; i<vo.size(); i++) {
+			result += mapper.updateError(vo.get(i));
+		}
+		return result;
+	};
+	
+	
 	// 제품공정 흐름도 조회
 	@Override
 	public List<ProVO> getFlowList(ProVO vo) {
@@ -253,6 +275,4 @@ public class ProServiceImpl implements ProService {
 		}
 		return result;
 	}
-	
-	
 }

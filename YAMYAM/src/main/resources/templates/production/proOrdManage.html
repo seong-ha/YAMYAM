@@ -21,24 +21,6 @@
 	width :23px;
 	height : 23px;
 }
-#proOrdp, #proList {
-	 padding: 5px 10px;
-     background-color: #87C77D;
-     border-radius: 5px;
-     color: #ffffff;
-     display: none;
-}
-
-#proOrd:hover + #proOrdp {
-  display: block;
-}
-
-#proList:hover + #proList {
-	display: block;
-}
-
-
-
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/dayjs/1.10.7/dayjs.min.js"></script>
 </head>
@@ -51,19 +33,14 @@
 	<div class="row">
 		<div>
 		<h4 style="display:inline;">진행생산지시</h4>
-		<img class="info-img" alt="image" src="../images/info.png" id="proOrd">
-		<span id="proOrdp">한 행을 클릭하면 생산진행을 할 수 있습니다.</span>
+		<img class="info-img" alt="image" src="../images/info.png" id="proInfo" data-bs-toggle="tooltip" data-bs-html="true" title="자재 출고가 완료된 생산지시 목록이 출력됩니다.">
 		</div>
 		<div id="pOrderGrid"></div>
 	</div>
 	<div class="row">
 			<div>
 			<h4 style="display:inline;">공정목록</h4>
-			<img class="info-img" alt="image" src="../images/info.png" id="proOrd">
-			<span id="proOrdp">
-				생산 시작 버튼을 클릭하면 공정목록 그리드에 출력된 생산이 진행되며,<br> 긴급중지 버튼을 누르면 공정이 끝난 것을 제외하고 긴급중지로 변경된다.<br>
-				긴급중지된 상태에서 재시작버튼을 눌러 공정을 다시 시작해 줄 수 있다.
-			</span>
+			<img class="info-img" alt="image" src="../images/info.png" id="proInfo2" data-bs-toggle="tooltip" data-bs-html="true" title="진행생산지시의 클릭된 행의 라인코드에 해당하는<br> 공정목록이 표시됩니다.">
 			</div>
 			<div id="proGrid"></div>
 			<div>
@@ -85,6 +62,11 @@ let stopBtnEl = document.getElementById('stopBtn');
 let tooltip2 = new bootstrap.Tooltip(stopBtnEl,{placement : 'bottom'});
 let restartBtnEl = document.getElementById('restartBtn');
 let tooltip3 = new bootstrap.Tooltip(restartBtnEl,{placement : 'bottom'});
+let proInfoEl = document.getElementById('proInfo');
+let tooltip4 = new bootstrap.Tooltip(proInfoEl,{placement : 'right'});
+let proInfo2El = document.getElementById('proInfo2');
+let tooltip5 = new bootstrap.Tooltip(proInfo2El,{placement : 'right'});
+
 	
 	let pOrderGrid = orderGridInit();			// 진행생산지시 grid 초기화
 	let proGrid = progressGridInit();		// 공정목록 grid 초기화
@@ -338,7 +320,7 @@ let tooltip3 = new bootstrap.Tooltip(restartBtnEl,{placement : 'bottom'});
 			let prdCd = pOrderGrid.getValue(pG,'prdCd');
 			console.log(binAmt);
 			// ajax (b-in[완제품재고] table insert)
-
+			
 			$.ajax({
 				url : '/insertBIn',
 				method: 'POST',

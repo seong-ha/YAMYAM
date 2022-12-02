@@ -47,6 +47,9 @@ public interface ProService {
 	
 	// 생산라인 조회
 	public List<Map<String,Object>> lineList(ProVO vo);
+	
+	// 생산지시 일자 조회
+	public int getPoddPrio(ProVO vo);
 
 	// 생산지시 등록
 	public int insertOrder(List<ProVO> vo);
@@ -82,6 +85,11 @@ public interface ProService {
 	----------------*/
 	public List<ProVO> getResultList(ProVO vo);
 	
+	// 에러코드 가져오기
+	public List<ProVO> getErrorList();
+	
+	// 에러코드 업데이트
+	public int updateError(List<ProVO> vo);
 	
 	/*---------------
 	// 공정 관리

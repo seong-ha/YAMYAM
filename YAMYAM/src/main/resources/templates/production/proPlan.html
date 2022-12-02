@@ -683,13 +683,12 @@
 	function insertClickHandler(){
 		// 빈창 클릭시 데이터
 		insertGrid.on('click', (ev) => {
-			console.log(ev.rowKey);
-			  if(ev.rowKey < 0){
+			 if(ev.rowKey < 0){
 				return;
 			 }
 			let prdNm = insertGrid.getValue(ev.rowKey, 'prdNm')
-				
-			if(prdNm == null){
+			let data = insertGrid.getFocusedCell().columnName;
+			if(data == 'prdCd' && prdNm == null && ev.rowKey != null){
 				$("#materialModal").modal("show");
 				 materialGrid.refreshLayout();
 				$.ajax({
@@ -838,6 +837,7 @@
 	
 		$('#insertBtn').on('click',function(){
 			// 생산 계획명
+			insertGrid.blur();
 			let pplnName = $('#pplnName').val();
 			// 생산 계획 일자
 			let pplnDate = $('#datepicker-input').val();

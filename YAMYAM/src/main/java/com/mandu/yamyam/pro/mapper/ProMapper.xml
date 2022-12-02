@@ -2,6 +2,13 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.mandu.yamyam.pro.mapper.ProMapper">
 
+	<!-- 생산 지시 우선순위 조회 -->
+	<select id="getPoddPrio" resultType="Integer">
+		SELECT NVL(MAX(podd_prio),0)+1 AS podd_prio
+		  FROM p_odd 
+		 WHERE TRUNC(podd_dates) = #{poddDates}
+	</select>
+	
 	<!-- 생산계획조회 -->
 	<select id="getPlan" resultType="com.mandu.yamyam.common.LowerKeyMap">
 		SELECT DISTINCT TO_CHAR(l.ppln_date,'yyyy-MM-dd') AS ppln_date, 
@@ -375,7 +382,7 @@
                  ppro_ot_amt = '',
                  ppro_s_time = '',
                  ppro_e_time = '',
-                 ppro_er_cd = '',
+                 ppro_er_cd = #{pproErCd},
                  ppro_er_dtl = ''
 		WHERE pline_cd = #{plineCd}
 	</update>
@@ -413,6 +420,22 @@
 
         ORDER BY ppro_s_time DESC, pod_dates DESC, r.eqp_cd
 	</select>
+	
+	<!-- 에러코드 조회 -->
+	<select id="getErrorList" resultType="com.mandu.yamyam.common.LowerKeyMap">
+		SELECT commd_cd AS ppro_er_cd, commd_nm AS ppro_er_dtl
+		  FROM c_commd
+		 WHERE comm_cd = 'ERR-PRO'
+	</select>
+	
+	<!-- 에러코드 업데이트 -->
+	<update id="updateError" parameterType="com.mandu.yamyam.pro.service.ProVO">
+		UPDATE p_record
+		   SET ppro_er_cd = #{pproErCd},
+		       ppro_er_dtl= #{pproErDtl}
+		 WHERE ppro_cd = #{pproCd}
+		   AND pre_date = #{preDate}
+	</update>
 	
 	<!-- 공정관리 조회 -->
 	<select id="getProList" resultType="com.mandu.yamyam.common.LowerKeyMap">
@@ -487,9 +510,9 @@
 	<!-- 제품 공정 흐름도 관리 -->
 	<select id="flowManage" resultType="com.mandu.yamyam.common.LowerKeyMap">
 		SELECT p.ppro_cd, p.ppro_name, e.eqp_cd, e.eqp_nm
-		FROM p_pro p
-					JOIN e_eqp e
-					ON p.eqp_cd=e.eqp_cd
+		  FROM p_pro p
+		  JOIN e_eqp e
+			ON p.eqp_cd=e.eqp_cd
 		WHERE p.pline_cd = #{plineCd}
 	</select>
 	

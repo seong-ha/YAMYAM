@@ -54,6 +54,9 @@
 					</div>
 					<button type="button" id="searchBtn" class="btn btn-dark btn-sm">검색</button>
 					<button type="button" id="cancelBtn" class="btn btn-dark btn-sm">초기화</button>
+					<th:block sec:authorize="hasAnyAuthority('JOB-GRD1', 'JOB-GRD2')">
+						<button type="button" id="updateBtn" class="btn btn-dark btn-sm">저장</button>
+					</th:block>
 				</td>
 				<td></td>
 			</tr>
@@ -135,7 +138,7 @@
 	</div>
 	
 	
-	<!-- 불량코드 모달
+	<!-- 불량코드 모달 -->
 	<div class="modal" id="eModal" tabindex="-1">
 		<div class="modal-dialog" >
 			<div class="modal-content">
@@ -150,7 +153,7 @@
 				</div>
 			</div>
 		</div>
-	</div> -->
+	</div>
 <script>
 	/* token */
 	var token = $("meta[name='_csrf']").attr("content");
@@ -159,7 +162,7 @@
 	let grid = gridInit()					// 실적조회 grid 초기화
 	let orModalGrid = orModalGridInit();	// 생산지시목록 모달 grid
 	let pModalGrid = pModalGridInit();		// 공정목록 모달 grid
-	//let eModalGrid = eModalGridInit(); 		// 불량코드 모달 grid
+	let eModalGrid = eModalGridInit(); 		// 불량코드 모달 grid
 	
 	cancelBtnHandler();  	  // date picker input 값 초기화 버튼
 	searchBtnHandler();	 	  // date picker input 값 조회 버튼
@@ -170,9 +173,10 @@
 	orModalClickHandler(); 	  // 생산지시목록 모달 grid 클릭 이벤트
 	pRBtnHandler();			  // 공정분류 선택 초기화 이벤트
 	pModalClickHandler();	  // 공정목록 모달 grid 클릭 이벤트
-	//gridClick(); 			  // 생산지시 그리드 클릭 이벤트(불량코드 모달 오픈)
-	//eModalClickHandler();	  // 불량코드 모달 그리드 클릭 이벤트
+	gridClick(); 			  // 생산지시 그리드 클릭 이벤트(불량코드 모달 오픈)
+	eModalClickHandler();	  // 불량코드 모달 그리드 클릭 이벤트
 	selectChange();			  // select 옵션 변경시 조회
+	updateBtnhandler();  	  // 수정버튼 이벤트
 	
 	/*------------
 	// date-picker
@@ -280,13 +284,38 @@
 		return grid;
 	}
 	
+	grid.on('mouseover', function(ev){
+		grid.addColumnClassName('pproErCd','cell-pointer');
+	})
+	
+	
 	/*------------
-	// 생산지시 그리드 클릭 이벤트
+	// 공정실적 조회 그리드 클릭 이벤트
 	----------------*/
 	function gridClick(){
+		let selectedRowKey = null;
 		grid.on('click',function(ev){
+			if(ev.rowKey <0){
+				return;
+			}
+			if(selectedRowKey>=0) {
+				grid.removeRowClassName(selectedRowKey, 'cell-change');
+			  }
+			selectedRowKey = ev.rowKey;
+			grid.addRowClassName(selectedRowKey, 'cell-change');
+			let erCd = grid.getFocusedCell().value;
+			console.log(erCd);
 			if(ev.columnName =='pproErCd'){
+				$.ajax({
+					url : '/getErrorList',
+					method: "GET",			
+				}).then(res=>{
+					console.log(res);
+					eModalGrid.resetData(res);
+				})
+				
 	   			$('#eModal').modal('show');
+	   			
 	   			eModalGrid.refreshLayout();
 	   		}
 		})
@@ -385,12 +414,6 @@
 	function eModalGridInit(){
 		let eModalGrid = new tui.Grid({
 			el: document.getElementById('eModalGrid'),
-			// 임시 데이터
-			data: [{
-				pproErCd : 'ERR-PRO-001',
-				pproErDtl : '불량없음'
-			}
-			],
 			scrollX: false,
 			scrollY: false,
 			rowHeaders: ['rowNum'],
@@ -584,8 +607,10 @@
 	function eModalClickHandler(){
 		eModalGrid.on('click', (ev) => {
 			let pproErCd = eModalGrid.getValue(ev.rowKey, 'pproErCd')
+			let pproErDtl = eModalGrid.getValue(ev.rowKey, 'pproErDtl')
 			let gRowKey = grid.getFocusedCell().rowKey; // 진짜 큰 그리드
 			grid.setValue(gRowKey, 'pproErCd', pproErCd);
+			grid.setValue(gRowKey, 'pproErDtl', pproErDtl);
 			$('#eModal').modal('hide');
 		});
 	}
@@ -624,6 +649,53 @@
 
 			$("#startpicker-input").val(today);
 			$("#endpicker-input").val(today);
+		});	
+	}
+	
+	
+	/*------------
+	// 수정 버튼 클릭(에러코드 변경)
+	----------------*/		
+	function updateBtnhandler(){
+		$('#updateBtn').on('click',function(){
+				sweetConfirm('U', function(){
+					let mData = grid.getModifiedRows().updatedRows;
+					let pproCd ='';
+					let preDate = '';
+					let pproErCd = '';
+					let pproErDtl = '';
+					
+					let list = [];
+					
+					for(let i =0; i<mData.length; i++){
+						pproCd = mData[i].pproCd;
+						preDate = mData[i].preDate;
+						pproErCd = mData[i].pproErCd;
+						pproErDtl = mData[i].pproErDtl;
+						
+						list.push({pproCd,preDate,pproErCd,pproErDtl});
+					}
+					
+					$.ajax({
+						url : '/updateError',
+						method: 'POST',
+						contentType : 'application/json',
+						data :  JSON.stringify(list),
+						dataType : 'json',
+						beforeSend : function (xhr) {
+						    xhr.setRequestHeader(header, token);
+						},
+						success : function(data){
+								  Swal.fire('저장 완료되었습니다');
+								  location.reload();
+								},
+						error : function(reject){
+								console.log(reject);
+								// 실패
+								Swal.fire('저장 실패했습니다.');	
+						}			 		  
+					});	
+				})
 		});	
 	}
 

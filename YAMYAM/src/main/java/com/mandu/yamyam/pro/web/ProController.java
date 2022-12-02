@@ -125,6 +125,13 @@ public class ProController {
 		return service.noOrderList(vo);
 	}
 	
+	// 생산계획 조회
+	@GetMapping("/prio")
+	@ResponseBody
+	public int getPoddPrio(ProVO vo) {
+		return service.getPoddPrio(vo);
+	}
+	
 	// 생산지시 조회
 	@RequestMapping("/proOrderList")
 	@ResponseBody
@@ -222,7 +229,20 @@ public class ProController {
 		model.addAttribute("pCode", commservice.getCommdCdNm("EQP-TYPE"));
 		return "production/proResult";
 	}
-
+	
+	// 에러코드 조회
+	@RequestMapping("/getErrorList")
+	@ResponseBody
+	public List<ProVO> getErrorList(){
+		return service.getErrorList();
+	}
+	
+	// 에러코드 업데이트
+	@PostMapping("/updateError")
+	@ResponseBody
+	public int updateError(@RequestBody List<ProVO> vo) {
+		return service.updateError(vo);
+	}
 	
 	/*---------------
 	// 공정 관리

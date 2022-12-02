@@ -19,10 +19,8 @@
 <body>
 	<!-- 본문 시작 -->
 	<div layout:fragment="content" class="container">
-	<th:block sec:authorize="hasAnyAuthority('JOB-GRD1', 'JOB-GRD2')">
-	<button type="button" id="showNOModal" class="btn btn-dark btn-sm" style="width: 140px; float:right;"
-	data-bs-toggle="tooltip" data-bs-html="true" title="생산 지시 이력을<br> 조회 할 수 있는 버튼입니다" data-bs-target="#orderModal"> 생산지시 조회</button>
-	</th:block>
+		<button type="button" id="showNOModal" class="btn btn-dark btn-sm" style="width: 140px; float:right;"
+		data-bs-toggle="tooltip" data-bs-html="true" title="생산 지시 이력을<br> 조회 할 수 있는 버튼입니다" data-bs-target="#orderModal"> 생산지시 조회</button>
 		<h3>생산지시 관리 및 조회</h3>
 		<hr>
 		<div class="row">
@@ -127,8 +125,8 @@
 		searchBtnHandler();	 	 // 모달창의 date picker input 값 조회 버튼
 		showNOModalHandler(); 	 // 미지시계획 모달 클릭 버튼 이벤트
 		gridClickHandler(); 	 // 미지시계획조회 그리드 선택시 자료를 상세생산계획 Grid에 넣어주기
-		planDGridChangeHandler() // 계획 관리 그리드에서의 수정
-		planOrderEdit(); 		 // 생산지시그리드 editingFinish 이벤트 핸들러 
+		planDGridClickHandler(); // 상세생산계획 그리드 클릭 이벤트 핸들러
+		planOrderEdit(); 		 // 생산지시그리드 afterChange 이벤트 핸들러 
 		orderBtnHandler(); 		 // 생산 지시 버튼 이벤트 핸들러
 		
 		/*------------
@@ -549,14 +547,11 @@
 				planOrder.on('afterChange',function(ev){
 					
 					let list = planOrder.getData();
-					
-					let b = planOrder.getColumnValues('poddPrio');
+					let b = planOrder.getColumnValues('poddAmt');
 					let a = list.length-1;
-					
 					let plList = planDGrid.getData();
 					let po = plList[0].pplndAmt;
 					let poSum = planOrder.getSummaryValues('poddAmt').sum;
-					console.log(poSum)
 					
 					if(b[a] != null){
 							if(po == poSum){
@@ -573,16 +568,19 @@
 								}
 								toastr.error('생산지시량과 작업수량이 일치하지 않습니다.');
 							}
-						
 					}
+					
+					let cVal = planOrder.getColumnValues('poddAmt');
+					// planOrder.setValue(i,'poddPrio',k++);						
+					
 				})
 			}
 			
 
 			/*------------
-			// 계획 관리 그리드 클릭이벤트
+			// 상세생산계획 그리드 클릭 이벤트 핸들러
 			----------------*/	
-			function planDGridChangeHandler(){
+			function planDGridClickHandler(){
 				let selectedRowKey = null;
 				planDGrid.on('click', function(ev) {
 					if(ev.rowKey <0){
@@ -611,22 +609,29 @@
 							let orderD = new Date(date.setDate(date.getDate()+3));
 							let orD = '';
 							
-							
 							for(let i=0; i<num; i++){
-								orderD = new Date(date.setDate(date.getDate()+i));
+								orderD = new Date(date.setDate(date.getDate()+1));
 								orD = getDateStr(orderD);
 								planOrder.appendRow();
 								planOrder.setValue(i,'plineCd',res[0].plineCd);
 								planOrder.setValue(i,'poddDates',orD);
+								let poddDates = planOrder.getValue(i,'poddDates');
+								 $.ajax({
+										url : '/prio',
+										method: "GET",
+										data : {"poddDates":poddDates},
+										success : function(data){
+											console.log(data)
+											planOrder.setValue(i,'poddPrio',data);
+										},
+										error : function(reject){
+											console.log(reject)
+										}
+								 })
 							}
-							
-							
 						})
 						
 						planOrder.refreshLayout();
-						 
-					
-					
 				});
 			}
 			
@@ -648,8 +653,7 @@
 				 let pplndCd = planDGrid.getValue(0,'pplndCd');
 				 let rK = grid.getFocusedCell().rowKey;
 				 let prdCd = grid.getValue(rK,'prdCd');
-				 console.log(prdCd);
-					 let dataList = [];
+				 let dataList = [];
 					 // 생산지시 관련 테이블 C
 					 let poddAmt = '';
 					 let poddDates = '';
@@ -678,7 +682,7 @@
 									grid.refreshLayout();
 									planDGrid.clear();
 									planOrder.clear();
-									location.reload();
+									//location.reload();
 									},
 								error : function(reject){Swal.fire('등록에 실패했습니다.'); console.log(reject);}				
 						 })

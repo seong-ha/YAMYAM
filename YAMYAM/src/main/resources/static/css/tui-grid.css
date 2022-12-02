@@ -164,9 +164,6 @@
   display: inline;
   white-space: nowrap;
 }
-.tui-grid-container input {
-		cursor: pointer;
-}
 
 .tui-grid-container input[type='text'],
 .tui-grid-container input[type='password'] {
