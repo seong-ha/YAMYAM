@@ -81,7 +81,7 @@
 		  JOIN B_IN I
 			ON I.PRD_LOT = OU.PRD_LOT
 			
-	  ORDER BY OD.OD_CD
+	  ORDER BY BDATES DESC, OD.OD_CD
 	</select>
 	
 		<!-- 주문서 관리 모달 (생산 요청 관리 Tab) -->
@@ -347,9 +347,9 @@
 				 WHERE PRD_CD = I.PRD_CD) AS PRD_NM, 
 			   A.ACT_NM,
 			   A.ACT_CD,
-			   OD.OD_AMT,
+			   OU.BAMT,
 			   R.RE_AMT, 
-			   ABS(OD.OD_AMT - R.RE_AMT) AS BAMT
+			   ABS(OU.BAMT - R.RE_AMT) AS SUM_BAMT
 			   
 		  FROM B_OUT OU
 		  
@@ -367,7 +367,7 @@
 		<if test='startDate != null and endDate != null'>
          WHERE TRUNC(R.RE_DATE) BETWEEN #{startDate} AND #{endDate}
         </if>
-      ORDER BY RE_DATE
+      ORDER BY RE_DATE DESC, R.RE_CD
 	</select>
 	
 	<!-- 완제품 반품 관리 리스트 등록 -->
