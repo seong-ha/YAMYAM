@@ -162,12 +162,11 @@ var header = $("meta[name='_csrf_header']").attr("content");
 	    rowHeaders: ['checkbox','rowNum'],
 	    scrollX: false,
 	    scrollY: false,
-	    bodyHeight: 200,
 	    pageOptions: {
-	                    useClient: true,   // front에서만 페이징 하는 속성
-	                    perPage: 10
-	              			    },
-	             	pagination : true,
+            useClient: true,
+            perPage: 10
+          			},
+     	pagination : true,
 	    columns: [
 	      {
 	        header: '반품 일자',
@@ -206,7 +205,7 @@ var header = $("meta[name='_csrf_header']").attr("content");
 	      {
 	        header: '주문량',
 	        align : 'right',
-	        name: 'odAmt'
+	        name: 'bamt'
 	      },
 	      {
 	        header: '반품량',
@@ -222,7 +221,7 @@ var header = $("meta[name='_csrf_header']").attr("content");
 	      {
 	        header: '최종 출고량',
 	        align : 'right',
-	        name: 'bamt'
+	        name: 'sumBamt'
 	      }
 	    ]
 	  });
@@ -252,7 +251,7 @@ var header = $("meta[name='_csrf_header']").attr("content");
 	----------------*/
    $('#insertBtn').on('click',function(){
       let rowData = [{reDate: "", reCd: "", prdLot: "", prdNm: "", actNm: "", odAmt: "", reAmt : "" , bamt: ""}]
-      grid.appendRow(rowData); 
+      grid.appendRow(rowData,{at : 0}); 
 	});
 		
 	
@@ -290,16 +289,20 @@ var header = $("meta[name='_csrf_header']").attr("content");
 	----------------*/
 	function SaveBtnHandler(){
 		$('#saveBtn').on('click',function(){
+			grid.blur();
 			let rowData = grid.getCheckedRows();
 			let list = [];
 			let prdLot = '';
 			let reCd = '';
+			let actCd = '';
+			let reAmt = '';
+			//let odAmt = '';
 			for (let i=0; i<rowData.length; i++) {
 				prdLot = rowData[i].prdLot;
 				reCd = rowData[i].reCd;
-				let actCd = rowData[i].actCd;
-				let reAmt = rowData[i].reAmt;
-				let odAmt = rowData[i].odAmt;
+				actCd = rowData[i].actCd;
+				reAmt = rowData[i].reAmt;
+				//odAmt = rowData[i].odAmt;
 				list.push({reCd,prdLot,actCd,reAmt});
 				console.log(rowData[i].prdLot);
 			}
@@ -360,7 +363,7 @@ var header = $("meta[name='_csrf_header']").attr("content");
    
     
     /*------------
- 	// 거래처 모달에서 가져온 데이터 행에 넣어주기
+ 	// 모달에서 가져온 데이터 행에 넣어주기
  	----------------*/
  	lotOutModalGrid.on('click', ev => {
  	   
@@ -372,7 +375,7 @@ var header = $("meta[name='_csrf_header']").attr("content");
 	    grid.setValue(val2, 'prdNm', val.prdNm);
 	    grid.setValue(val2, 'actCd', val.actCd);
 	    grid.setValue(val2, 'actNm', val.actNm);
-	    grid.setValue(val2, 'odAmt', val.odAmt);
+	    grid.setValue(val2, 'bamt', val.bamt);
 	
 	    $('#lotOutModal').modal("hide");
     })
@@ -390,10 +393,10 @@ var header = $("meta[name='_csrf_header']").attr("content");
 	    scrollY: false,
 	    bodyHeight: 200,
 	    pageOptions: {
-	                    useClient: true,   // front에서만 페이징 하는 속성
-	                    perPage: 5
-	              			    },
-	             	pagination : true,
+          useClient: true,   // front에서만 페이징 하는 속성
+          perPage: 5
+    			    },
+   		pagination : true,
 	    columns: [
 	      {
 	        header: '주문 코드',
@@ -407,6 +410,7 @@ var header = $("meta[name='_csrf_header']").attr("content");
 	      },
 	      {
 	        header: '제품명',
+	        width : 60,
 	        align : 'center',
 	        name  : 'prdNm'
 	      },
@@ -427,11 +431,13 @@ var header = $("meta[name='_csrf_header']").attr("content");
 	      },
 	      {
 	        header: '출고량',
+	        width : 10,
 	        align : 'right',
 	        name  : 'bamt'
 		  },
 		  {
 	        header: '출고 일자',
+	        width : 70,
 	        align : 'center',
 	        name  : 'bdates'
 		   }
