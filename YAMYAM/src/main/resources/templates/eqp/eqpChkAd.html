@@ -595,7 +595,8 @@
 			--------------- */
 			function clearSearchBox() {
 				document.getElementById('clearSearchBox').addEventListener('click', function () {
-					document.getElementById('searchEqpType').value = 'eqpType';
+					document.getElementById('searchEqpType').value = '';
+					document.getElementById('searchEqpChkRst').value = '';
 					
 					document.getElementById('startpicker-input').value = today;
 					document.getElementById('endpicker-input').value = today;
