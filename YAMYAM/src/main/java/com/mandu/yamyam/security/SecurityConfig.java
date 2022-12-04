@@ -54,16 +54,11 @@ public class SecurityConfig {
 						 .and()
 				.exceptionHandling()
 					     .accessDeniedHandler(accessDeniedHandler())
-					     .and()
-				// .csrf().disable()
-			    // .userDetailsService(userService());
-					     ;
+					     .and();
 		
 		return http.build();
 	}
 
-	
-	
 	@Bean
 	public WebSecurityCustomizer webSecurityCustomizer() {
 		return (web) -> web.ignoring().antMatchers("/css/**", "/fonts/**", "/images/**", "/js/**");
@@ -76,8 +71,6 @@ public class SecurityConfig {
 		auth.jdbcAuthentication()
 		    .dataSource(dataSource)
 		    .usersByUsernameQuery(loginSql)
-		    .authoritiesByUsernameQuery(authSql)
-		//    .passwordEncoder(passwordEncoder())
-		    ;
+		    .authoritiesByUsernameQuery(authSql);
 	}
 }

@@ -239,14 +239,14 @@
                e.chk_cycle,
                to_char(c.chk_date, 'yyyy-MM-dd') AS chk_date,
                to_char(c.next_chk_date, 'yyyy-MM-dd') AS next_chk_date
-        from (select eqp_cd,
-               find_eqp_name(eqp_cd) AS eqp_nm,
-               find_eqp_type(eqp_cd) AS eqp_type,
-               find_chk_cycle(eqp_cd) AS chk_cycle,
-               max(chk_date) AS chk_date,
-               (max(chk_date) + find_chk_cycle(eqp_cd)) AS next_chk_date
-        from e_chk
-        group by eqp_cd) c right outer join e_eqp e
+        from ( select  eqp_cd,
+	                   find_eqp_name(eqp_cd) AS eqp_nm,
+	                   find_eqp_type(eqp_cd) AS eqp_type,
+	                   find_chk_cycle(eqp_cd) AS chk_cycle,
+	                   max(chk_date) AS chk_date,
+	                   (max(chk_date) + find_chk_cycle(eqp_cd)) AS next_chk_date
+	          from     e_chk
+	          group by eqp_cd) c right outer join e_eqp e
            on c.eqp_cd = e.eqp_cd
         WHERE chk_date IS NULL
 		  OR  (trunc(c.chk_date) + trunc(c.chk_cycle) - trunc(CURRENT_DATE)) <![CDATA[<=]]> #{value}
