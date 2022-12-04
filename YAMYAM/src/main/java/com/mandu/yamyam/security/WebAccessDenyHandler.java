@@ -14,8 +14,6 @@ public class WebAccessDenyHandler implements AccessDeniedHandler {
 	@Override
 	public void handle(HttpServletRequest request, HttpServletResponse response,
 		AccessDeniedException accessDeniedException) throws IOException, ServletException {
-//		System.out.println(accessDeniedException.getMessage());
-//		System.out.println(accessDeniedException.getCause());
 		request.getRequestDispatcher("/error").forward(request, response);
 	}
 

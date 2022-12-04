@@ -289,14 +289,14 @@
 	  var token = $("meta[name='_csrf']").attr("content");
 	  var header = $("meta[name='_csrf_header']").attr("content");
    
-      // 회사 로고 누르면 하위탭 안 나오게 sessionStorage 해당 부분 날려주기
+      function logout() {
+    	  document.getElementById('logout').submit();
+      }
+      
+   	  // 회사 로고 누르면 하위탭 안 나오게 sessionStorage 해당 부분 날려주기
       function tabInfoDelete() {
          sessionStorage.removeItem('tabText');
          sessionStorage.removeItem('tabIdNum');
-      }
-   
-      function logout() {
-    	  document.getElementById('logout').submit();
       }
       
       document.addEventListener('DOMContentLoaded', function () {
@@ -332,6 +332,8 @@
             });
          });
       });
+      
+      
       tui.Grid.applyTheme('custom', { 
           row: { 
             hover: { 

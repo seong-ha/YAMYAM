@@ -215,8 +215,6 @@
 				});
 
 				
-				
-				
 				/* ---------------
 				설비목록 grid 클릭 시, 비가동 등록 폼 및 비가동이력 검색의 설비코드/설비명 입력 이벤트
 				--------------- */
@@ -263,7 +261,7 @@
 								
 								// uopType과 uopInfo를 입력을 비활성화
 								document.getElementById('uopType').setAttribute('disabled', 'true');
-								document.getElementById('uopInfo').setAttribute('readonly', 'true');
+								document.getElementById('uopInfo').setAttribute('readonly', 'true');	
 								
 								// 입력폼의 비가동코드 클릭이벤트를 이용해서 종료버튼만 활성화
 								document.getElementById('uopCd').click();
@@ -386,7 +384,7 @@
 						
 						// uopType과 uopInfo를 입력을 비활성화
 						document.getElementById('uopType').setAttribute('disabled', 'true');
-						document.getElementById('uopInfo').setAttribute('readonly', 'true');
+						document.getElementById('uopInfo').setAttribute('readonly', 'true');	
 						
 						// 입력폼의 비가동코드 클릭이벤트를 이용해서 종료버튼만 활성화
 						document.getElementById('uopCd').click();
@@ -587,9 +585,11 @@
 			function uopEndBtnUnact() {
 				document.getElementById('uopCd').addEventListener('click', function () {
 					if (document.getElementById('uopCd').value != '' || document.getElementById('uopCd').value != null ) {
+						// 시작버튼 비활성화, 종료버튼 활성화
 						document.getElementById('end').removeAttribute('disabled');
 						document.getElementById('start').setAttribute('disabled', 'true');
 					} else {
+						// 시작버튼 활성화, 종료버튼 비활성화
 						document.getElementById('start').removeAttribute('disabled');
 						document.getElementById('end').setAttribute('disabled', 'true');
 					}
@@ -597,18 +597,18 @@
 				
 			}
 			
+			
 			/* ---------------
 			비가동 등록/해제 버튼 누를시 종료시간이 없으면 insert, 있으면 update
 			--------------- */
 			function uopInsertUpdateBtn() {
 				document.getElementById('uopInsertUpdate').addEventListener('click', function () {
-					
-					
 					let eqpCd = document.getElementById('eqpNm');
 					let uopType = document.getElementById('uopType');
 					let uopInfo = document.getElementById('uopInfo');
 					let uopStime = document.getElementById('uopStime');
 					
+					// 값 입력했는지 체크
 					if (eqpCd.value == '' || eqpCd.value == null) {
 						toastr.warning('설비를 선택하세요.');
 						return;
@@ -626,13 +626,11 @@
 						return;
 					}
 					
+					// FormData 객체 생성
 					let form = document.getElementById('insertUpdateform');
 					let formData = new FormData(form);
 					
-					/* for (let key of formData.keys()) {
-						console.log(key, ":", formData.get(key));
-					} */
-					
+					// 비가동코드가 비었으면 등록. 아니면 종료시간 입력 확인 후 수정
 					let dmlType = 'U';
 					if (document.getElementById('uopCd').value == '') {
 						dmlType = 'C';
@@ -663,10 +661,13 @@
 								}
 								
 								document.getElementById('reset').click();
+								
+								// 비가동 등록/해제 폼 비가동구분, 작업내용 활성화
 								document.getElementById('uopType').removeAttribute('disabled');
 								document.getElementById('uopInfo').removeAttribute('readonly');
+								
 								getEqpGridData();	// resetData
-								getUopGridData();
+								getUopGridData();	// resetData
 							},
 							error: function (reject) {
 								console.log(reject);
@@ -686,8 +687,8 @@
 			function uopDeleteBtn() {
 				document.getElementById('uopDelete').addEventListener('click', function () {
 					let uopCd = document.getElementById('uopCd').value;
-					console.log(uopCd);
-					// 유효성 체크 비가동 선택 유무 체크
+					
+					// 비가동 선택 유무 체크
 					if (uopCd == '' || uopCd == null) {
 						toastr.warning('비가동 이력을 선택하세요.');
 						return;
