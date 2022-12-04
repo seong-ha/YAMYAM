@@ -148,6 +148,7 @@
 			let selectUopGrid = selectUopGridInit();	// 비가동 이력 grid 초기화
 			getEqpGridData();							// 설비 목록 초기화
 			getUopGridData();							// 비가동 목록 데이터 초기화
+			selectedRow();								// 설비목록 grid, 비가동이력 grid 클릭 시, 클릭한 행 표시
 			
 			datePickerInit();							// 비가돟 이력쪽 datepicker
 			uopRecordSearch();							// 비가동 이력쪽 조회버튼 누르면 결과값 가져와서 selectUopGrid에 뿌려주기
@@ -212,12 +213,19 @@
 				        }
 				      ]
 				});
+
+				
+				
 				
 				/* ---------------
 				설비목록 grid 클릭 시, 비가동 등록 폼 및 비가동이력 검색의 설비코드/설비명 입력 이벤트
 				--------------- */
-				
 				selectEqpGrid.on('click', function (ev) {
+					// grid header에는 이벤트 제외 
+					if(ev.rowKey == undefined){
+			            return;
+			        }
+					
 					let clickedRow = selectEqpGrid.getRow(ev.rowKey);
 					
 					// 시작버튼 활성화 및 종료버튼 비활성화
@@ -341,6 +349,7 @@
 				      ]
 				});
 				
+				// uopType 편하게 가져가기 위한 용도(사용자는 안 보이게 숨김)
 				selectUopGrid.hideColumn('uopType');
 				
 				
@@ -348,6 +357,11 @@
 				비가동이력 grid 클릭 시 비가동 폼에 종료시간을 제외한 정보 전부 입력 이벤트
 				--------------- */
 				selectUopGrid.on('click', function (ev) {
+					// grid header에는 이벤트 제외 
+					if(ev.rowKey == undefined){
+			            return;
+			        }
+					
 					// 이전에 적혀있는것들 지워주고
 					document.getElementById('reset').click();
 					
@@ -385,6 +399,51 @@
 				return selectUopGrid;
 			}
 	
+			
+			/* ---------------
+			설비목록 grid, 비가동이력 grid 클릭 시, 클릭한 행 표시
+			--------------- */
+			function selectedRow() {
+				
+				let selectedRowKey1 = '';
+				let selectedRowKey2 = '';
+				// 설비목록 grid 클릭 시, 클릭한 행 표시
+				selectEqpGrid.on('click', function (ev) {
+					// grid header에는 이벤트 제외 
+					if(ev.rowKey == undefined){
+			            return;
+			        }
+					
+					// 비가동 이력 grid 행표시 지우기
+					selectUopGrid.removeRowClassName(selectedRowKey2, 'cell-change');
+					
+			        if(selectedRowKey1 >= 0) {
+			        	selectEqpGrid.removeRowClassName(selectedRowKey1, 'cell-change');
+			        }
+			        selectedRowKey1 = ev.rowKey;
+			        selectEqpGrid.addRowClassName(selectedRowKey1, 'cell-change');
+				});
+				
+				
+				// 비가동이력 grid 클릭 시, 클릭한 행 표시
+				selectUopGrid.on('click', function (ev) {
+					// grid header에는 이벤트 제외 
+					if(ev.rowKey == undefined){
+			            return;
+			        }
+					
+					// 설비목록 grid 행 표시 지우기
+					selectEqpGrid.removeRowClassName(selectedRowKey1, 'cell-change');
+					
+			        if(selectedRowKey2>=0) {
+			        	selectUopGrid.removeRowClassName(selectedRowKey2, 'cell-change');
+			        }
+			        selectedRowKey2 = ev.rowKey;
+			        selectUopGrid.addRowClassName(selectedRowKey2, 'cell-change');
+				});
+				
+			}
+			
 			
 			
 			/*------------

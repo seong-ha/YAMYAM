@@ -142,12 +142,13 @@
 			var token = $("meta[name='_csrf']").attr("content");
 			var header = $("meta[name='_csrf_header']").attr("content");
 		
-			datePickerInit()									//datepicker
+			datePickerInit();									//datepicker
 			let eqpChkGrid = eqpChkGridInit(); 					// 설비 점검 그리드 초기화
 			let eqpToChkModalGrid = eqpToChkModalGridInit();	// 금일 점검 대상 설비 모달 grid 초기화
 			let eqpEmpModalGrid = eqpEmpModalGridInit();		// 설비 직원 모달 grid 초기화
 			
 			eqpChkGridData();									// 설비 점검 데이터 초기화
+			eqpToChkModalGridData(0);							// 점검 대상 설비 데이터 초기화(당일)
 			eqpEmpModalData();									// 설비 직원 데이터 초기화
 			
 			eqpChkSearch();										// 조회버튼 누르면 결과값 가져와서 eqpChkGrid에 뿌려주기
@@ -292,11 +293,25 @@
 				// 점검담당자번호, 점검담당자명 grid 선택시 설비직원 모달창 띄우기
 				----------------*/
 				eqpChkGrid.on('click',function(ev){
+					// grid header에는 이벤트 제외 
+					if(ev.rowKey == undefined){
+			            return false;
+			        }
+					
 			   		if(ev.columnName =='chkEmp' || ev.columnName =='chkEmpNm'){
 			   			$('#eqpEmpModal').modal('show');
 			   			eqpEmpModalGrid.refreshLayout();
 			   		}
 			   	});
+				
+				/*------------
+				점검일자, 점검담당자번호, 점검담당자명 grid에 mouseover 시 포인터표시
+				----------------*/
+				eqpChkGrid.on('mouseover', function(ev){
+					eqpChkGrid.addColumnClassName('chkDate','cell-pointer');
+					eqpChkGrid.addColumnClassName('chkEmp','cell-pointer');
+					eqpChkGrid.addColumnClassName('chkEmpNm','cell-pointer');
+				})
 				
 				/*------------
 				설비점검 그리드의 점검일자 값이 입력되면 차기점검일자가 자동으로 입력됨.
@@ -521,7 +536,7 @@
 			function eqpToChkModalGridCancel() {
 				document.getElementById('cancel').addEventListener('click', function () {
 					document.getElementById('leftDays').value = '0';
-					eqpToChkModalGrid.clear();
+					eqpToChkModalGridData(0);
 				});
 			}
 			
@@ -542,6 +557,7 @@
 					for (let i = 0; i < rowData.length; i++) {
 						rowData[i].chkDate = '';
 						rowData[i].nextChkDate = '';
+						rowData[i].chkRst = '합격';
 					}
 					// 설비점검그리드 비우기
 					eqpChkGrid.clear();
@@ -675,6 +691,15 @@
 						return;
 					}
 					
+					// 값을 모두 입력했는지 체크
+					for (let i = 0; i < rowDatas.length; i++) {
+						if (rowDatas[i].chkDate == '' || rowDatas[i].chkRecord == '' || rowDatas[i].chkEmp == '') {
+							toastr.warning('값을 모두 입력해주세요.');
+							return false;
+						} 
+					}
+					
+					
 					sweetConfirm('C', function () {
 						$.ajax({
 							url:'/insertEqpChk',
@@ -720,6 +745,14 @@
 						return;
 					}
 					
+					// 값을 모두 입력했는지 체크
+					for (let i = 0; i < rowDatas.length; i++) {
+						if (rowDatas[i].chkDate == '' || rowDatas[i].chkRecord == '' || rowDatas[i].chkEmp == '') {
+							toastr.warning('값을 모두 입력해주세요.');
+							return false;
+						} 
+					}
+					
 					sweetConfirm('U', function () {
 						
 						$.ajax({
@@ -736,7 +769,7 @@
 									toastr.success('정상적으로 수정되었습니다.');
 									eqpChkGrid.uncheckAll();
 									eqpChkGridData();
-									eqpToChkModalGridData(-100); // 점검대상설비 일주일치
+									eqpToChkModalGridData(0); // 점검대상설비 일주일치
 								} else {
 									toastr.error('수정에 실패했습니다.');	
 								}
