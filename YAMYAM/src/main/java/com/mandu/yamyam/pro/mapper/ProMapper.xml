@@ -259,7 +259,8 @@
 	
 	<!-- 생산관리 : 생산지시 목록 조회 -->
 	<select id="getOProList" resultType="com.mandu.yamyam.common.LowerKeyMap">
-		SELECT p.pline_cd, c.prd_nm, d.podd_cd, p.prd_cd, d.podd_amt, find_code_name(d.podd_sts) AS podd_sts,
+		SELECT p.pline_cd, c.prd_nm, d.podd_cd, p.prd_cd, d.podd_amt,
+			   find_code_name(d.podd_sts) AS podd_sts,
 			   TO_CHAR(d.podd_dates,'yyyy-MM-dd') AS podd_dates
 		  FROM p_od p
 		  JOIN p_odd d
@@ -269,7 +270,7 @@
           LEFT OUTER JOIN b_in b
             ON b.podd_cd = d.podd_cd
           WHERE b.podd_cd is null
-		 <!--  AND TRUNC(CURRENT_DATE) = TRUNC(d.podd_dates) -->
+		  AND TRUNC(CURRENT_DATE) = TRUNC(d.podd_dates)
           AND d.podd_sts = 'PLN-STS3'
 		 ORDER BY 3
 	</select>
@@ -418,7 +419,7 @@
 	            AND TRUNC(pl.ppln_date) BETWEEN #{startDate} AND #{endDate}
 	        </if>
 
-        ORDER BY ppro_s_time DESC, pod_dates DESC, r.eqp_cd
+        ORDER BY pod_dates DESC, ppro_s_time DESC, d.pod_cd, r.eqp_cd
 	</select>
 	
 	<!-- 에러코드 조회 -->

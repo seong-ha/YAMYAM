@@ -223,9 +223,10 @@ let tooltip5 = new bootstrap.Tooltip(proInfo2El,{placement : 'right'});
 			selectedRowKey = ev.rowKey;
 			pOrderGrid.addRowClassName(selectedRowKey, 'cell-change');
 			
+			let n = pOrderGrid.getFocusedCell().rowKey;
 			let data = pOrderGrid.getData();
-			let plineCd = data[0].plineCd;
-			let pproInAmt = data[0].poddAmt;
+			let plineCd = data[n].plineCd;
+			let pproInAmt = data[n].poddAmt;
 			$.ajax({
 				url : '/flowProgress',
 				data : {"plineCd" : plineCd},
@@ -331,6 +332,7 @@ let tooltip5 = new bootstrap.Tooltip(proInfo2El,{placement : 'right'});
 				},
 				success : function(data){
 						console.log(data);
+						location.reload();
 						},
 				error : function(reject){
 						console.log(reject);
@@ -408,7 +410,8 @@ let tooltip5 = new bootstrap.Tooltip(proInfo2El,{placement : 'right'});
 			$.ajax({
 				url : '/eqpUpdate',
 				method: 'POST',
-				data : {"eqpCd" : eqpCd, "plineCd" : plineCd, "pproETime" : pproETime, "pproCd" : pproCd, "pproErAmt" : pproErAmt, "pproOtAmt" : pproOtAmt},
+				data : {"eqpCd" : eqpCd, "plineCd" : plineCd, "pproETime" : pproETime,
+					    "pproCd" : pproCd, "pproErAmt" : pproErAmt, "pproOtAmt" : pproOtAmt},
 				dataType : 'json',
 				beforeSend : function (xhr) {
 				    xhr.setRequestHeader(header, token);
@@ -480,13 +483,6 @@ let tooltip5 = new bootstrap.Tooltip(proInfo2El,{placement : 'right'});
 			})
 		})
 	}
-	
-	$('#proOrd').mouseover(function(){
-		
-	});
-	
-	// proList
-
 	
 </script>		
 </div>

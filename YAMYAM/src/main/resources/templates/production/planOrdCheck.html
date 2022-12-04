@@ -569,10 +569,7 @@
 								toastr.error('생산지시량과 작업수량이 일치하지 않습니다.');
 							}
 					}
-					
 					let cVal = planOrder.getColumnValues('poddAmt');
-					// planOrder.setValue(i,'poddPrio',k++);						
-					
 				})
 			}
 			
@@ -682,7 +679,7 @@
 									grid.refreshLayout();
 									planDGrid.clear();
 									planOrder.clear();
-									//location.reload();
+									location.reload();
 									},
 								error : function(reject){Swal.fire('등록에 실패했습니다.'); console.log(reject);}				
 						 })
