@@ -302,12 +302,12 @@
    <!-- 자재 발주 관리(생산계획서용 탭) - 필요 자재 리스트 -->
    <select id="needMatList" parameterType="String" 
                       resultType="com.mandu.yamyam.common.LowerKeyMap">
-      SELECT M.MTR_CD,
-             M.MTR_NM,
-             B.BOM_AMT,
-             A.ACT_CD,
-             A.ACT_NM,
-             M.MTR_PRC
+      SELECT DISTINCT M.MTR_CD,
+             	      M.MTR_NM,
+             		  B.BOM_AMT,
+             		  A.ACT_CD,
+             		  A.ACT_NM,
+             		  M.MTR_PRC
              
         FROM C_MTR M
         
@@ -318,6 +318,8 @@
           ON A.ACT_CD = M.ACT_CD
           
           WHERE B.PRD_CD = #{value}
+          
+        ORDER BY M.MTR_CD
    </select>
    
    <!-- 미지시로 업데이트 (자재 입고 쪽으로 이동)-->
@@ -393,10 +395,10 @@
             D.MAT_ODD_AMT, 
             K.PA_AMT,
             K.ER_AMT,
-                K.EMP_NM, 
-                TO_CHAR(K.MAT_CHK_DATE, 'yyyy-MM-dd') AS "MAT_CHK_DATE",
-                K.ER_CD,
-                K.ER_INFO
+            K.EMP_NM, 
+            TO_CHAR(K.MAT_CHK_DATE, 'yyyy-MM-dd') AS "MAT_CHK_DATE",
+            K.ER_CD,
+            K.ER_INFO
       FROM M_OD O
       
        JOIN M_ODD D
@@ -412,7 +414,8 @@
        AND MAT_CHK_DATE 
            BETWEEN CURRENT_DATE-7 
            AND CURRENT_DATE+7
-           
+       AND K.EMP_NM IS NOT NULL
+       
        ORDER BY K.MAT_CHK_DATE DESC
    </select>
    
@@ -460,13 +463,23 @@
    
    <!-- 자재 입고 검수 관리 - 추가 모달창 -->
    <select id="addChkModal" resultType="com.mandu.yamyam.common.LowerKeyMap">
-      SELECT O.MAT_OD_CD, D.MTR_CD, D.MAT_ODD_AMT,C.MTR_NM
+      SELECT O.MAT_OD_CD, 
+             D.MTR_CD, 
+             D.MAT_ODD_AMT,
+             C.MTR_NM,
+             TO_CHAR(O.MAT_OD_DD,'yyyy-MM-dd') AS "MAT_OD_DD"
+      
       FROM M_OD O
+      
        JOIN M_ODD D 
         ON D.MAT_OD_CD = O.MAT_OD_CD
+        
        JOIN C_MTR C
         ON C.MTR_CD = D.MTR_CD
+        
        WHERE MAT_OD_STS = 'N'
+       
+       ORDER BY O.MAT_OD_DD
    </select>
    
    <!-- 불량코드/불량내용 조회 -->
@@ -722,6 +735,7 @@
         ON M.MTR_CD = I.MTR_CD
         
       WHERE M.MTR_NM = #{mtrNm}
+      AND I.MAT_SAMT > 0
    </select>
    
    <!-- 출고 테이블로 insert -->
@@ -1048,10 +1062,10 @@
    
    <!-- 9) 자재 반품 조회 -->
    <select id="mtrReturnAllList" resultType="com.mandu.yamyam.common.LowerKeyMap">
-      SELECT K.MAT_OD_CD,
-             T.MTR_CD,
-             FIND_MTR_NAME(T.MTR_CD) AS "MTR_NM",
-             A.ACT_NM,
+      SELECT  K.MAT_OD_CD,
+              T.MTR_CD,
+              FIND_MTR_NAME(T.MTR_CD) AS "MTR_NM",
+              A.ACT_NM,
               T.MAT_RT_AMT,
               TO_CHAR(T.MAT_RT_DATE,'yyyy-MM-dd') AS "MAT_RT_DATE",
               TO_CHAR(K.MAT_CHK_DATE,'yyyy-MM-dd') AS "MAT_CHK_DATE",
@@ -1066,6 +1080,10 @@
         ON A.ACT_CD = T.ACT_CD
         
       WHERE T.MAT_RT_AMT > 0
+      AND T.MAT_RT_DATE <![CDATA[>=]]> CURRENT_DATE-3
+      AND T.MAT_RT_DATE <![CDATA[<=]]> CURRENT_DATE+3
+      
+      ORDER BY MAT_RT_DATE DESC
    </select>
    
    <!-- 조건조회 -->
