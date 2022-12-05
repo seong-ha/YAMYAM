@@ -479,15 +479,6 @@
 			// 계획일자
 			let getStartDay = $("#startpicker-input").val();
 			let getEndDay = $("#endpicker-input").val();
-			if(pproErCd == 'ERR-PRO-001'){
-				$.ajax({
-					url : '/getProResult',
-					method: "GET",
-					contentType: 'application/json',
-					dataType : 'json',
-					data : {"podCd" : podCd, "pproName" : pproName, "startDate" : getStartDay, "endDate" : getEndDay}
-					}).then(res=>{ grid.resetData(res);	})
-			}else {
 				$.ajax({
 					url : '/getProResult',
 					method: "GET",
@@ -495,7 +486,6 @@
 					dataType : 'json',
 					data : {"podCd" : podCd, "pproName" : pproName, "pproErCd" : pproErCd, "startDate" : getStartDay, "endDate" : getEndDay}
 					}).then(res=>{ grid.resetData(res);	})
-			}
 		})
 	}
 

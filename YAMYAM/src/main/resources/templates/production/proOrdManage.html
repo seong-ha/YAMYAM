@@ -222,10 +222,10 @@ let tooltip5 = new bootstrap.Tooltip(proInfo2El,{placement : 'right'});
 			  }
 			selectedRowKey = ev.rowKey;
 			pOrderGrid.addRowClassName(selectedRowKey, 'cell-change');
-			
+			let n = pOrderGrid.getFocusedCell().rowKey;
 			let data = pOrderGrid.getData();
-			let plineCd = data[0].plineCd;
-			let pproInAmt = data[0].poddAmt;
+			let plineCd = data[n].plineCd;
+			let pproInAmt = data[n].poddAmt;
 			$.ajax({
 				url : '/flowProgress',
 				data : {"plineCd" : plineCd},
