@@ -39,6 +39,20 @@
 	  ORDER BY I.PRD_LOT
 	</select>
 	
+	
+	<!-- 완제품LOT 모달 (재고 조회 Tab) -->
+	<select id="lotDetailList" resultType="com.mandu.yamyam.common.LowerKeyMap">
+		SELECT I.PRD_LOT, 
+			   P.PRD_NM, 
+			   TO_CHAR(I.EDATE,'yyyy-MM-dd') AS EDATE
+			   
+		  FROM C_PRD P 
+		  JOIN B_IN I
+		    ON P.PRD_CD = I.PRD_CD
+		 WHERE I.SAMT > 0
+	  ORDER BY I.PRD_LOT
+	</select>
+	
 	<!-- 출고 등록 현황 리스트에 보여지는 LOT 재고 내역 모달 -->
 	<select id="lotSList" resultType="com.mandu.yamyam.common.LowerKeyMap">
 		SELECT BIN.PRD_LOT, 
@@ -81,7 +95,7 @@
 		  JOIN B_IN I
 			ON I.PRD_LOT = OU.PRD_LOT
 			
-	  ORDER BY BDATES DESC, OD.OD_CD
+	  ORDER BY BDATES DESC, OD.OD_CD DESC
 	</select>
 	
 		<!-- 주문서 관리 모달 (생산 요청 관리 Tab) -->
@@ -99,6 +113,8 @@
 		  FROM B_OD O 
 		  JOIN C_PRD P
 		    ON O.PRD_CD = P.PRD_CD
+		    
+		    WHERE O.OD_STS = 'ORD-STS1'
 	  ORDER BY O.OD_CD DESC
 	</select>
 	
@@ -137,7 +153,7 @@
 	    <if test="actCd != null and !actCd.equals('')">
 	       AND ACT.ACT_CD = #{actCd}
 	    </if>
-      ORDER BY OD_DATE DESC, DE_DATE
+      ORDER BY OD_DATE DESC, OD_STS DESC
 	</select>
 	
 	
@@ -233,7 +249,7 @@
        <if test="prdLot != null and !prdLot.equals('')">
          AND I.PRD_LOT = #{prdLot}
        </if>
-    ORDER BY BDATES
+    ORDER BY BDATES, OUT_NO
 	</select>
 	
 
@@ -357,7 +373,7 @@
 		    ON OD.OD_CD = OU.OD_CD
 		    
 		  JOIN B_RT R
-			ON R.ACT_CD = OU.ACT_CD
+			ON R.PRD_LOT = OU.PRD_LOT
 			
 		  JOIN B_IN I
 			ON R.PRD_LOT = I.PRD_LOT

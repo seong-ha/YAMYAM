@@ -47,6 +47,13 @@ public class OrdController {
 		return service.lotList();
 	}
 	
+	// 완제품LOT Modal 조회 (재고 조회 Tab)
+	@GetMapping("lotDetailListModal")
+	@ResponseBody
+	public List<OrdVO> lotDetailList() {
+		return service.lotDetailList();
+	}
+	
 	// 완제품LOT 재고 현황 모달
 	@GetMapping("lotSListModal")
 	@ResponseBody

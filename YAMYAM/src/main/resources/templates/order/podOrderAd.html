@@ -440,7 +440,7 @@ var header = $("meta[name='_csrf_header']").attr("content");
 				rqtSts = rowData[i].rqtSts;
 				list.push({rqtNo})
 			}
-			if(odSts == '계획완료') {
+			if(rqtSts == '계획완료') {
 				toastr.options = {
 						  "closeButton": true,
 						  "newestOnTop": true,

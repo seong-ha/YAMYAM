@@ -36,6 +36,12 @@ public class OrdServiceImpl implements OrdService {
 		return map.lotList();
 	}
 	
+	// 완제품LOT Modal 조회 (재고조회 Tab)
+	@Override
+	public List<OrdVO> lotDetailList() {
+		return map.lotDetailList();
+	}
+	
 	// 완제품LOT 재고 현황 모달
 	@Override
 	public List<OrdVO> lotSList(OrdVO vo) {
