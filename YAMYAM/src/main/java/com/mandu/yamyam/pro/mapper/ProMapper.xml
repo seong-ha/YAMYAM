@@ -375,6 +375,15 @@
 		{ CALL mk_p_record(#{plineCd}) }
 	</insert>
 	
+	
+	
+	<!-- 이력 테이블에 상세생산지시 업데이트 -->
+	<update id="updatesPRecord" parameterType="com.mandu.yamyam.pro.service.ProVO">
+		UPDATE p_record SET podd_cd = #{poddCd} WHERE pline_cd = #{plineCd}   
+	</update>
+	
+	
+	
 	<!-- 실시간 공정 비워주기 -->
 	<update id="resertPpro" parameterType="com.mandu.yamyam.pro.service.ProVO">
 		UPDATE p_pro set ppro_in_amt = '',
@@ -391,19 +400,18 @@
 	
 	<!-- 공정 실적 조회 -->
 	<select id="getResultList" resultType="com.mandu.yamyam.common.LowerKeyMap">
-	    SELECT DISTINCT d.pod_cd,find_emp_name(r.ppro_emp_id) AS ppro_emp_nm,
+	   SELECT d.pod_cd,find_emp_name(r.ppro_emp_id) AS ppro_emp_nm,
       				    r.ppro_cd, r.pre_date, r.eqp_cd,find_eqp_name(r.eqp_cd) AS eqp_nm,r.ppro_name,
        				    r.ppro_emp_id, r.ppro_in_amt, r.ppro_er_amt, r.ppro_ot_amt,
        					TO_CHAR(r.ppro_s_time, 'yyyy-MM-dd HH24:MM:SS') AS ppro_s_time,
        					TO_CHAR(r.ppro_e_time, 'yyyy-MM-dd HH24:MM:SS') AS ppro_e_time,
        					r.ppro_er_cd, r.ppro_er_dtl,
-        				TO_CHAR(d.pod_dates, 'yyyy-MM-dd') AS pod_dates
+                        TO_CHAR(d.pod_dates, 'yyyy-MM-dd') AS pod_dates			
 		FROM p_record r
 		JOIN e_eqp e ON r.eqp_cd = e.eqp_cd
-		JOIN p_od d ON r.pline_cd = d.pline_cd
-		JOIN p_odd od ON od.pod_cd = d.pod_cd
-		JOIN b_in i ON i.podd_cd = od.podd_cd
-		JOIN p_plnd pl ON pl.pplnd_cd = d.pplnd_cd
+        JOIN p_odd od ON od.podd_cd = r.podd_cd
+        JOIN p_od d ON d.pod_cd = od.pod_cd
+        JOIN p_plnd pl ON pl.pplnd_cd = d.pplnd_cd
        	
         	<if test="podCd !=null and !podCd.equals('')">
 	        	WHERE d.pod_cd = #{podCd}
@@ -505,6 +513,7 @@
 		  FROM c_prd c
 		  LEFT OUTER JOIN p_line p
 		    ON p.prd_cd = c.prd_cd
+		  ORDER BY 2
 	</select>
 	
 	<!-- 제품 공정 흐름도 관리 -->

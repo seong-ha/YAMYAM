@@ -87,6 +87,9 @@ public interface ProMapper {
 	// 실시간 생산공정을 기반으로 생산공정 이력을 생성(프로시저 사용)
 	public int insertPRecord(ProVO vo);
 	
+	// 이력 테이블에 상세생산지시코드 업데이트
+	public int updatesPRecord(ProVO vo);
+	
 	// 실시간 공정 테이블 비워주기
 	public int resertPpro(ProVO vo);
 	
