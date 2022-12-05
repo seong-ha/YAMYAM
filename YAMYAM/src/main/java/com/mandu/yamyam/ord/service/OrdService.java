@@ -17,6 +17,9 @@ public interface OrdService {
 	// 돋보기 완제품LOT목록 모달
 	public List<OrdVO> lotList();
 	
+	// 돋보기 완제품LOT목록 모달 (출고 조회)
+	public List<OrdVO> lotDetailList();
+	
 	// 완제품LOT 재고 현황 모달
 	public List<OrdVO> lotSList(OrdVO vo);
 	

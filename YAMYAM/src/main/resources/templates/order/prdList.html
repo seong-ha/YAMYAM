@@ -314,7 +314,7 @@ var header = $("meta[name='_csrf_header']").attr("content");
 		      },
 		      {
 		        header: '유통기한',
-		        align : 'right',
+		        align : 'center',
 		        name: 'edate'
 		      }
 		    ]
@@ -329,7 +329,7 @@ var header = $("meta[name='_csrf_header']").attr("content");
 	function getLotModal() {
 	$('#lot').on('click',function(){
 		 $.ajax({
-			   url:'/lotListModal',
+			   url:'/lotDetailListModal',
 			   dataType: "json",
 			   success : function(data) {
 				   lotModalGrid.resetData(data);
