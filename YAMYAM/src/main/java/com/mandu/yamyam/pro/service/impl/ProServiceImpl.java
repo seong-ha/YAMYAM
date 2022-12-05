@@ -152,6 +152,17 @@ public class ProServiceImpl implements ProService {
 		return result;
 	}
 	
+	// 완제품 재고 등록
+	@Override
+	public int insertBIn(ProVO vo) {
+		int result = 0;
+		mapper.insertBIn(vo);
+		mapper.insertPRecord(vo);
+		mapper.resertPpro(vo);
+		mapper.updatesPRecord(vo);
+		return result;
+	}
+	
 	// 제품 공정 목록 조회
 	@Override
 	public List<ProVO> flowProgress(ProVO vo) {
@@ -211,15 +222,6 @@ public class ProServiceImpl implements ProService {
 		return result;
 	}
 	
-	// 완제품 재고 등록
-	@Override
-	public int insertBIn(ProVO vo) {
-		int result = 0;
-		mapper.insertBIn(vo);
-		mapper.insertPRecord(vo);
-		mapper.resertPpro(vo);
-		return result;
-	}
 		
 
 	// 공정실적조회

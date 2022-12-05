@@ -474,7 +474,7 @@
 				let pplnCd = ckRow[i].pplnCd;
 				list.push({pplndCd,pplnCd,odCd});
 			if(pplndSts == '완료'){
-				let messeage = `지시완료된 상태는<br> 삭제할 수 없습니다.`
+				let messeage = `완료된 상태는<br> 삭제할 수 없습니다.`
 				Swal.fire({icon: 'error',title:messeage});
 			}else{
 			sweetConfirm('D', function(){
@@ -888,6 +888,7 @@
 								  $('#pplnName').val('');
 								  $('#datepicker-input').val(getTodayStr());
 								  insertGrid.refreshLayout();
+								  //location.reload();
 								},
 						error : function(reject){
 								console.log(reject);
