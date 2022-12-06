@@ -27,7 +27,7 @@ public class EqpInsertUpdateController {
 	@Autowired
 	EqpService eqpService;
 
-	private static String path = "/home/ubuntu/upload/";
+	private static String path = "request.getServletContext().getRealPath();
 	
 	@PostMapping("/eqpInsertUpdate")
 	@ResponseBody
