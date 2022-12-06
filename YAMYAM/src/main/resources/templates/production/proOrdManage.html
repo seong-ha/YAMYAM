@@ -305,7 +305,7 @@ let tooltip5 = new bootstrap.Tooltip(proInfo2El,{placement : 'right'});
 		stopEqp(n,time)
 		n++;
 		
-		if(n>=6){	// 공정이 끝나면 interval끝
+		if(n>=6){
 			clearInterval(interval);
 			Swal.fire('완료되었습니다');
 			
@@ -319,8 +319,6 @@ let tooltip5 = new bootstrap.Tooltip(proInfo2El,{placement : 'right'});
 			let poddCd = pOrderGrid.getValue(pG,'poddCd');
 			let plineCd = pOrderGrid.getValue(pG,'plineCd');
 			let prdCd = pOrderGrid.getValue(pG,'prdCd');
-			console.log(binAmt);
-			// ajax (b-in[완제품재고] table insert)
 			
 			$.ajax({
 				url : '/insertBIn',
@@ -401,7 +399,7 @@ let tooltip5 = new bootstrap.Tooltip(proInfo2El,{placement : 'right'});
 		let pproInAmt = proGrid.getValue(n,'pproInAmt');
 		
 		let pproETime = time;
-		let pproErAmt = Math.floor(Math.random()*3);	
+		let pproErAmt = Math.floor(Math.random()*2);	
 		let pproOtAmt = pproInAmt - pproErAmt; 
 		
 		if(eqpSts == "가동" || eqpSts == "재시작"){

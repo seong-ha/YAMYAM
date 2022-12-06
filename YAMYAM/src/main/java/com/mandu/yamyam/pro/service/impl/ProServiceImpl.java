@@ -159,7 +159,6 @@ public class ProServiceImpl implements ProService {
 		mapper.insertBIn(vo);
 		mapper.insertPRecord(vo);
 		mapper.resertPpro(vo);
-		mapper.updatesPRecord(vo);
 		return result;
 	}
 	
