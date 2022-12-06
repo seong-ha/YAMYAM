@@ -516,7 +516,7 @@
 			let selectedRowKey = null;
 				grid.on('click',function(ev){
 					if(ev.rowKey <0){
-						return;
+						return; 
 					}
 					if(selectedRowKey>=0) {
 						grid.removeRowClassName(selectedRowKey, 'cell-change');
@@ -531,7 +531,8 @@
 					let pplnDate = grid.getRow(ev.rowKey).pplnDate;
 					let prdCd = grid.getRow(ev.rowKey).prdCd;
 					let pplndCd = grid.getRow(ev.rowKey).pplndCd;
-					let resetData = [{pplnDate:pplnDate,pplnCd: pplnCd, pplndDays:pplndDays, prdNm: prdNm, pplndAmt: pplndAmt,poddAmt: '',restAmt: '',pplndCd:pplndCd,prdCd:prdCd}];
+					let resetData = [{pplnDate:pplnDate,pplnCd: pplnCd, pplndDays:pplndDays,
+						              prdNm: prdNm, pplndAmt: pplndAmt,poddAmt: '',restAmt: '',pplndCd:pplndCd,prdCd:prdCd}];
 					planDGrid.resetData(resetData);
 					planOrder.clear();
 				});
@@ -570,8 +571,6 @@
 							}
 					}
 					
-					let cVal = planOrder.getColumnValues('poddAmt');
-					// planOrder.setValue(i,'poddPrio',k++);						
 					
 				})
 			}
@@ -605,7 +604,6 @@
 							let num = planDGrid.getValue(0,'pplndDays');
 							
 							let date =  new Date(pplnDate);
-							console.log(date)
 							let orderD = new Date(date.setDate(date.getDate()+3));
 							let orD = '';
 							

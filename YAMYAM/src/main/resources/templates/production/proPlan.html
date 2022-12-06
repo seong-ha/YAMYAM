@@ -646,7 +646,7 @@
 			let RMCode = val.odCd; // 생산요청서 모달에서 클릭한 주문코드
 			let inCount = insertGrid.getRowCount(); // 생산계획관리 그리드
 			let iGDataList = insertGrid.getData();
-			let deDate = requestModalGrid.getValue(ev.rowKey, 'deDate'); // (rowKey, columnName)
+			let deDate = requestModalGrid.getValue(ev.rowKey, 'deDate');
 			let date =  new Date(deDate);
 			let d = new Date(date.setDate(date.getDate()-7));
 			let day = getDateStr(d);
@@ -677,7 +677,7 @@
 	}
 	
 	
-	/*------------
+	/*---------------
 	// insertGrid 빈곳 클릭시 모달에 뜨는 그리드(제품코드, 제품이름)
 	----------------*/
 	function insertClickHandler(){
