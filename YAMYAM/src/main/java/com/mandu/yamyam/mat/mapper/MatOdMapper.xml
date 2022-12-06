@@ -134,7 +134,7 @@
        ORDER BY O.MAT_OD_DD
    </select>
    
-   <!-- 자재 발주 관리(일반 탭) - 삭제버튼 -->
+   <!-- 자재 발주 관리(일반 탭) - 삭제 -->
    <delete id="delMatOd" parameterType="com.mandu.yamyam.mat.service.MatVO" statementType="CALLABLE">
       CALL SG_DEL_PROC(#{matOdCd})
    </delete>

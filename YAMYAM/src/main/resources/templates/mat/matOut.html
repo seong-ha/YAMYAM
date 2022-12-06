@@ -486,7 +486,7 @@
                    
             // 필요자재 그리드에 아무것도 남지 않으면 출고처리
             if(count == 0){
-               // insert
+               // 출고처리 ajax 시작
                $.ajax({
                   url: '/insertOut',
                   method: 'POST',
@@ -497,17 +497,19 @@
                       xhr.setRequestHeader(header, token);
                   },
                   success: function(result) {
-                     
+                	 // 자재에서 출고량만큼 마이너스 업데이트 ajax
                      var result = updateAmt(data)
                      
-                     if(result >= 1) {                              
+                     // 업데이트가 성공하면
+                     if(result >= 1) {
+                    	// 진행구분 '자재팀확인' -> '완료' 업데이트 ajax
                         updateSts(oddCd);
                      }
                   },
                   error: function(reject) {
                      console.log(reject);
                   }
-               })
+               }) // end ajax
             } else {
                Swal.fire({
                   icon: 'error',

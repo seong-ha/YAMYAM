@@ -260,7 +260,7 @@
 	      	] 
 		});
 		
-		// 올체크 시 전체 행 추가
+		// 올 체크 시 전체 행이 체크된 채로 추가
 		modalGrid.on('checkAll', function() {
 			let data = modalGrid3.getCheckedRows();
 			
@@ -490,6 +490,7 @@
 		      
 		    }).then((result) => {
 		      if (result.isConfirmed) {
+		    	// 저장 ajax 시작
 		        $.ajax({
 		        	url: '/inManage',
 		        	method: 'POST',
@@ -507,9 +508,6 @@
 				        	
 				        	// 생산계획 상태 '미지시'로 업데이트
 				        	updataSts(data);
-	                    	 
-	                        //미지시 업데이트 함수
-	                        //updataSts(planData); 자재 입고 관리로 이사 중
 				        	
 							setTimeout(() => location.reload(),400);
 				        	
@@ -520,7 +518,7 @@
 					error: function(reject){
 						console.log(reject);
 					}
-		        })
+		        }) // end ajax
 		      }
 		   })
 		})
