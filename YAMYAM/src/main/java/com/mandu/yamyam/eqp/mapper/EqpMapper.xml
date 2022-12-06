@@ -296,16 +296,26 @@
 		FROM e_eqp e JOIN e_chk c
 		  ON e.eqp_cd = c.eqp_cd
 		
+		<where>
 			<choose>
-				<when test="eqpType.equals('eqpType')">
-					WHERE e.eqp_type = e.eqp_type
-			  		AND c.chk_date BETWEEN TRUNC(#{startDate}) AND TRUNC(#{endDate})
+				<when test="eqpType == null or eqpType.equals('')">
+					e.eqp_type = e.eqp_type
 				</when>
 				<otherwise>
-					WHERE e.eqp_type = #{eqpType}
-			  		AND c.chk_date BETWEEN TRUNC(#{startDate}) AND TRUNC(#{endDate})
+					e.eqp_type = #{eqpType}
 				</otherwise>
 			</choose>
+			<choose>
+				<when test="chkRst == null or chkRst.equals('')">
+					AND c.chk_rst = c.chk_rst
+				</when>
+				<otherwise>
+					AND c.chk_rst = #{chkRst}
+				</otherwise>
+			</choose>
+			
+			AND c.chk_date BETWEEN TRUNC(#{startDate}) AND TRUNC(#{endDate})
+		</where>
 		
 		ORDER BY c.chk_date DESC
 	</select>
