@@ -771,6 +771,7 @@
 									 // ajax success
 									 if (data.result == 'success') {
 									 	 toastr.success('정상적으로 수정되었습니다.');
+									 	 getEqpListModalData();	// 정보 최신화
 										 document.getElementById('reset').click();
 					            	  } else if (data.result == '예외발생') {
 					            		 toastr.error('예외가 발생하여 수정에 실패했습니다.');
