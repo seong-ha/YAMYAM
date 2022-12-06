@@ -27,7 +27,7 @@ public class EqpInsertUpdateController {
 	@Autowired
 	EqpService eqpService;
 
-	private static String path = "request.getServletContext().getRealPath();
+	private static String path = "/home";
 	
 	@PostMapping("/eqpInsertUpdate")
 	@ResponseBody
