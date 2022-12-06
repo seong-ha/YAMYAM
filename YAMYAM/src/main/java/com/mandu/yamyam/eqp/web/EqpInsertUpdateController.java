@@ -27,7 +27,7 @@ public class EqpInsertUpdateController {
 	@Autowired
 	EqpService eqpService;
 
-	private static String path = "C:\\Dev\\upload";
+	private static String path = "/home/ubuntu/upload/";
 	
 	@PostMapping("/eqpInsertUpdate")
 	@ResponseBody
