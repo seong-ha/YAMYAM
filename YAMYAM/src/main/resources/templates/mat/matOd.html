@@ -948,6 +948,7 @@
          let mtrSamt = 0;
          let list = [[${matStList}]];
          
+         // 자재 코드 같으면 모두 합해서 보여주기
          for(let i=0; i<list.length; i++){
 	         if(list[i].mtrCd == data[idx].mtrCd) {
 	        	 mtrSamt = list[i].matSamt;
@@ -956,8 +957,9 @@
          
           let rowData = {mtrCd: data[idx].mtrCd, mtrNm: data[idx].mtrNm,
                       matOddMn: "", matOddAmt: (dataPlan[0].pplndAmt*data[idx].bomAmt), 
-                      matSum : ((dataPlan[0].pplndAmt*data[idx].bomAmt)*data[idx].mtrPrc) , actCd: data[idx].actCd, actNm:data[idx].actNm, 
-                      matOdDd: today, matOddDate:OddDate, matOddMn:data[idx].mtrPrc, matSamt: mtrSamt}
+                      matSum : ((dataPlan[0].pplndAmt*data[idx].bomAmt)*data[idx].mtrPrc), 
+                      actCd: data[idx].actCd, actNm:data[idx].actNm, matOdDd: today, 
+                      matOddDate:OddDate, matOddMn:data[idx].mtrPrc, matSamt: mtrSamt}
           
          
          odMat.appendRow(rowData);

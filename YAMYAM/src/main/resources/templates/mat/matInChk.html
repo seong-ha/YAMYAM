@@ -848,21 +848,22 @@ select option[value=""][disabled] {
          grid.on('afterChange', function(ev){
             let change = ev.changes[0];
             let rowData = grid.getRow(change.rowKey);
-            let erAmt = rowData.matOddAmt - rowData.paAmt
+            let erAmt = rowData.matOddAmt - rowData.paAmt // 발주총량 - 합격량
             
-               if (change.columnName == 'paAmt'){
+            // 합격량이 입력되면 불합격량 계산되어 입력
+            if (change.columnName == 'paAmt'){
                if(rowData.matOddAmt != null && rowData.paAmt != null){
                   grid.setValue(change.rowKey, 'erAmt', erAmt);
                }
-               }
+            }
             
-             if (change.columnName == 'erAmt'){
+            // 불합격량이 0이라면 불량 없음이 바로 입력
+            if (change.columnName == 'erAmt'){
                 if(erAmt == 0) {
                    grid.setValue(change.rowKey, 'erCd', 'ERR-MNP-001');
                    grid.setValue(change.rowKey, 'erInfo', '불량 없음');
                 }
              }
-            
          })
       }
       
