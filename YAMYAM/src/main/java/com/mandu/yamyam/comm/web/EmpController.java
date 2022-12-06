@@ -99,10 +99,10 @@ public class EmpController {
 	 */
 	
 	// commCodeAd 페이지 불러오기
-	@RequestMapping("commonCodeAD")
+	@RequestMapping("/commonCodeAD")
 	public String commonCodeAd() {
 		
-		return "comm/commCodeAd";
+		return "comm/commCodeAD";
 	}
 	
 	// ajax 공통 코드 불러오기 
