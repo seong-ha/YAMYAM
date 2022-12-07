@@ -464,8 +464,6 @@
 	<select id="noUseEqp" resultType="com.mandu.yamyam.pro.service.ProVO">
 		SELECT e.eqp_cd, e.eqp_nm, e.md_nm
 		  FROM e_eqp e left OUTER JOIN p_pro p ON e.eqp_cd = p.eqp_cd
-		  JOIN e_chk k
-		    ON k.eqp_cd = e.eqp_cd
 	     WHERE p.eqp_cd is null 
 		   AND e.eqp_sts = 'EQP-STS3'
 		 ORDER BY 1
