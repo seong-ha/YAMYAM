@@ -462,7 +462,7 @@
 	
 	<!-- 미사용 설비 조회 -->
 	<select id="noUseEqp" resultType="com.mandu.yamyam.pro.service.ProVO">
-		SELECT DISTINCT e.eqp_cd, e.eqp_nm, e.md_nm
+		SELECT e.eqp_cd, e.eqp_nm, e.md_nm
 		  FROM e_eqp e left OUTER JOIN p_pro p ON e.eqp_cd = p.eqp_cd
 		  JOIN e_chk k
 		    ON k.eqp_cd = e.eqp_cd
