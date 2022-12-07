@@ -566,14 +566,17 @@
 							if (data != null) {
 								if (data.create != 0) {
 									toastr.success('정상적으로 ' + data.create + '건이 저장되었습니다.');
+									selectBOM();
 								}
 								
 								if (data.update != 0) {
 									toastr.success('정상적으로 ' + data.update + '건이 수정되었습니다.');
+									selectBOM();
 								}
 								
 								if (data.delete != 0) {
 									toastr.success('정상적으로 ' + data.delete + '건이 삭제되었습니다.');
+									selectBOM();
 								}
 							} else {
 								toastr.error('등록에 실패했습니다.');
