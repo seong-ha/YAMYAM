@@ -323,7 +323,8 @@ let tooltip5 = new bootstrap.Tooltip(proInfo2El,{placement : 'right'});
 			$.ajax({
 				url : '/insertBIn',
 				method: 'POST',
-				data :  {"binAmt" : binAmt, "samt" : binAmt, "prdCd" : prdCd, "poddCd": poddCd, "plineCd" : plineCd},
+				data :  {"binAmt" : binAmt, "samt" : binAmt, "prdCd" : prdCd,
+					     "poddCd": poddCd, "plineCd" : plineCd},
 				dataType : 'json',
 				beforeSend : function (xhr) {
 				    xhr.setRequestHeader(header, token);
@@ -462,7 +463,6 @@ let tooltip5 = new bootstrap.Tooltip(proInfo2El,{placement : 'right'});
 	function restartBtnHandler(){
 		
 		$('#restartBtn').on('click',function(){
-			// sweetalert2
 			sweetConfirm('R', 'info', function(){
 				let eqpSts = proGrid.getValue(0,'eqpSts');
 				let data = proGrid.getData();
@@ -470,10 +470,10 @@ let tooltip5 = new bootstrap.Tooltip(proInfo2El,{placement : 'right'});
 				for(let i=n; i<data.length; i++){
 					proGrid.setValue(i,'eqpSts','재시작');	
 				}
-				//변수 = setInterval(콜백함수, 시간);
+				
 				interval = setInterval(viewProgress,1000);
 				
-				if(n>=6){	// 공정이 끝나면 interval끝
+				if(n>=6){
 					clearInterval(reInterval);
 				}
 			})
