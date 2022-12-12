@@ -31,7 +31,8 @@
 	
 	<!-- 상세생산계획조회 -->
 	<select id="getPlanDetail" resultType="com.mandu.yamyam.common.LowerKeyMap">
-		SELECT p.ppln_cd, p.ppln_name, d.pplnd_cd, d.prd_cd, d.pplnd_amt, d.pplnd_prio, d.pplnd_days, find_code_name(d.pplnd_sts) AS pplnd_sts, c.prd_nm
+		SELECT p.ppln_cd, p.ppln_name, d.pplnd_cd, d.prd_cd, d.pplnd_amt, d.pplnd_prio, d.pplnd_days,
+			   find_code_name(d.pplnd_sts) AS pplnd_sts, c.prd_nm
 		  FROM p_pln p 
 		  JOIN p_plnd d
             ON p.ppln_cd = d.ppln_cd
